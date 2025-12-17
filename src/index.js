@@ -24,6 +24,8 @@ if (fs.existsSync(commandsPath)) {
     if (cmd && cmd.name) commands.set(cmd.name, cmd);
   }
 }
+// Expose commands on client for command modules (help, etc.)
+client.commands = commands;
 
 client.once('ready', () => {
   console.log(`Logged in as ${client.user?.tag || 'unknown'}`);
