@@ -13,16 +13,56 @@ if (!TOKEN || !CLIENT_ID) {
 }
 
 const commands = [];
+const seenNames = new Set();
 const commandsPath = path.join(__dirname, 'commands');
 if (fs.existsSync(commandsPath)) {
   const files = fs.readdirSync(commandsPath).filter(f => f.endsWith('.js'));
   for (const file of files) {
-    const cmd = require(path.join(commandsPath, file));
+    let cmd;
+    try {
+      cmd = require(path.join(commandsPath, file));
+    } catch (e) {
+      console.error(`Failed to load command file ${file}:`, e);
+      continue;
+    }
+
+    // Prefer `data` builder (SlashCommandBuilder). If present, use its JSON.
+    if (cmd && cmd.data && typeof cmd.data.toJSON === 'function') {
+      const json = cmd.data.toJSON();
+      if (!json.name || typeof json.name !== 'string') {
+        console.warn(`${file} skipped: builder missing valid name`);
+        continue;
+      }
+      if (seenNames.has(json.name)) {
+        console.warn(`${file} skipped: duplicate command name ${json.name}`);
+        continue;
+      }
+      seenNames.add(json.name);
+      commands.push(json);
+      continue;
+    }
+
+    if (!cmd || !cmd.name || typeof cmd.name !== 'string') {
+      console.warn(`${file} skipped: missing string 'name' export`);
+      continue;
+    }
+
+    // Validate command name per Discord limits (1-32 chars, alphanumeric, dashes/underscores)
+    if (!/^[\w-]{1,32}$/.test(cmd.name)) {
+      console.warn(`${file} skipped: invalid command name '${cmd.name}'`);
+      continue;
+    }
+    if (seenNames.has(cmd.name)) {
+      console.warn(`${file} skipped: duplicate command name ${cmd.name}`);
+      continue;
+    }
+
     const data = {
       name: cmd.name,
       description: cmd.description || 'No description',
-      options: cmd.options || []
+      options: Array.isArray(cmd.options) ? cmd.options : []
     };
+    seenNames.add(cmd.name);
     commands.push(data);
   }
 }
@@ -32,6 +72,10 @@ const rest = new REST({ version: '10' }).setToken(TOKEN);
 (async () => {
   try {
     console.log(`Registering ${commands.length} commands.`);
+    if (commands.length === 0) {
+      console.log('No commands to register. Exiting.');
+      process.exit(0);
+    }
     if (GUILD_ID) {
       console.log(`Registering commands to guild ${GUILD_ID}`);
       await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: commands });

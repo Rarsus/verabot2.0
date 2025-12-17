@@ -1,10 +1,16 @@
-﻿module.exports = {
+﻿const { SlashCommandBuilder } = require('discord.js');
+
+module.exports = {
+  data: new SlashCommandBuilder()
+    .setName('hi')
+    .setDescription('Say hi to someone: /hi name:Alice')
+    .addStringOption(opt => opt.setName('name').setDescription('Name to say hi to').setRequired(false)),
   name: 'hi',
   description: 'Say hi to someone: /hi name:Alice',
   options: [
     {
       name: 'name',
-      type: 3,
+      type: 'string',
       description: 'Name to say hi to',
       required: false
     }

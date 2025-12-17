@@ -1,4 +1,9 @@
-﻿module.exports = {
+﻿const { SlashCommandBuilder } = require('discord.js');
+
+module.exports = {
+  data: new SlashCommandBuilder()
+    .setName('ping')
+    .setDescription('Simple ping command'),
   name: 'ping',
   description: 'Simple ping command',
   options: [],

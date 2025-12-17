@@ -2,16 +2,16 @@
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, feature/verabot2.0 ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, feature/verabot2.0 ]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [18.x, 20.x]
 
     steps:
       - uses: actions/checkout@v4
@@ -19,7 +19,30 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'npm'
       - name: Install dependencies
         run: npm ci
+      - name: Run linter
+        run: npm run lint
+      - name: NPM audit (report)
+        run: |
+          echo "Running npm audit (report only)"
+          npm audit --audit-level=high || true
       - name: Run tests
         run: npm test
+  codeql-analysis:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+      - name: Run CodeQL
+        uses: github/codeql-action/analyze@v2

@@ -11,8 +11,8 @@ if (!TOKEN) {
   process.exit(1);
 }
 
-// For slash commands we only need the `Guilds` intent; Message Content intent is NOT required.
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+// For slash commands we always need `Guilds`. For prefix message handling we add message intents.
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
 // Load commands
 const commands = new Map();
@@ -26,7 +26,7 @@ if (fs.existsSync(commandsPath)) {
 }
 
 client.once('ready', () => {
-  console.log(`Logged in as ${client.user.tag}`);
+  console.log(`Logged in as ${client.user?.tag || 'unknown'}`);
 });
 
 // Handle slash commands (interactions)
@@ -44,11 +44,37 @@ client.on('interactionCreate', async (interaction) => {
     }
   } catch (err) {
     console.error('Command error', err);
-    if (interaction.replied || interaction.deferred) {
-      try { await interaction.followUp('There was an error executing that command.'); } catch(e){}
-    } else {
-      try { await interaction.reply('There was an error executing that command.'); } catch(e){}
+    try {
+      if (interaction.replied || interaction.deferred) {
+        await interaction.followUp('There was an error executing that command.');
+      } else {
+        await interaction.reply('There was an error executing that command.');
+      }
+    } catch (e) {
+      /* ignore follow-up errors */
     }
+  }
+});
+
+// Handle legacy prefix-based commands (optional)
+client.on('messageCreate', async (message) => {
+  try {
+    if (!message || !message.content) return;
+    if (message.author?.bot) return;
+    if (!PREFIX) return;
+    if (!message.content.startsWith(PREFIX)) return;
+
+    const args = message.content.slice(PREFIX.length).trim().split(/\s+/);
+    const commandName = (args.shift() || '').toLowerCase();
+    if (!commandName) return;
+    const command = commands.get(commandName);
+    if (!command) return;
+
+    if (typeof command.execute === 'function') {
+      await command.execute(message, args);
+    }
+  } catch (err) {
+    console.error('Message command error', err);
   }
 });
 
@@ -56,3 +82,12 @@ client.login(TOKEN).catch(err => {
   console.error('Failed to login:', err);
   process.exit(1);
 });
+
+// Graceful shutdown for containers and local development
+function shutdown() {
+  console.log('Shutting down gracefully...');
+  try { client.destroy(); } catch (e) { /* ignore errors on shutdown */ }
+  process.exit(0);
+}
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
