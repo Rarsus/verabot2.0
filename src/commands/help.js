@@ -83,10 +83,10 @@ module.exports = {
             await i.update({ content: 'Help closed.', embeds: [], components: [] });
             collector.stop();
           }
-        } catch (err) { /* ignore interaction errors */ }
+        } catch (err) { /* ignore interaction errors */ void 0; }
       });
       collector.on('end', async () => {
-        try { await sentMessage.edit({ components: [] }); } catch (e) {}
+        try { await sentMessage.edit({ components: [] }); } catch (e) { /* add error code */ void 0; }
       });
     } catch (err) {
       console.error('Help command (message) error', err);
@@ -163,14 +163,14 @@ module.exports = {
             await i.update({ content: 'Help closed.', embeds: [], components: [] });
             collector.stop();
           }
-        } catch (err) { /* ignore */ }
+        } catch (err) { /* ignore */ void 0; }
       });
       collector.on('end', async () => {
-        try { await reply.edit({ components: [] }); } catch (e) {}
+        try { await reply.edit({ components: [] }); } catch (e) {/* add error code */ void 0; }
       });
     } catch (err) {
       console.error('Help command (interaction) error', err);
-      try { await interaction.reply({ content: 'Could not list commands.', ephemeral: true }); } catch(e){}
+      try { await interaction.reply({ content: 'Could not list commands.', ephemeral: true }); } catch(e){/* add error code */ void 0; }
     }
   }
 };
