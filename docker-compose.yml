@@ -1,0 +1,7 @@
+﻿version: '3.8'
+services:
+  verabot2:
+    build: .
+    env_file:
+      - .env
+    restart: unless-stopped
