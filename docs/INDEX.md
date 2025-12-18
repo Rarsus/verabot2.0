@@ -28,6 +28,8 @@ Master index of all VeraBot2.0 documentation with full cross-references.
 | [project/ACTION-PLAN.md](project/ACTION-PLAN.md) | Implementation strategy and phases | Project Managers, Tech Leads |
 | [project/IMPROVEMENTS.md](project/IMPROVEMENTS.md) | Technical improvements analysis | Tech Leads, Architects |
 | [project/TDD-TEST-RESULTS.md](project/TDD-TEST-RESULTS.md) | Detailed test analysis and coverage | QA, Tech Leads |
+| [TEST-COVERAGE-OVERVIEW.md](TEST-COVERAGE-OVERVIEW.md) | **Comprehensive test coverage analysis** | QA, Developers, Tech Leads |
+| [TEST-SUMMARY-LATEST.md](TEST-SUMMARY-LATEST.md) | Latest test run results (auto-generated) | QA, Developers |
 
 ---
 
@@ -59,7 +61,8 @@ Master index of all VeraBot2.0 documentation with full cross-references.
 1. Testing: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md) - Testing approach
 2. Reference: [reference/TDD-QUICK-REFERENCE.md](reference/TDD-QUICK-REFERENCE.md) - Quick commands
 3. Results: [project/TDD-TEST-RESULTS.md](project/TDD-TEST-RESULTS.md) - Current status
-4. Coverage: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#coverage-analysis) - Coverage goals
+4. Coverage: [TEST-COVERAGE-OVERVIEW.md](TEST-COVERAGE-OVERVIEW.md) - **Comprehensive coverage analysis**
+5. Latest Results: [TEST-SUMMARY-LATEST.md](TEST-SUMMARY-LATEST.md) - Latest test runs
 
 ### DevOps/Deployment
 **Goals:** Setup and maintain infrastructure
@@ -160,6 +163,8 @@ Master index of all VeraBot2.0 documentation with full cross-references.
 - Test philosophy: [guides/02-TESTING-GUIDE.md#test-philosophy](guides/02-TESTING-GUIDE.md#test-philosophy)
 - Writing tests: [guides/02-TESTING-GUIDE.md#writing-new-tests](guides/02-TESTING-GUIDE.md#writing-new-tests)
 - Test patterns: [guides/02-TESTING-GUIDE.md#testing-patterns](guides/02-TESTING-GUIDE.md#testing-patterns)
+- Test coverage: [TEST-COVERAGE-OVERVIEW.md](TEST-COVERAGE-OVERVIEW.md)
+- Latest results: [TEST-SUMMARY-LATEST.md](TEST-SUMMARY-LATEST.md)
 
 **Project Information:**
 - Refactoring summary: [project/REFACTORING-COMPLETE.md#summary](project/REFACTORING-COMPLETE.md#summary)
@@ -192,17 +197,18 @@ Master index of all VeraBot2.0 documentation with full cross-references.
 ## 📊 Statistics
 
 ### Documentation Breadth
-- **Total documents:** 10 markdown files
-- **Total lines:** ~2,800 lines
+- **Total documents:** 12 markdown files
+- **Total lines:** ~4,000+ lines
 - **Code examples:** 100+
-- **Sections:** 100+
-- **Cross-references:** 300+
+- **Sections:** 120+
+- **Cross-references:** 320+
 
 ### Documentation by Category
-- **Guides:** 3 files, ~1,200 lines (43%)
-- **Reference:** 3 files, ~600 lines (21%)
-- **Project Info:** 4 files, ~800 lines (29%)
-- **Navigation:** 300+ cross-references
+- **Guides:** 3 files, ~1,200 lines (30%)
+- **Reference:** 3 files, ~600 lines (15%)
+- **Project Info:** 4 files, ~800 lines (20%)
+- **Test Documentation:** 2 files, ~1,400 lines (35%)
+- **Navigation:** 320+ cross-references
 
 ### Content Coverage
 - ✅ New developer onboarding
@@ -236,9 +242,9 @@ Master index of all VeraBot2.0 documentation with full cross-references.
 
 ## ✨ Features
 
-- ✅ 10 comprehensive documents
-- ✅ Organized into 3 categories
-- ✅ 300+ cross-references
+- ✅ 12 comprehensive documents
+- ✅ Organized into 4 categories
+- ✅ 320+ cross-references
 - ✅ Multiple entry points
 - ✅ Role-based navigation
 - ✅ Use-case organized
@@ -246,6 +252,8 @@ Master index of all VeraBot2.0 documentation with full cross-references.
 - ✅ Quick reference guides
 - ✅ Code examples throughout
 - ✅ Troubleshooting sections
+- ✅ **Comprehensive test coverage analysis**
+- ✅ **Auto-generated test summaries**
 
 ---
 
