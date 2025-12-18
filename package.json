@@ -8,6 +8,7 @@
     "start": "node src/index.js",
     "register-commands": "node src/register-commands.js",
     "test": "node ./scripts/run-tests.js",
+    "test:quotes": "node ./scripts/test-quotes.js",
     "lint": "eslint --ext .js src/ scripts/",
     "ci": "npm ci && npm test"
   },
