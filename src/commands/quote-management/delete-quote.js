@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { deleteQuote, getQuoteById } = require('../db');
-const { handleInteractionError } = require('../utils/error-handler');
+const { deleteQuote, getQuoteById } = require('../../db');
+const { handleInteractionError } = require('../../utils/error-handler');
 
 module.exports = {
   data: new SlashCommandBuilder()

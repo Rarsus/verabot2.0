@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { addQuote } = require('../db');
-const { validateQuoteText, validateAuthor, handleInteractionError } = require('../utils/error-handler');
+const { addQuote } = require('../../db');
+const { validateQuoteText, validateAuthor, handleInteractionError } = require('../../utils/error-handler');
 
 module.exports = {
   data: new SlashCommandBuilder()

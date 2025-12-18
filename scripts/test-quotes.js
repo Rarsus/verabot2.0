@@ -7,6 +7,21 @@ const path = require('path');
 const sqlite3 = require('sqlite3');
 const fs = require('fs');
 
+// Recursively find a file by name in a directory
+function findCommandFile(dir, filename) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      const found = findCommandFile(fullPath, filename);
+      if (found) return found;
+    } else if (entry.name === filename) {
+      return fullPath;
+    }
+  }
+  return null;
+}
+
 // Mock database setup for testing
 const testDbPath = path.join(__dirname, '..', 'data', 'test_quotes.db');
 
@@ -206,8 +221,8 @@ async function runTests() {
     ];
 
     for (const cmdFile of quoteCommands) {
-      const cmdPath = path.join(commandsPath, cmdFile);
-      if (!fs.existsSync(cmdPath)) {
+      const cmdPath = findCommandFile(commandsPath, cmdFile);
+      if (!cmdPath) {
         console.error(`❌ Test 3.${quoteCommands.indexOf(cmdFile) + 1} Failed: ${cmdFile} not found`);
         failed++;
         continue;

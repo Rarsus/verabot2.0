@@ -9,6 +9,7 @@
     "register-commands": "node src/register-commands.js",
     "test": "node ./scripts/run-tests.js",
     "test:quotes": "node ./scripts/test-quotes.js",
+    "test:quotes-advanced": "node ./scripts/test-quotes-advanced.js",
     "lint": "eslint --ext .js src/ scripts/",
     "ci": "npm ci && npm test"
   },
