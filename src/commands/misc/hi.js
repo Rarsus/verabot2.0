@@ -1,5 +1,5 @@
-﻿const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
 
 const { data, options } = buildCommandOptions('hi', 'Say hi to someone', [
   { name: 'name', type: 'string', description: 'Name to say hi to', required: false }

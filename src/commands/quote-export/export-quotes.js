@@ -1,6 +1,6 @@
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
-const { sendError } = require('../../utils/response-helpers');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
+const { sendError } = require('../../utils/helpers/response-helpers');
 const { exportQuotesAsJson, exportQuotesAsCsv, getAllQuotes } = require('../../db');
 const { AttachmentBuilder } = require('discord.js');
 

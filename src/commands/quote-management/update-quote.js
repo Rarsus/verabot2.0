@@ -1,8 +1,8 @@
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
-const { sendSuccess, sendError } = require('../../utils/response-helpers');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
+const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
 const { updateQuote, getQuoteById } = require('../../db');
-const { validateQuoteText, validateAuthor } = require('../../utils/error-handler');
+const { validateQuoteText, validateAuthor } = require('../../middleware/errorHandler');
 
 const { data, options } = buildCommandOptions('update-quote', 'Update an existing quote (admin only)', [
   { name: 'id', type: 'integer', description: 'Quote ID to update', required: true },

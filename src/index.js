@@ -12,9 +12,9 @@ if (!TOKEN) {
 }
 
 // Initialize database
-const database = require('./database');
-const { migrateFromJson } = require('./migration');
-const { enhanceSchema } = require('./schema-enhancement');
+const database = require('./services/DatabaseService');
+const { migrateFromJson } = require('./lib/migration');
+const { enhanceSchema } = require('./lib/schema-enhancement');
 
 (async () => {
   try {
@@ -63,7 +63,7 @@ loadCommands(commandsPath);
 // Expose commands on client for command modules (help, etc.)
 client.commands = commands;
 
-const detectReadyEvent = require('./detectReadyEvent');
+const detectReadyEvent = require('./lib/detectReadyEvent');
 
 const _attachReadyEvent = () => {
   const eventName = detectReadyEvent();

@@ -1,5 +1,5 @@
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 function formatUsage(cmd, prefix = '!') {

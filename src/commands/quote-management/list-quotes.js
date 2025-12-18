@@ -1,6 +1,6 @@
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
-const { sendError, sendDM } = require('../../utils/response-helpers');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
+const { sendError, sendDM } = require('../../utils/helpers/response-helpers');
 const { getAllQuotes } = require('../../db');
 
 const { data, options } = buildCommandOptions('list-quotes', 'Get a list of all quotes in a private message', []);

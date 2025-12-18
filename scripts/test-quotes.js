@@ -154,7 +154,7 @@ async function runTests() {
     // Test 2: Validation logic
     console.log('\n=== Testing Validation Logic ===');
     
-    const { validateQuoteText, validateAuthor } = require('../src/utils/error-handler');
+    const { validateQuoteText, validateAuthor } = require('../../src/middleware/errorHandler');
 
     // Valid quote
     const validQuote = validateQuoteText('This is a great quote');

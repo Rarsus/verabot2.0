@@ -1,8 +1,8 @@
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
-const { sendSuccess, sendError } = require('../../utils/response-helpers');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
+const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
 const { addQuote } = require('../../db');
-const { validateQuoteText, validateAuthor } = require('../../utils/error-handler');
+const { validateQuoteText, validateAuthor } = require('../../middleware/errorHandler');
 
 const { data, options } = buildCommandOptions('add-quote', 'Add a quote to the database', [
   { name: 'quote', type: 'string', description: 'The quote to add', required: true },

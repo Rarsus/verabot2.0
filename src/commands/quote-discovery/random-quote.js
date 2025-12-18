@@ -1,6 +1,6 @@
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
-const { sendQuoteEmbed, sendError } = require('../../utils/response-helpers');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
+const { sendQuoteEmbed, sendError } = require('../../utils/helpers/response-helpers');
 const { getAllQuotes } = require('../../db');
 
 const { data, options } = buildCommandOptions('random-quote', 'Get a random quote', []);

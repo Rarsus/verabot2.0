@@ -1,8 +1,8 @@
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
-const { sendError } = require('../../utils/response-helpers');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
+const { sendError } = require('../../utils/helpers/response-helpers');
 const { getQuoteByNumber, getAllQuotes } = require('../../db');
-const { validateQuoteNumber } = require('../../utils/error-handler');
+const { validateQuoteNumber } = require('../../middleware/errorHandler');
 
 const { data, options } = buildCommandOptions('quote', 'Retrieve a quote from the database by number', [
   { name: 'number', type: 'integer', description: 'Quote number', required: true }

@@ -44,7 +44,7 @@ function createMockInteraction() {
 // Test 1: Verify Command base class exists and loads
 console.log('\n=== Test 1: Command Base Class Loadable ===');
 try {
-  const Command = require('../src/utils/command-base');
+  const Command = require('../../src/core/CommandBase');
   if (typeof Command === 'function') {
     console.log('✅ Test 1 Passed: Command base class loads');
     passed++;
@@ -60,7 +60,7 @@ try {
 // Test 2: Verify command options helper exists
 console.log('\n=== Test 2: Command Options Builder Loadable ===');
 try {
-  const buildCommandOptions = require('../src/utils/command-options');
+  const buildCommandOptions = require('../../src/core/CommandOptions');
   if (typeof buildCommandOptions === 'function') {
     console.log('✅ Test 2 Passed: buildCommandOptions loads');
     passed++;
@@ -76,7 +76,7 @@ try {
 // Test 3: Verify response helpers exist
 console.log('\n=== Test 3: Response Helpers Loadable ===');
 try {
-  const helpers = require('../src/utils/response-helpers');
+  const helpers = require('../../src/utils/helpers/response-helpers');
   const required = ['sendQuoteEmbed', 'sendSuccess', 'sendError', 'sendDM', 'deferReply'];
   const missing = required.filter(h => typeof helpers[h] !== 'function');
   
@@ -95,7 +95,7 @@ try {
 // Test 4: Test basic command structure (no errors)
 console.log('\n=== Test 4: Basic Command Structure ===');
 try {
-  const Command = require('../src/utils/command-base');
+  const Command = require('../../src/core/CommandBase');
   
   class SimpleCommand extends Command {
     constructor() {
@@ -134,8 +134,8 @@ try {
 // Test 5: Test command with options
 console.log('\n=== Test 5: Command with Options ===');
 try {
-  const Command = require('../src/utils/command-base');
-  const buildCommandOptions = require('../src/utils/command-options');
+  const Command = require('../../src/core/CommandBase');
+  const buildCommandOptions = require('../../src/core/CommandOptions');
   
   const { data, options } = buildCommandOptions(
     'test-cmd',
@@ -171,7 +171,7 @@ try {
 console.log('\n=== Test 6: Command Error Handling ===');
 (async () => {
   try {
-    const Command = require('../src/utils/command-base');
+    const Command = require('../../src/core/CommandBase');
     
     class ErrorCommand extends Command {
       constructor() {
@@ -205,8 +205,8 @@ console.log('\n=== Test 6: Command Error Handling ===');
 console.log('\n=== Test 7: Response Helpers in Command ===');
 (async () => {
   try {
-    const Command = require('../src/utils/command-base');
-    const { sendSuccess } = require('../src/utils/response-helpers');
+    const Command = require('../../src/core/CommandBase');
+    const { sendSuccess } = require('../../src/utils/helpers/response-helpers');
     
     class SuccessCommand extends Command {
       constructor() {
@@ -239,7 +239,7 @@ console.log('\n=== Test 7: Response Helpers in Command ===');
 // Test 8: Chainable registration
 console.log('\n=== Test 8: Chainable Registration ===');
 try {
-  const Command = require('../src/utils/command-base');
+  const Command = require('../../src/core/CommandBase');
   
   class ChainableCommand extends Command {
     constructor() {
@@ -265,7 +265,7 @@ try {
 // Test 9: Multiple options in builder
 console.log('\n=== Test 9: Multiple Options Builder ===');
 try {
-  const buildCommandOptions = require('../src/utils/command-options');
+  const buildCommandOptions = require('../../src/core/CommandOptions');
   
   const { data, options } = buildCommandOptions(
     'multi',
@@ -292,7 +292,7 @@ try {
 // Test 10: No boilerplate needed for simple command
 console.log('\n=== Test 10: Simple Command No Boilerplate ===');
 try {
-  const Command = require('../src/utils/command-base');
+  const Command = require('../../src/core/CommandBase');
   
   // This should be much simpler than before
   class SimpleCmd extends Command {

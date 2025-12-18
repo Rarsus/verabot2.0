@@ -1,5 +1,5 @@
-﻿const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
 
 const { data, options } = buildCommandOptions('ping', 'Simple ping command', []);
 
