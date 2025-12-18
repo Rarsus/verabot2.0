@@ -67,19 +67,11 @@ class UpdateQuoteCommand extends Command {
       }
 
       const author = quote.author || 'Anonymous';
-      const result = await updateQuote(id, quoteValidation.sanitized, author);
-      if (result.success) {
-        if (message.channel && typeof message.channel.send === 'function') {
-          await message.channel.send(`✅ Quote #${id} updated successfully!`);
-        } else if (message.reply) {
-          await message.reply(`✅ Quote #${id} updated successfully!`);
-        }
-      } else {
-        if (message.channel && typeof message.channel.send === 'function') {
-          await message.channel.send(`❌ ${result.message || 'Failed to update quote'}`);
-        } else if (message.reply) {
-          await message.reply(`❌ ${result.message || 'Failed to update quote'}`);
-        }
+      await updateQuote(id, quoteValidation.sanitized, author);
+      if (message.channel && typeof message.channel.send === 'function') {
+        await message.channel.send(`✅ Quote #${id} updated successfully!`);
+      } else if (message.reply) {
+        await message.reply(`✅ Quote #${id} updated successfully!`);
       }
     } catch (err) {
       console.error('Error in update-quote command:', err);
@@ -124,12 +116,8 @@ class UpdateQuoteCommand extends Command {
       author = authorValidation.sanitized;
     }
 
-    const result = await updateQuote(id, quoteValidation.sanitized, author);
-    if (result.success) {
-      await sendSuccess(interaction, `Quote #${id} updated successfully!`);
-    } else {
-      await sendError(interaction, result.message || 'Failed to update quote');
-    }
+    await updateQuote(id, quoteValidation.sanitized, author);
+    await sendSuccess(interaction, `Quote #${id} updated successfully!`);
   }
 }
 
