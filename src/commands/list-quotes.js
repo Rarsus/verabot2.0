@@ -11,7 +11,7 @@ module.exports = {
   options: [],
   async execute(message) {
     try {
-      const quotes = getAllQuotes();
+      const quotes = await getAllQuotes();
       if (quotes.length === 0) {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send('No quotes in the database yet.');

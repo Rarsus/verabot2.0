@@ -17,7 +17,7 @@ module.exports = {
       const number = parseInt(args[0], 10);
       
       // Get total quotes for validation
-      const allQuotes = getAllQuotes();
+      const allQuotes = await getAllQuotes();
       const validation = validateQuoteNumber(number, allQuotes.length);
       
       if (!validation.valid) {
@@ -29,7 +29,7 @@ module.exports = {
         return;
       }
 
-      const quote = getQuoteByNumber(number);
+      const quote = await getQuoteByNumber(number);
       if (!quote) {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send(`❌ Quote #${number} not found.`);

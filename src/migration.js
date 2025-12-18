@@ -44,8 +44,9 @@ async function migrateFromJson(database) {
     let migratedCount = 0;
     for (const quote of quotes) {
       try {
-        if (quote && quote.text && quote.author) {
-          await database.addQuote(quote.text, quote.author);
+        if (quote && quote.text) {
+          const author = quote.author || 'Anonymous';
+          await database.addQuote(quote.text, author);
           migratedCount++;
         }
       } catch (err) {
