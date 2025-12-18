@@ -14,12 +14,17 @@ if (!TOKEN) {
 // Initialize database
 const database = require('./database');
 const { migrateFromJson } = require('./migration');
+const { enhanceSchema } = require('./schema-enhancement');
 
 (async () => {
   try {
     // Setup database schema
     await database.setupSchema(database.getDatabase());
     console.log('✓ Database schema initialized');
+
+    // Enhance schema with new tables for tags, ratings, voting
+    await enhanceSchema(database.getDatabase());
+    console.log('✓ Database schema enhanced');
 
     // Run migration from JSON if needed
     await migrateFromJson(database);

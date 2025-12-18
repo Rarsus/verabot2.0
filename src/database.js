@@ -303,5 +303,329 @@ module.exports = {
   updateQuote,
   deleteQuote,
   getQuoteCount,
-  closeDatabase
+  closeDatabase,
+  rateQuote,
+  getQuoteRating,
+  addTag,
+  getTagByName,
+  addTagToQuote,
+  getQuotesByTag,
+  getAllTags,
+  getQuotesByCategory,
+  exportQuotesAsJson,
+  exportQuotesAsCsv
 };
+
+/**
+ * Rate a quote
+ * @param {number} quoteId - Quote ID
+ * @param {string} userId - Discord user ID
+ * @param {number} rating - Rating 1-5
+ * @returns {Promise<{success: boolean, message: string, averageRating: number}>}
+ */
+function rateQuote(quoteId, userId, rating) {
+  return new Promise((resolve) => {
+    if (rating < 1 || rating > 5 || !Number.isInteger(rating)) {
+      resolve({ success: false, message: 'Rating must be between 1 and 5' });
+      return;
+    }
+
+    const database = getDatabase();
+    if (!database) {
+      resolve({ success: false, message: 'Database not connected' });
+      return;
+    }
+
+    // Insert or update rating
+    database.run(
+      'INSERT OR REPLACE INTO quote_ratings (quoteId, userId, rating) VALUES (?, ?, ?)',
+      [quoteId, userId, rating],
+      function(err) {
+        if (err) {
+          logError('database.rateQuote.insert', err, ERROR_LEVELS.MEDIUM);
+          resolve({ success: false, message: 'Failed to save rating' });
+          return;
+        }
+
+        // Recalculate average rating
+        database.get(
+          'SELECT AVG(rating) as avgRating, COUNT(*) as count FROM quote_ratings WHERE quoteId = ?',
+          [quoteId],
+          (err, row) => {
+            if (err) {
+              logError('database.rateQuote.calculate', err, ERROR_LEVELS.MEDIUM);
+              resolve({ success: true, message: 'Rating saved' });
+              return;
+            }
+
+            const avgRating = row.avgRating ? Math.round(row.avgRating * 10) / 10 : 0;
+            database.run(
+              'UPDATE quotes SET averageRating = ?, ratingCount = ? WHERE id = ?',
+              [avgRating, row.count, quoteId],
+              (err) => {
+                if (err) {
+                  logError('database.rateQuote.update', err, ERROR_LEVELS.MEDIUM);
+                }
+                resolve({ success: true, message: 'Rating saved', averageRating: avgRating });
+              }
+            );
+          }
+        );
+      }
+    );
+  });
+}
+
+/**
+ * Get rating for a quote by a user
+ * @param {number} quoteId - Quote ID
+ * @param {string} userId - Discord user ID
+ * @returns {Promise<number|null>}
+ */
+function getQuoteRating(quoteId, userId) {
+  return new Promise((resolve) => {
+    const database = getDatabase();
+    if (!database) {
+      resolve(null);
+      return;
+    }
+
+    database.get(
+      'SELECT rating FROM quote_ratings WHERE quoteId = ? AND userId = ?',
+      [quoteId, userId],
+      (err, row) => {
+        if (err) {
+          logError('database.getQuoteRating', err, ERROR_LEVELS.MEDIUM);
+          resolve(null);
+          return;
+        }
+        resolve(row ? row.rating : null);
+      }
+    );
+  });
+}
+
+/**
+ * Add a new tag
+ * @param {string} name - Tag name
+ * @param {string} description - Tag description
+ * @returns {Promise<{success: boolean, id?: number}>}
+ */
+function addTag(name, description = '') {
+  return new Promise((resolve) => {
+    const database = getDatabase();
+    if (!database) {
+      resolve({ success: false });
+      return;
+    }
+
+    database.run(
+      'INSERT OR IGNORE INTO tags (name, description) VALUES (?, ?)',
+      [name.toLowerCase(), description],
+      function(err) {
+        if (err) {
+          logError('database.addTag', err, ERROR_LEVELS.MEDIUM);
+          resolve({ success: false });
+          return;
+        }
+        resolve({ success: true, id: this.lastID });
+      }
+    );
+  });
+}
+
+/**
+ * Get tag by name
+ * @param {string} name - Tag name
+ * @returns {Promise<object|null>}
+ */
+function getTagByName(name) {
+  return new Promise((resolve) => {
+    const database = getDatabase();
+    if (!database) {
+      resolve(null);
+      return;
+    }
+
+    database.get('SELECT * FROM tags WHERE name = ?', [name.toLowerCase()], (err, row) => {
+      if (err) {
+        logError('database.getTagByName', err, ERROR_LEVELS.MEDIUM);
+        resolve(null);
+        return;
+      }
+      resolve(row);
+    });
+  });
+}
+
+/**
+ * Add tag to quote
+ * @param {number} quoteId - Quote ID
+ * @param {number} tagId - Tag ID
+ * @returns {Promise<boolean>}
+ */
+function addTagToQuote(quoteId, tagId) {
+  return new Promise((resolve) => {
+    const database = getDatabase();
+    if (!database) {
+      resolve(false);
+      return;
+    }
+
+    database.run(
+      'INSERT OR IGNORE INTO quote_tags (quoteId, tagId) VALUES (?, ?)',
+      [quoteId, tagId],
+      (err) => {
+        if (err) {
+          logError('database.addTagToQuote', err, ERROR_LEVELS.MEDIUM);
+          resolve(false);
+          return;
+        }
+        resolve(true);
+      }
+    );
+  });
+}
+
+/**
+ * Get quotes by tag
+ * @param {string} tagName - Tag name
+ * @returns {Promise<array>}
+ */
+function getQuotesByTag(tagName) {
+  return new Promise((resolve) => {
+    const database = getDatabase();
+    if (!database) {
+      resolve([]);
+      return;
+    }
+
+    database.all(
+      `SELECT DISTINCT q.* FROM quotes q
+       JOIN quote_tags qt ON q.id = qt.quoteId
+       JOIN tags t ON qt.tagId = t.id
+       WHERE t.name = ?
+       ORDER BY q.id DESC`,
+      [tagName.toLowerCase()],
+      (err, rows) => {
+        if (err) {
+          logError('database.getQuotesByTag', err, ERROR_LEVELS.MEDIUM);
+          resolve([]);
+          return;
+        }
+        resolve(rows || []);
+      }
+    );
+  });
+}
+
+/**
+ * Get all tags
+ * @returns {Promise<array>}
+ */
+function getAllTags() {
+  return new Promise((resolve) => {
+    const database = getDatabase();
+    if (!database) {
+      resolve([]);
+      return;
+    }
+
+    database.all('SELECT * FROM tags ORDER BY name', (err, rows) => {
+      if (err) {
+        logError('database.getAllTags', err, ERROR_LEVELS.MEDIUM);
+        resolve([]);
+        return;
+      }
+      resolve(rows || []);
+    });
+  });
+}
+
+/**
+ * Get quotes by category
+ * @param {string} category - Category name
+ * @returns {Promise<array>}
+ */
+function getQuotesByCategory(category) {
+  return new Promise((resolve) => {
+    const database = getDatabase();
+    if (!database) {
+      resolve([]);
+      return;
+    }
+
+    database.all(
+      'SELECT * FROM quotes WHERE category = ? ORDER BY id DESC',
+      [category],
+      (err, rows) => {
+        if (err) {
+          logError('database.getQuotesByCategory', err, ERROR_LEVELS.MEDIUM);
+          resolve([]);
+          return;
+        }
+        resolve(rows || []);
+      }
+    );
+  });
+}
+
+/**
+ * Export quotes as JSON
+ * @param {array} quotes - Quotes to export (optional, exports all if not provided)
+ * @returns {Promise<string>} JSON string
+ */
+function exportQuotesAsJson(quotes) {
+  return new Promise((resolve) => {
+    if (quotes) {
+      resolve(JSON.stringify(quotes, null, 2));
+      return;
+    }
+
+    getAllQuotes().then((allQuotes) => {
+      resolve(JSON.stringify(allQuotes, null, 2));
+    }).catch((err) => {
+      logError('database.exportQuotesAsJson', err, ERROR_LEVELS.MEDIUM);
+      resolve('[]');
+    });
+  });
+}
+
+/**
+ * Export quotes as CSV
+ * @param {array} quotes - Quotes to export (optional, exports all if not provided)
+ * @returns {Promise<string>} CSV string
+ */
+function exportQuotesAsCsv(quotes) {
+  return new Promise((resolve) => {
+    const processQuotes = (quotesToProcess) => {
+      if (!quotesToProcess || quotesToProcess.length === 0) {
+        resolve('id,text,author,category,averageRating,ratingCount,addedAt');
+        return;
+      }
+
+      const headers = ['id', 'text', 'author', 'category', 'averageRating', 'ratingCount', 'addedAt'];
+      const rows = quotesToProcess.map(q => [
+        q.id,
+        `"${(q.text || '').replace(/"/g, '""')}"`,
+        `"${(q.author || '').replace(/"/g, '""')}"`,
+        q.category || 'General',
+        q.averageRating || 0,
+        q.ratingCount || 0,
+        q.addedAt || ''
+      ]);
+
+      const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      resolve(csv);
+    };
+
+    if (quotes) {
+      processQuotes(quotes);
+    } else {
+      getAllQuotes().then(processQuotes).catch((err) => {
+        logError('database.exportQuotesAsCsv', err, ERROR_LEVELS.MEDIUM);
+        processQuotes([]);
+      });
+    }
+  });
+}
