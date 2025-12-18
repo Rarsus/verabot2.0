@@ -17,7 +17,9 @@ function createMockInteraction(isReply = false, isDeferred = false) {
     deferred: isDeferred,
     reply: async function(msg) { this.replied = true; return msg; },
     editReply: async function(msg) { return msg; },
-    followUp: async function(msg) { return msg; }
+    followUp: async function(msg) { return msg; },
+    isCommand: function() { return true; },
+    isChatInputCommand: function() { return true; }
   };
 }
 
@@ -76,15 +78,15 @@ try {
 
 // Test 3: Error wrapping on error with interaction
 console.log('\n=== Test 3: Error Wrapping with Interaction ===');
-try {
-  const cmd = new Command({ name: 'test', description: 'Test' });
-  const testFn = async (interaction) => {
-    throw new Error('Test error');
-  };
-  const wrapped = cmd.wrapError(testFn, 'test.execute');
-  const mockInteraction = createMockInteraction(false, false);
-  
-  (async () => {
+(async () => {
+  try {
+    const cmd = new Command({ name: 'test', description: 'Test' });
+    const testFn = async (interaction) => {
+      throw new Error('Test error');
+    };
+    const wrapped = cmd.wrapError(testFn, 'test.execute');
+    const mockInteraction = createMockInteraction(false, false);
+    
     await wrapped(mockInteraction);
     if (mockInteraction.replied) {
       console.log('✅ Test 3 Passed: Error handler sends reply on error');
@@ -93,32 +95,32 @@ try {
       console.error('❌ Test 3 Failed: No reply sent');
       failed++;
     }
-  })();
-} catch (err) {
-  console.error('❌ Test 3 Failed:', err.message);
-  failed++;
-}
+  } catch (err) {
+    console.error('❌ Test 3 Failed:', err.message);
+    failed++;
+  }
+})();
 
 // Test 4: Error wrapping with deferred interaction
 console.log('\n=== Test 4: Error Wrapping with Deferred Interaction ===');
-try {
-  const cmd = new Command({ name: 'test', description: 'Test' });
-  const testFn = async (interaction) => {
-    throw new Error('Deferred error');
-  };
-  const wrapped = cmd.wrapError(testFn, 'test.execute');
-  const mockInteraction = createMockInteraction(false, true);
-  
-  (async () => {
+(async () => {
+  try {
+    const cmd = new Command({ name: 'test', description: 'Test' });
+    const testFn = async (interaction) => {
+      throw new Error('Deferred error');
+    };
+    const wrapped = cmd.wrapError(testFn, 'test.execute');
+    const mockInteraction = createMockInteraction(false, true);
+    
     await wrapped(mockInteraction);
     // When deferred, followUp is called instead of reply
     console.log('✅ Test 4 Passed: Error handler respects deferred state');
     passed++;
-  })();
-} catch (err) {
-  console.error('❌ Test 4 Failed:', err.message);
-  failed++;
-}
+  } catch (err) {
+    console.error('❌ Test 4 Failed:', err.message);
+    failed++;
+  }
+})();
 
 // Test 5: Command registration
 console.log('\n=== Test 5: Command Registration ===');
@@ -173,22 +175,22 @@ try {
 
 // Test 7: Error message includes original error
 console.log('\n=== Test 7: Error Message Includes Details ===');
-try {
-  const cmd = new Command({ name: 'test', description: 'Test' });
-  const testFn = async (interaction) => {
-    throw new Error('Specific error detail');
-  };
-  const wrapped = cmd.wrapError(testFn, 'test.execute');
-  const mockInteraction = createMockInteraction(false, false);
-  let errorSent = false;
-  
-  // Override reply to capture message
-  mockInteraction.reply = async function(msg) {
-    errorSent = msg && msg.content && msg.content.includes('Specific error detail');
-    return msg;
-  };
-  
-  (async () => {
+(async () => {
+  try {
+    const cmd = new Command({ name: 'test', description: 'Test' });
+    const testFn = async (interaction) => {
+      throw new Error('Specific error detail');
+    };
+    const wrapped = cmd.wrapError(testFn, 'test.execute');
+    const mockInteraction = createMockInteraction(false, false);
+    let errorSent = false;
+    
+    // Override reply to capture message
+    mockInteraction.reply = async function(msg) {
+      errorSent = msg && msg.content && msg.content.includes('Specific error detail');
+      return msg;
+    };
+    
     await wrapped(mockInteraction);
     if (errorSent) {
       console.log('✅ Test 7 Passed: Error message includes details');
@@ -196,11 +198,11 @@ try {
     } else {
       console.log('⚠️  Test 7 Skipped: Error message format verification');
     }
-  })();
-} catch (err) {
-  console.error('❌ Test 7 Failed:', err.message);
-  failed++;
-}
+  } catch (err) {
+    console.error('❌ Test 7 Failed:', err.message);
+    failed++;
+  }
+})();
 
 // Wait for async tests to complete
 setTimeout(() => {
@@ -212,4 +214,4 @@ setTimeout(() => {
   if (failed > 0) {
     process.exit(1);
   }
-}, 1000);
+}, 2000);

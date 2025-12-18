@@ -34,6 +34,9 @@ function createMockInteraction() {
     replied: false,
     reply: async function(msg) { this.replied = true; this._reply = msg; return msg; },
     editReply: async function(msg) { this._edit = msg; return msg; },
+    followUp: async function(msg) { return msg; },
+    isCommand: function() { return true; },
+    isChatInputCommand: function() { return true; },
     options: { getString: (name) => 'test_value', getInteger: (name) => 1 }
   };
 }
@@ -185,7 +188,7 @@ console.log('\n=== Test 6: Command Error Handling ===');
     
     await cmd.executeInteraction(interaction);
     
-    if (interaction._reply) {
+    if (interaction.replied) {
       console.log('✅ Test 6 Passed: Error handled and reply sent');
       passed++;
     } else {
