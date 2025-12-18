@@ -393,7 +393,7 @@ When adding new commands or features:
 
 ## 📋 Changelog
 
-### Latest (v2.0.0) - December 2025
+### Latest (v0.1.0) - December 2025
 
 **Major Refactoring (All 15 Commands)**
 - ✨ Implemented Command base class for automatic error handling
@@ -402,9 +402,6 @@ When adding new commands or features:
 - 📈 Reduced boilerplate code by 40% per command
 - 🧪 Added 41 comprehensive unit tests (95%+ passing)
 - 📚 Created extensive documentation and guides
-
-**Previous Versions**
-- v1.0.0 - Initial bot with basic commands
 
 ---
 

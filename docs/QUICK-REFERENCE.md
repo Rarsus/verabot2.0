@@ -441,7 +441,7 @@ npm run lint  # Now checks src/, tests/, scripts/ all correctly
 
 ## Need More Info?
 
-- 📖 [Architecture Overview](ARCHITECTURE-OVERVIEW.md) - Detailed architecture
-- 📋 [Folder Structure Analysis](FOLDER-STRUCTURE-ANALYSIS.md) - Organization rationale
+- 📖 [Architecture Overview](architecture/ARCHITECTURE-OVERVIEW.md) - Detailed architecture
+- 📋 [Folder Structure Analysis](architecture/FOLDER-STRUCTURE-ANALYSIS.md) - Organization rationale
 - 🚀 [CI/CD Quick Start](CI-CD-QUICK-START.md) - Deployment pipeline
 - ✅ [Stability Checklist](STABILITY-CHECKLIST.md) - Operations guide

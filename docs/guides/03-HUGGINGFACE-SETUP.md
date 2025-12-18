@@ -105,9 +105,7 @@ npm test       # ✅ All checks passed
 
 ### Version Info
 
-- **Current Version**: v0.1.2
-- **Changes**: Hugging Face AI integration
-- **GitHub Release**: https://github.com/Rarsus/verabot2.0/releases/tag/v0.1.2
+- **Current Version**: v0.1.0
 
 ### Next Steps (Optional)
 
@@ -139,7 +137,7 @@ npm test       # ✅ All checks passed
 - [Hugging Face Docs](https://huggingface.co/docs)
 - [Inference API Guide](https://huggingface.co/docs/inference-api/index)
 - [Available Models](https://huggingface.co/models?pipeline_tag=text-generation)
-- [Setup Guide](./docs/HUGGINGFACE_SETUP.md)
+- [Hugging Face Documentation](https://huggingface.co/docs)
 
 ---
 
