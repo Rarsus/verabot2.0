@@ -1,130 +1,105 @@
-const fs = require('fs');
-const path = require('path');
-const { logError, ERROR_LEVELS } = require('./utils/error-handler');
+/**
+ * Database Module - Wrapper for SQLite database operations
+ * 
+ * This module provides a clean interface for quote management operations.
+ * The underlying implementation uses SQLite for better performance and scalability.
+ */
 
-const dbPath = path.join(__dirname, '..', 'data', 'quotes.json');
+const database = require('./database');
 
-// Ensure data directory exists
-function ensureDbDirectory() {
-  const dataDir = path.join(__dirname, '..', 'data');
-  if (!fs.existsSync(dataDir)) {
-    try {
-      fs.mkdirSync(dataDir, { recursive: true });
-    } catch (err) {
-      logError('db.ensureDbDirectory', err, ERROR_LEVELS.CRITICAL);
-      throw err;
-    }
+/**
+ * Add a quote with validation
+ * @param {string} quote - Quote text
+ * @param {string} author - Quote author
+ * @returns {Promise<number>} Quote ID
+ */
+async function addQuote(quote, author = 'Anonymous') {
+  if (typeof quote !== 'string') {
+    throw new Error('Quote must be a string');
   }
+  if (typeof author !== 'string') {
+    throw new Error('Author must be a string');
+  }
+
+  return await database.addQuote(quote, author);
 }
 
-// Validate quotes array structure
-function validateQuotesArray(data) {
-  if (!Array.isArray(data)) {
-    return false;
-  }
-  return data.every(q => 
-    q && 
-    typeof q === 'object' && 
-    'id' in q && 
-    'text' in q && 
-    'author' in q &&
-    typeof q.text === 'string' &&
-    typeof q.author === 'string'
-  );
+/**
+ * Get all quotes
+ * @returns {Promise<Array>} Array of quotes
+ */
+async function getAllQuotes() {
+  return await database.getAllQuotes();
 }
 
-// Load quotes from file
-function loadQuotes() {
-  ensureDbDirectory();
-  try {
-    if (fs.existsSync(dbPath)) {
-      const data = fs.readFileSync(dbPath, 'utf8');
-      const parsed = JSON.parse(data);
-      
-      if (!validateQuotesArray(parsed)) {
-        logError('db.loadQuotes', 'Invalid quotes array structure', ERROR_LEVELS.HIGH, {
-          dbPath,
-          dataType: typeof parsed,
-          isArray: Array.isArray(parsed)
-        });
-        return [];
-      }
-      
-      return parsed;
-    }
-  } catch (err) {
-    logError('db.loadQuotes', err, ERROR_LEVELS.HIGH, { dbPath });
+/**
+ * Get quote by number (legacy support - uses ID)
+ * @param {number} number - Quote number
+ * @returns {Promise<Object|null>} Quote object or null
+ */
+async function getQuoteByNumber(number) {
+  if (!Number.isInteger(number)) {
+    throw new Error('Quote number must be an integer');
   }
-  return [];
+
+  return await database.getQuoteById(number);
 }
 
-// Save quotes to file
-function saveQuotes(quotes) {
-  ensureDbDirectory();
-  try {
-    if (!Array.isArray(quotes)) {
-      throw new Error('Quotes must be an array');
-    }
-    fs.writeFileSync(dbPath, JSON.stringify(quotes, null, 2), 'utf8');
-  } catch (err) {
-    logError('db.saveQuotes', err, ERROR_LEVELS.CRITICAL, { dbPath });
-    throw err;
+/**
+ * Search quotes by keyword
+ * @param {string} keyword - Search keyword
+ * @returns {Promise<Array>} Matching quotes
+ */
+async function searchQuotes(keyword) {
+  if (typeof keyword !== 'string') {
+    throw new Error('Search keyword must be a string');
   }
+
+  return await database.searchQuotes(keyword);
 }
 
-// Add a quote with validation
-function addQuote(quote, author = 'Anonymous') {
-  try {
-    if (typeof quote !== 'string') {
-      throw new Error('Quote must be a string');
-    }
-    if (typeof author !== 'string') {
-      throw new Error('Author must be a string');
-    }
-
-    const quotes = loadQuotes();
-    quotes.push({
-      id: quotes.length + 1,
-      text: quote,
-      author: author,
-      addedAt: new Date().toISOString()
-    });
-    saveQuotes(quotes);
-    return quotes.length;
-  } catch (err) {
-    logError('db.addQuote', err, ERROR_LEVELS.MEDIUM);
-    throw err;
+/**
+ * Update a quote
+ * @param {number} id - Quote ID
+ * @param {string} text - New text
+ * @param {string} author - New author
+ * @returns {Promise<boolean>} Success status
+ */
+async function updateQuote(id, text, author) {
+  if (!Number.isInteger(id)) {
+    throw new Error('Quote ID must be an integer');
   }
+
+  return await database.updateQuote(id, text, author);
 }
 
-// Get all quotes
-function getAllQuotes() {
-  return loadQuotes();
+/**
+ * Delete a quote
+ * @param {number} id - Quote ID
+ * @returns {Promise<boolean>} Success status
+ */
+async function deleteQuote(id) {
+  if (!Number.isInteger(id)) {
+    throw new Error('Quote ID must be an integer');
+  }
+
+  return await database.deleteQuote(id);
 }
 
-// Get quote by number
-function getQuoteByNumber(number) {
-  try {
-    if (!Number.isInteger(number)) {
-      throw new Error('Quote number must be an integer');
-    }
-    
-    const quotes = loadQuotes();
-    const index = number - 1;
-    
-    if (index < 0 || index >= quotes.length) {
-      return null;
-    }
-    
-    return quotes[index];
-  } catch (err) {
-    logError('db.getQuoteByNumber', err, ERROR_LEVELS.MEDIUM);
-    return null;
-  }
+/**
+ * Get total quote count
+ * @returns {Promise<number>} Total quotes
+ */
+async function getQuoteCount() {
+  return await database.getQuoteCount();
 }
 
 module.exports = {
   addQuote,
   getAllQuotes,
-  getQuoteByNumber
+  getQuoteByNumber,
+  searchQuotes,
+  updateQuote,
+  deleteQuote,
+  getQuoteCount
 };

@@ -34,7 +34,7 @@ module.exports = {
   },
   async executeInteraction(interaction) {
     try {
-      const quotes = getAllQuotes();
+      const quotes = await getAllQuotes();
       if (quotes.length === 0) {
         await interaction.reply({ content: 'No quotes in the database yet.', flags: 64 });
         return;

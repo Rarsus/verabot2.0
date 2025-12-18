@@ -52,7 +52,7 @@ module.exports = {
       const number = interaction.options.getInteger('number');
       
       // Get total quotes for validation
-      const allQuotes = getAllQuotes();
+      const allQuotes = await getAllQuotes();
       const validation = validateQuoteNumber(number, allQuotes.length);
       
       if (!validation.valid) {
@@ -60,7 +60,7 @@ module.exports = {
         return;
       }
 
-      const quote = getQuoteByNumber(number);
+      const quote = await getQuoteByNumber(number);
       if (!quote) {
         await interaction.reply({ content: `❌ Quote #${number} not found.`, flags: 64 });
         return;
