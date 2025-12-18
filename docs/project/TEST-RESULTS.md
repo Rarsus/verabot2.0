@@ -1,6 +1,6 @@
 # Test Documentation
 
-**Last Updated:** 2025-12-18T16:48:51.906Z
+**Last Updated:** 2025-12-18T16:55:55.992Z
 
 This documentation is automatically generated from test files. It updates every time tests are run.
 
@@ -13,11 +13,11 @@ This documentation is automatically generated from test files. It updates every 
 | test-command-base.js | 0 | 0 | 0 | ❌ FAIL |
 | test-command-options.js | 0 | 0 | 0 | ❌ FAIL |
 | test-integration-refactor.js | 0 | 0 | 0 | ❌ FAIL |
-| test-quotes.js | 0 | 0 | 0 | ❌ FAIL |
+| test-quotes.js | 17 | 17 | 0 | ✅ PASS |
 | test-quotes-advanced.js | 18 | 18 | 0 | ✅ PASS |
 | test-response-helpers.js | 0 | 0 | 0 | ❌ FAIL |
 
-**Overall:** 18/18 tests passing
+**Overall:** 35/35 tests passing
 
 ## Detailed Test Suites
 
@@ -90,14 +90,14 @@ This documentation is automatically generated from test files. It updates every 
 
 | Test # | Description | Status |
 |---|---|---|
-| 1 | Database query operations | ⚠️ |
-| 2 | Validation logic | ⚠️ |
-| 3 | Command structure verification | ⚠️ |
+| 1 | Database query operations | ✅ |
+| 2 | Validation logic | ✅ |
+| 3 | Command structure verification | ✅ |
 
 **Results:** 
-- Passed: 0
+- Passed: 17
 - Failed: 0
-- Total: 0
+- Total: 17
 
 ### test-quotes-advanced.js
 

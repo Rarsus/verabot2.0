@@ -13,15 +13,21 @@ function validateQuoteText(text) {
     return { valid: false, error: 'Quote text must be a string' };
   }
   
-  if (text.trim().length === 0) {
+  const trimmed = text.trim();
+  
+  if (trimmed.length === 0) {
     return { valid: false, error: 'Quote text cannot be empty' };
   }
+
+  if (trimmed.length < 3) {
+    return { valid: false, error: 'Quote must be at least 3 characters' };
+  }
   
-  if (text.length > 500) {
+  if (trimmed.length > 500) {
     return { valid: false, error: 'Quote text cannot exceed 500 characters' };
   }
   
-  return { valid: true };
+  return { valid: true, sanitized: trimmed };
 }
 
 /**
