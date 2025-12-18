@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { getQuoteByNumber, getAllQuotes } = require('../db');
+const { getQuoteByNumber } = require('../db');
 
 module.exports = {
   data: new SlashCommandBuilder()
