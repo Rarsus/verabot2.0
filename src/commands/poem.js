@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const fetch = require('node-fetch');
 
 function pick(arr, i) {
   return arr[i % arr.length];
@@ -6,6 +7,49 @@ function pick(arr, i) {
 
 function capitalize(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// Generate poem using Hugging Face API
+async function generateAIPoem(subject, style = 'sonnet') {
+  const apiKey = process.env.HUGGINGFACE_API_KEY;
+  if (!apiKey) {
+    return null; // Fall back to local generators
+  }
+
+  try {
+    const styleGuide = {
+      haiku: 'Write a haiku (3 lines, 5-7-5 syllables)',
+      sonnet: 'Write a Shakespearean sonnet (14 lines)',
+      other: 'Write a free-form poem (4-6 lines)'
+    };
+
+    const prompt = `${styleGuide[style] || styleGuide.sonnet} about "${subject}". Only output the poem, nothing else.`;
+
+    const response = await fetch(
+      'https://api-inference.huggingface.co/models/gpt2',
+      {
+        headers: { Authorization: `Bearer ${apiKey}` },
+        method: 'POST',
+        body: JSON.stringify({ inputs: prompt, parameters: { max_length: 200 } })
+      }
+    );
+
+    if (!response.ok) {
+      console.warn('Hugging Face API error:', response.status, response.statusText);
+      return null;
+    }
+
+    const result = await response.json();
+    if (result[0] && result[0].generated_text) {
+      // Extract just the poem part (remove the prompt)
+      const poem = result[0].generated_text.replace(prompt, '').trim();
+      return poem || null;
+    }
+    return null;
+  } catch (err) {
+    console.warn('Hugging Face API fetch error:', err.message);
+    return null; // Fall back to local generators
+  }
 }
 
 function generateHaiku(subject) {
@@ -80,7 +124,15 @@ module.exports = {
     try {
       const type = interaction.options.getString('type') || 'sonnet';
       const subject = interaction.options.getString('subject') || 'the world';
-      const poem = generatePoem(type, subject);
+      
+      // Try AI generation first
+      let poem = await generateAIPoem(subject, type);
+      
+      // Fall back to local generators if AI unavailable
+      if (!poem) {
+        poem = generatePoem(type, subject);
+      }
+      
       await interaction.reply({ content: `\n${poem}` });
     } catch (err) {
       console.error('Poem interaction error', err);
