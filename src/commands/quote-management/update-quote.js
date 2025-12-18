@@ -84,12 +84,14 @@ class UpdateQuoteCommand extends Command {
   }
 
   async executeInteraction(interaction) {
+    // Defer immediately to prevent timeout
+    await interaction.deferReply();
+
     if (!interaction.member.permissions.has('ADMINISTRATOR')) {
       await sendError(interaction, 'You do not have permission to update quotes', true);
       return;
     }
 
-    await interaction.deferReply();
     const id = interaction.options.getInteger('id');
     const newText = interaction.options.getString('quote');
     const newAuthor = interaction.options.getString('author');

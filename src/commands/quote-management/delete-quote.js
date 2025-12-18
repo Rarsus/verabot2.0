@@ -60,12 +60,14 @@ class DeleteQuoteCommand extends Command {
   }
 
   async executeInteraction(interaction) {
+    // Defer immediately to prevent timeout
+    await interaction.deferReply();
+
     if (!interaction.member.permissions.has('ADMINISTRATOR')) {
       await sendError(interaction, 'You do not have permission to delete quotes', true);
       return;
     }
 
-    await interaction.deferReply();
     const id = interaction.options.getInteger('id');
 
     const quote = await getQuoteById(id);
