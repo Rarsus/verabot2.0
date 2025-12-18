@@ -403,7 +403,6 @@ When adding new commands or features:
 - ✨ Added utility npm scripts (dev, lint:fix, format, check)
 - 📚 Fixed broken documentation links and version inconsistencies
 - 📚 Validated all documentation across 27 markdown files
-- ⬆️ Updated dotenv dependency (16.3.1 → 16.6.1)
 
 ### v0.1.2 - December 2025
 
