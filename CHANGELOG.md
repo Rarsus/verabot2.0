@@ -1,0 +1,67 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.1.1] - 2025-12-18
+
+### Fixed
+
+- **Critical: Missing Database Function Exports**
+  - Added missing exports for `rateQuote`, `getQuoteById`, `addTag`, `getTagByName`, `addTagToQuote`
+  - Added exports for `exportQuotesAsJson`, `exportQuotesAsCsv` 
+  - Fixes "getQuoteById is not a function" errors in quote commands
+
+- **Critical: Update Quote Command Failure**
+  - Fixed result handling in update-quote command
+  - `updateQuote` returns boolean, not object with `.success` property
+  - Fixes "Failed to update quote" error messages
+  - Applied fix to both `execute` and `executeInteraction` methods
+
+- **Critical: Discord Interaction Timeout Errors**
+  - Moved `deferReply()` to first line before permission checks in update-quote command
+  - Moved `deferReply()` to first line before permission checks in delete-quote command
+  - Prevents `DiscordAPIError[10062] "Unknown interaction"` errors
+  - Discord interactions expire after 3 seconds and must be acknowledged immediately
+
+- **Quote Validation Inconsistency**
+  - Added missing 3-character minimum length validation to `ValidationService`
+  - Now matches existing `errorHandler` implementation
+  - Returns sanitized (trimmed) text in response
+  - Fixes test failure: "Short quote acceptance"
+
+- **Test File Import Paths**
+  - Updated all test file imports after Option B refactoring
+  - Fixed imports for: CommandBase, CommandOptions, response-helpers
+  - Updated 8 test files in both `tests/unit/` and `scripts/` directories
+  - Fixes "Cannot find module" errors in CI/CD pipeline
+
+### Testing
+
+- ✅ All 74 unit tests passing
+- ✅ All 15 commands successfully registered
+- ✅ Bot running without errors
+- ✅ Code linting: 0 errors, 42 pre-existing warnings
+
+### Affected Files
+
+- `src/db.js` - Database function exports
+- `src/commands/quote-management/update-quote.js` - Result handling and deferReply timing
+- `src/commands/quote-management/delete-quote.js` - deferReply timing
+- `src/services/ValidationService.js` - Minimum length validation
+- Multiple test files - Import path updates
+
+## [0.1.0] - 2025-12-17
+
+### Added
+
+- Initial release of VeraBot2.0
+- Discord slash commands and legacy prefix commands
+- Quote management system (add, search, rate, tag, export)
+- AI-powered poem generation via HuggingFace
+- SQLite database with automatic schema management
+- Comprehensive testing suite (74 tests, 100% passing)
+- Modern architecture with Command pattern and utility modules
+- Option B enterprise-grade folder structure
