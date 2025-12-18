@@ -105,9 +105,7 @@ npm test       # ✅ All checks passed
 
 ### Version Info
 
-- **Current Version**: v0.1.2
-- **Changes**: Hugging Face AI integration
-- **GitHub Release**: https://github.com/Rarsus/verabot2.0/releases/tag/v0.1.2
+- **Current Version**: v0.1.0
 
 ### Next Steps (Optional)
 
