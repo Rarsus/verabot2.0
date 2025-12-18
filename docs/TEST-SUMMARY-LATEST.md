@@ -1,18 +1,18 @@
 # Test Run Summary
 
-**Generated:** 2025-12-18T16:55:58.452Z
+**Generated:** 2025-12-18T17:32:07.839Z
 
-❌ **test-command-base.js** - 0/0 passed
-❌ **test-command-options.js** - 0/0 passed
-❌ **test-integration-refactor.js** - 0/0 passed
+✅ **test-command-base.js** - 7/7 passed
+✅ **test-command-options.js** - 10/10 passed
+✅ **test-integration-refactor.js** - 10/10 passed
 ✅ **test-quotes.js** - 17/17 passed
 ✅ **test-quotes-advanced.js** - 18/18 passed
-❌ **test-response-helpers.js** - 0/0 passed
+✅ **test-response-helpers.js** - 12/12 passed
 
 ## Overall Results
 
-- **Total Tests:** 35
-- **Passed:** 35
+- **Total Tests:** 74
+- **Passed:** 74
 - **Failed:** 0
 - **Pass Rate:** 100.0%
-- **Status:** ❌ SOME TESTS FAILING
+- **Status:** ✅ ALL TESTS PASS

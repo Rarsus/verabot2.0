@@ -3,7 +3,7 @@
  * Tests error wrapping, registration, and command lifecycle
  */
 
-const Command = require('../../src/command-base');
+const Command = require('../../src/core/CommandBase');
 
 let passed = 0;
 let failed = 0;

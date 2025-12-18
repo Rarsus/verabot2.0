@@ -9,7 +9,7 @@ const {
   sendError,
   sendDM,
   deferReply
-} = require('../../src/response-helpers');
+} = require('../../src/utils/helpers/response-helpers');
 
 let passed = 0;
 let failed = 0;

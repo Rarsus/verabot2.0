@@ -3,7 +3,7 @@
  * Tests option building, SlashCommandBuilder creation, and options array generation
  */
 
-const buildCommandOptions = require('../../src/command-options');
+const buildCommandOptions = require('../../src/core/CommandOptions');
 
 let passed = 0;
 let failed = 0;
