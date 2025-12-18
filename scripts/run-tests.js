@@ -9,20 +9,35 @@ function fail(msg) {
 const commandsPath = path.join(__dirname, '..', 'src', 'commands');
 if (!fs.existsSync(commandsPath)) fail('commands folder not found');
 
-const files = fs.readdirSync(commandsPath).filter(f => f.endsWith('.js'));
+// Recursively find all command files
+function findCommandFiles(dir) {
+  let files = [];
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files = files.concat(findCommandFiles(fullPath));
+    } else if (entry.isFile() && entry.name.endsWith('.js')) {
+      files.push(fullPath);
+    }
+  }
+  return files;
+}
+
+const files = findCommandFiles(commandsPath);
 if (files.length === 0) fail('no command files found');
 
 let ok = true;
 for (const file of files) {
-  const cmd = require(path.join(commandsPath, file));
+  const cmd = require(file);
   if (!cmd || typeof cmd !== 'object') {
-    console.error(file, 'does not export an object'); ok = false; continue;
+    console.error(path.basename(file), 'does not export an object'); ok = false; continue;
   }
   if (!cmd.name || typeof cmd.name !== 'string') {
-    console.error(file, 'missing string `name` export'); ok = false; continue;
+    console.error(path.basename(file), 'missing string `name` export'); ok = false; continue;
   }
   if (!(typeof cmd.execute === 'function' || typeof cmd.executeInteraction === 'function')) {
-    console.error(file, 'must export `execute` or `executeInteraction` function'); ok = false; continue;
+    console.error(path.basename(file), 'must export `execute` or `executeInteraction` function'); ok = false; continue;
   }
 }
 

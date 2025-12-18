@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, AttachmentBuilder } = require('discord.js');
-const { exportQuotesAsJson, exportQuotesAsCsv, getAllQuotes } = require('../db');
-const { handleInteractionError } = require('../utils/error-handler');
+const { exportQuotesAsJson, exportQuotesAsCsv, getAllQuotes } = require('../../db');
+const { handleInteractionError } = require('../../utils/error-handler');
 
 module.exports = {
   data: new SlashCommandBuilder()

@@ -40,13 +40,26 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 // Load commands
 const commands = new Map();
 const commandsPath = path.join(__dirname, 'commands');
-if (fs.existsSync(commandsPath)) {
-  const files = fs.readdirSync(commandsPath).filter(f => f.endsWith('.js'));
-  for (const file of files) {
-    const cmd = require(path.join(commandsPath, file));
-    if (cmd && cmd.name) commands.set(cmd.name, cmd);
+
+function loadCommands(dirPath) {
+  if (!fs.existsSync(dirPath)) return;
+  
+  const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dirPath, entry.name);
+    
+    if (entry.isDirectory()) {
+      // Recursively load from subdirectories
+      loadCommands(fullPath);
+    } else if (entry.isFile() && entry.name.endsWith('.js')) {
+      // Load command file
+      const cmd = require(fullPath);
+      if (cmd && cmd.name) commands.set(cmd.name, cmd);
+    }
   }
 }
+
+loadCommands(commandsPath);
 // Expose commands on client for command modules (help, etc.)
 client.commands = commands;
 

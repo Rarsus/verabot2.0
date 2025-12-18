@@ -205,9 +205,24 @@ async function runTests() {
       'delete-quote.js'
     ];
 
+    // Recursively find command files
+    function findCommandFile(dir, filename) {
+      const entries = fs.readdirSync(dir, { withFileTypes: true });
+      for (const entry of entries) {
+        const fullPath = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          const found = findCommandFile(fullPath, filename);
+          if (found) return found;
+        } else if (entry.name === filename) {
+          return fullPath;
+        }
+      }
+      return null;
+    }
+
     for (const cmdFile of quoteCommands) {
-      const cmdPath = path.join(commandsPath, cmdFile);
-      if (!fs.existsSync(cmdPath)) {
+      const cmdPath = findCommandFile(commandsPath, cmdFile);
+      if (!cmdPath) {
         console.error(`❌ Test 3.${quoteCommands.indexOf(cmdFile) + 1} Failed: ${cmdFile} not found`);
         failed++;
         continue;
