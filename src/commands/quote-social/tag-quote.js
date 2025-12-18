@@ -1,19 +1,18 @@
-const { SlashCommandBuilder } = require('discord.js');
+const Command = require('../../utils/command-base');
+const buildCommandOptions = require('../../utils/command-options');
+const { sendSuccess, sendError } = require('../../utils/response-helpers');
 const { addTag, getTagByName, addTagToQuote, getQuoteById } = require('../../db');
-const { handleInteractionError } = require('../../utils/error-handler');
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('tag-quote')
-    .setDescription('Add a tag to a quote')
-    .addIntegerOption(opt => opt.setName('id').setDescription('Quote ID to tag').setRequired(true))
-    .addStringOption(opt => opt.setName('tag').setDescription('Tag name').setRequired(true)),
-  name: 'tag-quote',
-  description: 'Add a tag to a quote',
-  options: [
-    { name: 'id', type: 'integer', description: 'Quote ID to tag', required: true },
-    { name: 'tag', type: 'string', description: 'Tag name', required: true }
-  ],
+const { data, options } = buildCommandOptions('tag-quote', 'Add a tag to a quote', [
+  { name: 'id', type: 'integer', description: 'Quote ID to tag', required: true },
+  { name: 'tag', type: 'string', description: 'Tag name', required: true }
+]);
+
+class TagQuoteCommand extends Command {
+  constructor() {
+    super({ name: 'tag-quote', description: 'Add a tag to a quote', data, options });
+  }
+
   async execute(message, args) {
     try {
       const id = parseInt(args[0], 10);
@@ -38,7 +37,6 @@ module.exports = {
         return;
       }
 
-      // Create tag if it doesn't exist
       await addTag(tagName);
       const tag = await getTagByName(tagName);
 
@@ -67,39 +65,40 @@ module.exports = {
       }
     } catch (err) {
       console.error('Error in tag-quote command:', err);
-      handleInteractionError(message, 'Failed to tag quote');
-    }
-  },
-  async executeInteraction(interaction) {
-    try {
-      await interaction.deferReply();
-      const id = interaction.options.getInteger('id');
-      const tagName = interaction.options.getString('tag');
-
-      const quote = await getQuoteById(id);
-      if (!quote) {
-        await interaction.editReply(`❌ Quote #${id} not found.`);
-        return;
+      if (message.channel && typeof message.channel.send === 'function') {
+        await message.channel.send('Failed to tag quote');
+      } else if (message.reply) {
+        await message.reply('Failed to tag quote');
       }
-
-      // Create tag if it doesn't exist
-      await addTag(tagName);
-      const tag = await getTagByName(tagName);
-
-      if (!tag) {
-        await interaction.editReply('❌ Failed to create/find tag.');
-        return;
-      }
-
-      const success = await addTagToQuote(id, tag.id);
-      if (success) {
-        await interaction.editReply(`✅ Added tag "#${tagName}" to quote #${id}`);
-      } else {
-        await interaction.editReply(`ℹ Tag "#${tagName}" already applied to quote #${id}`);
-      }
-    } catch (err) {
-      console.error('Error in tag-quote interaction:', err);
-      await handleInteractionError(interaction, 'Failed to tag quote');
     }
   }
-};
+
+  async executeInteraction(interaction) {
+    await interaction.deferReply();
+    const id = interaction.options.getInteger('id');
+    const tagName = interaction.options.getString('tag');
+
+    const quote = await getQuoteById(id);
+    if (!quote) {
+      await sendError(interaction, `Quote #${id} not found`);
+      return;
+    }
+
+    await addTag(tagName);
+    const tag = await getTagByName(tagName);
+
+    if (!tag) {
+      await sendError(interaction, 'Failed to create/find tag');
+      return;
+    }
+
+    const success = await addTagToQuote(id, tag.id);
+    if (success) {
+      await sendSuccess(interaction, `Added tag "#${tagName}" to quote #${id}`);
+    } else {
+      await interaction.editReply(`ℹ Tag "#${tagName}" already applied to quote #${id}`);
+    }
+  }
+}
+
+module.exports = new TagQuoteCommand().register();

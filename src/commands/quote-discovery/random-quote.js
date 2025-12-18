@@ -1,17 +1,18 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const Command = require('../../utils/command-base');
+const buildCommandOptions = require('../../utils/command-options');
+const { sendQuoteEmbed, sendError } = require('../../utils/response-helpers');
 const { getAllQuotes } = require('../../db');
-const { handleInteractionError } = require('../../utils/error-handler');
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('random-quote')
-    .setDescription('Get a random quote'),
-  name: 'random-quote',
-  description: 'Get a random quote',
+const { data, options } = buildCommandOptions('random-quote', 'Get a random quote', []);
+
+class RandomQuoteCommand extends Command {
+  constructor() {
+    super({ name: 'random-quote', description: 'Get a random quote', data, options });
+  }
+
   async execute(message) {
     try {
       const quotes = await getAllQuotes();
-      
       if (!quotes || quotes.length === 0) {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send('❌ No quotes available.');
@@ -22,6 +23,7 @@ module.exports = {
       }
 
       const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+      const { EmbedBuilder } = require('discord.js');
       const embed = new EmbedBuilder()
         .setTitle('Random Quote')
         .setDescription(`"${randomQuote.text}"`)
@@ -35,30 +37,25 @@ module.exports = {
       }
     } catch (err) {
       console.error('Error in random-quote command:', err);
-      handleInteractionError(message, 'Failed to retrieve random quote');
-    }
-  },
-  async executeInteraction(interaction) {
-    try {
-      await interaction.deferReply();
-      const quotes = await getAllQuotes();
-      
-      if (!quotes || quotes.length === 0) {
-        await interaction.editReply('❌ No quotes available.');
-        return;
+      if (message.channel && typeof message.channel.send === 'function') {
+        await message.channel.send('Failed to retrieve random quote');
+      } else if (message.reply) {
+        await message.reply('Failed to retrieve random quote');
       }
-
-      const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-      const embed = new EmbedBuilder()
-        .setTitle('Random Quote')
-        .setDescription(`"${randomQuote.text}"`)
-        .setFooter({ text: `— ${randomQuote.author} | #${randomQuote.id}` })
-        .setColor(0x5865F2);
-
-      await interaction.editReply({ embeds: [embed] });
-    } catch (err) {
-      console.error('Error in random-quote interaction:', err);
-      await handleInteractionError(interaction, 'Failed to retrieve random quote');
     }
   }
-};
+
+  async executeInteraction(interaction) {
+    await interaction.deferReply();
+    const quotes = await getAllQuotes();
+    if (!quotes || quotes.length === 0) {
+      await sendError(interaction, 'No quotes available');
+      return;
+    }
+
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    await sendQuoteEmbed(interaction, randomQuote, 'Random Quote');
+  }
+}
+
+module.exports = new RandomQuoteCommand().register();

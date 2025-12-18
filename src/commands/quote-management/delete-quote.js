@@ -1,20 +1,19 @@
-const { SlashCommandBuilder } = require('discord.js');
+const Command = require('../../utils/command-base');
+const buildCommandOptions = require('../../utils/command-options');
+const { sendSuccess, sendError } = require('../../utils/response-helpers');
 const { deleteQuote, getQuoteById } = require('../../db');
-const { handleInteractionError } = require('../../utils/error-handler');
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('delete-quote')
-    .setDescription('Delete a quote (admin only)')
-    .addIntegerOption(opt => opt.setName('id').setDescription('Quote ID to delete').setRequired(true)),
-  name: 'delete-quote',
-  description: 'Delete a quote (admin only)',
-  options: [
-    { name: 'id', type: 'integer', description: 'Quote ID to delete', required: true }
-  ],
+const { data, options } = buildCommandOptions('delete-quote', 'Delete a quote (admin only)', [
+  { name: 'id', type: 'integer', description: 'Quote ID to delete', required: true }
+]);
+
+class DeleteQuoteCommand extends Command {
+  constructor() {
+    super({ name: 'delete-quote', description: 'Delete a quote (admin only)', data, options });
+  }
+
   async execute(message, args) {
     try {
-      // Check admin permission
       if (!message.member.permissions.has('ADMINISTRATOR')) {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send('❌ You do not have permission to delete quotes.');
@@ -52,31 +51,32 @@ module.exports = {
       }
     } catch (err) {
       console.error('Error in delete-quote command:', err);
-      handleInteractionError(message, 'Failed to delete quote');
-    }
-  },
-  async executeInteraction(interaction) {
-    try {
-      // Check admin permission
-      if (!interaction.member.permissions.has('ADMINISTRATOR')) {
-        await interaction.reply({ content: '❌ You do not have permission to delete quotes.', ephemeral: true });
-        return;
+      if (message.channel && typeof message.channel.send === 'function') {
+        await message.channel.send('Failed to delete quote');
+      } else if (message.reply) {
+        await message.reply('Failed to delete quote');
       }
-
-      await interaction.deferReply();
-      const id = interaction.options.getInteger('id');
-
-      const quote = await getQuoteById(id);
-      if (!quote) {
-        await interaction.editReply(`❌ Quote #${id} not found.`);
-        return;
-      }
-
-      await deleteQuote(id);
-      await interaction.editReply(`✅ Quote #${id} deleted successfully!`);
-    } catch (err) {
-      console.error('Error in delete-quote interaction:', err);
-      await handleInteractionError(interaction, 'Failed to delete quote');
     }
   }
-};
+
+  async executeInteraction(interaction) {
+    if (!interaction.member.permissions.has('ADMINISTRATOR')) {
+      await sendError(interaction, 'You do not have permission to delete quotes', true);
+      return;
+    }
+
+    await interaction.deferReply();
+    const id = interaction.options.getInteger('id');
+
+    const quote = await getQuoteById(id);
+    if (!quote) {
+      await sendError(interaction, `Quote #${id} not found`);
+      return;
+    }
+
+    await deleteQuote(id);
+    await sendSuccess(interaction, `Quote #${id} deleted successfully!`);
+  }
+}
+
+module.exports = new DeleteQuoteCommand().register();

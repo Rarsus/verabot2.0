@@ -1,20 +1,24 @@
-﻿const { SlashCommandBuilder } = require('discord.js');
+﻿const Command = require('../../utils/command-base');
+const buildCommandOptions = require('../../utils/command-options');
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('ping')
-    .setDescription('Simple ping command'),
-  name: 'ping',
-  description: 'Simple ping command',
-  options: [],
+const { data, options } = buildCommandOptions('ping', 'Simple ping command', []);
+
+class PingCommand extends Command {
+  constructor() {
+    super({ name: 'ping', description: 'Simple ping command', data, options });
+  }
+
   async execute(message) {
     if (message.channel && typeof message.channel.send === 'function') {
       await message.channel.send('Pong!');
     } else if (message.reply) {
       await message.reply('Pong!');
     }
-  },
+  }
+
   async executeInteraction(interaction) {
     await interaction.reply('Pong!');
   }
-};
+}
+
+module.exports = new PingCommand().register();

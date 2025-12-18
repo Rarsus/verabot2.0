@@ -1,3 +1,5 @@
+const Command = require('../../utils/command-base');
+const buildCommandOptions = require('../../utils/command-options');
 const { SlashCommandBuilder } = require('discord.js');
 const fetch = require('node-fetch');
 
@@ -9,30 +11,18 @@ function capitalize(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-// Generate poem using Hugging Face API (with fallback for cold-start models)
 async function generateAIPoem(subject, style = 'sonnet') {
   const apiKey = process.env.HUGGINGFACE_API_KEY;
-  if (!apiKey) {
-    return null; // Fall back to local generators
-  }
+  if (!apiKey) return null;
 
   try {
-    // Use a faster, simpler model that's less likely to be cold-started
-    // Note: Free tier models on Hugging Face can take 20-30 seconds to load
-    // This exceeds Discord's 3-second interaction timeout.
-    // For reliable AI poetry, consider upgrading to a paid API or cached models.
-    
     const prompt = `Generate a ${style} about ${subject}. Only output the poem, no explanation.`;
-
-    const response = await fetch(
-      'https://api-inference.huggingface.co/models/gpt2',
-      {
-        headers: { Authorization: `Bearer ${apiKey}` },
-        method: 'POST',
-        body: JSON.stringify({ inputs: prompt }),
-        timeout: 2000 // 2 second timeout
-      }
-    );
+    const response = await fetch('https://api-inference.huggingface.co/models/gpt2', {
+      headers: { Authorization: `Bearer ${apiKey}` },
+      method: 'POST',
+      body: JSON.stringify({ inputs: prompt }),
+      timeout: 2000
+    });
 
     if (!response.ok) {
       console.warn('Hugging Face API error:', response.status);
@@ -47,7 +37,7 @@ async function generateAIPoem(subject, style = 'sonnet') {
     return null;
   } catch (err) {
     console.warn('Hugging Face API unavailable:', err.message);
-    return null; // Fall back to local generators
+    return null;
   }
 }
 
@@ -93,18 +83,23 @@ function generatePoem(type, subject) {
   }
 }
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('poem')
-    .setDescription('Generate a short poem')
-    .addStringOption(opt => opt.setName('type').setDescription('poem type: sonnet, haiku, other').setRequired(false))
-    .addStringOption(opt => opt.setName('subject').setDescription('subject of the poem').setRequired(false)),
-  name: 'poem',
-  description: 'Generate a poem (sonnet, haiku, other)',
-  options: [
-    { name: 'type', type: 'string', description: 'poem type', required: false },
-    { name: 'subject', type: 'string', description: 'subject', required: false }
-  ],
+// Create custom SlashCommandBuilder to support choices
+const data = new SlashCommandBuilder()
+  .setName('poem')
+  .setDescription('Generate a short poem')
+  .addStringOption(opt => opt.setName('type').setDescription('poem type: sonnet, haiku, other').setRequired(false))
+  .addStringOption(opt => opt.setName('subject').setDescription('subject of the poem').setRequired(false));
+
+const { options } = buildCommandOptions('poem', 'Generate a poem (sonnet, haiku, other)', [
+  { name: 'type', type: 'string', description: 'poem type', required: false },
+  { name: 'subject', type: 'string', description: 'subject', required: false }
+]);
+
+class PoemCommand extends Command {
+  constructor() {
+    super({ name: 'poem', description: 'Generate a poem (sonnet, haiku, other)', data, options });
+  }
+
   async execute(message, args) {
     try {
       const type = args[0] || 'sonnet';
@@ -118,18 +113,17 @@ module.exports = {
     } catch (err) {
       console.error('Poem command error', err);
     }
-  },
+  }
+
   async executeInteraction(interaction) {
     try {
       const type = interaction.options.getString('type') || 'sonnet';
       const subject = interaction.options.getString('subject') || 'the world';
-      
-      // Try to defer, but with error handling since Discord times out quickly
+
       try {
         await interaction.deferReply();
       } catch (deferErr) {
         console.warn('Could not defer reply:', deferErr.message);
-        // If deferral fails, immediately use local generator
         const poem = generatePoem(type, subject);
         try {
           await interaction.reply({ content: `\n${poem}` });
@@ -138,20 +132,16 @@ module.exports = {
         }
         return;
       }
-      
-      // Set a timeout for the AI API call (2 seconds max)
+
       const aiPoemPromise = generateAIPoem(subject, type);
       const timeoutPromise = new Promise(resolve => setTimeout(() => resolve(null), 2000));
       const poem = await Promise.race([aiPoemPromise, timeoutPromise]);
-      
-      // Use AI poem if available, otherwise use local generator
       const finalPoem = poem || generatePoem(type, subject);
-      
+
       try {
         await interaction.editReply({ content: `\n${finalPoem}` });
       } catch (editErr) {
         console.error('Could not edit reply:', editErr.message);
-        // Try regular reply as fallback
         try {
           await interaction.reply({ content: `\n${finalPoem}` });
         } catch (e) {
@@ -171,4 +161,6 @@ module.exports = {
       }
     }
   }
-};
+}
+
+module.exports = new PoemCommand().register();

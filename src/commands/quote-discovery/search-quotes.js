@@ -1,21 +1,21 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const Command = require('../../utils/command-base');
+const buildCommandOptions = require('../../utils/command-options');
+const { sendError } = require('../../utils/response-helpers');
 const { getAllQuotes } = require('../../db');
-const { handleInteractionError } = require('../../utils/error-handler');
+const { EmbedBuilder } = require('discord.js');
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('search-quotes')
-    .setDescription('Search quotes by text or author')
-    .addStringOption(opt => opt.setName('query').setDescription('Search term (text or author)').setRequired(true)),
-  name: 'search-quotes',
-  description: 'Search quotes by text or author',
-  options: [
-    { name: 'query', type: 'string', description: 'Search term (text or author)', required: true }
-  ],
+const { data, options } = buildCommandOptions('search-quotes', 'Search quotes by text or author', [
+  { name: 'query', type: 'string', description: 'Search term (text or author)', required: true }
+]);
+
+class SearchQuotesCommand extends Command {
+  constructor() {
+    super({ name: 'search-quotes', description: 'Search quotes by text or author', data, options });
+  }
+
   async execute(message, args) {
     try {
       const query = args.join(' ').toLowerCase();
-      
       if (!query) {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send('❌ Please provide a search term.');
@@ -53,35 +53,37 @@ module.exports = {
       }
     } catch (err) {
       console.error('Error in search-quotes command:', err);
-      handleInteractionError(message, 'Failed to search quotes');
-    }
-  },
-  async executeInteraction(interaction) {
-    try {
-      await interaction.deferReply();
-      const query = interaction.options.getString('query').toLowerCase();
-
-      const quotes = await getAllQuotes();
-      const results = quotes.filter(q => 
-        q.text.toLowerCase().includes(query) || 
-        q.author.toLowerCase().includes(query)
-      );
-
-      if (results.length === 0) {
-        await interaction.editReply(`❌ No quotes found matching "${query}".`);
-        return;
+      if (message.channel && typeof message.channel.send === 'function') {
+        await message.channel.send('Failed to search quotes');
+      } else if (message.reply) {
+        await message.reply('Failed to search quotes');
       }
-
-      const embed = new EmbedBuilder()
-        .setTitle(`Search Results (${results.length} found)`)
-        .setDescription(results.slice(0, 5).map(q => `**#${q.id}**: "${q.text}" — ${q.author}`).join('\n\n'))
-        .setFooter({ text: results.length > 5 ? `... and ${results.length - 5} more` : '' })
-        .setColor(0x5865F2);
-
-      await interaction.editReply({ embeds: [embed] });
-    } catch (err) {
-      console.error('Error in search-quotes interaction:', err);
-      await handleInteractionError(interaction, 'Failed to search quotes');
     }
   }
-};
+
+  async executeInteraction(interaction) {
+    await interaction.deferReply();
+    const query = interaction.options.getString('query').toLowerCase();
+
+    const quotes = await getAllQuotes();
+    const results = quotes.filter(q => 
+      q.text.toLowerCase().includes(query) || 
+      q.author.toLowerCase().includes(query)
+    );
+
+    if (results.length === 0) {
+      await sendError(interaction, `No quotes found matching "${query}"`);
+      return;
+    }
+
+    const embed = new EmbedBuilder()
+      .setTitle(`Search Results (${results.length} found)`)
+      .setDescription(results.slice(0, 5).map(q => `**#${q.id}**: "${q.text}" — ${q.author}`).join('\n\n'))
+      .setFooter({ text: results.length > 5 ? `... and ${results.length - 5} more` : '' })
+      .setColor(0x5865F2);
+
+    await interaction.editReply({ embeds: [embed] });
+  }
+}
+
+module.exports = new SearchQuotesCommand().register();

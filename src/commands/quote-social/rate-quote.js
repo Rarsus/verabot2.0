@@ -1,20 +1,18 @@
-const { SlashCommandBuilder } = require('discord.js');
+const Command = require('../../utils/command-base');
+const buildCommandOptions = require('../../utils/command-options');
+const { sendSuccess, sendError } = require('../../utils/response-helpers');
 const { rateQuote, getQuoteById } = require('../../db');
-const { handleInteractionError } = require('../../utils/error-handler');
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('rate-quote')
-    .setDescription('Rate a quote (1-5 stars)')
-    .addIntegerOption(opt => opt.setName('id').setDescription('Quote ID to rate').setRequired(true))
-    .addIntegerOption(opt => opt.setName('rating').setDescription('Your rating (1-5)').setRequired(true)
-      .setMinValue(1).setMaxValue(5)),
-  name: 'rate-quote',
-  description: 'Rate a quote (1-5 stars)',
-  options: [
-    { name: 'id', type: 'integer', description: 'Quote ID to rate', required: true },
-    { name: 'rating', type: 'integer', description: 'Your rating (1-5)', required: true }
-  ],
+const { data, options } = buildCommandOptions('rate-quote', 'Rate a quote (1-5 stars)', [
+  { name: 'id', type: 'integer', description: 'Quote ID to rate', required: true },
+  { name: 'rating', type: 'integer', description: 'Your rating (1-5)', required: true }
+]);
+
+class RateQuoteCommand extends Command {
+  constructor() {
+    super({ name: 'rate-quote', description: 'Rate a quote (1-5 stars)', data, options });
+  }
+
   async execute(message, args) {
     try {
       const id = parseInt(args[0], 10);
@@ -65,31 +63,33 @@ module.exports = {
       }
     } catch (err) {
       console.error('Error in rate-quote command:', err);
-      handleInteractionError(message, 'Failed to rate quote');
-    }
-  },
-  async executeInteraction(interaction) {
-    try {
-      await interaction.deferReply();
-      const id = interaction.options.getInteger('id');
-      const rating = interaction.options.getInteger('rating');
-
-      const quote = await getQuoteById(id);
-      if (!quote) {
-        await interaction.editReply(`❌ Quote #${id} not found.`);
-        return;
+      if (message.channel && typeof message.channel.send === 'function') {
+        await message.channel.send('Failed to rate quote');
+      } else if (message.reply) {
+        await message.reply('Failed to rate quote');
       }
-
-      const result = await rateQuote(id, interaction.user.id, rating);
-      if (result.success) {
-        const stars = '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
-        await interaction.editReply(`✅ Rated quote #${id}: ${stars} (Avg: ${result.averageRating}⭐)`);
-      } else {
-        await interaction.editReply(`❌ ${result.message}`);
-      }
-    } catch (err) {
-      console.error('Error in rate-quote interaction:', err);
-      await handleInteractionError(interaction, 'Failed to rate quote');
     }
   }
-};
+
+  async executeInteraction(interaction) {
+    await interaction.deferReply();
+    const id = interaction.options.getInteger('id');
+    const rating = interaction.options.getInteger('rating');
+
+    const quote = await getQuoteById(id);
+    if (!quote) {
+      await sendError(interaction, `Quote #${id} not found`);
+      return;
+    }
+
+    const result = await rateQuote(id, interaction.user.id, rating);
+    if (result.success) {
+      const stars = '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
+      await sendSuccess(interaction, `Rated quote #${id}: ${stars} (Avg: ${result.averageRating}⭐)`);
+    } else {
+      await sendError(interaction, result.message);
+    }
+  }
+}
+
+module.exports = new RateQuoteCommand().register();
