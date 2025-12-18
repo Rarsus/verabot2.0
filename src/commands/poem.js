@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const fetch = require('node-fetch');
 
 function pick(arr, i) {
   return arr[i % arr.length];
@@ -6,6 +7,48 @@ function pick(arr, i) {
 
 function capitalize(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// Generate poem using Hugging Face API (with fallback for cold-start models)
+async function generateAIPoem(subject, style = 'sonnet') {
+  const apiKey = process.env.HUGGINGFACE_API_KEY;
+  if (!apiKey) {
+    return null; // Fall back to local generators
+  }
+
+  try {
+    // Use a faster, simpler model that's less likely to be cold-started
+    // Note: Free tier models on Hugging Face can take 20-30 seconds to load
+    // This exceeds Discord's 3-second interaction timeout.
+    // For reliable AI poetry, consider upgrading to a paid API or cached models.
+    
+    const prompt = `Generate a ${style} about ${subject}. Only output the poem, no explanation.`;
+
+    const response = await fetch(
+      'https://api-inference.huggingface.co/models/gpt2',
+      {
+        headers: { Authorization: `Bearer ${apiKey}` },
+        method: 'POST',
+        body: JSON.stringify({ inputs: prompt }),
+        timeout: 2000 // 2 second timeout
+      }
+    );
+
+    if (!response.ok) {
+      console.warn('Hugging Face API error:', response.status);
+      return null;
+    }
+
+    const result = await response.json();
+    if (result[0] && result[0].generated_text) {
+      let poem = result[0].generated_text.replace(prompt, '').trim();
+      return poem && poem.length > 10 ? poem : null;
+    }
+    return null;
+  } catch (err) {
+    console.warn('Hugging Face API unavailable:', err.message);
+    return null; // Fall back to local generators
+  }
 }
 
 function generateHaiku(subject) {
@@ -80,11 +123,52 @@ module.exports = {
     try {
       const type = interaction.options.getString('type') || 'sonnet';
       const subject = interaction.options.getString('subject') || 'the world';
-      const poem = generatePoem(type, subject);
-      await interaction.reply({ content: `\n${poem}` });
+      
+      // Try to defer, but with error handling since Discord times out quickly
+      try {
+        await interaction.deferReply();
+      } catch (deferErr) {
+        console.warn('Could not defer reply:', deferErr.message);
+        // If deferral fails, immediately use local generator
+        const poem = generatePoem(type, subject);
+        try {
+          await interaction.reply({ content: `\n${poem}` });
+        } catch (e) {
+          console.error('Failed to reply:', e.message);
+        }
+        return;
+      }
+      
+      // Set a timeout for the AI API call (2 seconds max)
+      const aiPoemPromise = generateAIPoem(subject, type);
+      const timeoutPromise = new Promise(resolve => setTimeout(() => resolve(null), 2000));
+      const poem = await Promise.race([aiPoemPromise, timeoutPromise]);
+      
+      // Use AI poem if available, otherwise use local generator
+      const finalPoem = poem || generatePoem(type, subject);
+      
+      try {
+        await interaction.editReply({ content: `\n${finalPoem}` });
+      } catch (editErr) {
+        console.error('Could not edit reply:', editErr.message);
+        // Try regular reply as fallback
+        try {
+          await interaction.reply({ content: `\n${finalPoem}` });
+        } catch (e) {
+          console.error('Failed to reply after edit failure:', e.message);
+        }
+      }
     } catch (err) {
-      console.error('Poem interaction error', err);
-      try { await interaction.reply({ content: 'Could not create poem.', ephemeral: true }); } catch (e) { void 0; }
+      console.error('Poem interaction error:', err.message);
+      try {
+        if (interaction.deferred) {
+          await interaction.editReply({ content: 'Could not create poem.' });
+        } else {
+          await interaction.reply({ content: 'Could not create poem.', flags: 64 });
+        }
+      } catch (e) {
+        console.error('Failed to send error message:', e.message);
+      }
     }
   }
 };
