@@ -27,9 +27,23 @@ if (fs.existsSync(commandsPath)) {
 // Expose commands on client for command modules (help, etc.)
 client.commands = commands;
 
-client.once('ready', () => {
-  console.log(`Logged in as ${client.user?.tag || 'unknown'}`);
-});
+const detectReadyEvent = require('./detectReadyEvent');
+
+const _attachReadyEvent = () => {
+  const eventName = detectReadyEvent();
+  const onReady = () => {
+    console.log(`Logged in as ${client.user?.tag || 'unknown'}`);
+  };
+
+  if (eventName === 'ready') {
+    console.log('Falling back to legacy `ready` event for older discord.js');
+    client.once('ready', onReady);
+  } else {
+    client.once('clientReady', onReady);
+  }
+};
+
+_attachReadyEvent();
 
 // Handle slash commands (interactions)
 client.on('interactionCreate', async (interaction) => {

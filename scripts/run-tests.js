@@ -29,4 +29,20 @@ for (const file of files) {
 if (!ok) fail('one or more command files are invalid');
 
 console.log('All command sanity checks passed.');
+// Additional unit tests for small utilities
+try {
+  const detectReadyEvent = require(path.join(__dirname, '..', 'src', 'detectReadyEvent'));
+  const assert = require('assert');
+
+  assert.strictEqual(detectReadyEvent('14.11.0'), 'ready');
+  assert.strictEqual(detectReadyEvent('15.0.0'), 'clientReady');
+  assert.strictEqual(detectReadyEvent('16.2.3'), 'clientReady');
+  assert.strictEqual(detectReadyEvent('not-a-version'), 'clientReady');
+
+  console.log('Utility tests passed.');
+} catch (e) {
+  console.error('Utility tests failed:', e);
+  process.exit(1);
+}
+
 process.exit(0);
