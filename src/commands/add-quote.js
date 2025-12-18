@@ -41,7 +41,7 @@ module.exports = {
         return;
       }
 
-      const id = addQuote(quoteValidation.sanitized, authorValidation.sanitized);
+      const id = await addQuote(quoteValidation.sanitized, authorValidation.sanitized);
       if (message.channel && typeof message.channel.send === 'function') {
         await message.channel.send(`✅ Quote #${id} added successfully!`);
       } else if (message.reply) {
@@ -70,7 +70,7 @@ module.exports = {
         return;
       }
 
-      const id = addQuote(quoteValidation.sanitized, authorValidation.sanitized);
+      const id = await addQuote(quoteValidation.sanitized, authorValidation.sanitized);
       await interaction.reply(`✅ Quote #${id} added successfully!`);
     } catch (err) {
       await handleInteractionError(interaction, err, 'add-quote.executeInteraction');

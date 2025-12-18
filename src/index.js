@@ -11,6 +11,24 @@ if (!TOKEN) {
   process.exit(1);
 }
 
+// Initialize database
+const database = require('./database');
+const { migrateFromJson } = require('./migration');
+
+(async () => {
+  try {
+    // Setup database schema
+    await database.setupSchema(database.getDatabase());
+    console.log('✓ Database schema initialized');
+
+    // Run migration from JSON if needed
+    await migrateFromJson(database);
+  } catch (err) {
+    console.error('Failed to initialize database:', err);
+    process.exit(1);
+  }
+})();
+
 // For slash commands we always need `Guilds`. For prefix message handling we add message intents.
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
@@ -97,6 +115,14 @@ client.on('messageCreate', async (message) => {
 client.login(TOKEN).catch(err => {
   console.error('Failed to login:', err);
   process.exit(1);
+});
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  console.log('\nShutting down gracefully...');
+  await client.destroy();
+  await database.closeDatabase();
+  process.exit(0);
 });
 
 // Graceful shutdown for containers and local development
