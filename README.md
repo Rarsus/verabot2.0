@@ -393,7 +393,33 @@ When adding new commands or features:
 
 ## 📋 Changelog
 
-### Latest (v0.1.0) - December 2025
+### v0.1.3 - December 2025
+
+**Quality Improvements & Bug Fixes**
+- 🔧 Fixed CI workflow: Updated Node.js version matrix (24.x → 22.x)
+- 🔧 Fixed CI artifact naming issues
+- ✨ Repository cleanup: Eliminated 42 ESLint warnings
+- ✨ Enhanced .gitignore with 30+ patterns
+- ✨ Added utility npm scripts (dev, lint:fix, format, check)
+- 📚 Fixed broken documentation links and version inconsistencies
+- 📚 Validated all documentation across 27 markdown files
+- ⬆️ Updated dotenv dependency (16.3.1 → 16.6.1)
+
+### v0.1.2 - December 2025
+
+**AI Poem Generation**
+- ✨ Integrated Hugging Face AI API for poem generation
+- ✨ Free tier: 100 requests/hour (no credit card required)
+- ✨ Automatic fallback to built-in generators if API unavailable
+- ✨ Supports haiku, sonnet, and free-form poem styles
+- 📚 Added comprehensive setup guide (docs/guides/03-HUGGINGFACE-SETUP.md)
+
+### v0.1.1 - December 2025
+
+**Docker Compose Fix**
+- 🔧 Removed obsolete 'version' attribute from docker-compose.yml
+
+### v0.1.0 - December 2025
 
 **Major Refactoring (All 15 Commands)**
 - ✨ Implemented Command base class for automatic error handling

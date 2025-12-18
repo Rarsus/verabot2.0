@@ -1,7 +1,7 @@
 {
   "name": "verabot2-0",
   "displayName": "VeraBot2.0",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "VeraBot2.0 - Generic modular Discord bot",
   "main": "src/index.js",
   "scripts": {
