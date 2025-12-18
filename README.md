@@ -34,14 +34,27 @@ npm start
 
 ## 📖 Documentation
 
-### Architecture & Design
-- [REFACTORING_COMPLETE.md](REFACTORING_COMPLETE.md) - Complete refactoring summary with metrics (all 15 commands modernized)
-- [IMPROVEMENTS.md](IMPROVEMENTS.md) - Technical improvements and architectural decisions
-- [ACTION_PLAN.md](ACTION_PLAN.md) - Multi-phase implementation strategy
+Complete documentation is organized in the [docs/](docs/) folder:
 
-### Testing & Development
-- [TDD_TEST_RESULTS.md](TDD_TEST_RESULTS.md) - Comprehensive test analysis and results
-- [TDD_QUICK_REFERENCE.md](TDD_QUICK_REFERENCE.md) - Quick start guide for running tests
+### 🚀 Getting Started
+- [docs/README.md](docs/README.md) - Documentation overview
+- [docs/INDEX.md](docs/INDEX.md) - Complete documentation index
+
+### 📚 Guides (How-To)
+- [docs/guides/01-CREATING-COMMANDS.md](docs/guides/01-CREATING-COMMANDS.md) - Create new commands
+- [docs/guides/02-TESTING-GUIDE.md](docs/guides/02-TESTING-GUIDE.md) - Comprehensive testing with TDD
+- [docs/guides/03-HUGGINGFACE-SETUP.md](docs/guides/03-HUGGINGFACE-SETUP.md) - AI poem generation setup
+
+### 🏗️ Reference (Deep Dives)
+- [docs/reference/ARCHITECTURE.md](docs/reference/ARCHITECTURE.md) - System design and patterns
+- [docs/reference/REFACTORING-GUIDE.md](docs/reference/REFACTORING-GUIDE.md) - Code examples before/after
+- [docs/reference/TDD-QUICK-REFERENCE.md](docs/reference/TDD-QUICK-REFERENCE.md) - Testing quick reference
+
+### 📋 Project Information (Background)
+- [docs/project/REFACTORING-COMPLETE.md](docs/project/REFACTORING-COMPLETE.md) - Refactoring summary with metrics
+- [docs/project/ACTION-PLAN.md](docs/project/ACTION-PLAN.md) - Implementation strategy
+- [docs/project/IMPROVEMENTS.md](docs/project/IMPROVEMENTS.md) - Technical improvements
+- [docs/project/TDD-TEST-RESULTS.md](docs/project/TDD-TEST-RESULTS.md) - Test analysis and coverage
 
 ---
 
