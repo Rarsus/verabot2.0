@@ -9,7 +9,7 @@ function capitalize(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-// Generate poem using Hugging Face API
+// Generate poem using Hugging Face API (with fallback for cold-start models)
 async function generateAIPoem(subject, style = 'sonnet') {
   const apiKey = process.env.HUGGINGFACE_API_KEY;
   if (!apiKey) {
@@ -17,42 +17,36 @@ async function generateAIPoem(subject, style = 'sonnet') {
   }
 
   try {
-    const styleGuide = {
-      haiku: 'Write a haiku (3 lines, 5-7-5 syllables)',
-      sonnet: 'Write a Shakespearean sonnet (14 lines)',
-      other: 'Write a free-form poem (4-6 lines)'
-    };
+    // Use a faster, simpler model that's less likely to be cold-started
+    // Note: Free tier models on Hugging Face can take 20-30 seconds to load
+    // This exceeds Discord's 3-second interaction timeout.
+    // For reliable AI poetry, consider upgrading to a paid API or cached models.
+    
+    const prompt = `Generate a ${style} about ${subject}. Only output the poem, no explanation.`;
 
-    const prompt = `${styleGuide[style] || styleGuide.sonnet} about "${subject}". Only output the poem, nothing else.`;
-
-    // Use mistral-7b model instead of gpt2 (which is deprecated)
     const response = await fetch(
-      'https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1',
+      'https://api-inference.huggingface.co/models/gpt2',
       {
         headers: { Authorization: `Bearer ${apiKey}` },
         method: 'POST',
-        body: JSON.stringify({ inputs: prompt, parameters: { max_length: 300, temperature: 0.7 } })
+        body: JSON.stringify({ inputs: prompt }),
+        timeout: 2000 // 2 second timeout
       }
     );
 
     if (!response.ok) {
-      console.warn('Hugging Face API error:', response.status, response.statusText);
+      console.warn('Hugging Face API error:', response.status);
       return null;
     }
 
     const result = await response.json();
     if (result[0] && result[0].generated_text) {
-      // Extract just the poem part (remove the prompt)
       let poem = result[0].generated_text.replace(prompt, '').trim();
-      // Remove any model artifacts
-      if (poem.includes('\n\n')) {
-        poem = poem.split('\n\n')[0];
-      }
       return poem && poem.length > 10 ? poem : null;
     }
     return null;
   } catch (err) {
-    console.warn('Hugging Face API fetch error:', err.message);
+    console.warn('Hugging Face API unavailable:', err.message);
     return null; // Fall back to local generators
   }
 }
@@ -130,27 +124,51 @@ module.exports = {
       const type = interaction.options.getString('type') || 'sonnet';
       const subject = interaction.options.getString('subject') || 'the world';
       
-      // Defer the reply to give us time to call the AI API (3-second timeout for API calls)
-      await interaction.deferReply();
-      
-      // Try AI generation first
-      let poem = await generateAIPoem(subject, type);
-      
-      // Fall back to local generators if AI unavailable
-      if (!poem) {
-        poem = generatePoem(type, subject);
+      // Try to defer, but with error handling since Discord times out quickly
+      try {
+        await interaction.deferReply();
+      } catch (deferErr) {
+        console.warn('Could not defer reply:', deferErr.message);
+        // If deferral fails, immediately use local generator
+        const poem = generatePoem(type, subject);
+        try {
+          await interaction.reply({ content: `\n${poem}` });
+        } catch (e) {
+          console.error('Failed to reply:', e.message);
+        }
+        return;
       }
       
-      await interaction.editReply({ content: `\n${poem}` });
+      // Set a timeout for the AI API call (2 seconds max)
+      const aiPoemPromise = generateAIPoem(subject, type);
+      const timeoutPromise = new Promise(resolve => setTimeout(() => resolve(null), 2000));
+      const poem = await Promise.race([aiPoemPromise, timeoutPromise]);
+      
+      // Use AI poem if available, otherwise use local generator
+      const finalPoem = poem || generatePoem(type, subject);
+      
+      try {
+        await interaction.editReply({ content: `\n${finalPoem}` });
+      } catch (editErr) {
+        console.error('Could not edit reply:', editErr.message);
+        // Try regular reply as fallback
+        try {
+          await interaction.reply({ content: `\n${finalPoem}` });
+        } catch (e) {
+          console.error('Failed to reply after edit failure:', e.message);
+        }
+      }
     } catch (err) {
-      console.error('Poem interaction error', err);
+      console.error('Poem interaction error:', err.message);
       try {
         if (interaction.deferred) {
           await interaction.editReply({ content: 'Could not create poem.' });
         } else {
           await interaction.reply({ content: 'Could not create poem.', flags: 64 });
         }
-      } catch (e) { void 0; }
+      } catch (e) {
+        console.error('Failed to send error message:', e.message);
+      }
     }
   }
 };
