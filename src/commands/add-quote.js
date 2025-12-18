@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { addQuote } = require('../db');
+const { validateQuoteText, validateAuthor, handleInteractionError } = require('../utils/error-handler');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -17,19 +18,34 @@ module.exports = {
     try {
       const quote = args.slice(0, -1).join(' ') || args[0];
       const author = args[args.length - 1] || 'Anonymous';
-      if (!quote.trim()) {
+      
+      // Validate quote
+      const quoteValidation = validateQuoteText(quote);
+      if (!quoteValidation.valid) {
         if (message.channel && typeof message.channel.send === 'function') {
-          await message.channel.send('Please provide a quote.');
+          await message.channel.send(`❌ ${quoteValidation.error}`);
         } else if (message.reply) {
-          await message.reply('Please provide a quote.');
+          await message.reply(`❌ ${quoteValidation.error}`);
         }
         return;
       }
-      const id = addQuote(quote, author);
+
+      // Validate author
+      const authorValidation = validateAuthor(author);
+      if (!authorValidation.valid) {
+        if (message.channel && typeof message.channel.send === 'function') {
+          await message.channel.send(`❌ ${authorValidation.error}`);
+        } else if (message.reply) {
+          await message.reply(`❌ ${authorValidation.error}`);
+        }
+        return;
+      }
+
+      const id = addQuote(quoteValidation.sanitized, authorValidation.sanitized);
       if (message.channel && typeof message.channel.send === 'function') {
-        await message.channel.send(`Quote #${id} added successfully!`);
+        await message.channel.send(`✅ Quote #${id} added successfully!`);
       } else if (message.reply) {
-        await message.reply(`Quote #${id} added successfully!`);
+        await message.reply(`✅ Quote #${id} added successfully!`);
       }
     } catch (err) {
       console.error('Add-quote command error', err);
@@ -39,11 +55,25 @@ module.exports = {
     try {
       const quote = interaction.options.getString('quote');
       const author = interaction.options.getString('author') || 'Anonymous';
-      const id = addQuote(quote, author);
-      await interaction.reply(`Quote #${id} added successfully!`);
+
+      // Validate quote
+      const quoteValidation = validateQuoteText(quote);
+      if (!quoteValidation.valid) {
+        await interaction.reply({ content: `❌ ${quoteValidation.error}`, flags: 64 });
+        return;
+      }
+
+      // Validate author
+      const authorValidation = validateAuthor(author);
+      if (!authorValidation.valid) {
+        await interaction.reply({ content: `❌ ${authorValidation.error}`, flags: 64 });
+        return;
+      }
+
+      const id = addQuote(quoteValidation.sanitized, authorValidation.sanitized);
+      await interaction.reply(`✅ Quote #${id} added successfully!`);
     } catch (err) {
-      console.error('Add-quote interaction error', err);
-      try { await interaction.reply({ content: 'Could not add quote.', ephemeral: true }); } catch (e) { void 0; }
+      await handleInteractionError(interaction, err, 'add-quote.executeInteraction');
     }
   }
 };
