@@ -15,16 +15,33 @@ if (!TOKEN || !CLIENT_ID) {
 const commands = [];
 const seenNames = new Set();
 const commandsPath = path.join(__dirname, 'commands');
-if (fs.existsSync(commandsPath)) {
-  const files = fs.readdirSync(commandsPath).filter(f => f.endsWith('.js'));
-  for (const file of files) {
-    let cmd;
-    try {
-      cmd = require(path.join(commandsPath, file));
-    } catch (e) {
-      console.error(`Failed to load command file ${file}:`, e);
-      continue;
+
+// Recursively find all command files
+function findCommandFiles(dir) {
+  let files = [];
+  if (!fs.existsSync(dir)) return files;
+  
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files = files.concat(findCommandFiles(fullPath));
+    } else if (entry.isFile() && entry.name.endsWith('.js')) {
+      files.push(fullPath);
     }
+  }
+  return files;
+}
+
+const commandFiles = findCommandFiles(commandsPath);
+for (const file of commandFiles) {
+  let cmd;
+  try {
+    cmd = require(file);
+  } catch (e) {
+    console.error(`Failed to load command file ${path.basename(file)}:`, e);
+    continue;
+  }
 
     // Prefer `data` builder (SlashCommandBuilder). If present, use its JSON.
     if (cmd && cmd.data && typeof cmd.data.toJSON === 'function') {
@@ -65,7 +82,6 @@ if (fs.existsSync(commandsPath)) {
     seenNames.add(cmd.name);
     commands.push(data);
   }
-}
 
 const rest = new REST({ version: '10' }).setToken(TOKEN);
 
