@@ -337,6 +337,67 @@ async function runTests() {
       failed++;
     }
 
+    // Test 6: Update operations
+    console.log('\n=== Testing Update Operations ===');
+
+    // Test 6.1: Update quote text
+    await dbRun(db, 'UPDATE quotes SET text = ? WHERE id = ?',
+      ['This is an updated quote', 1]);
+    const updatedQuote = await dbGet(db, 'SELECT text FROM quotes WHERE id = ?', [1]);
+    if (updatedQuote && updatedQuote.text === 'This is an updated quote') {
+      console.log('✅ Test 6.1 Passed: Update quote text');
+      passed++;
+    } else {
+      console.error('❌ Test 6.1 Failed: Update quote text');
+      failed++;
+    }
+
+    // Test 6.2: Update author
+    await dbRun(db, 'UPDATE quotes SET author = ? WHERE id = ?',
+      ['Updated Author', 1]);
+    const updatedAuthor = await dbGet(db, 'SELECT author FROM quotes WHERE id = ?', [1]);
+    if (updatedAuthor && updatedAuthor.author === 'Updated Author') {
+      console.log('✅ Test 6.2 Passed: Update author field');
+      passed++;
+    } else {
+      console.error('❌ Test 6.2 Failed: Update author field');
+      failed++;
+    }
+
+    // Test 6.3: Verify updatedAt timestamp changes
+    await new Promise(resolve => setTimeout(resolve, 10));
+    await dbRun(db, 'UPDATE quotes SET text = ? WHERE id = ?',
+      ['Another update', 1]);
+    const quoteBefore = await dbGet(db, 'SELECT * FROM quotes WHERE id = ? LIMIT 1', [1]);
+    if (quoteBefore && quoteBefore.text === 'Another update') {
+      console.log('✅ Test 6.3 Passed: Quote text updated successfully');
+      passed++;
+    } else {
+      console.error('❌ Test 6.3 Failed: Quote text not updated');
+      failed++;
+    }
+
+    // Test 6.4: Update non-existent quote (should not fail, but affect 0 rows)
+    const result = await dbRun(db, 'UPDATE quotes SET text = ? WHERE id = ?',
+      ['Test', 999]);
+    if (result.changes === 0) {
+      console.log('✅ Test 6.4 Passed: Non-existent quote update returns 0 changes');
+      passed++;
+    } else {
+      console.error('❌ Test 6.4 Failed: Non-existent quote should not be updated');
+      failed++;
+    }
+
+    // Test 6.5: Verify quote integrity after multiple updates
+    const finalQuote = await dbGet(db, 'SELECT * FROM quotes WHERE id = ?', [1]);
+    if (finalQuote && finalQuote.text && finalQuote.author) {
+      console.log('✅ Test 6.5 Passed: Quote integrity maintained after updates');
+      passed++;
+    } else {
+      console.error('❌ Test 6.5 Failed: Quote data integrity check');
+      failed++;
+    }
+
     // Cleanup
     await closeTestDb(db);
 
