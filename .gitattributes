@@ -1,0 +1,30 @@
+# Git Line Ending Normalization
+# Force Unix line endings (LF) for consistency
+
+* text=auto
+
+# Source code - always LF
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.env text eol=lf
+
+# Shell scripts - always LF
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Windows scripts - always CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary files - no conversion
+*.db binary
+*.sqlite binary
+*.jpg binary
+*.png binary
+*.gif binary
+*.zip binary
+*.tar binary
