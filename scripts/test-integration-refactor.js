@@ -3,11 +3,13 @@
  * Tests commands that use the new Command base class and helpers
  */
 
+/* eslint-disable no-unused-vars */
+
 let passed = 0;
 let failed = 0;
 
 // Mock Discord.js components
-const mockDiscord = {
+const _mockDiscord = {
   SlashCommandBuilder: class {
     constructor() {
       this.name_val = '';
@@ -37,7 +39,7 @@ function createMockInteraction() {
     followUp: async function(msg) { return msg; },
     isCommand: function() { return true; },
     isChatInputCommand: function() { return true; },
-    options: { getString: (name) => 'test_value', getInteger: (name) => 1 }
+    options: { getString: (_name) => 'test_value', getInteger: (_name) => 1 }
   };
 }
 
@@ -106,11 +108,11 @@ try {
       });
     }
     
-    async execute(message) {
+    async execute(_message) {
       return 'executed';
     }
     
-    async executeInteraction(interaction) {
+    async executeInteraction(_interaction) {
       return 'executed';
     }
   }
@@ -148,7 +150,7 @@ try {
       super({ name: 'test-cmd', description: 'Test', data, options });
     }
     
-    async executeInteraction(interaction) {
+    async executeInteraction(_interaction) {
       return 'success';
     }
   }
@@ -178,7 +180,7 @@ console.log('\n=== Test 6: Command Error Handling ===');
         super({ name: 'error-cmd', description: 'Error test' });
       }
       
-      async executeInteraction(interaction) {
+      async executeInteraction(_interaction) {
         throw new Error('Test error');
       }
     }
@@ -213,7 +215,7 @@ console.log('\n=== Test 7: Response Helpers in Command ===');
         super({ name: 'success', description: 'Success test' });
       }
       
-      async executeInteraction(interaction) {
+      async executeInteraction(_interaction) {
         await sendSuccess(interaction, 'Command completed');
       }
     }
@@ -245,7 +247,7 @@ try {
     constructor() {
       super({ name: 'chain', description: 'Test' });
     }
-    async executeInteraction(interaction) {}
+    async executeInteraction(_interaction) {}
   }
   
   const cmd = new ChainableCommand().register();
@@ -304,7 +306,7 @@ try {
     }
   }
   
-  const cmd = new SimpleCmd().register();
+  const _cmd = new SimpleCmd().register();
   
   // Count number of try-catch blocks needed (should be 0 in the implementation)
   const source = SimpleCmd.prototype.executeInteraction.toString();

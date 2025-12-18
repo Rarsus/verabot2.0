@@ -3,6 +3,8 @@
  * Tests error wrapping, registration, and command lifecycle
  */
 
+/* eslint-disable no-unused-vars */
+
 const Command = require('../../src/core/CommandBase');
 
 let passed = 0;
@@ -81,7 +83,7 @@ console.log('\n=== Test 3: Error Wrapping with Interaction ===');
 (async () => {
   try {
     const cmd = new Command({ name: 'test', description: 'Test' });
-    const testFn = async (interaction) => {
+    const testFn = async (_interaction) => {
       throw new Error('Test error');
     };
     const wrapped = cmd.wrapError(testFn, 'test.execute');
@@ -106,7 +108,7 @@ console.log('\n=== Test 4: Error Wrapping with Deferred Interaction ===');
 (async () => {
   try {
     const cmd = new Command({ name: 'test', description: 'Test' });
-    const testFn = async (interaction) => {
+    const testFn = async (_interaction) => {
       throw new Error('Deferred error');
     };
     const wrapped = cmd.wrapError(testFn, 'test.execute');
@@ -178,7 +180,7 @@ console.log('\n=== Test 7: Error Message Includes Details ===');
 (async () => {
   try {
     const cmd = new Command({ name: 'test', description: 'Test' });
-    const testFn = async (interaction) => {
+    const testFn = async (_interaction) => {
       throw new Error('Specific error detail');
     };
     const wrapped = cmd.wrapError(testFn, 'test.execute');

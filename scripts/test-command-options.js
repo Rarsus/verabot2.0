@@ -3,6 +3,7 @@
  * Tests option building, SlashCommandBuilder creation, and options array generation
  */
 
+/* eslint-disable no-unused-vars */
 const buildCommandOptions = require('../../src/core/CommandOptions');
 
 let passed = 0;
@@ -195,7 +196,7 @@ try {
 // Test 8: No options parameter (undefined)
 console.log('\n=== Test 8: Undefined Options Parameter ===');
 try {
-  const { data, options } = buildCommandOptions(
+  const { data: _data5, options } = buildCommandOptions(
     'simple-cmd',
     'Command with no options'
   );

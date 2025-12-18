@@ -6,6 +6,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
     "register-commands": "node src/register-commands.js",
     "test": "node ./tests/unit/run-tests.js && node ./scripts/build/generate-test-docs.js",
     "test:quotes": "node ./tests/unit/test-quotes.js",
@@ -17,6 +18,9 @@
     "test:all": "npm test && npm run test:quotes && npm run test:quotes-advanced && npm run test:utils:base && npm run test:utils:options && npm run test:utils:helpers && npm run test:integration:refactor && node ./scripts/build/generate-test-docs.js",
     "test:docs": "node ./scripts/build/generate-test-docs.js",
     "lint": "eslint --ext .js src/ tests/ scripts/",
+    "lint:fix": "eslint --ext .js src/ tests/ scripts/ --fix",
+    "format": "npm run lint:fix",
+    "check": "npm run lint && npm test",
     "ci": "npm ci && npm test"
   },
   "engines": {
