@@ -25,12 +25,13 @@ async function generateAIPoem(subject, style = 'sonnet') {
 
     const prompt = `${styleGuide[style] || styleGuide.sonnet} about "${subject}". Only output the poem, nothing else.`;
 
+    // Use mistral-7b model instead of gpt2 (which is deprecated)
     const response = await fetch(
-      'https://api-inference.huggingface.co/models/gpt2',
+      'https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1',
       {
         headers: { Authorization: `Bearer ${apiKey}` },
         method: 'POST',
-        body: JSON.stringify({ inputs: prompt, parameters: { max_length: 200 } })
+        body: JSON.stringify({ inputs: prompt, parameters: { max_length: 300, temperature: 0.7 } })
       }
     );
 
@@ -42,8 +43,12 @@ async function generateAIPoem(subject, style = 'sonnet') {
     const result = await response.json();
     if (result[0] && result[0].generated_text) {
       // Extract just the poem part (remove the prompt)
-      const poem = result[0].generated_text.replace(prompt, '').trim();
-      return poem || null;
+      let poem = result[0].generated_text.replace(prompt, '').trim();
+      // Remove any model artifacts
+      if (poem.includes('\n\n')) {
+        poem = poem.split('\n\n')[0];
+      }
+      return poem && poem.length > 10 ? poem : null;
     }
     return null;
   } catch (err) {
@@ -125,6 +130,9 @@ module.exports = {
       const type = interaction.options.getString('type') || 'sonnet';
       const subject = interaction.options.getString('subject') || 'the world';
       
+      // Defer the reply to give us time to call the AI API (3-second timeout for API calls)
+      await interaction.deferReply();
+      
       // Try AI generation first
       let poem = await generateAIPoem(subject, type);
       
@@ -133,10 +141,16 @@ module.exports = {
         poem = generatePoem(type, subject);
       }
       
-      await interaction.reply({ content: `\n${poem}` });
+      await interaction.editReply({ content: `\n${poem}` });
     } catch (err) {
       console.error('Poem interaction error', err);
-      try { await interaction.reply({ content: 'Could not create poem.', ephemeral: true }); } catch (e) { void 0; }
+      try {
+        if (interaction.deferred) {
+          await interaction.editReply({ content: 'Could not create poem.' });
+        } else {
+          await interaction.reply({ content: 'Could not create poem.', flags: 64 });
+        }
+      } catch (e) { void 0; }
     }
   }
 };

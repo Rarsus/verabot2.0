@@ -60,17 +60,19 @@ Users can now generate poems with the `/poem` command:
 
 ## Models Available
 
-The default setup uses **GPT-2**, but Hugging Face has many other models:
+The default setup uses **Mistral-7B** (better quality than GPT-2, free tier friendly):
 
-- `gpt2` (lightweight, free)
-- `EleutherAI/gpt-neo-125M` (better quality)
-- `EleutherAI/gpt-neo-1.3B` (even better)
+- `mistralai/Mistral-7B-Instruct-v0.1` (default - recommended)
+- `EleutherAI/gpt-neo-125M` (lighter weight)
+- `EleutherAI/gpt-neo-2.7B` (better quality)
 - `meta-llama/Llama-2-7b` (if you have access)
 
 To change the model, edit line 30 in `src/commands/poem.js`:
 ```javascript
-'https://api-inference.huggingface.co/models/YOUR_MODEL_HERE'
+'https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1'
 ```
+
+Replace with any supported Hugging Face text-generation model.
 
 ## Limitations & Tips
 
