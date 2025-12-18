@@ -10,6 +10,11 @@
     "test": "node ./scripts/run-tests.js",
     "test:quotes": "node ./scripts/test-quotes.js",
     "test:quotes-advanced": "node ./scripts/test-quotes-advanced.js",
+    "test:utils:base": "node ./scripts/test-command-base.js",
+    "test:utils:options": "node ./scripts/test-command-options.js",
+    "test:utils:helpers": "node ./scripts/test-response-helpers.js",
+    "test:integration:refactor": "node ./scripts/test-integration-refactor.js",
+    "test:all": "npm test && npm run test:quotes && npm run test:quotes-advanced && npm run test:utils:base && npm run test:utils:options && npm run test:utils:helpers && npm run test:integration:refactor",
     "lint": "eslint --ext .js src/ scripts/",
     "ci": "npm ci && npm test"
   },
