@@ -139,7 +139,7 @@ npm test       # ✅ All checks passed
 - [Hugging Face Docs](https://huggingface.co/docs)
 - [Inference API Guide](https://huggingface.co/docs/inference-api/index)
 - [Available Models](https://huggingface.co/models?pipeline_tag=text-generation)
-- [Setup Guide](./docs/HUGGINGFACE_SETUP.md)
+- [Hugging Face Documentation](https://huggingface.co/docs)
 
 ---
 

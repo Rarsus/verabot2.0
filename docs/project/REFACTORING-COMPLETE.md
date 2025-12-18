@@ -421,11 +421,11 @@ module.exports = new AddQuoteCommand().register();
 - [x] Response helpers fully tested
 
 ### ✅ Documentation
-- [x] ACTION_PLAN.md created
+- [x] ACTION-PLAN.md created
 - [x] IMPROVEMENTS.md documents patterns
-- [x] REFACTORING_GUIDE.md shows before/after
-- [x] TDD_TEST_RESULTS.md explains testing
-- [x] TDD_QUICK_REFERENCE.md quick start guide
+- [x] REFACTORING-GUIDE.md shows before/after
+- [x] TDD-TEST-RESULTS.md explains testing
+- [x] TDD-QUICK-REFERENCE.md quick start guide
 
 ### ✅ Backwards Compatibility
 - [x] All Discord.js integrations unchanged
@@ -439,11 +439,11 @@ module.exports = new AddQuoteCommand().register();
 ## 📚 Related Documentation
 
 **See these files for more details:**
-- [`ACTION_PLAN.md`](ACTION_PLAN.md) - Multi-phase implementation plan
+- [`ACTION-PLAN.md`](ACTION-PLAN.md) - Multi-phase implementation plan
 - [`IMPROVEMENTS.md`](IMPROVEMENTS.md) - Technical improvements analysis
-- [`REFACTORING_GUIDE.md`](REFACTORING_GUIDE.md) - Before/after examples
-- [`TDD_TEST_RESULTS.md`](TDD_TEST_RESULTS.md) - Detailed test analysis
-- [`TDD_QUICK_REFERENCE.md`](TDD_QUICK_REFERENCE.md) - Testing quick start
+- [`REFACTORING-GUIDE.md`](../reference/REFACTORING-GUIDE.md) - Before/after examples
+- [`TDD-TEST-RESULTS.md`](TDD-TEST-RESULTS.md) - Detailed test analysis
+- [`TDD-QUICK-REFERENCE.md`](../reference/TDD-QUICK-REFERENCE.md) - Testing quick start
 
 ---
 
