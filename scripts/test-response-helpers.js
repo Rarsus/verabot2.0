@@ -45,19 +45,19 @@ function createMockInteraction(replied = false, deferred = false) {
   };
 }
 
-function createMockMessage() {
-  return {
-    reply: async function(msg) {
-      this._lastReply = msg;
-      return msg;
-    },
-    channel: {
-      send: async function(msg) {
-        return msg;
-      }
-    }
-  };
-}
+// function createMockMessage() {
+//   return {
+//     reply: async function(msg) {
+//       this._lastReply = msg;
+//       return msg;
+//     },
+//     channel: {
+//       send: async function(msg) {
+//         return msg;
+//       }
+//     }
+//   };
+// }
 
 // Test 1: Send quote embed on new interaction
 console.log('\n=== Test 1: Quote Embed on New Interaction ===');

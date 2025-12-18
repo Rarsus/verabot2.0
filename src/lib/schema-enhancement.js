@@ -10,7 +10,7 @@ const { logError, ERROR_LEVELS } = require('../middleware/errorHandler');
  * @param {sqlite3.Database} db - Database connection
  */
 function enhanceSchema(db) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     // Helper to run SQL with promise support
     const runAsync = (sql) => {
       return new Promise((res) => {

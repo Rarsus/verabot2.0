@@ -8,7 +8,6 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 // Configuration
-const SCRIPTS_DIR = __dirname;
 const DOCS_DIR = path.join(__dirname, '../../docs');
 const TESTS_DIR = path.join(__dirname, '../../tests/unit');
 const TEST_FILES = [

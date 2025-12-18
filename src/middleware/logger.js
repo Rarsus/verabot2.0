@@ -19,13 +19,14 @@ const LOG_LEVELS = {
  */
 function log(level, context, message, data = {}) {
   const timestamp = new Date().toISOString();
-  const entry = {
-    timestamp,
-    level,
-    context,
-    message,
-    ...data
-  };
+  // Entry object for future logging service integration
+  // const _entry = {
+  //   timestamp,
+  //   level,
+  //   context,
+  //   message,
+  //   ...data
+  // };
   
   // Future: Could integrate with logging service
   console.log(`[${timestamp}] [${level}] [${context}] ${message}`, data);

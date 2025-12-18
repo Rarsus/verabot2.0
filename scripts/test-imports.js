@@ -1,4 +1,4 @@
-const db = require('./src/db');
+const db = require('../src/db');
 
 // Test rate-quote imports
 console.log('rate-quote needs: rateQuote, getQuoteById');

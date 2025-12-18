@@ -23,15 +23,16 @@ function createMockInteraction(isReply = false, isDeferred = false) {
   };
 }
 
-function createMockMessage() {
-  return {
-    author: { id: '123456', bot: false },
-    channel: {
-      send: async function(msg) { return msg; }
-    },
-    reply: async function(msg) { return msg; }
-  };
-}
+// Unused but kept for potential future use
+// function createMockMessage() {
+//   return {
+//     author: { id: '123456', bot: false },
+//     channel: {
+//       send: async function(msg) { return msg; }
+//     },
+//     reply: async function(msg) { return msg; }
+//   };
+// }
 
 // Test 1: Command instantiation
 console.log('\n=== Test 1: Command Instantiation ===');
@@ -81,7 +82,7 @@ console.log('\n=== Test 3: Error Wrapping with Interaction ===');
 (async () => {
   try {
     const cmd = new Command({ name: 'test', description: 'Test' });
-    const testFn = async (interaction) => {
+    const testFn = async (_interaction) => {
       throw new Error('Test error');
     };
     const wrapped = cmd.wrapError(testFn, 'test.execute');
@@ -106,7 +107,7 @@ console.log('\n=== Test 4: Error Wrapping with Deferred Interaction ===');
 (async () => {
   try {
     const cmd = new Command({ name: 'test', description: 'Test' });
-    const testFn = async (interaction) => {
+    const testFn = async (_interaction) => {
       throw new Error('Deferred error');
     };
     const wrapped = cmd.wrapError(testFn, 'test.execute');
@@ -178,7 +179,7 @@ console.log('\n=== Test 7: Error Message Includes Details ===');
 (async () => {
   try {
     const cmd = new Command({ name: 'test', description: 'Test' });
-    const testFn = async (interaction) => {
+    const testFn = async (_interaction) => {
       throw new Error('Specific error detail');
     };
     const wrapped = cmd.wrapError(testFn, 'test.execute');
