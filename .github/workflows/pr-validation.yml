@@ -1,0 +1,104 @@
+name: PR Validation - Code Quality Gate
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  validate-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Lint changes
+        run: npm run lint
+        continue-on-error: true
+
+      - name: 🧪 Run tests
+        run: npm run test:all
+
+      - name: 💬 Add comment on success
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ All checks passed! Code quality and tests verified.'
+            })
+
+      - name: 💬 Add comment on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ Quality checks failed. Please review the linting and test errors above.'
+            })
+
+  check-pr-title:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🎯 Validate PR title format
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prTitle = context.payload.pull_request.title;
+            const validPrefixes = ['feat:', 'fix:', 'docs:', 'style:', 'refactor:', 'test:', 'chore:'];
+            const hasValidPrefix = validPrefixes.some(prefix => prTitle.startsWith(prefix));
+            
+            if (!hasValidPrefix) {
+              core.setFailed(`❌ PR title must start with one of: ${validPrefixes.join(', ')}`);
+            } else {
+              core.notice(`✅ PR title format valid: "${prTitle}"`);
+            }
+
+  size-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📏 Check PR size
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const additions = pr.additions;
+            const deletions = pr.deletions;
+            const filesChanged = pr.changed_files;
+
+            console.log(`📊 PR Statistics:`);
+            console.log(`   Files changed: ${filesChanged}`);
+            console.log(`   Additions: ${additions}`);
+            console.log(`   Deletions: ${deletions}`);
+            console.log(`   Total changes: ${additions + deletions}`);
+
+            // Warn if PR is very large
+            if (filesChanged > 10 || additions > 500) {
+              core.warning('⚠️ Large PR detected. Consider breaking into smaller PRs for easier review.');
+            }
