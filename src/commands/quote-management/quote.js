@@ -1,25 +1,24 @@
-const { SlashCommandBuilder } = require('discord.js');
+const Command = require('../../utils/command-base');
+const buildCommandOptions = require('../../utils/command-options');
+const { sendError } = require('../../utils/response-helpers');
 const { getQuoteByNumber, getAllQuotes } = require('../../db');
-const { validateQuoteNumber, handleInteractionError } = require('../../utils/error-handler');
+const { validateQuoteNumber } = require('../../utils/error-handler');
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('quote')
-    .setDescription('Retrieve a quote from the database by number')
-    .addIntegerOption(opt => opt.setName('number').setDescription('Quote number').setRequired(true).setMinValue(1)),
-  name: 'quote',
-  description: 'Retrieve a quote from the database by number',
-  options: [
-    { name: 'number', type: 'integer', description: 'Quote number', required: true, minValue: 1 }
-  ],
+const { data, options } = buildCommandOptions('quote', 'Retrieve a quote from the database by number', [
+  { name: 'number', type: 'integer', description: 'Quote number', required: true }
+]);
+
+class QuoteCommand extends Command {
+  constructor() {
+    super({ name: 'quote', description: 'Retrieve a quote from the database by number', data, options });
+  }
+
   async execute(message, args) {
     try {
       const number = parseInt(args[0], 10);
-      
-      // Get total quotes for validation
       const allQuotes = await getAllQuotes();
       const validation = validateQuoteNumber(number, allQuotes.length);
-      
+
       if (!validation.valid) {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send(`❌ ${validation.error}`);
@@ -38,6 +37,7 @@ module.exports = {
         }
         return;
       }
+
       if (message.channel && typeof message.channel.send === 'function') {
         await message.channel.send(`> ${quote.text}\n— ${quote.author}`);
       } else if (message.reply) {
@@ -46,28 +46,26 @@ module.exports = {
     } catch (err) {
       console.error('Quote command error', err);
     }
-  },
-  async executeInteraction(interaction) {
-    try {
-      const number = interaction.options.getInteger('number');
-      
-      // Get total quotes for validation
-      const allQuotes = await getAllQuotes();
-      const validation = validateQuoteNumber(number, allQuotes.length);
-      
-      if (!validation.valid) {
-        await interaction.reply({ content: `❌ ${validation.error}`, flags: 64 });
-        return;
-      }
-
-      const quote = await getQuoteByNumber(number);
-      if (!quote) {
-        await interaction.reply({ content: `❌ Quote #${number} not found.`, flags: 64 });
-        return;
-      }
-      await interaction.reply(`> ${quote.text}\n— ${quote.author}`);
-    } catch (err) {
-      await handleInteractionError(interaction, err, 'quote.executeInteraction');
-    }
   }
-};
+
+  async executeInteraction(interaction) {
+    const number = interaction.options.getInteger('number');
+    const allQuotes = await getAllQuotes();
+    const validation = validateQuoteNumber(number, allQuotes.length);
+
+    if (!validation.valid) {
+      await sendError(interaction, validation.error, true);
+      return;
+    }
+
+    const quote = await getQuoteByNumber(number);
+    if (!quote) {
+      await sendError(interaction, `Quote #${number} not found`, true);
+      return;
+    }
+
+    await interaction.reply(`> ${quote.text}\n— ${quote.author}`);
+  }
+}
+
+module.exports = new QuoteCommand().register();

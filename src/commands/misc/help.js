@@ -1,4 +1,6 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const Command = require('../../utils/command-base');
+const buildCommandOptions = require('../../utils/command-options');
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 function formatUsage(cmd, prefix = '!') {
   const opts = (cmd.data && typeof cmd.data.toJSON === 'function') ? (cmd.data.toJSON().options || []) : (cmd.options || []);
@@ -8,21 +10,15 @@ function formatUsage(cmd, prefix = '!') {
   return { slash, message };
 }
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('help')
-    .setDescription('List available commands or show detailed help for a command')
-    .addStringOption(opt => opt.setName('command').setDescription('Command name to get details for').setRequired(false)),
-  name: 'help',
-  description: 'List available commands and usage',
-  options: [
-    {
-      name: 'command',
-      type: 'string',
-      description: 'Command name to get details for',
-      required: false
-    }
-  ],
+const { data, options } = buildCommandOptions('help', 'List available commands or show detailed help for a command', [
+  { name: 'command', type: 'string', description: 'Command name to get details for', required: false }
+]);
+
+class HelpCommand extends Command {
+  constructor() {
+    super({ name: 'help', description: 'List available commands and usage', data, options });
+  }
+
   async execute(message) {
     try {
       const client = message.client;
@@ -31,6 +27,7 @@ module.exports = {
       for (const [name, cmd] of commands) {
         lines.push({ name, desc: cmd.description || 'No description', cmd });
       }
+
       if (lines.length === 0) {
         const e = new EmbedBuilder().setTitle('Available commands').setDescription('No commands available.').setColor(0x00AE86);
         if (message.channel && typeof message.channel.send === 'function') return message.channel.send({ embeds: [e] });
@@ -38,7 +35,6 @@ module.exports = {
         return;
       }
 
-      // Pagination
       const pageSize = 6;
       const pages = [];
       for (let i = 0; i < lines.length; i += pageSize) {
@@ -53,12 +49,10 @@ module.exports = {
         new ButtonBuilder().setCustomId('close').setLabel('Close').setStyle(ButtonStyle.Danger)
       );
 
-      // Try DM first
       let sentMessage;
       try {
         sentMessage = await message.author.send({ embeds: [pages[0]], components: [components(0)] });
       } catch (e) {
-        // Fallback to channel
         if (message.channel && typeof message.channel.send === 'function') {
           sentMessage = await message.channel.send({ embeds: [pages[0]], components: [components(0)] });
         } else if (message.reply) {
@@ -83,22 +77,22 @@ module.exports = {
             await i.update({ content: 'Help closed.', embeds: [], components: [] });
             collector.stop();
           }
-        } catch (err) { /* ignore interaction errors */ void 0; }
+        } catch (err) { void 0; }
       });
       collector.on('end', async () => {
-        try { await sentMessage.edit({ components: [] }); } catch (e) { /* add error code */ void 0; }
+        try { await sentMessage.edit({ components: [] }); } catch (e) { void 0; }
       });
     } catch (err) {
       console.error('Help command (message) error', err);
     }
-  },
+  }
+
   async executeInteraction(interaction) {
     try {
       const client = interaction.client;
       const commands = client && client.commands ? client.commands : new Map();
       const requested = interaction.options.getString('command');
 
-      // If a specific command requested, show details (no pagination needed)
       if (requested) {
         const cmd = commands.get(requested);
         if (!cmd) {
@@ -128,7 +122,6 @@ module.exports = {
         return;
       }
 
-      // Paginated list for interactions
       const items = [];
       for (const [name, cmd] of commands) items.push({ name, desc: cmd.description || 'No description', cmd });
       if (items.length === 0) return interaction.reply({ content: 'No commands available.', ephemeral: true });
@@ -163,14 +156,16 @@ module.exports = {
             await i.update({ content: 'Help closed.', embeds: [], components: [] });
             collector.stop();
           }
-        } catch (err) { /* ignore */ void 0; }
+        } catch (err) { void 0; }
       });
       collector.on('end', async () => {
-        try { await reply.edit({ components: [] }); } catch (e) {/* add error code */ void 0; }
+        try { await reply.edit({ components: [] }); } catch (e) { void 0; }
       });
     } catch (err) {
       console.error('Help command (interaction) error', err);
-      try { await interaction.reply({ content: 'Could not list commands.', ephemeral: true }); } catch(e){/* add error code */ void 0; }
+      try { await interaction.reply({ content: 'Could not list commands.', ephemeral: true }); } catch(e){ void 0; }
     }
   }
-};
+}
+
+module.exports = new HelpCommand().register();
