@@ -55,6 +55,7 @@ Complete documentation is organized in the [docs/](docs/) folder:
 - [docs/project/ACTION-PLAN.md](docs/project/ACTION-PLAN.md) - Implementation strategy
 - [docs/project/IMPROVEMENTS.md](docs/project/IMPROVEMENTS.md) - Technical improvements
 - [docs/project/TDD-TEST-RESULTS.md](docs/project/TDD-TEST-RESULTS.md) - Test analysis and coverage
+- [docs/TEST-COVERAGE-OVERVIEW.md](docs/TEST-COVERAGE-OVERVIEW.md) - **Comprehensive test coverage analysis**
 
 ---
 
@@ -112,22 +113,35 @@ scripts/
 ### Run All Tests
 ```bash
 npm test                    # Quick sanity checks
-npm run test:all           # All utility tests (41 tests)
+npm run test:all           # All tests (74 tests)
 npm run test:quotes        # Quote system basic tests
 npm run test:quotes-advanced # Advanced quote tests
 ```
 
 ### Test Results
-- ✅ Utility Tests: 36/38 passing (95%)
-- ✅ Quote Tests: 35/35 passing (100%)
+- ✅ **74/74 tests passing** (100% pass rate)
+- ✅ Core Framework: 27 tests
+- ✅ Quote System: 35 tests
+- ✅ Helper & Utilities: 12 tests
 - ✅ Linting: 0 errors
+
+### Test Coverage Overview
+📊 **[View Complete Test Coverage Overview](docs/TEST-COVERAGE-OVERVIEW.md)**
+
+The test suite covers:
+- Core framework (CommandBase, CommandOptions)
+- Quote system (CRUD, tags, ratings, export)
+- Response helpers and Discord interactions
+- Integration between components
+
+Current coverage: ~40-50% of codebase with 100% pass rate.
 
 ### Individual Test Suites
 ```bash
-npm run test:utils:base     # Command base class tests (5/6)
+npm run test:utils:base     # Command base class tests (7/7)
 npm run test:utils:options  # Options builder tests (10/10)
 npm run test:utils:helpers  # Response helpers tests (12/12)
-npm run test:integration:refactor # Integration tests (9/10)
+npm run test:integration:refactor # Integration tests (10/10)
 ```
 
 ---
@@ -286,10 +300,13 @@ quote_tags
 - **Development Speed:** 50% faster new commands
 
 ### Testing Coverage
-- **Utility Tests:** 36/38 passing (95%)
-- **Quote System:** 35/35 passing (100%)
-- **Integration:** 9/10 passing (90%)
-- **Overall:** 70/73 passing (96%)
+- **Total Tests:** 74/74 passing (100%)
+- **Core Framework:** 27 tests
+- **Quote System:** 35 tests  
+- **Helper & Utilities:** 12 tests
+- **Estimated Coverage:** ~40-50%
+
+See [docs/TEST-COVERAGE-OVERVIEW.md](docs/TEST-COVERAGE-OVERVIEW.md) for detailed analysis.
 
 ---
 

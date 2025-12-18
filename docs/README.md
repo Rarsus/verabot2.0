@@ -23,6 +23,10 @@ Complete documentation for VeraBot2.0 - a modern Discord bot with organized comm
 - **[IMPROVEMENTS.md](project/IMPROVEMENTS.md)** - Technical improvements analysis
 - **[TDD-TEST-RESULTS.md](project/TDD-TEST-RESULTS.md)** - Detailed test analysis
 
+### 🧪 Test Documentation
+- **[TEST-COVERAGE-OVERVIEW.md](TEST-COVERAGE-OVERVIEW.md)** - **Comprehensive test coverage analysis**
+- **[TEST-SUMMARY-LATEST.md](TEST-SUMMARY-LATEST.md)** - Latest test results (auto-generated)
+
 ---
 
 ## 🎯 Choose Your Path
@@ -47,9 +51,10 @@ Complete documentation for VeraBot2.0 - a modern Discord bot with organized comm
 
 ### I'm Writing Tests
 1. Guide: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#quick-start) - Testing intro
-2. Learn: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#testing-patterns) - Test patterns
-3. Reference: [reference/TDD-QUICK-REFERENCE.md](reference/TDD-QUICK-REFERENCE.md) - Quick commands
-4. Debug: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#debugging-tests) - Troubleshooting
+2. Coverage: [TEST-COVERAGE-OVERVIEW.md](TEST-COVERAGE-OVERVIEW.md) - **Coverage analysis**
+3. Learn: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#testing-patterns) - Test patterns
+4. Reference: [reference/TDD-QUICK-REFERENCE.md](reference/TDD-QUICK-REFERENCE.md) - Quick commands
+5. Debug: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#debugging-tests) - Troubleshooting
 
 ### I Want to Understand Refactoring
 1. Overview: [project/REFACTORING-COMPLETE.md](project/REFACTORING-COMPLETE.md) - Summary
@@ -65,6 +70,8 @@ Complete documentation for VeraBot2.0 - a modern Discord bot with organized comm
 docs/
 ├── README.md                          # This file (navigation hub)
 ├── INDEX.md                           # Comprehensive index
+├── TEST-COVERAGE-OVERVIEW.md          # Test coverage analysis
+├── TEST-SUMMARY-LATEST.md             # Latest test results
 ├── guides/
 │   ├── 01-CREATING-COMMANDS.md       # How to create commands
 │   ├── 02-TESTING-GUIDE.md           # Testing approach & patterns
@@ -99,9 +106,10 @@ docs/
 
 ### Testing & Quality
 - Testing guide: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md)
+- **Test coverage:** [TEST-COVERAGE-OVERVIEW.md](TEST-COVERAGE-OVERVIEW.md)
+- Latest results: [TEST-SUMMARY-LATEST.md](TEST-SUMMARY-LATEST.md)
 - Test patterns: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#testing-patterns)
 - Writing tests: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#writing-new-tests)
-- Coverage: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#coverage-analysis)
 - Debugging tests: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#debugging-tests)
 
 ### Setup & Configuration
@@ -128,9 +136,10 @@ docs/
 - **Guides:** 3 files (~1,200 lines)
 - **Reference:** 3 files (~600 lines)
 - **Project Info:** 4 files (~800 lines)
-- **Total:** 10 reference documents
+- **Test Documentation:** 2 files (~1,400 lines)
+- **Total:** 12 reference documents
 - **Code Examples:** 100+
-- **Cross-references:** 200+
+- **Cross-references:** 320+
 
 ---
 
