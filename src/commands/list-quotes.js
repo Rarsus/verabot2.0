@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { getAllQuotes } = require('../db');
+const { handleInteractionError } = require('../utils/error-handler');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -35,16 +36,15 @@ module.exports = {
     try {
       const quotes = getAllQuotes();
       if (quotes.length === 0) {
-        await interaction.reply({ content: 'No quotes in the database yet.', ephemeral: true });
+        await interaction.reply({ content: 'No quotes in the database yet.', flags: 64 });
         return;
       }
       const list = quotes.map((q, i) => `${i + 1}. ${q.text}\n   — ${q.author}`).join('\n\n');
       const dmChannel = await interaction.user.createDM();
       await dmChannel.send(`**Quotes Database:**\n\n${list}`);
-      await interaction.reply({ content: 'Quote list sent to your DMs!', ephemeral: true });
+      await interaction.reply({ content: 'Quote list sent to your DMs!', flags: 64 });
     } catch (err) {
-      console.error('List-quotes interaction error', err);
-      try { await interaction.reply({ content: 'Could not retrieve quotes.', ephemeral: true }); } catch (e) { void 0; }
+      await handleInteractionError(interaction, err, 'list-quotes.executeInteraction');
     }
   }
 };

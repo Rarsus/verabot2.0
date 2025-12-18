@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { getQuoteByNumber } = require('../db');
+const { getQuoteByNumber, getAllQuotes } = require('../db');
+const { validateQuoteNumber, handleInteractionError } = require('../utils/error-handler');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -14,20 +15,26 @@ module.exports = {
   async execute(message, args) {
     try {
       const number = parseInt(args[0], 10);
-      if (isNaN(number) || number < 1) {
+      
+      // Get total quotes for validation
+      const allQuotes = getAllQuotes();
+      const validation = validateQuoteNumber(number, allQuotes.length);
+      
+      if (!validation.valid) {
         if (message.channel && typeof message.channel.send === 'function') {
-          await message.channel.send('Please provide a valid quote number.');
+          await message.channel.send(`❌ ${validation.error}`);
         } else if (message.reply) {
-          await message.reply('Please provide a valid quote number.');
+          await message.reply(`❌ ${validation.error}`);
         }
         return;
       }
+
       const quote = getQuoteByNumber(number);
       if (!quote) {
         if (message.channel && typeof message.channel.send === 'function') {
-          await message.channel.send(`Quote #${number} not found.`);
+          await message.channel.send(`❌ Quote #${number} not found.`);
         } else if (message.reply) {
-          await message.reply(`Quote #${number} not found.`);
+          await message.reply(`❌ Quote #${number} not found.`);
         }
         return;
       }
@@ -43,15 +50,24 @@ module.exports = {
   async executeInteraction(interaction) {
     try {
       const number = interaction.options.getInteger('number');
+      
+      // Get total quotes for validation
+      const allQuotes = getAllQuotes();
+      const validation = validateQuoteNumber(number, allQuotes.length);
+      
+      if (!validation.valid) {
+        await interaction.reply({ content: `❌ ${validation.error}`, flags: 64 });
+        return;
+      }
+
       const quote = getQuoteByNumber(number);
       if (!quote) {
-        await interaction.reply({ content: `Quote #${number} not found.`, ephemeral: true });
+        await interaction.reply({ content: `❌ Quote #${number} not found.`, flags: 64 });
         return;
       }
       await interaction.reply(`> ${quote.text}\n— ${quote.author}`);
     } catch (err) {
-      console.error('Quote interaction error', err);
-      try { await interaction.reply({ content: 'Could not retrieve quote.', ephemeral: true }); } catch (e) { void 0; }
+      await handleInteractionError(interaction, err, 'quote.executeInteraction');
     }
   }
 };
