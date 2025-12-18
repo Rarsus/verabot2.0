@@ -35,3 +35,28 @@ Development
 
 - Tests: `npm test` (runs a basic command sanity check)
 - Docker: `docker build -t verabot2 .` and `docker-compose up -d`
+
+Examples
+
+- Slash command (after registering commands):
+
+	- `/poem type:haiku subject:coffee` — returns a short haiku about "coffee".
+	- `/poem type:sonnet subject:love` — returns a short sonnet-style poem about "love".
+	- `/help` — shows an ephemeral, paginated list of commands.
+
+- Prefix commands (if you use `PREFIX` in `.env`, default `!`):
+
+	- `!poem haiku coffee` — same as `/poem type:haiku subject:coffee`.
+	- `!ping` — bot replies `Pong!`.
+	- `!hi Alice` — bot says `hello Alice!`.
+
+Registering commands
+
+1. Ensure `.env` has `DISCORD_TOKEN` and `CLIENT_ID`; optionally set `GUILD_ID` for fast registration to a test guild.
+2. Run:
+
+```bash
+npm run register-commands
+```
+
+If `GUILD_ID` is set the commands will register immediately in that server. Global registration can take up to an hour to propagate.
