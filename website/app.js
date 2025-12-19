@@ -247,6 +247,16 @@ function extractSection(markdown, sectionName) {
 // ========================================
 // Table of Contents Generation
 // ========================================
+// Safely escape text for inclusion in HTML.
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 function generateTableOfContents() {
     const content = document.getElementById('content');
     const tocNav = document.getElementById('tocNav');
@@ -264,7 +274,7 @@ function generateTableOfContents() {
         const level = parseInt(heading.tagName.substring(1));
         const text = heading.textContent;
         
-        return `<a href="#${id}" class="toc-level-${level}">${text}</a>`;
+        return `<a href="#${id}" class="toc-level-${level}">${escapeHtml(text)}</a>`;
     });
     
     tocNav.innerHTML = tocItems.join('');
