@@ -1,0 +1,72 @@
+name: Deploy Documentation Site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'website/**'
+      - 'docs/**'
+      - '.github/workflows/deploy-docs.yml'
+  workflow_dispatch:
+
+# Sets permissions for GitHub Pages deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: 📂 Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: 🏗️ Build site
+        run: |
+          # Create build directory
+          mkdir -p _site
+          
+          # Copy website files
+          cp -r website/* _site/
+          
+          # Copy docs folder for dynamic content loading
+          mkdir -p _site/docs
+          cp -r docs/* _site/docs/
+          
+          # Copy README.md for content
+          cp README.md _site/
+          
+          echo "✅ Site built successfully"
+          ls -la _site/
+      
+      - name: 📤 Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      
+      - name: ✅ Deployment complete
+        run: |
+          echo "✅ Documentation site deployed successfully!"
+          echo "🔗 URL: ${{ steps.deployment.outputs.page_url }}"

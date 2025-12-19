@@ -34,7 +34,21 @@ npm start
 
 ## 📖 Documentation
 
-Complete documentation is organized in the [docs/](docs/) folder:
+### 🌐 Documentation Website
+
+**Visit our comprehensive documentation website:** [https://Rarsus.github.io/Verabot](https://Rarsus.github.io/Verabot)
+
+Features include:
+- 📚 Complete setup and usage guides
+- 🔧 API documentation with examples
+- 🤝 Contributing guidelines
+- ❓ FAQ and troubleshooting
+- 📱 Mobile-friendly responsive design
+- 🌙 Dark mode support
+
+### 📁 Documentation Files
+
+Complete documentation is also organized in the [docs/](docs/) folder:
 
 ### 🚀 Getting Started
 - [docs/README.md](docs/README.md) - Documentation overview
