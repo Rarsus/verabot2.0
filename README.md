@@ -32,6 +32,40 @@ npm start
 
 ---
 
+## ✨ Key Features
+
+### 📝 Quote Management System
+- **Add, update, delete quotes** with author attribution
+- **Search and filter** by text, author, or tags
+- **Rate quotes** (1-5 stars) with community ratings
+- **Tag system** for organizing quotes by category
+- **Export functionality** (JSON/CSV) for backups
+
+### 💬 Bi-Directional Message Proxy
+- **Forward messages** from Discord channels to external webhooks
+- **Receive messages** from external systems and relay to Discord
+- **Admin-only commands** for secure configuration
+- **Encrypted storage** of webhook tokens and secrets
+- **HMAC signature verification** for incoming webhooks
+- **Automatic retry logic** for failed webhook requests
+- **Channel-specific monitoring** for fine-grained control
+
+[📖 Read the Proxy Setup Guide](docs/guides/04-PROXY-SETUP.md)
+
+### 🤖 AI Integration
+- **AI poem generation** using HuggingFace API
+- Extensible framework for adding more AI features
+
+### 🏗️ Modern Architecture
+- **Command base class** with automatic error handling
+- **Slash commands** and legacy prefix command support
+- **SQLite database** with automatic migrations
+- **Comprehensive testing** (74/74 tests passing)
+- **Test-Driven Development** approach
+- **Clean code principles** and SOLID design patterns
+
+---
+
 ## 📖 Documentation
 
 ### 🌐 Documentation Website
@@ -58,6 +92,7 @@ Complete documentation is also organized in the [docs/](docs/) folder:
 - [docs/guides/01-CREATING-COMMANDS.md](docs/guides/01-CREATING-COMMANDS.md) - Create new commands
 - [docs/guides/02-TESTING-GUIDE.md](docs/guides/02-TESTING-GUIDE.md) - Comprehensive testing with TDD
 - [docs/guides/03-HUGGINGFACE-SETUP.md](docs/guides/03-HUGGINGFACE-SETUP.md) - AI poem generation setup
+- [docs/guides/04-PROXY-SETUP.md](docs/guides/04-PROXY-SETUP.md) - **Webhook proxy configuration and security**
 
 ### 🏗️ Reference (Deep Dives)
 - [docs/reference/ARCHITECTURE.md](docs/reference/ARCHITECTURE.md) - System design and patterns
@@ -90,7 +125,10 @@ src/
 │   ├── DatabaseService.js   # Database operations
 │   ├── ValidationService.js # Input validation
 │   ├── QuoteService.js      # Quote-specific logic
-│   └── DiscordService.js    # Discord API helpers
+│   ├── DiscordService.js    # Discord API helpers
+│   ├── ProxyConfigService.js    # Proxy configuration management
+│   ├── WebhookProxyService.js   # Outgoing webhook forwarding
+│   └── WebhookListenerService.js # Incoming webhook server
 ├── middleware/
 │   ├── errorHandler.js      # Error handling & logging
 │   ├── commandValidator.js  # Command validation
@@ -100,6 +138,8 @@ src/
 │   ├── command-options.js   # Legacy: Use core/CommandOptions.js
 │   ├── error-handler.js     # Error handling utilities
 │   ├── response-helpers.js  # Standardized Discord responses
+│   ├── encryption.js        # Encryption utilities for sensitive data
+│   ├── proxy-helpers.js     # Webhook proxy helper functions
 │   └── helpers/             # Additional helper functions
 └── commands/
     ├── misc/
@@ -107,6 +147,10 @@ src/
     │   ├── ping.js         # Ping/pong command
     │   ├── help.js         # Paginated help command
     │   └── poem.js         # AI poem generation
+    ├── admin/
+    │   ├── proxy-config.js    # Configure webhook proxy
+    │   ├── proxy-enable.js    # Enable/disable proxy
+    │   └── proxy-status.js    # View proxy status
     ├── quote-discovery/
     │   ├── random-quote.js     # Get random quote
     │   ├── search-quotes.js    # Search quotes by text/author

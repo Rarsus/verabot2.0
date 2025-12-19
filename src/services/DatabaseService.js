@@ -234,6 +234,24 @@ function getDatabase() {
             }
           }
         );
+
+        // Create proxy_config table
+        db.run(
+          `
+          CREATE TABLE IF NOT EXISTS proxy_config (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL,
+            encrypted INTEGER DEFAULT 0,
+            createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+          )
+          `,
+          (err) => {
+            if (err) {
+              logError('database.getDatabase.createProxyConfigTable', err, ERROR_LEVELS.CRITICAL);
+            }
+          }
+        );
       });
       schemaInitialized = true;
     }
@@ -453,7 +471,12 @@ module.exports = {
   getAllTags,
   getQuotesByCategory,
   exportQuotesAsJson,
-  exportQuotesAsCsv
+  exportQuotesAsCsv,
+  // Proxy configuration methods
+  getProxyConfig,
+  setProxyConfig,
+  deleteProxyConfig,
+  getAllProxyConfig
 };
 
 /**
@@ -769,3 +792,106 @@ function exportQuotesAsCsv(quotes) {
     }
   });
 }
+
+/**
+ * Get proxy configuration value
+ * @param {string} key - Configuration key
+ * @returns {Promise<Object|null>} Configuration object or null
+ */
+function getProxyConfig(key) {
+  return new Promise((resolve, reject) => {
+    const database = getDatabase();
+
+    database.get(
+      'SELECT key, value, encrypted, updatedAt FROM proxy_config WHERE key = ?',
+      [key],
+      (err, row) => {
+        if (err) {
+          logError('database.getProxyConfig', err, ERROR_LEVELS.MEDIUM, { key });
+          reject(err);
+        } else {
+          resolve(row || null);
+        }
+      }
+    );
+  });
+}
+
+/**
+ * Set proxy configuration value
+ * @param {string} key - Configuration key
+ * @param {string} value - Configuration value
+ * @param {boolean} encrypted - Whether value is encrypted
+ * @returns {Promise<boolean>}
+ */
+function setProxyConfig(key, value, encrypted = false) {
+  return new Promise((resolve, reject) => {
+    const database = getDatabase();
+    const updatedAt = new Date().toISOString();
+
+    database.run(
+      `INSERT INTO proxy_config (key, value, encrypted, updatedAt) 
+       VALUES (?, ?, ?, ?)
+       ON CONFLICT(key) DO UPDATE SET 
+         value = excluded.value,
+         encrypted = excluded.encrypted,
+         updatedAt = excluded.updatedAt`,
+      [key, value, encrypted ? 1 : 0, updatedAt],
+      function(err) {
+        if (err) {
+          logError('database.setProxyConfig', err, ERROR_LEVELS.MEDIUM, { key });
+          reject(err);
+        } else {
+          resolve(true);
+        }
+      }
+    );
+  });
+}
+
+/**
+ * Delete proxy configuration value
+ * @param {string} key - Configuration key
+ * @returns {Promise<boolean>}
+ */
+function deleteProxyConfig(key) {
+  return new Promise((resolve, reject) => {
+    const database = getDatabase();
+
+    database.run(
+      'DELETE FROM proxy_config WHERE key = ?',
+      [key],
+      function(err) {
+        if (err) {
+          logError('database.deleteProxyConfig', err, ERROR_LEVELS.MEDIUM, { key });
+          reject(err);
+        } else {
+          resolve(this.changes > 0);
+        }
+      }
+    );
+  });
+}
+
+/**
+ * Get all proxy configuration
+ * @returns {Promise<Array>} Array of configuration objects
+ */
+function getAllProxyConfig() {
+  return new Promise((resolve, reject) => {
+    const database = getDatabase();
+
+    database.all(
+      'SELECT key, value, encrypted, updatedAt FROM proxy_config',
+      (err, rows) => {
+        if (err) {
+          logError('database.getAllProxyConfig', err, ERROR_LEVELS.MEDIUM);
+          reject(err);
+        } else {
+          resolve(rows || []);
+        }
+      }
+    );
+  });
+}
+
