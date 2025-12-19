@@ -4,6 +4,8 @@
 const CONFIG = {
     basePath: '/Verabot',  // GitHub Pages sub-path
     docsPath: '../docs',    // Relative path to docs folder
+    docsBaseURL: 'https://raw.githubusercontent.com/Rarsus/verabot2.0/main/files/docs/',
+    readmeURL: 'https://raw.githubusercontent.com/Rarsus/verabot2.0/main/README.md',
     defaultPage: 'home'
 };
 
@@ -17,29 +19,29 @@ const PAGE_CONTENT = {
     installation: {
         title: 'Installation',
         source: 'markdown',
-        file: '../README.md',
+        file: CONFIG.readmeURL,
         section: 'installation'
     },
     usage: {
         title: 'Usage',
         source: 'markdown',
-        file: '../README.md',
+        file: CONFIG.readmeURL,
         section: 'usage'
     },
     api: {
         title: 'API Documentation',
-        source: 'custom',
-        content: generateAPIContent
+        source: 'markdown',
+        file: CONFIG.docsBaseURL + 'api.md'
     },
     contributing: {
         title: 'Contributing',
-        source: 'custom',
-        content: generateContributingContent
+        source: 'markdown',
+        file: CONFIG.docsBaseURL + 'contributing.md'
     },
     faq: {
         title: 'FAQ & Support',
-        source: 'custom',
-        content: generateFAQContent
+        source: 'markdown',
+        file: CONFIG.docsBaseURL + 'faq.md'
     }
 };
 
