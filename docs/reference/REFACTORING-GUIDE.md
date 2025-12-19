@@ -76,7 +76,8 @@ const AFTER_EXAMPLE = `
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
-const { getAllQuotes, sendQuoteEmbed } = require('../../utils/helpers/response-helpers');
+const { sendQuoteEmbed, sendError, deferReply } = require('../../utils/helpers/response-helpers');
+const { getAllQuotes } = require('../../db');
 
 const { data, options } = buildCommandOptions('random-quote', 'Get a random quote');
 
