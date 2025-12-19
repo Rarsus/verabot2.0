@@ -21,7 +21,9 @@ pids/
 
 # Database files (keep structure, ignore content)
 data/*.db
+data/**/*.db
 data/*.db-journal
+data/**/*.db-journal
 data/*.sqlite
 data/*.sqlite3
 
