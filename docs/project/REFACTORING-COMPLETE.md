@@ -112,18 +112,18 @@ Status:           ✅ READY
 ### New Utilities Used
 ```javascript
 // 1. Command Base Class (automatic error wrapping)
-const Command = require('../../utils/command-base');
+const Command = require('../../core/CommandBase');
 class MyCommand extends Command { }
 
 // 2. Options Builder (consistent option creation)
-const buildCommandOptions = require('../../utils/command-options');
+const buildCommandOptions = require('../../core/CommandOptions');
 const { data, options } = buildCommandOptions('name', 'desc', [
   { name: 'arg', type: 'string', required: true }
 ]);
 
 // 3. Response Helpers (standardized Discord responses)
 const { sendQuoteEmbed, sendSuccess, sendError, sendDM } = 
-  require('../../utils/response-helpers');
+  require('../../utils/helpers/response-helpers');
 ```
 
 ### Pattern Applied to Every Command
@@ -220,8 +220,8 @@ module.exports = {
 
 **AFTER (19 lines, -34%):**
 ```javascript
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
 
 const { data, options } = buildCommandOptions('hi', 'Say hi to someone', [
   { name: 'name', type: 'string', required: false }
@@ -310,9 +310,9 @@ module.exports = {
 
 **AFTER (38 lines, -45%):**
 ```javascript
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
-const { sendSuccess, sendError } = require('../../utils/response-helpers');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
+const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
 const { addQuote } = require('../../db');
 const { validateQuoteText, validateAuthor } = require('../../utils/error-handler');
 

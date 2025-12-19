@@ -50,9 +50,9 @@ Commands are now available in Discord servers where the bot has permission.
 Create a new file: `src/commands/misc/mycommand.js`
 
 ```javascript
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
-const { sendSuccess, sendError } = require('../../utils/response-helpers');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
+const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
 
 // Define command options
 const { data, options } = buildCommandOptions('mycommand', 'Does something cool', [
@@ -129,9 +129,9 @@ Every command has three main parts:
 
 ```javascript
 // 1. IMPORTS - Required utilities
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
-const { sendSuccess, sendError } = require('../../utils/response-helpers');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
+const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
 
 // 2. OPTIONS DEFINITION - What the command takes as input
 const { data, options } = buildCommandOptions('name', 'description', [

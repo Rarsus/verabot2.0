@@ -5,6 +5,48 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2025-12-19
+
+### Added
+
+- **Enterprise-Grade Project Structure**
+  - New `src/core/` directory for base classes (CommandBase, CommandOptions, EventBase)
+  - New `src/services/` directory for business logic (DatabaseService, ValidationService, QuoteService, DiscordService)
+  - New `src/middleware/` directory for cross-cutting concerns (errorHandler, commandValidator, logger)
+  - Improved code organization following industry best practices
+
+- **Enhanced Architecture**
+  - Service layer pattern for better separation of concerns
+  - Middleware pattern for request/response processing
+  - Improved error handling with dedicated middleware
+  - Better logging infrastructure
+
+- **Documentation Updates**
+  - Updated all documentation to reflect new architecture
+  - Updated import paths in code examples
+  - Updated project structure diagrams
+  - Added notes about legacy vs. current file locations
+
+### Changed
+
+- **File Relocations (Backward Compatible)**
+  - CommandBase: `src/utils/command-base.js` → `src/core/CommandBase.js`
+  - CommandOptions: `src/utils/command-options.js` → `src/core/CommandOptions.js`
+  - Response helpers: `src/utils/response-helpers.js` → `src/utils/helpers/response-helpers.js`
+  - Legacy files remain for compatibility but should use new paths
+
+- **Import Statements in Commands**
+  - All commands now import from `../../core/CommandBase` and `../../core/CommandOptions`
+  - Response helpers import from `../../utils/helpers/response-helpers`
+  - Error handlers import from `../../middleware/errorHandler`
+
+### Maintained
+
+- ✅ All 74 unit tests passing (100%)
+- ✅ Backward compatibility with existing commands
+- ✅ All features from v0.1.1 fully functional
+- ✅ No breaking changes for end users
+
 ## [0.1.1] - 2025-12-18
 
 ### Fixed

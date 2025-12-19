@@ -34,18 +34,18 @@ VeraBot2.0 is an advanced Discord bot with organized commands, quote management 
 
 All commands follow a consistent pattern using three core utility modules:
 
-1. **Command Base Class** (`src/utils/command-base.js`)
+1. **Command Base Class** (`src/core/CommandBase.js`)
    - Extends all commands for automatic error handling
    - Provides consistent lifecycle methods
    - Eliminates manual try-catch blocks
    - Chainable `.register()` method
 
-2. **Command Options Builder** (`src/utils/command-options.js`)
+2. **Command Options Builder** (`src/core/CommandOptions.js`)
    - Single source of truth for command options
    - Unified definition for both slash and prefix commands
    - Type-safe option creation
 
-3. **Response Helpers** (`src/utils/response-helpers.js`)
+3. **Response Helpers** (`src/utils/helpers/response-helpers.js`)
    - Standardized Discord message formatting
    - Consistent embed creation
    - Error and success message patterns
@@ -56,6 +56,8 @@ All commands follow a consistent pattern using three core utility modules:
 - **Builder Pattern:** Command options construction
 - **Helper Pattern:** Response formatting utilities
 - **Repository Pattern:** Database abstraction layer
+- **Service Layer Pattern:** Business logic separation
+- **Middleware Pattern:** Cross-cutting concerns
 
 ## Project Structure
 
@@ -64,12 +66,27 @@ src/
 ├── index.js                    # Bot entry point & event handlers
 ├── register-commands.js        # Command registration script
 ├── db.js                       # Database layer (SQLite)
+├── database.js                 # Database connection management
 ├── schema-enhancement.js       # Database schema initialization
+├── core/
+│   ├── CommandBase.js          # Base class for all commands
+│   ├── CommandOptions.js       # Unified option builder
+│   └── EventBase.js            # Event handler base class
+├── services/
+│   ├── DatabaseService.js      # Database operations
+│   ├── ValidationService.js    # Input validation
+│   ├── QuoteService.js         # Quote-specific logic
+│   └── DiscordService.js       # Discord API helpers
+├── middleware/
+│   ├── errorHandler.js         # Error handling & logging
+│   ├── commandValidator.js     # Command validation
+│   └── logger.js               # Logging utilities
 ├── utils/
-│   ├── command-base.js         # Base class for all commands
-│   ├── command-options.js      # Unified option builder
-│   ├── response-helpers.js     # Standardized Discord responses
-│   └── error-handler.js        # Error handling & validation
+│   ├── command-base.js         # Legacy: Use core/CommandBase.js
+│   ├── command-options.js      # Legacy: Use core/CommandOptions.js
+│   ├── error-handler.js        # Error handling utilities
+│   ├── response-helpers.js     # Legacy: Use helpers/response-helpers.js
+│   └── helpers/                # Helper functions
 └── commands/
     ├── misc/                   # General utility commands
     ├── quote-discovery/        # Quote search & discovery
@@ -94,9 +111,9 @@ docs/
 **ALWAYS use the Command base class pattern:**
 
 ```javascript
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
-const { sendSuccess, sendError, sendQuoteEmbed } = require('../../utils/response-helpers');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
+const { sendSuccess, sendError, sendQuoteEmbed } = require('../../utils/helpers/response-helpers');
 
 // Define options
 const { data, options } = buildCommandOptions('commandname', 'Description', [
@@ -317,7 +334,7 @@ HUGGINGFACE_API_KEY=optional_key          # For AI poem generation
 
 ### Adding Response Helper
 
-1. Add function to `src/utils/response-helpers.js`
+1. Add function to `src/utils/helpers/response-helpers.js`
 2. Add tests in `tests/unit/test-response-helpers.js`
 3. Export function
 4. Update this guide with usage example

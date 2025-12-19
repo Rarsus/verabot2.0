@@ -136,21 +136,21 @@ const { logError } = require('./middleware/errorHandler');
 
 #### Command Base
 ```javascript
-// OLD
+// OLD (v0.1.x)
 const Command = require('../../utils/command-base');
 const buildCommandOptions = require('../../utils/command-options');
 
-// NEW
+// NEW (v0.2.0+)
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 ```
 
 #### Response Helpers
 ```javascript
-// OLD
+// OLD (v0.1.x)
 const { sendSuccess } = require('../../utils/response-helpers');
 
-// NEW
+// NEW (v0.2.0+)
 const { sendSuccess } = require('../../utils/helpers/response-helpers');
 ```
 

@@ -66,12 +66,27 @@ src/
 ├── index.js                 # Bot entry point
 ├── register-commands.js     # Command registration
 ├── db.js                    # Database layer (SQLite)
+├── database.js              # Database connection management
 ├── schema-enhancement.js    # Database schema initialization
+├── core/
+│   ├── CommandBase.js       # Base class for all commands
+│   ├── CommandOptions.js    # Unified option builder
+│   └── EventBase.js         # Event handler base class
+├── services/
+│   ├── DatabaseService.js   # Database operations
+│   ├── ValidationService.js # Input validation
+│   ├── QuoteService.js      # Quote-specific logic
+│   └── DiscordService.js    # Discord API helpers
+├── middleware/
+│   ├── errorHandler.js      # Error handling & logging
+│   ├── commandValidator.js  # Command validation
+│   └── logger.js            # Logging utilities
 ├── utils/
-│   ├── error-handler.js     # Error handling & validation
-│   ├── command-base.js      # Base class for all commands (NEW)
-│   ├── command-options.js   # Unified option builder (NEW)
-│   └── response-helpers.js  # Standardized Discord responses (NEW)
+│   ├── command-base.js      # Legacy: Use core/CommandBase.js
+│   ├── command-options.js   # Legacy: Use core/CommandOptions.js
+│   ├── error-handler.js     # Error handling utilities
+│   ├── response-helpers.js  # Standardized Discord responses
+│   └── helpers/             # Additional helper functions
 └── commands/
     ├── misc/
     │   ├── hi.js           # Simple greeting command
@@ -146,14 +161,24 @@ npm run test:integration:refactor # Integration tests (10/10)
 
 ---
 
-## 📦 Modern Architecture (NEW!)
+## 📦 Modern Architecture (v0.2.0)
+
+VeraBot2.0 features an enterprise-grade architecture with clear separation of concerns:
+
+### Project Organization
+
+- **`src/core/`** - Base classes and foundational components
+- **`src/services/`** - Business logic layer (Database, Validation, Quote operations)
+- **`src/middleware/`** - Cross-cutting concerns (Error handling, Logging, Validation)
+- **`src/utils/`** - Helper functions and utilities
+- **`src/commands/`** - Command implementations organized by category
 
 ### Command Base Class
-All commands now extend `Command` base class for automatic error handling:
+All commands extend `Command` base class for automatic error handling:
 
 ```javascript
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
 
 const { data, options } = buildCommandOptions('mycommand', 'Description', [
   { name: 'arg', type: 'string', required: false }
@@ -192,7 +217,7 @@ const {
   sendError,         // Send error message
   sendDM,            // Send DM with confirmation
   deferReply         // Safe defer handling
-} = require('../../utils/response-helpers');
+} = require('../../utils/helpers/response-helpers');
 
 // Use in your commands
 await sendQuoteEmbed(interaction, quote, 'Quote Title');
@@ -204,7 +229,7 @@ await sendError(interaction, 'Something went wrong', true);
 Single source of truth for command options:
 
 ```javascript
-const buildCommandOptions = require('../../utils/command-options');
+const buildCommandOptions = require('../../core/CommandOptions');
 
 const { data, options } = buildCommandOptions('mycommand', 'Description', [
   { name: 'text', type: 'string', required: true },
@@ -350,9 +375,9 @@ HUGGINGFACE_API_KEY=api_key          # For AI poem generation
 ### Example: Simple Command
 
 ```javascript
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
-const { sendSuccess, sendError } = require('../../utils/response-helpers');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
+const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
 
 const { data, options } = buildCommandOptions('mycommand', 'What it does', [
   { name: 'arg', type: 'string', description: 'An argument', required: true }
@@ -410,14 +435,33 @@ When adding new commands or features:
 
 ## 📋 Changelog
 
-### Latest (v0.1.0) - December 2025
+### v0.2.0 - December 2025
+
+**Architecture Evolution**
+- ✨ Reorganized project structure with enterprise-grade folders (core, services, middleware)
+- ✨ Enhanced Command base class and options builder
+- ✨ Added service layer for database, validation, and Discord operations
+- ✨ Improved error handling with middleware pattern
+- 🧪 Comprehensive test suite with 74/74 tests passing (100%)
+- 📚 Complete documentation overhaul
+
+### v0.1.1 - December 2025
+
+**Critical Bug Fixes**
+- 🐛 Fixed missing database function exports
+- 🐛 Fixed update quote command result handling
+- 🐛 Fixed Discord interaction timeout errors
+- 🐛 Fixed quote validation inconsistency
+- 🐛 Updated test file import paths
+
+### v0.1.0 - December 2025
 
 **Major Refactoring (All 15 Commands)**
 - ✨ Implemented Command base class for automatic error handling
 - ✨ Created buildCommandOptions for unified option definition
 - ✨ Added response helpers for consistent Discord messages
 - 📈 Reduced boilerplate code by 40% per command
-- 🧪 Added 41 comprehensive unit tests (95%+ passing)
+- 🧪 Added comprehensive unit tests
 - 📚 Created extensive documentation and guides
 
 ---

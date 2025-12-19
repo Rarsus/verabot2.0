@@ -4,11 +4,38 @@ Comprehensive guide to VeraBot2.0's modern architecture, design patterns, and ut
 
 ## Overview
 
-VeraBot2.0 uses a **Command-Based Architecture** with three utility modules that eliminate code duplication and improve maintainability:
+VeraBot2.0 uses a **Command-Based Architecture** with enterprise-grade project structure that eliminates code duplication and improves maintainability:
 
-1. **Command Base Class** - Automatic error handling and lifecycle management
-2. **Command Options Builder** - Unified option definition and validation
-3. **Response Helpers** - Standardized Discord message formatting
+1. **Command Base Class** (`src/core/CommandBase.js`) - Automatic error handling and lifecycle management
+2. **Command Options Builder** (`src/core/CommandOptions.js`) - Unified option definition and validation
+3. **Response Helpers** (`src/utils/helpers/response-helpers.js`) - Standardized Discord message formatting
+4. **Service Layer** (`src/services/`) - Business logic separation (Database, Validation, Quote, Discord)
+5. **Middleware** (`src/middleware/`) - Cross-cutting concerns (Error handling, Validation, Logging)
+
+### Architecture Evolution (v0.2.0)
+
+The project has evolved from a simple utility-based structure to an enterprise-grade architecture:
+
+**v0.1.0 → v0.2.0 Changes:**
+- Moved core classes from `src/utils/` to `src/core/` for better organization
+- Added service layer pattern in `src/services/` for business logic
+- Introduced middleware pattern in `src/middleware/` for cross-cutting concerns
+- Improved separation of concerns with dedicated directories
+- Enhanced error handling with middleware approach
+- Legacy files remain in `src/utils/` for backward compatibility
+
+**Import Path Changes:**
+```javascript
+// OLD (v0.1.x)
+const Command = require('../../utils/command-base');
+const buildCommandOptions = require('../../utils/command-options');
+const { sendSuccess } = require('../../utils/response-helpers');
+
+// NEW (v0.2.0+)
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
+const { sendSuccess } = require('../../utils/helpers/response-helpers');
+```
 
 ---
 
@@ -86,7 +113,7 @@ await sendSuccess(interaction, 'Success message', true);
 **Usage:**
 
 ```javascript
-const Command = require('../../utils/command-base');
+const Command = require('../../core/CommandBase');
 
 class MyCommand extends Command {
   constructor() {
@@ -268,9 +295,9 @@ Determine which category your command belongs to based on its function:
 ### Step 2: Use the Template
 
 ```javascript
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
-const { sendSuccess, sendError } = require('../../utils/response-helpers');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
+const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
 
 const { data, options } = buildCommandOptions('mycommand', 'What it does', [
   { name: 'arg', type: 'string', required: true }
