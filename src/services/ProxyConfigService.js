@@ -181,19 +181,43 @@ class ProxyConfigService {
    */
   async getAllConfig() {
     try {
-      const [webhookUrl, channels, enabled] = await Promise.all([
-        this.getWebhookUrl(),
-        this.getMonitoredChannels(),
-        this.isProxyEnabled()
-      ]);
-
-      return {
-        webhookUrl,
-        monitoredChannels: channels,
-        enabled,
-        hasToken: !!(await this.db.getProxyConfig(CONFIG_KEYS.WEBHOOK_TOKEN)),
-        hasSecret: !!(await this.db.getProxyConfig(CONFIG_KEYS.WEBHOOK_SECRET))
+      // Get all config entries in a single database call
+      const allEntries = await this.db.getAllProxyConfig();
+      
+      // Process entries
+      const config = {
+        webhookUrl: null,
+        monitoredChannels: [],
+        enabled: false,
+        hasToken: false,
+        hasSecret: false
       };
+
+      for (const entry of allEntries) {
+        switch (entry.key) {
+        case CONFIG_KEYS.WEBHOOK_URL:
+          config.webhookUrl = entry.value;
+          break;
+        case CONFIG_KEYS.WEBHOOK_TOKEN:
+          config.hasToken = true;
+          break;
+        case CONFIG_KEYS.WEBHOOK_SECRET:
+          config.hasSecret = true;
+          break;
+        case CONFIG_KEYS.MONITORED_CHANNELS:
+          try {
+            config.monitoredChannels = JSON.parse(entry.value);
+          } catch (err) {
+            config.monitoredChannels = [];
+          }
+          break;
+        case CONFIG_KEYS.PROXY_ENABLED:
+          config.enabled = entry.value === '1';
+          break;
+        }
+      }
+
+      return config;
     } catch (err) {
       logError('ProxyConfigService.getAllConfig', err, ERROR_LEVELS.MEDIUM);
       return {

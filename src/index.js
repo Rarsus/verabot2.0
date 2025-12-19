@@ -100,8 +100,13 @@ client.once('ready', async () => {
     const webhookSecret = await proxyConfig.getWebhookSecret();
     const proxyPort = process.env.PROXY_PORT || 3000;
 
-    if (isProxyEnabled && webhookSecret) {
+    if (isProxyEnabled) {
       webhookListener = new WebhookListenerService(client);
+      
+      if (!webhookSecret) {
+        console.warn('⚠️  WARNING: Webhook listener starting without signature verification. Configure a secret with /proxy-config for better security.');
+      }
+      
       await webhookListener.startServer(proxyPort, webhookSecret);
       console.log(`✓ Webhook listener started on port ${proxyPort}`);
     }

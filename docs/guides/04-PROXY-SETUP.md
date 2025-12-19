@@ -312,7 +312,7 @@ When VeraBot forwards a message to your webhook, it sends:
 To send a message to Discord via webhook, POST to:
 
 ```
-http://your-bot-host:3000/webhook
+https://your-bot-host:3000/webhook
 ```
 
 **Headers:**
