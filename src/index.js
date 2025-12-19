@@ -16,6 +16,17 @@ const database = require('./services/DatabaseService');
 const { migrateFromJson } = require('./lib/migration');
 const { enhanceSchema } = require('./lib/schema-enhancement');
 
+// Initialize proxy services
+const ProxyConfigService = require('./services/ProxyConfigService');
+const WebhookProxyService = require('./services/WebhookProxyService');
+const WebhookListenerService = require('./services/WebhookListenerService');
+const { shouldForwardMessage } = require('./utils/proxy-helpers');
+
+// Create service instances
+const proxyConfig = new ProxyConfigService(database);
+const webhookProxy = new WebhookProxyService();
+let webhookListener = null;
+
 (async () => {
   try {
     // Setup database schema
@@ -81,6 +92,25 @@ const _attachReadyEvent = () => {
 
 _attachReadyEvent();
 
+// Start webhook listener when bot is ready
+client.once('ready', async () => {
+  try {
+    // Check if proxy is enabled and start listener
+    const isProxyEnabled = await proxyConfig.isProxyEnabled();
+    const webhookSecret = await proxyConfig.getWebhookSecret();
+    const proxyPort = process.env.PROXY_PORT || 3000;
+
+    if (isProxyEnabled && webhookSecret) {
+      webhookListener = new WebhookListenerService(client);
+      await webhookListener.startServer(proxyPort, webhookSecret);
+      console.log(`✓ Webhook listener started on port ${proxyPort}`);
+    }
+  } catch (err) {
+    console.error('Failed to start webhook listener:', err.message);
+    // Continue without webhook listener if it fails
+  }
+});
+
 // Handle slash commands (interactions)
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
@@ -113,6 +143,26 @@ client.on('messageCreate', async (message) => {
   try {
     if (!message || !message.content) return;
     if (message.author?.bot) return;
+
+    // Handle webhook proxy forwarding (if enabled)
+    const isProxyEnabled = await proxyConfig.isProxyEnabled();
+    if (isProxyEnabled) {
+      const monitoredChannels = await proxyConfig.getMonitoredChannels();
+      if (shouldForwardMessage(message, monitoredChannels)) {
+        const webhookUrl = await proxyConfig.getWebhookUrl();
+        const webhookToken = await proxyConfig.getWebhookToken();
+
+        if (webhookUrl && webhookToken) {
+          // Forward message asynchronously (don't block command processing)
+          webhookProxy.forwardMessageWithRetry(message, webhookUrl, webhookToken, 3, 1000)
+            .catch(err => {
+              console.error('Failed to forward message:', err);
+            });
+        }
+      }
+    }
+
+    // Handle prefix commands
     if (!PREFIX) return;
     if (!message.content.startsWith(PREFIX)) return;
 
@@ -138,16 +188,29 @@ client.login(TOKEN).catch(err => {
 // Graceful shutdown
 process.on('SIGINT', async () => {
   console.log('\nShutting down gracefully...');
-  await client.destroy();
-  await database.closeDatabase();
+  try {
+    if (webhookListener) {
+      await webhookListener.stopServer();
+    }
+    await client.destroy();
+    await database.closeDatabase();
+  } catch (err) {
+    console.error('Error during shutdown:', err);
+  }
   process.exit(0);
 });
 
 // Graceful shutdown for containers and local development
-function shutdown() {
+async function shutdown() {
   console.log('Shutting down gracefully...');
-  try { client.destroy(); } catch (e) { /* ignore errors on shutdown */ }
+  try {
+    if (webhookListener) {
+      await webhookListener.stopServer();
+    }
+    client.destroy();
+  } catch (e) {
+    /* ignore errors on shutdown */
+  }
   process.exit(0);
 }
-process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
