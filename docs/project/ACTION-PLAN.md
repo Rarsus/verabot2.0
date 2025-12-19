@@ -55,8 +55,8 @@ npm test && npm run test:quotes && npm run test:all
 ### 2.2 Implement Refactored hi.js
 Replace current implementation with:
 ```javascript
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
 
 const { data, options } = buildCommandOptions(
   'hi',
@@ -128,7 +128,7 @@ git commit -m "refactor: modernize hi.js using Command base class
 ### 3.2 Expected Result
 ```javascript
 // Much simpler than original
-const Command = require('../../utils/command-base');
+const Command = require('../../core/CommandBase');
 
 class PingCommand extends Command {
   constructor() {
@@ -154,7 +154,7 @@ module.exports = new PingCommand().register();
 ### 4.1 Refactor random-quote.js
 Uses response helpers for embed generation:
 ```javascript
-const Command = require('../../utils/command-base');
+const Command = require('../../core/CommandBase');
 const { sendQuoteEmbed, sendError } = require('../../utils/response-helpers');
 const { getAllQuotes } = require('../../db');
 

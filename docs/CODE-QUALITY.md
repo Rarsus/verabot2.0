@@ -233,7 +233,7 @@ wrapError(fn, context) {
  * - User-friendly error messages
  */
 
-const Command = require('../../utils/command-base');
+const Command = require('../../core/CommandBase');
 ```
 
 ## Performance Guidelines

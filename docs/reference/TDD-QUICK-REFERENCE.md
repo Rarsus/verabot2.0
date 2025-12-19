@@ -214,8 +214,8 @@ module.exports = {
 
 ### AFTER (New Pattern - 20 lines)
 ```javascript
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
 
 const { data, options } = buildCommandOptions(
   'hi',

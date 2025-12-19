@@ -86,7 +86,7 @@ await sendSuccess(interaction, 'Success message', true);
 **Usage:**
 
 ```javascript
-const Command = require('../../utils/command-base');
+const Command = require('../../core/CommandBase');
 
 class MyCommand extends Command {
   constructor() {
@@ -268,9 +268,9 @@ Determine which category your command belongs to based on its function:
 ### Step 2: Use the Template
 
 ```javascript
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
-const { sendSuccess, sendError } = require('../../utils/response-helpers');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
+const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
 
 const { data, options } = buildCommandOptions('mycommand', 'What it does', [
   { name: 'arg', type: 'string', required: true }

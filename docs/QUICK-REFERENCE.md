@@ -137,8 +137,8 @@ const { logError } = require('./middleware/errorHandler');
 #### Command Base
 ```javascript
 // OLD
-const Command = require('../../utils/command-base');
-const buildCommandOptions = require('../../utils/command-options');
+const Command = require('../../core/CommandBase');
+const buildCommandOptions = require('../../core/CommandOptions');
 
 // NEW
 const Command = require('../../core/CommandBase');
@@ -148,7 +148,7 @@ const buildCommandOptions = require('../../core/CommandOptions');
 #### Response Helpers
 ```javascript
 // OLD
-const { sendSuccess } = require('../../utils/response-helpers');
+const { sendSuccess } = require('../../utils/helpers/response-helpers');
 
 // NEW
 const { sendSuccess } = require('../../utils/helpers/response-helpers');
