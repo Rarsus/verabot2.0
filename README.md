@@ -161,10 +161,20 @@ npm run test:integration:refactor # Integration tests (10/10)
 
 ---
 
-## 📦 Modern Architecture (NEW!)
+## 📦 Modern Architecture (v0.2.0)
+
+VeraBot2.0 features an enterprise-grade architecture with clear separation of concerns:
+
+### Project Organization
+
+- **`src/core/`** - Base classes and foundational components
+- **`src/services/`** - Business logic layer (Database, Validation, Quote operations)
+- **`src/middleware/`** - Cross-cutting concerns (Error handling, Logging, Validation)
+- **`src/utils/`** - Helper functions and utilities
+- **`src/commands/`** - Command implementations organized by category
 
 ### Command Base Class
-All commands now extend `Command` base class for automatic error handling:
+All commands extend `Command` base class for automatic error handling:
 
 ```javascript
 const Command = require('../../core/CommandBase');

@@ -105,7 +105,8 @@ npm test       # ✅ All checks passed
 
 ### Version Info
 
-- **Current Version**: v0.1.0
+- **Current Version**: v0.2.0
+- **Architecture**: Enterprise-grade with service layer pattern
 
 ### Next Steps (Optional)
 
