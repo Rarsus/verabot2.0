@@ -2,25 +2,24 @@
 
 Thank you for your interest in contributing to VeraBot!
 
-## How to Contribute
+## Contribution Workflow
+1. **Fork & Clone**: Fork the repository and clone it locally.
+2. **Create a Branch**: Create a descriptive branch for your feature or fix (`feature/user-auth` or `bugfix/login-error`).
+3. **Open a Draft PR**: Use Draft Pull Requests to signal work in progress.
+4. **Testing & Linting**: Ensure no failing tests, and the linter passes without warnings.
+5. **Request Review**: Mark the PR as ready for review when complete.
 
-### Reporting Bugs
-- Ensure the bug has not been reported yet.
-- Include detailed steps to reproduce the issue.
-- Submit via the [GitHub Issues](/issues) section.
+## Coding Standards
+- Respect the styling defined by the `.editorconfig` file.
+- Use features of Node.js 14.17 and later compatibility (ES modules, native fetch).
+- Write clean, self-documenting code.
+  
+## Reporting Bugs
+- Check if the bug has not been reported in the [GitHub Issues](../../issues).
+- Provide detailed reproduction steps.
 
-### Suggesting Features
-- Check if the feature is listed in the Future Improvements document.
-- Provide a clear description of the improvement.
-- Use our issue template to standardize suggestions.
-
-### Making Code Changes
-- Ensure changes align with coding standards documented in `README.md`.
-- Submit changes via Pull Request (PR).
-- All PRs require passing tests and code reviews.
-
-##### PR Checklist
-- [ ] There are no active linter errors.
-- [ ] Relevant tests are updated/added.
-
-Follow this guide to help expedite our review process. Thank you!
+## Guidelines for Pull Requests
+- Break down large contributions into smaller cohesive commits.
+- Each Pull Request must include:
+  - A description of the rationale.
+  - Reference to keywords (`fixes/partially implements/related`) issues.
