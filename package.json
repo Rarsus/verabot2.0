@@ -12,6 +12,7 @@
     "test:coverage": "c8 npm test",
     "test:security": "node tests/unit/test-security-validation.js",
     "test:integration": "node tests/integration/test-security-integration.js",
+    "test:workflows": "node tests/test-github-actions-scripts.js",
     "coverage:report": "c8 report",
     "coverage:check": "c8 check-coverage",
     "lint": "eslint .",
@@ -19,6 +20,10 @@
     "lint:check": "eslint .",
     "security:audit": "npm audit --audit-level=moderate",
     "security:check": "npm run security:audit && npm run lint",
+    "docs:lint": "echo 'Markdown linting skipped - markdownlint-cli not installed'",
+    "docs:links": "node scripts/validation/check-links.js",
+    "docs:version": "node scripts/validation/check-version.js",
+    "docs:badges": "node scripts/validation/update-badges.js",
     "prepare": "husky || true"
   },
   "keywords": ["discord", "bot"],

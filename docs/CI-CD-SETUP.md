@@ -182,8 +182,27 @@ npm run test:security
 # Run integration tests
 npm run test:integration
 
+# Test GitHub Actions scripts
+npm run test:workflows
+
 # Check coverage thresholds
 npm run coverage:check
+```
+
+### Running Documentation Validation Locally
+
+```bash
+# Check all documentation links
+npm run docs:links
+
+# Check version consistency across docs
+npm run docs:version
+
+# Update badges in README
+npm run docs:badges
+
+# Lint markdown files (placeholder)
+npm run docs:lint
 ```
 
 ### Running Linter Locally
