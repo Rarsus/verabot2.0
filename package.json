@@ -1,8 +1,8 @@
 {
   "name": "verabot2-0",
   "displayName": "VeraBot2.0",
-  "version": "2.0.0",
-  "description": "VeraBot2.0 - Generic modular Discord bot",
+  "version": "3.0.0",
+  "description": "VeraBot2.0 - Generic modular Discord bot with reminder management",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
@@ -22,7 +22,10 @@
     "test:proxy:config": "node ./tests/unit/test-proxy-config.js",
     "test:proxy:webhook": "node ./tests/unit/test-webhook-proxy.js",
     "test:proxy:commands": "node ./tests/unit/test-proxy-commands.js",
-    "test:all": "npm test && npm run test:quotes && npm run test:quotes-advanced && npm run test:utils:base && npm run test:utils:options && npm run test:utils:helpers && npm run test:integration:refactor && npm run test:services:validation && npm run test:services:database && npm run test:middleware:errorhandler && npm run test:commands:misc && npm run test:proxy:config && npm run test:proxy:webhook && npm run test:proxy:commands && node ./scripts/build/generate-test-docs.js",
+    "test:reminder:database": "node ./tests/unit/test-reminder-database.js",
+    "test:reminder:commands": "node ./tests/unit/test-reminder-commands.js",
+    "test:reminder:notifications": "node ./tests/unit/test-reminder-notifications.js",
+    "test:all": "npm test && npm run test:quotes && npm run test:quotes-advanced && npm run test:utils:base && npm run test:utils:options && npm run test:utils:helpers && npm run test:integration:refactor && npm run test:services:validation && npm run test:services:database && npm run test:middleware:errorhandler && npm run test:commands:misc && npm run test:proxy:config && npm run test:proxy:webhook && npm run test:proxy:commands && npm run test:reminder:database && npm run test:reminder:commands && npm run test:reminder:notifications && node ./scripts/build/generate-test-docs.js",
     "test:docs": "node ./scripts/build/generate-test-docs.js",
     "lint": "eslint --ext .js src/ tests/ scripts/",
     "lint:fix": "eslint --ext .js src/ tests/ scripts/ --fix",

@@ -45,6 +45,17 @@ npm start
 - **Tag system** for organizing quotes by category
 - **Export functionality** (JSON/CSV) for backups
 
+### 🔔 Reminder Management System
+- **Create reminders** with scheduled notifications
+- **User & role assignments** for targeted notifications
+- **Rich content** support (descriptions, links, images)
+- **Categorization** and status tracking
+- **Search & filter** with powerful query options
+- **Automatic delivery** via DM or channel announcements
+- **Notification history** and retry logic
+
+[📖 Read the Reminder System Guide](docs/guides/05-REMINDER-SYSTEM.md)
+
 ### 💬 Bi-Directional Message Proxy
 - **Forward messages** from Discord channels to external webhooks
 - **Receive messages** from external systems and relay to Discord
@@ -97,6 +108,7 @@ Complete documentation is also organized in the [docs/](docs/) folder:
 - [docs/guides/02-TESTING-GUIDE.md](docs/guides/02-TESTING-GUIDE.md) - Comprehensive testing with TDD
 - [docs/guides/03-HUGGINGFACE-SETUP.md](docs/guides/03-HUGGINGFACE-SETUP.md) - AI poem generation setup
 - [docs/guides/04-PROXY-SETUP.md](docs/guides/04-PROXY-SETUP.md) - **Webhook proxy configuration and security**
+- [docs/guides/05-REMINDER-SYSTEM.md](docs/guides/05-REMINDER-SYSTEM.md) - **Reminder Management System guide**
 
 ### 🏗️ Reference (Deep Dives)
 - [docs/reference/ARCHITECTURE.md](docs/reference/ARCHITECTURE.md) - System design and patterns

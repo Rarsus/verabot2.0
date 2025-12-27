@@ -114,6 +114,16 @@ client.once('ready', async () => {
     console.error('Failed to start webhook listener:', err.message);
     // Continue without webhook listener if it fails
   }
+
+  // Initialize reminder notification service
+  try {
+    const ReminderNotificationService = require('./services/ReminderNotificationService');
+    ReminderNotificationService.initializeNotificationService(client);
+    console.log('✓ Reminder notification service initialized');
+  } catch (err) {
+    console.error('Failed to start reminder notification service:', err.message);
+    // Continue without reminder notifications if it fails
+  }
 });
 
 // Handle slash commands (interactions)
