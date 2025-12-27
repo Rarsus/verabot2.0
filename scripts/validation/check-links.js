@@ -169,7 +169,7 @@ async function processFile(filePath) {
         // Don't validate external links in CI - firewall blocks them
         continue;
       }
-      
+
       // External link - check accessibility (only in non-CI environments)
       const result = await checkExternalLink(url);
       if (!result.valid) {
@@ -240,11 +240,11 @@ function generateReport() {
   console.log('\n=== Link Validation Report ===\n');
   console.log(`Files scanned: ${results.totalFiles}`);
   console.log(`Links checked: ${results.totalLinks}`);
-  
+
   if (isCI) {
     console.log('⚠️  External links skipped (CI environment with firewall restrictions)');
   }
-  
+
   console.log(`Broken links: ${results.brokenLinks.length}`);
   console.log(`Warnings: ${results.warnings.length}\n`);
 
