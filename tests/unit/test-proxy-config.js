@@ -50,7 +50,7 @@ class MockDatabaseService {
  */
 async function testProxyConfigService() {
   console.log('Testing ProxyConfigService...');
-  
+
   try {
     const ProxyConfigService = require('../../src/services/ProxyConfigService');
     const mockDb = new MockDatabaseService();
@@ -97,7 +97,7 @@ async function testProxyConfigService() {
  */
 async function testProxyDatabaseSchema() {
   console.log('Testing Proxy Database Schema...');
-  
+
   try {
     // This test ensures the schema can be created
     const sqlite3 = require('sqlite3').verbose();
@@ -150,16 +150,16 @@ async function testProxyDatabaseSchema() {
  */
 async function testConfigEncryption() {
   console.log('Testing Configuration Encryption...');
-  
+
   try {
     const { encryptValue, decryptValue } = require('../../src/utils/encryption');
 
     const plaintext = 'my-secret-token-123';
     const encrypted = encryptValue(plaintext);
-    
+
     assert(encrypted, 'Should return encrypted value');
     assert.notStrictEqual(encrypted, plaintext, 'Encrypted value should differ from plaintext');
-    
+
     const decrypted = decryptValue(encrypted);
     assert.strictEqual(decrypted, plaintext, 'Decrypted value should match original');
 
@@ -179,14 +179,14 @@ async function testConfigEncryption() {
  */
 async function runTests() {
   console.log('=== Proxy Configuration Tests ===\n');
-  
+
   cleanupTestDb();
-  
+
   try {
     await testProxyDatabaseSchema();
     await testConfigEncryption();
     await testProxyConfigService();
-    
+
     console.log('\n✅ All proxy configuration tests passed!');
     process.exit(0);
   } catch (err) {

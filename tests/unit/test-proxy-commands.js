@@ -12,10 +12,10 @@ class MockInteraction {
   constructor(isAdmin = true) {
     this.commandName = 'proxy-config';
     this.user = { id: '123', username: 'TestUser', tag: 'TestUser#1234' };
-    this.member = { 
-      permissions: { 
-        has: (_permission) => isAdmin 
-      } 
+    this.member = {
+      permissions: {
+        has: (_permission) => isAdmin
+      }
     };
     this._options = new Map();
     this.options = {
@@ -64,10 +64,10 @@ class MockInteraction {
  */
 async function testProxyConfigCommand() {
   console.log('Testing proxy-config command...');
-  
+
   try {
     const command = require('../../src/commands/admin/proxy-config');
-    
+
     assert(command, 'Command should be exported');
     assert.strictEqual(command.name, 'proxy-config', 'Command name should be proxy-config');
     assert(command.data, 'Command should have slash command data');
@@ -77,9 +77,9 @@ async function testProxyConfigCommand() {
     const adminInteraction = new MockInteraction(true);
     adminInteraction.setOption('webhook-url', 'https://example.com/webhook');
     adminInteraction.setOption('webhook-token', 'secret-token');
-    
+
     await command.executeInteraction(adminInteraction);
-    
+
     assert(adminInteraction.replied || adminInteraction.deferred, 'Should respond to interaction');
     const response = adminInteraction.responses[adminInteraction.responses.length - 1];
     assert(response.content.includes('✅') || response.includes('✅'), 'Should show success message');
@@ -87,12 +87,12 @@ async function testProxyConfigCommand() {
     // Test 2: Non-admin user should be rejected
     const nonAdminInteraction = new MockInteraction(false);
     nonAdminInteraction.setOption('webhook-url', 'https://example.com/webhook');
-    
+
     await command.executeInteraction(nonAdminInteraction);
-    
+
     const nonAdminResponse = nonAdminInteraction.responses[nonAdminInteraction.responses.length - 1];
     assert(
-      nonAdminResponse.content.includes('permission') || 
+      nonAdminResponse.content.includes('permission') ||
       nonAdminResponse.content.includes('admin') ||
       nonAdminResponse.includes('permission') ||
       nonAdminResponse.includes('admin'),
@@ -102,12 +102,12 @@ async function testProxyConfigCommand() {
     // Test 3: Invalid webhook URL should be rejected
     const invalidInteraction = new MockInteraction(true);
     invalidInteraction.setOption('webhook-url', 'not-a-valid-url');
-    
+
     await command.executeInteraction(invalidInteraction);
-    
+
     const errorResponse = invalidInteraction.responses[invalidInteraction.responses.length - 1];
     assert(
-      errorResponse.content.includes('❌') || 
+      errorResponse.content.includes('❌') ||
       errorResponse.content.includes('invalid') ||
       errorResponse.includes('❌') ||
       errorResponse.includes('invalid'),
@@ -130,10 +130,10 @@ async function testProxyConfigCommand() {
  */
 async function testProxyEnableCommand() {
   console.log('Testing proxy-enable command...');
-  
+
   try {
     const command = require('../../src/commands/admin/proxy-enable');
-    
+
     assert(command, 'Command should be exported');
     assert.strictEqual(command.name, 'proxy-enable', 'Command name should be proxy-enable');
     assert(command.data, 'Command should have slash command data');
@@ -141,9 +141,9 @@ async function testProxyEnableCommand() {
     // Test 1: Enable proxy
     const enableInteraction = new MockInteraction(true);
     enableInteraction.setOption('enabled', true);
-    
+
     await command.executeInteraction(enableInteraction);
-    
+
     const enableResponse = enableInteraction.responses[enableInteraction.responses.length - 1];
     assert(
       enableResponse.content.includes('enabled') || enableResponse.includes('enabled'),
@@ -153,9 +153,9 @@ async function testProxyEnableCommand() {
     // Test 2: Disable proxy
     const disableInteraction = new MockInteraction(true);
     disableInteraction.setOption('enabled', false);
-    
+
     await command.executeInteraction(disableInteraction);
-    
+
     const disableResponse = disableInteraction.responses[disableInteraction.responses.length - 1];
     assert(
       disableResponse.content.includes('disabled') || disableResponse.includes('disabled'),
@@ -165,12 +165,12 @@ async function testProxyEnableCommand() {
     // Test 3: Non-admin should be rejected
     const nonAdminInteraction = new MockInteraction(false);
     nonAdminInteraction.setOption('enabled', true);
-    
+
     await command.executeInteraction(nonAdminInteraction);
-    
+
     const nonAdminResponse = nonAdminInteraction.responses[nonAdminInteraction.responses.length - 1];
     assert(
-      nonAdminResponse.content.includes('permission') || 
+      nonAdminResponse.content.includes('permission') ||
       nonAdminResponse.includes('permission'),
       'Should reject non-admin users'
     );
@@ -191,19 +191,19 @@ async function testProxyEnableCommand() {
  */
 async function testProxyStatusCommand() {
   console.log('Testing proxy-status command...');
-  
+
   try {
     const command = require('../../src/commands/admin/proxy-status');
-    
+
     assert(command, 'Command should be exported');
     assert.strictEqual(command.name, 'proxy-status', 'Command name should be proxy-status');
     assert(command.data, 'Command should have slash command data');
 
     // Test 1: Show status
     const interaction = new MockInteraction(true);
-    
+
     await command.executeInteraction(interaction);
-    
+
     assert(interaction.replied || interaction.deferred, 'Should respond');
     const response = interaction.responses[interaction.responses.length - 1];
     assert(
@@ -213,9 +213,9 @@ async function testProxyStatusCommand() {
 
     // Test 2: Non-admin should be able to view status (or be rejected - implementation choice)
     const nonAdminInteraction = new MockInteraction(false);
-    
+
     await command.executeInteraction(nonAdminInteraction);
-    
+
     assert(
       nonAdminInteraction.replied || nonAdminInteraction.deferred,
       'Should respond to non-admin'
@@ -237,23 +237,23 @@ async function testProxyStatusCommand() {
  */
 async function testAdminPermissionChecks() {
   console.log('Testing Admin Permission Checks...');
-  
+
   try {
     const { checkAdminPermission } = require('../../src/utils/proxy-helpers');
 
     // Test 1: Admin user
     const adminInteraction = new MockInteraction(true);
     assert.strictEqual(
-      checkAdminPermission(adminInteraction), 
-      true, 
+      checkAdminPermission(adminInteraction),
+      true,
       'Should allow admin users'
     );
 
     // Test 2: Non-admin user
     const nonAdminInteraction = new MockInteraction(false);
     assert.strictEqual(
-      checkAdminPermission(nonAdminInteraction), 
-      false, 
+      checkAdminPermission(nonAdminInteraction),
+      false,
       'Should deny non-admin users'
     );
 
@@ -273,13 +273,13 @@ async function testAdminPermissionChecks() {
  */
 async function runTests() {
   console.log('=== Proxy Admin Commands Tests ===\n');
-  
+
   try {
     await testProxyConfigCommand();
     await testProxyEnableCommand();
     await testProxyStatusCommand();
     await testAdminPermissionChecks();
-    
+
     console.log('\n✅ All proxy admin command tests passed!');
     process.exit(0);
   } catch (err) {

@@ -61,7 +61,7 @@ class ProxyEnableCommand extends Command {
 
       const status = enabled ? 'enabled' : 'disabled';
       const emoji = enabled ? '✅' : '⏸️';
-      
+
       await sendSuccess(
         interaction,
         `${emoji} Webhook proxy ${status}.`,

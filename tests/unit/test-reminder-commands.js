@@ -3,7 +3,6 @@
  * Tests command implementations and Discord interaction handling
  */
 
-/* eslint-disable no-unused-vars */
 
 console.log('\n=== Reminder Commands Tests ===\n');
 
@@ -110,7 +109,7 @@ try {
 console.log('\n=== Test 7: Verify Command Data Structure ===');
 try {
   const createReminderCmd = require('../../src/commands/reminder-management/create-reminder.js');
-  if (createReminderCmd.data && 
+  if (createReminderCmd.data &&
       createReminderCmd.data.name === 'create-reminder' &&
       createReminderCmd.data.description) {
     console.log('✅ Test 7 Passed: Command data structure valid');
@@ -183,14 +182,14 @@ try {
     require('../../src/commands/reminder-management/list-reminders.js'),
     require('../../src/commands/reminder-management/search-reminders.js')
   ];
-  
-  const allValid = commands.every(cmd => 
-    cmd.name && 
-    cmd.description && 
+
+  const allValid = commands.every(cmd =>
+    cmd.name &&
+    cmd.description &&
     typeof cmd.execute === 'function' &&
     typeof cmd.executeInteraction === 'function'
   );
-  
+
   if (allValid) {
     console.log('✅ Test 11 Passed: All commands properly structured');
     passed++;
@@ -208,10 +207,10 @@ console.log('\n=== Test 12: Verify Required Options ===');
 try {
   const createReminderCmd = require('../../src/commands/reminder-management/create-reminder.js');
   const requiredFields = ['subject', 'category', 'when', 'who'];
-  const hasAllRequired = requiredFields.every(field => 
+  const hasAllRequired = requiredFields.every(field =>
     createReminderCmd.options.some(opt => opt.name === field && opt.required === true)
   );
-  
+
   if (hasAllRequired) {
     console.log('✅ Test 12 Passed: All required options present');
     passed++;
@@ -229,10 +228,10 @@ console.log('\n=== Test 13: Verify Optional Options ===');
 try {
   const createReminderCmd = require('../../src/commands/reminder-management/create-reminder.js');
   const optionalFields = ['content', 'link', 'image'];
-  const hasAllOptional = optionalFields.every(field => 
+  const hasAllOptional = optionalFields.every(field =>
     createReminderCmd.options.some(opt => opt.name === field && opt.required === false)
   );
-  
+
   if (hasAllOptional) {
     console.log('✅ Test 13 Passed: All optional options present');
     passed++;
@@ -249,10 +248,10 @@ try {
 console.log('\n=== Test 14: Verify get-reminder ID Parameter ===');
 try {
   const getReminderCmd = require('../../src/commands/reminder-management/get-reminder.js');
-  const hasId = getReminderCmd.options.some(opt => 
+  const hasId = getReminderCmd.options.some(opt =>
     opt.name === 'id' && opt.type === 'integer' && opt.required === true
   );
-  
+
   if (hasId) {
     console.log('✅ Test 14 Passed: get-reminder has id parameter');
     passed++;
@@ -271,7 +270,7 @@ try {
   const listRemindersCmd = require('../../src/commands/reminder-management/list-reminders.js');
   const hasFilters = listRemindersCmd.options.some(opt => opt.name === 'status') ||
                      listRemindersCmd.options.some(opt => opt.name === 'category');
-  
+
   if (hasFilters) {
     console.log('✅ Test 15 Passed: list-reminders has filter options');
     passed++;

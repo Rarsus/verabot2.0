@@ -94,8 +94,8 @@ function insertTestData(db) {
 
     let inserted = 0;
     quotes.forEach((quote) => {
-      db.run('INSERT INTO quotes (text, author, category) VALUES (?, ?, ?)', 
-        [quote.text, quote.author, quote.category], 
+      db.run('INSERT INTO quotes (text, author, category) VALUES (?, ?, ?)',
+        [quote.text, quote.author, quote.category],
         (err) => {
           if (err) reject(err);
           inserted++;
@@ -127,7 +127,7 @@ function insertTestRatings(db) {
       { quoteId: 1, userId: 'user2', rating: 4 },
       { quoteId: 1, userId: 'user3', rating: 5 },
       { quoteId: 2, userId: 'user1', rating: 3 },
-      { quoteId: 3, userId: 'user1', rating: 5 },
+      { quoteId: 3, userId: 'user1', rating: 5 }
     ];
 
     let inserted = 0;
@@ -190,12 +190,12 @@ async function runTests() {
   try {
     console.log('\n=== Advanced Quote System Tests ===\n');
 
-    let db = await setupTestDb();
+    const db = await setupTestDb();
     await insertTestData(db);
 
     // Test 1: Category filtering
     console.log('=== Testing Category Operations ===');
-    
+
     const motivationQuotes = await dbAll(db, 'SELECT * FROM quotes WHERE category = ?', ['Motivation']);
     if (motivationQuotes && motivationQuotes.length === 1) {
       console.log('✅ Test 1.1 Passed: Category filtering');
@@ -231,8 +231,8 @@ async function runTests() {
     console.log('✅ Test 2.2 Passed: Add tag to quote');
     passed++;
 
-    const taggedQuotes = await dbAll(db, 
-      'SELECT q.* FROM quotes q JOIN quote_tags qt ON q.id = qt.quoteId WHERE qt.tagId = ?', 
+    const taggedQuotes = await dbAll(db,
+      'SELECT q.* FROM quotes q JOIN quote_tags qt ON q.id = qt.quoteId WHERE qt.tagId = ?',
       [1]);
     if (taggedQuotes && taggedQuotes.length === 1) {
       console.log('✅ Test 2.3 Passed: Retrieve quotes by tag');
@@ -246,7 +246,7 @@ async function runTests() {
     console.log('\n=== Testing Rating Operations ===');
     await insertTestRatings(db);
 
-    const ratingStats = await dbGet(db, 
+    const ratingStats = await dbGet(db,
       'SELECT AVG(rating) as avgRating, COUNT(*) as count FROM quote_ratings WHERE quoteId = ?',
       [1]);
     const avgRating = Math.round(ratingStats.avgRating * 10) / 10;
@@ -258,7 +258,7 @@ async function runTests() {
       failed++;
     }
 
-    const userRating = await dbGet(db, 
+    const userRating = await dbGet(db,
       'SELECT rating FROM quote_ratings WHERE quoteId = ? AND userId = ?',
       [1, 'user1']);
     if (userRating && userRating.rating === 5) {

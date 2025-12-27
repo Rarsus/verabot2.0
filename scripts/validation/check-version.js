@@ -43,7 +43,7 @@ function getPackageVersion() {
  */
 function extractVersions(content, filePath) {
   const versions = [];
-  
+
   // Match version patterns like v1.0.0, version 1.0.0, etc.
   const patterns = [
     /version[:\s]+v?(\d+\.\d+\.\d+)/gi,
@@ -51,7 +51,7 @@ function extractVersions(content, filePath) {
     /\*\*Version:\*\*\s*v?(\d+\.\d+\.\d+)/gi,
     /Current Version[:\s]+v?(\d+\.\d+\.\d+)/gi
   ];
-  
+
   for (const pattern of patterns) {
     let match;
     while ((match = pattern.exec(content)) !== null) {
@@ -62,7 +62,7 @@ function extractVersions(content, filePath) {
       });
     }
   }
-  
+
   return versions;
 }
 
@@ -71,7 +71,7 @@ function extractVersions(content, filePath) {
  */
 function checkFile(filePath, expectedVersion) {
   const fullPath = path.join(ROOT_DIR, filePath);
-  
+
   if (!fs.existsSync(fullPath)) {
     results.warnings.push({
       file: filePath,
@@ -79,12 +79,12 @@ function checkFile(filePath, expectedVersion) {
     });
     return;
   }
-  
+
   results.filesChecked++;
-  
+
   const content = fs.readFileSync(fullPath, 'utf8');
   const versions = extractVersions(content, filePath);
-  
+
   // Check each version found
   for (const versionInfo of versions) {
     if (versionInfo.version !== expectedVersion) {
@@ -106,7 +106,7 @@ function generateReport() {
   console.log(`Package version: ${results.packageVersion}`);
   console.log(`Files checked: ${results.filesChecked}`);
   console.log(`Inconsistencies found: ${results.inconsistencies.length}\n`);
-  
+
   if (results.warnings.length > 0) {
     console.log('⚠️  Warnings:\n');
     for (const warning of results.warnings) {
@@ -114,17 +114,17 @@ function generateReport() {
     }
     console.log();
   }
-  
+
   if (results.inconsistencies.length > 0) {
     console.log('❌ Version Inconsistencies Found:\n');
-    
+
     for (const inconsistency of results.inconsistencies) {
       console.log(`File: ${inconsistency.file}`);
       console.log(`  Expected: ${inconsistency.expected}`);
       console.log(`  Found: ${inconsistency.found}`);
       console.log(`  Context: "${inconsistency.context}"\n`);
     }
-    
+
     return false;
   } else {
     console.log('✅ All version numbers are consistent!');
@@ -138,21 +138,21 @@ function generateReport() {
 function main() {
   try {
     console.log('🔍 Starting version consistency check...\n');
-    
+
     // Get package version
     results.packageVersion = getPackageVersion();
     console.log(`Reference version from package.json: ${results.packageVersion}\n`);
-    
+
     // Check each file
     for (const file of VERSION_FILES) {
       process.stdout.write(`Checking ${file}...`);
       checkFile(file, results.packageVersion);
       process.stdout.write(' ✓\n');
     }
-    
+
     // Generate report
     const allConsistent = generateReport();
-    
+
     if (!allConsistent) {
       process.exit(1);
     }

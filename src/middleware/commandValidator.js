@@ -12,11 +12,11 @@ function validateCommand(interaction) {
   if (!interaction || typeof interaction.isCommand !== 'function') {
     return false;
   }
-  
+
   if (!interaction.isCommand?.() && !interaction.isChatInputCommand?.()) {
     return false;
   }
-  
+
   return true;
 }
 

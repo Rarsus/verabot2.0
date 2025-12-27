@@ -18,7 +18,7 @@ let client = null;
  */
 function initializeNotificationService(discordClient) {
   client = discordClient;
-  
+
   // Start notification checker
   if (!notificationInterval) {
     const checkInterval = parseInt(process.env.REMINDER_CHECK_INTERVAL) || NOTIFICATION_DEFAULTS.CHECK_INTERVAL;
@@ -44,12 +44,12 @@ function stopNotificationService() {
 async function checkAndSendNotifications() {
   try {
     const dueReminders = await getRemindersForNotification();
-    
+
     for (const reminder of dueReminders) {
       try {
         await sendReminderNotification(reminder);
         await recordNotification(reminder.id, true);
-        
+
         // Mark reminder as completed if it's past the event time
         const now = new Date();
         const eventTime = new Date(reminder.when_datetime);
@@ -83,19 +83,19 @@ function createReminderEmbed(reminder) {
     ])
     .setTimestamp()
     .setFooter({ text: `Reminder ID: ${reminder.id}` });
-  
+
   if (reminder.content) {
     embed.setDescription(reminder.content);
   }
-  
+
   if (reminder.link) {
     embed.addFields({ name: '🔗 Link', value: reminder.link });
   }
-  
+
   if (reminder.image) {
     embed.setImage(reminder.image);
   }
-  
+
   return embed;
 }
 
@@ -117,21 +117,21 @@ async function sendReminderNotification(reminder) {
   if (!client) {
     throw new Error('Discord client not initialized');
   }
-  
+
   const embed = createReminderEmbed(reminder);
-  
+
   // Parse assignees (format: "type:id,type:id")
   const assignees = reminder.assignees ? reminder.assignees.split(',') : [];
-  
+
   const sent = {
     users: [],
     roles: [],
     errors: []
   };
-  
+
   for (const assignee of assignees) {
     const [type, id] = assignee.split(':');
-    
+
     try {
       if (type === 'user') {
         await sendUserNotification(id, embed);
@@ -148,7 +148,7 @@ async function sendReminderNotification(reminder) {
       sent.errors.push({ type, id, error: err.message });
     }
   }
-  
+
   // If no assignees, log warning
   if (assignees.length === 0) {
     logError(
@@ -158,7 +158,7 @@ async function sendReminderNotification(reminder) {
       { reminderId: reminder.id }
     );
   }
-  
+
   return sent;
 }
 
@@ -183,17 +183,17 @@ async function sendUserNotification(userId, embed) {
  */
 async function sendRoleNotification(roleId, embed) {
   const channelId = process.env.REMINDER_NOTIFICATION_CHANNEL;
-  
+
   if (!channelId) {
     throw new Error('REMINDER_NOTIFICATION_CHANNEL not configured');
   }
-  
+
   try {
     const channel = await client.channels.fetch(channelId);
     if (!channel) {
       throw new Error('Notification channel not found');
     }
-    
+
     await channel.send({
       content: `<@&${roleId}>`,
       embeds: [embed]

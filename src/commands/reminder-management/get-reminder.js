@@ -30,7 +30,7 @@ class GetReminderCommand extends Command {
     // Format datetime for display
     const whenDate = new Date(reminder.when_datetime);
     const notificationDate = new Date(reminder.notificationTime);
-    
+
     const embed = new EmbedBuilder()
       .setTitle(`📋 Reminder #${reminder.id}: ${reminder.subject}`)
       .setColor(reminder.status === 'active' ? 0x5865F2 : reminder.status === 'completed' ? 0x57F287 : 0x99AAB5)
@@ -41,7 +41,7 @@ class GetReminderCommand extends Command {
         { name: '🔔 Notification Time', value: `<t:${Math.floor(notificationDate.getTime() / 1000)}:F>`, inline: false }
       ])
       .setTimestamp(new Date(reminder.createdAt))
-      .setFooter({ text: `Created` });
+      .setFooter({ text: 'Created' });
 
     if (reminder.content) {
       embed.setDescription(reminder.content);
@@ -64,7 +64,7 @@ class GetReminderCommand extends Command {
           return `👥 <@&${a.assigneeId}>`;
         }
       }).join('\n');
-      
+
       embed.addFields({ name: '👥 Assigned To', value: assigneeList });
     }
 

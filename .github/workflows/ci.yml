@@ -34,12 +34,25 @@ jobs:
         run: npm ci
       
       - name: 🔍 Run linter
-        run: npm run lint
-        continue-on-error: true
-      
-      - name: 🧪 Run all tests
-        run: npm run test:all
-      
+        run: npm run lint -- --max-warnings=100
+        continue-on-error: false
+
+      - name: 🧪 Run all tests with coverage
+        run: npm run test:coverage
+
+      - name: 📊 Generate coverage report
+        if: always()
+        run: npm run coverage:report
+
+      - name: ☁️ Upload coverage to Codecov
+        if: matrix.node-version == '20.x'
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-${{ matrix.node-version }}
+          fail_ci_if_error: false
+
       - name: 📊 Upload test artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -48,6 +61,7 @@ jobs:
           path: |
             docs/TEST-SUMMARY-LATEST.md
             docs/project/TEST-RESULTS.md
+            coverage/
           retention-days: 30
       
       - name: ✅ Tests passed

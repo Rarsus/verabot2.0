@@ -25,15 +25,15 @@ const TEST_FILES = [
 function extractTestMetadata(filePath) {
   const content = fs.readFileSync(filePath, 'utf8');
   const fileName = path.basename(filePath);
-  
+
   // Extract file header comment
   const headerMatch = content.match(/^\/\*\*[\s\S]*?\*\//);
   const header = headerMatch ? headerMatch[0] : '';
-  
+
   // Extract all test comments and assertions
   const testMatches = content.matchAll(/\/\/\s*Test\s+(\d+):\s*(.+?)\n.*?console\.log\(['"`]([^'"`]+)/gs);
   const tests = [];
-  
+
   for (const match of testMatches) {
     const [, testNum, description, result] = match;
     tests.push({
@@ -42,7 +42,7 @@ function extractTestMetadata(filePath) {
       result
     });
   }
-  
+
   return {
     fileName,
     filePath,
@@ -58,10 +58,10 @@ function extractTestMetadata(filePath) {
 function extractTestResults(filePath) {
   try {
     const output = execSync(`node "${filePath}" 2>&1`, { encoding: 'utf8' });
-    
+
     // Extract test summary
     const summaryMatch = output.match(/=== Test Summary ===\n✅ Passed: (\d+)\n❌ Failed: (\d+)\nTotal: (\d+)/);
-    
+
     if (summaryMatch) {
       const [, passed, failed, total] = summaryMatch;
       return {
@@ -104,17 +104,17 @@ This documentation is automatically generated from test files. It updates every 
 
   for (const testFile of TEST_FILES) {
     const filePath = path.join(SCRIPTS_DIR, testFile);
-    
+
     if (!fs.existsSync(filePath)) {
       continue;
     }
 
     const metadata = extractTestMetadata(filePath);
     const results = extractTestResults(filePath);
-    
+
     totalTests += results.total;
     totalPassed += results.passed;
-    
+
     testSuites.push({
       ...metadata,
       results
@@ -122,8 +122,8 @@ This documentation is automatically generated from test files. It updates every 
   }
 
   // Generate summary table
-  documentation += `### Quick Summary\n\n| Test Suite | Total Tests | Passed | Failed | Status |\n`;
-  documentation += `|---|---|---|---|---|\n`;
+  documentation += '### Quick Summary\n\n| Test Suite | Total Tests | Passed | Failed | Status |\n';
+  documentation += '|---|---|---|---|---|\n';
 
   for (const suite of testSuites) {
     const status = suite.results.success ? '✅ PASS' : '❌ FAIL';
@@ -133,23 +133,23 @@ This documentation is automatically generated from test files. It updates every 
   documentation += `\n**Overall:** ${totalPassed}/${totalTests} tests passing\n\n`;
 
   // Generate detailed documentation for each suite
-  documentation += `## Detailed Test Suites\n\n`;
+  documentation += '## Detailed Test Suites\n\n';
 
   for (const suite of testSuites) {
     documentation += `### ${suite.fileName}\n\n`;
-    
+
     if (suite.tests.length > 0) {
       documentation += `**Test Count:** ${suite.testCount}\n\n`;
-      documentation += `| Test # | Description | Status |\n`;
-      documentation += `|---|---|---|\n`;
-      
+      documentation += '| Test # | Description | Status |\n';
+      documentation += '|---|---|---|\n';
+
       for (const test of suite.tests) {
         const status = suite.results.success ? '✅' : '⚠️';
         documentation += `| ${test.number} | ${test.description} | ${status} |\n`;
       }
     }
-    
-    documentation += `\n**Results:** \n`;
+
+    documentation += '\n**Results:** \n';
     documentation += `- Passed: ${suite.results.passed}\n`;
     documentation += `- Failed: ${suite.results.failed}\n`;
     documentation += `- Total: ${suite.results.total}\n\n`;
@@ -164,13 +164,13 @@ This documentation is automatically generated from test files. It updates every 
 function updateTestResults() {
   const docsPath = path.join(DOCS_DIR, 'project', 'TEST-RESULTS.md');
   const documentation = generateTestDocumentation();
-  
+
   // Ensure directory exists
   const dirPath = path.dirname(docsPath);
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
   }
-  
+
   fs.writeFileSync(docsPath, documentation, 'utf8');
   console.log(`✅ Test documentation updated: ${docsPath}`);
 }
@@ -180,7 +180,7 @@ function updateTestResults() {
  */
 function generateTestSummary() {
   const now = new Date().toISOString();
-  let summary = `# Test Run Summary\n\n`;
+  let summary = '# Test Run Summary\n\n';
   summary += `**Generated:** ${now}\n\n`;
 
   let totalTests = 0;
@@ -189,7 +189,7 @@ function generateTestSummary() {
 
   for (const testFile of TEST_FILES) {
     const filePath = path.join(SCRIPTS_DIR, testFile);
-    
+
     if (!fs.existsSync(filePath)) {
       continue;
     }
@@ -197,7 +197,7 @@ function generateTestSummary() {
     const results = extractTestResults(filePath);
     totalTests += results.total;
     totalPassed += results.passed;
-    
+
     if (!results.success) {
       allPassed = false;
     }
@@ -206,7 +206,7 @@ function generateTestSummary() {
     summary += `${status} **${testFile}** - ${results.passed}/${results.total} passed\n`;
   }
 
-  summary += `\n## Overall Results\n\n`;
+  summary += '\n## Overall Results\n\n';
   summary += `- **Total Tests:** ${totalTests}\n`;
   summary += `- **Passed:** ${totalPassed}\n`;
   summary += `- **Failed:** ${totalTests - totalPassed}\n`;

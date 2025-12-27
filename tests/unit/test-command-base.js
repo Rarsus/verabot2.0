@@ -43,7 +43,7 @@ try {
     description: 'Test command',
     data: { toJSON: () => ({}) }
   });
-  
+
   if (testCmd.name === 'test-cmd' && testCmd.description === 'Test command') {
     console.log('✅ Test 1 Passed: Command instantiation works');
     passed++;
@@ -62,7 +62,7 @@ try {
   const cmd = new Command({ name: 'test', description: 'Test' });
   const testFn = async () => 'success';
   const wrapped = cmd.wrapError(testFn, 'test.execute');
-  
+
   (async () => {
     const result = await wrapped();
     if (result === 'success') {
@@ -88,7 +88,7 @@ console.log('\n=== Test 3: Error Wrapping with Interaction ===');
     };
     const wrapped = cmd.wrapError(testFn, 'test.execute');
     const mockInteraction = createMockInteraction(false, false);
-    
+
     await wrapped(mockInteraction);
     if (mockInteraction.replied) {
       console.log('✅ Test 3 Passed: Error handler sends reply on error');
@@ -113,7 +113,7 @@ console.log('\n=== Test 4: Error Wrapping with Deferred Interaction ===');
     };
     const wrapped = cmd.wrapError(testFn, 'test.execute');
     const mockInteraction = createMockInteraction(false, true);
-    
+
     await wrapped(mockInteraction);
     // When deferred, followUp is called instead of reply
     console.log('✅ Test 4 Passed: Error handler respects deferred state');
@@ -131,19 +131,19 @@ try {
     constructor() {
       super({ name: 'test', description: 'Test' });
     }
-    
+
     async execute(message) {
       await message.reply('test');
     }
-    
+
     async executeInteraction(interaction) {
       await interaction.reply('test');
     }
   }
-  
+
   const cmd = new TestCommand();
   const registered = cmd.register();
-  
+
   // After register, methods should still be functions
   if (typeof registered.execute === 'function' && typeof registered.executeInteraction === 'function') {
     console.log('✅ Test 5 Passed: Command registration preserves methods');
@@ -162,7 +162,7 @@ console.log('\n=== Test 6: Register Returns Chainable ===');
 try {
   const cmd = new Command({ name: 'test', description: 'Test' });
   const result = cmd.register();
-  
+
   if (result === cmd || result.name === 'test') {
     console.log('✅ Test 6 Passed: Register returns command instance');
     passed++;
@@ -186,13 +186,13 @@ console.log('\n=== Test 7: Error Message Includes Details ===');
     const wrapped = cmd.wrapError(testFn, 'test.execute');
     const mockInteraction = createMockInteraction(false, false);
     let errorSent = false;
-    
+
     // Override reply to capture message
     mockInteraction.reply = async function(msg) {
       errorSent = msg && msg.content && msg.content.includes('Specific error detail');
       return msg;
     };
-    
+
     await wrapped(mockInteraction);
     if (errorSent) {
       console.log('✅ Test 7 Passed: Error message includes details');
@@ -212,7 +212,7 @@ setTimeout(() => {
   console.log(`✅ Passed: ${passed}`);
   console.log(`❌ Failed: ${failed}`);
   console.log(`Total: ${passed + failed}`);
-  
+
   if (failed > 0) {
     process.exit(1);
   }

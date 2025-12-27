@@ -20,7 +20,7 @@ const commandsPath = path.join(__dirname, 'commands');
 function findCommandFiles(dir) {
   let files = [];
   if (!fs.existsSync(dir)) return files;
-  
+
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
@@ -43,45 +43,45 @@ for (const file of commandFiles) {
     continue;
   }
 
-    // Prefer `data` builder (SlashCommandBuilder). If present, use its JSON.
-    if (cmd && cmd.data && typeof cmd.data.toJSON === 'function') {
-      const json = cmd.data.toJSON();
-      if (!json.name || typeof json.name !== 'string') {
-        console.warn(`${file} skipped: builder missing valid name`);
-        continue;
-      }
-      if (seenNames.has(json.name)) {
-        console.warn(`${file} skipped: duplicate command name ${json.name}`);
-        continue;
-      }
-      seenNames.add(json.name);
-      commands.push(json);
+  // Prefer `data` builder (SlashCommandBuilder). If present, use its JSON.
+  if (cmd && cmd.data && typeof cmd.data.toJSON === 'function') {
+    const json = cmd.data.toJSON();
+    if (!json.name || typeof json.name !== 'string') {
+      console.warn(`${file} skipped: builder missing valid name`);
       continue;
     }
-
-    if (!cmd || !cmd.name || typeof cmd.name !== 'string') {
-      console.warn(`${file} skipped: missing string 'name' export`);
+    if (seenNames.has(json.name)) {
+      console.warn(`${file} skipped: duplicate command name ${json.name}`);
       continue;
     }
-
-    // Validate command name per Discord limits (1-32 chars, alphanumeric, dashes/underscores)
-    if (!/^[\w-]{1,32}$/.test(cmd.name)) {
-      console.warn(`${file} skipped: invalid command name '${cmd.name}'`);
-      continue;
-    }
-    if (seenNames.has(cmd.name)) {
-      console.warn(`${file} skipped: duplicate command name ${cmd.name}`);
-      continue;
-    }
-
-    const data = {
-      name: cmd.name,
-      description: cmd.description || 'No description',
-      options: Array.isArray(cmd.options) ? cmd.options : []
-    };
-    seenNames.add(cmd.name);
-    commands.push(data);
+    seenNames.add(json.name);
+    commands.push(json);
+    continue;
   }
+
+  if (!cmd || !cmd.name || typeof cmd.name !== 'string') {
+    console.warn(`${file} skipped: missing string 'name' export`);
+    continue;
+  }
+
+  // Validate command name per Discord limits (1-32 chars, alphanumeric, dashes/underscores)
+  if (!/^[\w-]{1,32}$/.test(cmd.name)) {
+    console.warn(`${file} skipped: invalid command name '${cmd.name}'`);
+    continue;
+  }
+  if (seenNames.has(cmd.name)) {
+    console.warn(`${file} skipped: duplicate command name ${cmd.name}`);
+    continue;
+  }
+
+  const data = {
+    name: cmd.name,
+    description: cmd.description || 'No description',
+    options: Array.isArray(cmd.options) ? cmd.options : []
+  };
+  seenNames.add(cmd.name);
+  commands.push(data);
+}
 
 const rest = new REST({ version: '10' }).setToken(TOKEN);
 

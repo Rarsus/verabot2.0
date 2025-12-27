@@ -34,7 +34,7 @@ class CreateReminderCommand extends Command {
     // Parse assignee (format: "role:123456" or "123456" for user)
     let assigneeType = 'user';
     let assigneeId = who;
-    
+
     if (who.startsWith('role:')) {
       assigneeType = 'role';
       assigneeId = who.substring(5);

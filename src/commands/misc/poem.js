@@ -31,7 +31,7 @@ async function generateAIPoem(subject, style = 'sonnet') {
 
     const result = await response.json();
     if (result[0] && result[0].generated_text) {
-      let poem = result[0].generated_text.replace(prompt, '').trim();
+      const poem = result[0].generated_text.replace(prompt, '').trim();
       return poem && poem.length > 10 ? poem : null;
     }
     return null;

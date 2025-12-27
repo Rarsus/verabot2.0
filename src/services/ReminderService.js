@@ -16,7 +16,7 @@ function validateSubject(subject) {
   if (!subject || typeof subject !== 'string') {
     return { valid: false, error: 'Subject is required and must be a string' };
   }
-  
+
   const trimmed = subject.trim();
   if (trimmed.length < REMINDER_LIMITS.SUBJECT_MIN_LENGTH) {
     return { valid: false, error: `Subject must be at least ${REMINDER_LIMITS.SUBJECT_MIN_LENGTH} characters` };
@@ -24,7 +24,7 @@ function validateSubject(subject) {
   if (trimmed.length > REMINDER_LIMITS.SUBJECT_MAX_LENGTH) {
     return { valid: false, error: `Subject must not exceed ${REMINDER_LIMITS.SUBJECT_MAX_LENGTH} characters` };
   }
-  
+
   return { valid: true, sanitized: trimmed };
 }
 
@@ -37,12 +37,12 @@ function validateCategory(category) {
   if (!category || typeof category !== 'string') {
     return { valid: false, error: 'Category is required and must be a string' };
   }
-  
+
   const trimmed = category.trim();
   if (trimmed.length === 0 || trimmed.length > REMINDER_LIMITS.CATEGORY_MAX_LENGTH) {
     return { valid: false, error: `Category must be between 1 and ${REMINDER_LIMITS.CATEGORY_MAX_LENGTH} characters` };
   }
-  
+
   return { valid: true, sanitized: trimmed };
 }
 
@@ -55,12 +55,12 @@ function validateDatetime(whenDatetime) {
   if (!whenDatetime || typeof whenDatetime !== 'string') {
     return { valid: false, error: 'Date/time is required and must be a string' };
   }
-  
+
   const date = new Date(whenDatetime);
   if (isNaN(date.getTime())) {
     return { valid: false, error: 'Invalid date/time format' };
   }
-  
+
   return { valid: true, sanitized: date.toISOString() };
 }
 
@@ -73,16 +73,16 @@ function validateContent(content) {
   if (!content) {
     return { valid: true, sanitized: null };
   }
-  
+
   if (typeof content !== 'string') {
     return { valid: false, error: 'Content must be a string' };
   }
-  
+
   const trimmed = content.trim();
   if (trimmed.length > REMINDER_LIMITS.CONTENT_MAX_LENGTH) {
     return { valid: false, error: `Content must not exceed ${REMINDER_LIMITS.CONTENT_MAX_LENGTH} characters` };
   }
-  
+
   return { valid: true, sanitized: trimmed || null };
 }
 
@@ -95,23 +95,23 @@ function validateLink(link) {
   if (!link) {
     return { valid: true, sanitized: null };
   }
-  
+
   if (typeof link !== 'string') {
     return { valid: false, error: 'Link must be a string' };
   }
-  
+
   const trimmed = link.trim();
   if (trimmed.length > REMINDER_LIMITS.URL_MAX_LENGTH) {
     return { valid: false, error: `Link must not exceed ${REMINDER_LIMITS.URL_MAX_LENGTH} characters` };
   }
-  
+
   // Basic URL validation
   try {
     new URL(trimmed);
   } catch (err) {
     return { valid: false, error: 'Invalid URL format' };
   }
-  
+
   return { valid: true, sanitized: trimmed };
 }
 
@@ -124,23 +124,23 @@ function validateImage(image) {
   if (!image) {
     return { valid: true, sanitized: null };
   }
-  
+
   if (typeof image !== 'string') {
     return { valid: false, error: 'Image must be a string' };
   }
-  
+
   const trimmed = image.trim();
   if (trimmed.length > REMINDER_LIMITS.URL_MAX_LENGTH) {
     return { valid: false, error: `Image URL must not exceed ${REMINDER_LIMITS.URL_MAX_LENGTH} characters` };
   }
-  
+
   // Basic URL validation
   try {
     new URL(trimmed);
   } catch (err) {
     return { valid: false, error: 'Invalid image URL format' };
   }
-  
+
   return { valid: true, sanitized: trimmed };
 }
 
@@ -151,42 +151,42 @@ function validateImage(image) {
  */
 async function createReminder(reminderData) {
   const db = getDatabase();
-  
+
   // Validate required fields
   const subjectValidation = validateSubject(reminderData.subject);
   if (!subjectValidation.valid) {
     throw new Error(subjectValidation.error);
   }
-  
+
   const categoryValidation = validateCategory(reminderData.category);
   if (!categoryValidation.valid) {
     throw new Error(categoryValidation.error);
   }
-  
+
   const datetimeValidation = validateDatetime(reminderData.when);
   if (!datetimeValidation.valid) {
     throw new Error(datetimeValidation.error);
   }
-  
+
   // Validate optional fields
   const contentValidation = validateContent(reminderData.content);
   if (!contentValidation.valid) {
     throw new Error(contentValidation.error);
   }
-  
+
   const linkValidation = validateLink(reminderData.link);
   if (!linkValidation.valid) {
     throw new Error(linkValidation.error);
   }
-  
+
   const imageValidation = validateImage(reminderData.image);
   if (!imageValidation.valid) {
     throw new Error(imageValidation.error);
   }
-  
+
   // Set notification time (default to event time if not specified)
   const notificationTime = reminderData.notificationTime || datetimeValidation.sanitized;
-  
+
   return new Promise((resolve, reject) => {
     db.run(
       `INSERT INTO reminders (subject, category, when_datetime, content, link, image, notificationTime, status)
@@ -222,14 +222,14 @@ async function createReminder(reminderData) {
  */
 async function addReminderAssignment(reminderId, assigneeType, assigneeId) {
   const db = getDatabase();
-  
+
   if (!['user', 'role'].includes(assigneeType)) {
     throw new Error('Assignee type must be "user" or "role"');
   }
-  
+
   return new Promise((resolve, reject) => {
     db.run(
-      `INSERT INTO reminder_assignments (reminderId, assigneeType, assigneeId) VALUES (?, ?, ?)`,
+      'INSERT INTO reminder_assignments (reminderId, assigneeType, assigneeId) VALUES (?, ?, ?)',
       [reminderId, assigneeType, assigneeId],
       function(err) {
         if (err) {
@@ -250,10 +250,10 @@ async function addReminderAssignment(reminderId, assigneeType, assigneeId) {
  */
 async function getReminderById(id) {
   const db = getDatabase();
-  
+
   return new Promise((resolve, reject) => {
     db.get(
-      `SELECT * FROM reminders WHERE id = ?`,
+      'SELECT * FROM reminders WHERE id = ?',
       [id],
       (err, reminder) => {
         if (err) {
@@ -264,7 +264,7 @@ async function getReminderById(id) {
         } else {
           // Get assignments
           db.all(
-            `SELECT * FROM reminder_assignments WHERE reminderId = ?`,
+            'SELECT * FROM reminder_assignments WHERE reminderId = ?',
             [id],
             (err, assignments) => {
               if (err) {
@@ -290,52 +290,52 @@ async function getReminderById(id) {
  */
 async function updateReminder(id, updateData) {
   const db = getDatabase();
-  
+
   const fields = [];
   const values = [];
-  
+
   if (updateData.subject !== undefined) {
     const validation = validateSubject(updateData.subject);
     if (!validation.valid) throw new Error(validation.error);
     fields.push('subject = ?');
     values.push(validation.sanitized);
   }
-  
+
   if (updateData.category !== undefined) {
     const validation = validateCategory(updateData.category);
     if (!validation.valid) throw new Error(validation.error);
     fields.push('category = ?');
     values.push(validation.sanitized);
   }
-  
+
   if (updateData.when !== undefined) {
     const validation = validateDatetime(updateData.when);
     if (!validation.valid) throw new Error(validation.error);
     fields.push('when_datetime = ?');
     values.push(validation.sanitized);
   }
-  
+
   if (updateData.content !== undefined) {
     const validation = validateContent(updateData.content);
     if (!validation.valid) throw new Error(validation.error);
     fields.push('content = ?');
     values.push(validation.sanitized);
   }
-  
+
   if (updateData.link !== undefined) {
     const validation = validateLink(updateData.link);
     if (!validation.valid) throw new Error(validation.error);
     fields.push('link = ?');
     values.push(validation.sanitized);
   }
-  
+
   if (updateData.image !== undefined) {
     const validation = validateImage(updateData.image);
     if (!validation.valid) throw new Error(validation.error);
     fields.push('image = ?');
     values.push(validation.sanitized);
   }
-  
+
   if (updateData.status !== undefined) {
     if (!Object.values(REMINDER_STATUS).includes(updateData.status)) {
       throw new Error('Invalid status');
@@ -343,21 +343,21 @@ async function updateReminder(id, updateData) {
     fields.push('status = ?');
     values.push(updateData.status);
   }
-  
+
   if (updateData.notificationTime !== undefined) {
     const validation = validateDatetime(updateData.notificationTime);
     if (!validation.valid) throw new Error(validation.error);
     fields.push('notificationTime = ?');
     values.push(validation.sanitized);
   }
-  
+
   if (fields.length === 0) {
     throw new Error('No fields to update');
   }
-  
+
   fields.push('updatedAt = CURRENT_TIMESTAMP');
   values.push(id);
-  
+
   return new Promise((resolve, reject) => {
     db.run(
       `UPDATE reminders SET ${fields.join(', ')} WHERE id = ?`,
@@ -382,11 +382,11 @@ async function updateReminder(id, updateData) {
  */
 async function deleteReminder(id, hard = false) {
   const db = getDatabase();
-  
+
   if (hard) {
     // Hard delete
     return new Promise((resolve, reject) => {
-      db.run(`DELETE FROM reminders WHERE id = ?`, [id], function(err) {
+      db.run('DELETE FROM reminders WHERE id = ?', [id], function(err) {
         if (err) {
           logError('ReminderService.deleteReminder', err, ERROR_LEVELS.MEDIUM);
           reject(err);
@@ -408,29 +408,29 @@ async function deleteReminder(id, hard = false) {
  */
 async function listReminders(filters = {}) {
   const db = getDatabase();
-  
+
   const conditions = [];
   const values = [];
-  
+
   if (filters.status) {
     conditions.push('status = ?');
     values.push(filters.status);
   }
-  
+
   if (filters.category) {
     conditions.push('category = ?');
     values.push(filters.category);
   }
-  
+
   if (filters.assigneeId) {
     conditions.push('id IN (SELECT reminderId FROM reminder_assignments WHERE assigneeId = ?)');
     values.push(filters.assigneeId);
   }
-  
+
   const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
   const limit = filters.limit || 50;
   const offset = filters.offset || 0;
-  
+
   return new Promise((resolve, reject) => {
     db.all(
       `SELECT * FROM reminders ${whereClause} ORDER BY when_datetime ASC LIMIT ? OFFSET ?`,
@@ -455,15 +455,15 @@ async function listReminders(filters = {}) {
  */
 async function searchReminders(keyword, options = {}) {
   const db = getDatabase();
-  
+
   if (!keyword || typeof keyword !== 'string') {
     throw new Error('Search keyword is required');
   }
-  
+
   const searchTerm = `%${keyword.trim()}%`;
   const limit = options.limit || 50;
   const offset = options.offset || 0;
-  
+
   return new Promise((resolve, reject) => {
     db.all(
       `SELECT * FROM reminders 
@@ -492,7 +492,7 @@ async function searchReminders(keyword, options = {}) {
 async function getRemindersForNotification(checkTime = new Date()) {
   const db = getDatabase();
   const checkTimeISO = checkTime.toISOString();
-  
+
   return new Promise((resolve, reject) => {
     db.all(
       `SELECT r.*, GROUP_CONCAT(ra.assigneeType || ':' || ra.assigneeId) as assignees
@@ -528,10 +528,10 @@ async function getRemindersForNotification(checkTime = new Date()) {
  */
 async function recordNotification(reminderId, success, errorMessage = null) {
   const db = getDatabase();
-  
+
   return new Promise((resolve, reject) => {
     db.run(
-      `INSERT INTO reminder_notifications (reminderId, success, errorMessage) VALUES (?, ?, ?)`,
+      'INSERT INTO reminder_notifications (reminderId, success, errorMessage) VALUES (?, ?, ?)',
       [reminderId, success ? 1 : 0, errorMessage],
       function(err) {
         if (err) {
@@ -553,7 +553,7 @@ module.exports = {
   validateContent,
   validateLink,
   validateImage,
-  
+
   // CRUD operations
   createReminder,
   addReminderAssignment,
@@ -562,7 +562,7 @@ module.exports = {
   deleteReminder,
   listReminders,
   searchReminders,
-  
+
   // Notification support
   getRemindersForNotification,
   recordNotification

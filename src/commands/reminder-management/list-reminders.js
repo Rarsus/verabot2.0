@@ -52,7 +52,7 @@ class ListRemindersCommand extends Command {
     if (status) filterInfo.push(`Status: ${status}`);
     if (category) filterInfo.push(`Category: ${category}`);
     if (assigneeId) filterInfo.push(`Assignee: <@${assigneeId}>`);
-    
+
     if (filterInfo.length > 0) {
       embed.setDescription(`**Filters:** ${filterInfo.join(' • ')}`);
     }
@@ -62,7 +62,7 @@ class ListRemindersCommand extends Command {
       const whenDate = new Date(reminder.when_datetime);
       const timeStr = `<t:${Math.floor(whenDate.getTime() / 1000)}:R>`;
       const statusEmoji = reminder.status === 'active' ? '🟢' : reminder.status === 'completed' ? '✅' : '⚫';
-      
+
       embed.addFields({
         name: `${statusEmoji} #${reminder.id} - ${reminder.subject}`,
         value: `📂 ${reminder.category} • 📅 ${timeStr}`,

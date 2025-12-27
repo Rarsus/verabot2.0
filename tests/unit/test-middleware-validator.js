@@ -3,7 +3,6 @@
  * Tests command validation before execution
  */
 
-/* eslint-disable no-unused-vars */
 
 const { validateCommand } = require('../../src/middleware/commandValidator');
 

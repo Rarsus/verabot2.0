@@ -58,7 +58,7 @@ function setupSchema(db) {
 
       // Create index on addedAt for faster queries
       db.run(
-        `CREATE INDEX IF NOT EXISTS idx_quotes_addedAt ON quotes(addedAt)`,
+        'CREATE INDEX IF NOT EXISTS idx_quotes_addedAt ON quotes(addedAt)',
         (err) => {
           if (err) {
             logError('database.setupSchema.createIndex', err, ERROR_LEVELS.MEDIUM);
@@ -181,7 +181,7 @@ function getDatabase() {
 
         // Create index on addedAt for faster queries
         db.run(
-          `CREATE INDEX IF NOT EXISTS idx_quotes_addedAt ON quotes(addedAt)`,
+          'CREATE INDEX IF NOT EXISTS idx_quotes_addedAt ON quotes(addedAt)',
           (err) => {
             if (err) {
               logError('database.getDatabase.createIndex', err, ERROR_LEVELS.MEDIUM);
@@ -191,7 +191,7 @@ function getDatabase() {
 
         // Create index on category for faster queries
         db.run(
-          `CREATE INDEX IF NOT EXISTS idx_quotes_category ON quotes(category)`,
+          'CREATE INDEX IF NOT EXISTS idx_quotes_category ON quotes(category)',
           (err) => {
             if (err) {
               logError('database.getDatabase.createCategoryIndex', err, ERROR_LEVELS.MEDIUM);
@@ -201,7 +201,7 @@ function getDatabase() {
 
         // Create index on quote_tags for faster queries
         db.run(
-          `CREATE INDEX IF NOT EXISTS idx_quote_tags_quoteId ON quote_tags(quoteId)`,
+          'CREATE INDEX IF NOT EXISTS idx_quote_tags_quoteId ON quote_tags(quoteId)',
           (err) => {
             if (err) {
               logError('database.getDatabase.createQuoteTagsIndex', err, ERROR_LEVELS.MEDIUM);
@@ -211,7 +211,7 @@ function getDatabase() {
 
         // Create index on ratings for faster queries
         db.run(
-          `CREATE INDEX IF NOT EXISTS idx_ratings_quoteId ON quote_ratings(quoteId)`,
+          'CREATE INDEX IF NOT EXISTS idx_ratings_quoteId ON quote_ratings(quoteId)',
           (err) => {
             if (err) {
               logError('database.getDatabase.createRatingsIndex', err, ERROR_LEVELS.MEDIUM);
@@ -503,7 +503,7 @@ function rateQuote(quoteId, userId, rating) {
     database.run(
       'INSERT OR REPLACE INTO quote_ratings (quoteId, userId, rating) VALUES (?, ?, ?)',
       [quoteId, userId, rating],
-      function(err) {
+      (err) => {
         if (err) {
           logError('database.rateQuote.insert', err, ERROR_LEVELS.MEDIUM);
           resolve({ success: false, message: 'Failed to save rating' });
@@ -837,7 +837,7 @@ function setProxyConfig(key, value, encrypted = false) {
          encrypted = excluded.encrypted,
          updatedAt = excluded.updatedAt`,
       [key, value, encrypted ? 1 : 0, updatedAt],
-      function(err) {
+      (err) => {
         if (err) {
           logError('database.setProxyConfig', err, ERROR_LEVELS.MEDIUM, { key });
           reject(err);
@@ -894,4 +894,3 @@ function getAllProxyConfig() {
     );
   });
 }
-

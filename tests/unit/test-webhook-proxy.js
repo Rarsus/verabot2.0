@@ -37,10 +37,10 @@ class MockHttpResponse {
  */
 async function testWebhookProxyService() {
   console.log('Testing WebhookProxyService...');
-  
+
   try {
     const WebhookProxyService = require('../../src/services/WebhookProxyService');
-    
+
     // Mock fetch function
     let lastFetchUrl = null;
     let lastFetchOptions = null;
@@ -58,12 +58,12 @@ async function testWebhookProxyService() {
     const token = 'test-token';
 
     const result = await service.forwardMessage(message, webhookUrl, token);
-    
+
     assert.strictEqual(result.success, true, 'Message forwarding should succeed');
     assert.strictEqual(lastFetchUrl, webhookUrl, 'Should call correct webhook URL');
     assert(lastFetchOptions, 'Should have fetch options');
     assert.strictEqual(lastFetchOptions.method, 'POST', 'Should use POST method');
-    
+
     // Verify payload structure
     const payload = JSON.parse(lastFetchOptions.body);
     assert.strictEqual(payload.content, 'Test message content', 'Payload should include message content');
@@ -74,7 +74,7 @@ async function testWebhookProxyService() {
     // Test 2: Handle failed webhook request
     const failingFetch = async () => new MockHttpResponse(false, 500);
     const failingService = new WebhookProxyService(failingFetch);
-    
+
     const failResult = await failingService.forwardMessage(message, webhookUrl, token);
     assert.strictEqual(failResult.success, false, 'Should handle failed request');
     assert(failResult.error, 'Should include error message');
@@ -88,10 +88,10 @@ async function testWebhookProxyService() {
       }
       return new MockHttpResponse(true, 200);
     };
-    
+
     const retryService = new WebhookProxyService(retryFetch);
     const retryResult = await retryService.forwardMessageWithRetry(message, webhookUrl, token, 3, 10);
-    
+
     assert.strictEqual(retryResult.success, true, 'Should succeed after retries');
     assert.strictEqual(attemptCount, 3, 'Should retry correct number of times');
 
@@ -123,10 +123,10 @@ async function testWebhookProxyService() {
  */
 async function testWebhookListenerService() {
   console.log('Testing WebhookListenerService...');
-  
+
   try {
     const WebhookListenerService = require('../../src/services/WebhookListenerService');
-    
+
     // Mock Discord client
     const mockClient = {
       channels: {
@@ -177,10 +177,10 @@ async function testWebhookListenerService() {
     // Test 4: Verify webhook signature
     const signature = service.generateSignature(incomingPayload, 'secret-key');
     assert(signature, 'Should generate signature');
-    
+
     const verified = service.verifySignature(incomingPayload, signature, 'secret-key');
     assert.strictEqual(verified, true, 'Should verify valid signature');
-    
+
     const wrongVerify = service.verifySignature(incomingPayload, 'wrong-sig', 'secret-key');
     assert.strictEqual(wrongVerify, false, 'Should reject invalid signature');
 
@@ -200,7 +200,7 @@ async function testWebhookListenerService() {
  */
 async function testMessageFiltering() {
   console.log('Testing Message Filtering...');
-  
+
   try {
     const { shouldForwardMessage } = require('../../src/utils/proxy-helpers');
 
@@ -212,16 +212,16 @@ async function testMessageFiltering() {
     const validMessage = new MockMessage('test');
     validMessage.channel.id = 'monitored-channel';
     assert.strictEqual(
-      shouldForwardMessage(validMessage, ['monitored-channel']), 
-      true, 
+      shouldForwardMessage(validMessage, ['monitored-channel']),
+      true,
       'Should forward messages from monitored channels'
     );
 
     // Test 3: Messages in non-monitored channels should be filtered
     validMessage.channel.id = 'other-channel';
     assert.strictEqual(
-      shouldForwardMessage(validMessage, ['monitored-channel']), 
-      false, 
+      shouldForwardMessage(validMessage, ['monitored-channel']),
+      false,
       'Should not forward messages from non-monitored channels'
     );
 
@@ -241,12 +241,12 @@ async function testMessageFiltering() {
  */
 async function runTests() {
   console.log('=== Webhook Proxy Service Tests ===\n');
-  
+
   try {
     await testWebhookProxyService();
     await testWebhookListenerService();
     await testMessageFiltering();
-    
+
     console.log('\n✅ All webhook proxy tests passed!');
     process.exit(0);
   } catch (err) {
