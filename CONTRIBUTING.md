@@ -17,7 +17,7 @@ Thank you for your interest in contributing to VeraBot!
 - Use response helpers for Discord messages
   
 ## Reporting Bugs
-- Check if the bug has not been reported in the [GitHub Issues](../../issues).
+- Check if the bug has not been reported in the [GitHub Issues](https://github.com/Rarsus/verabot2.0/issues).
 - Provide detailed reproduction steps.
 
 ## Guidelines for Pull Requests
@@ -83,8 +83,8 @@ Content...
 Practical examples...
 
 ## Related Documentation
-- [Related Doc 1](path/to/doc.md)
-- [Related Doc 2](path/to/doc.md)
+- [Architecture Overview](docs/architecture/ARCHITECTURE-OVERVIEW.md)
+- [Testing Guide](docs/guides/02-TESTING-GUIDE.md)
 ```
 
 #### 4. Code Examples
@@ -150,7 +150,7 @@ Instructions...
 Common issues...
 
 ## Next Steps
-- [Related Guide](...)
+- [Testing Guide](docs/guides/02-TESTING-GUIDE.md)
 ```
 
 #### Reference Docs (`docs/reference/`)
@@ -186,7 +186,7 @@ Technical overview...
 ```
 
 ## Related References
-- [Reference 1](...)
+- [Architecture Reference](docs/reference/ARCHITECTURE.md)
 ```
 
 #### Project Documentation (`docs/project/`)
@@ -270,7 +270,7 @@ Add a new quote to the database.
 ```
 
 **Related:**
-- [Quote Management Guide](guides/03-QUOTE-SYSTEM.md)
+- [Creating Commands Guide](docs/guides/01-CREATING-COMMANDS.md)
 ```
 
 #### Example 2: Feature Documentation
@@ -292,11 +292,11 @@ The reminder system allows users to schedule notifications.
 
 ### Usage
 
-See [Reminder System Guide](guides/05-REMINDER-SYSTEM.md)
+See [Creating Commands Guide](docs/guides/01-CREATING-COMMANDS.md)
 
 ### Database Schema
 
-See [Reminder Schema Reference](reference/REMINDER-SCHEMA.md)
+See [Architecture Reference](docs/reference/ARCHITECTURE.md)
 ```
 
 ### Getting Help

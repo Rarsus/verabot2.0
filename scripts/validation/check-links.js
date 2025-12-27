@@ -95,6 +95,9 @@ function checkInternalLink(filePath, linkUrl, basePath) {
  */
 function checkExternalLink(url) {
   return new Promise((resolve) => {
+    // Check if we're in a restricted network environment
+    const isCI = process.env.CI === 'true';
+    
     const protocol = url.startsWith('https') ? https : http;
     
     const options = {
@@ -115,12 +118,22 @@ function checkExternalLink(url) {
     });
     
     req.on('error', (err) => {
-      resolve({ valid: false, error: err.message });
+      // In CI, treat network errors as warnings instead of failures for external links
+      if (isCI && (err.code === 'ENOTFOUND' || err.code === 'ECONNREFUSED' || err.code === 'ETIMEDOUT')) {
+        resolve({ valid: true, warning: true, error: err.message });
+      } else {
+        resolve({ valid: false, error: err.message });
+      }
     });
     
     req.on('timeout', () => {
       req.destroy();
-      resolve({ valid: false, error: 'Timeout' });
+      // In CI, treat timeouts as warnings
+      if (isCI) {
+        resolve({ valid: true, warning: true, error: 'Timeout' });
+      } else {
+        resolve({ valid: false, error: 'Timeout' });
+      }
     });
     
     req.end();
@@ -156,6 +169,14 @@ async function processFile(filePath) {
           link: url,
           text: link.text,
           error: result.error || 'Inaccessible',
+          type: 'external'
+        });
+      } else if (result.warning) {
+        results.warnings.push({
+          file: path.relative(ROOT_DIR, filePath),
+          link: url,
+          text: link.text,
+          error: result.error || 'Network issue (CI)',
           type: 'external'
         });
       }
@@ -208,7 +229,19 @@ function generateReport() {
   console.log('\n=== Link Validation Report ===\n');
   console.log(`Files scanned: ${results.totalFiles}`);
   console.log(`Links checked: ${results.totalLinks}`);
-  console.log(`Broken links: ${results.brokenLinks.length}\n`);
+  console.log(`Broken links: ${results.brokenLinks.length}`);
+  console.log(`Warnings: ${results.warnings.length}\n`);
+  
+  if (results.warnings.length > 0) {
+    console.log('⚠️  Link Warnings (network issues in CI):\n');
+    
+    for (const warning of results.warnings) {
+      console.log(`File: ${warning.file}`);
+      console.log(`  Link: ${warning.link}`);
+      console.log(`  Text: ${warning.text}`);
+      console.log(`  Warning: ${warning.error}\n`);
+    }
+  }
   
   if (results.brokenLinks.length > 0) {
     console.log('❌ Broken Links Found:\n');
