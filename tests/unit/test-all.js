@@ -8,7 +8,7 @@ const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
 
-const testsDir = path.join(__dirname, '..', 'tests', 'unit');
+const testsDir = path.join(__dirname);
 const testFiles = fs.readdirSync(testsDir)
   .filter(file => file.startsWith('test-') && file.endsWith('.js') && file !== 'test-all.js')
   .map(file => path.join(testsDir, file));
