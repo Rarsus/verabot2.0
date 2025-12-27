@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "mocha",
+    "test": "node tests/unit/test-all.js",
+    "test:quick": "node tests/unit/run-tests.js",
     "test:coverage": "c8 npm test",
     "coverage:report": "c8 report",
     "coverage:check": "c8 check-coverage"
@@ -15,7 +16,10 @@
   "author": "Rarsus",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "^14.0.0"
+    "discord.js": "^14.0.0",
+    "dotenv": "^16.0.3",
+    "node-fetch": "^2.6.9",
+    "sqlite3": "^5.1.6"
   },
   "devDependencies": {
     "c8": "^7.13.0",

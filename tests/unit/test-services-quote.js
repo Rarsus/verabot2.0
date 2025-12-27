@@ -58,6 +58,8 @@ console.log('\n=== Test 2: Get All Quotes With Data ===');
 console.log('\n=== Test 3: Get Random Quote Returns Object ===');
 (async () => {
   try {
+    // Ensure there's at least one quote
+    await db.addQuote('Test quote for random', 'Random Author');
     const quote = await getRandomQuote();
     if (quote && typeof quote === 'object') {
       console.log('✅ Test 3 Passed: getRandomQuote returns object');
