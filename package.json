@@ -1,55 +1,24 @@
 {
-  "name": "verabot2-0",
-  "displayName": "VeraBot2.0",
-  "version": "3.0.0",
-  "description": "VeraBot2.0 - Generic modular Discord bot with reminder management",
-  "main": "src/index.js",
+  "name": "verabot2.0",
+  "version": "1.0.0",
+  "description": "Vera bot for Discord",
+  "main": "index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "node --watch src/index.js",
-    "register-commands": "node src/register-commands.js",
-    "test": "node ./tests/unit/run-tests.js && node ./scripts/build/generate-test-docs.js",
-    "test:quotes": "node ./tests/unit/test-quotes.js",
-    "test:quotes-advanced": "node ./tests/unit/test-quotes-advanced.js",
-    "test:utils:base": "node ./tests/unit/test-command-base.js",
-    "test:utils:options": "node ./tests/unit/test-command-options.js",
-    "test:utils:helpers": "node ./tests/unit/test-response-helpers.js",
-    "test:integration:refactor": "node ./tests/unit/test-integration-refactor.js",
-    "test:services:validation": "node ./tests/unit/test-services-validation.js",
-    "test:services:database": "node ./tests/unit/test-services-database.js",
-    "test:middleware:errorhandler": "node ./tests/unit/test-middleware-errorhandler.js",
-    "test:commands:misc": "node ./tests/unit/test-misc-commands.js",
-    "test:proxy:config": "node ./tests/unit/test-proxy-config.js",
-    "test:proxy:webhook": "node ./tests/unit/test-webhook-proxy.js",
-    "test:proxy:commands": "node ./tests/unit/test-proxy-commands.js",
-    "test:reminder:database": "node ./tests/unit/test-reminder-database.js",
-    "test:reminder:commands": "node ./tests/unit/test-reminder-commands.js",
-    "test:reminder:notifications": "node ./tests/unit/test-reminder-notifications.js",
-    "test:all": "npm test && npm run test:quotes && npm run test:quotes-advanced && npm run test:utils:base && npm run test:utils:options && npm run test:utils:helpers && npm run test:integration:refactor && npm run test:services:validation && npm run test:services:database && npm run test:middleware:errorhandler && npm run test:commands:misc && npm run test:proxy:config && npm run test:proxy:webhook && npm run test:proxy:commands && npm run test:reminder:database && npm run test:reminder:commands && npm run test:reminder:notifications && node ./scripts/build/generate-test-docs.js",
-    "test:docs": "node ./scripts/build/generate-test-docs.js",
-    "lint": "eslint --ext .js src/ tests/ scripts/",
-    "lint:fix": "eslint --ext .js src/ tests/ scripts/ --fix",
-    "format": "npm run lint:fix",
-    "check": "npm run lint && npm test",
-    "ci": "npm ci && npm test",
-    "docs:lint": "markdownlint '**/*.md' --ignore node_modules --ignore .git",
-    "docs:links": "node scripts/validation/check-links.js",
-    "docs:version": "node scripts/validation/check-version.js",
-    "docs:validate": "npm run docs:lint && npm run docs:links && npm run docs:version",
-    "docs:badges": "node scripts/validation/update-badges.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "mocha",
+    "test:coverage": "c8 npm test",
+    "coverage:report": "c8 report"
   },
-  "engines": {
-    "node": ">=18"
-  },
+  "keywords": ["discord", "bot"],
+  "author": "Rarsus",
+  "license": "MIT",
   "dependencies": {
-    "discord.js": "^14.11.0",
-    "dotenv": "^17.2.3",
-    "node-fetch": "^2.7.0",
-    "sqlite3": "^5.1.7"
+    "discord.js": "^14.0.0"
   },
   "devDependencies": {
-    "eslint": "^8.48.0",
-    "markdownlint-cli": "^0.37.0",
-    "markdown-link-check": "^3.11.2"
+    "c8": "^7.13.0",
+    "mocha": "^10.2.0",
+    "nodemon": "^3.0.1"
   }
 }
