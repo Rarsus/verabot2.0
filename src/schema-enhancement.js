@@ -93,6 +93,55 @@ function enhanceSchema(db) {
         await runAsync('CREATE INDEX IF NOT EXISTS idx_quote_tags_quoteId ON quote_tags(quoteId)');
         await runAsync('CREATE INDEX IF NOT EXISTS idx_ratings_quoteId ON quote_ratings(quoteId)');
 
+        // Create reminders table
+        await runAsync(`
+          CREATE TABLE IF NOT EXISTS reminders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            subject TEXT NOT NULL,
+            category TEXT NOT NULL,
+            when_datetime TEXT NOT NULL,
+            content TEXT,
+            link TEXT,
+            image TEXT,
+            notificationTime TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'active',
+            createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+          )
+        `);
+
+        // Create reminder_assignments table for user/role relationships
+        await runAsync(`
+          CREATE TABLE IF NOT EXISTS reminder_assignments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            reminderId INTEGER NOT NULL,
+            assigneeType TEXT NOT NULL CHECK(assigneeType IN ('user', 'role')),
+            assigneeId TEXT NOT NULL,
+            createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (reminderId) REFERENCES reminders(id) ON DELETE CASCADE
+          )
+        `);
+
+        // Create reminder_notifications table for tracking notification delivery
+        await runAsync(`
+          CREATE TABLE IF NOT EXISTS reminder_notifications (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            reminderId INTEGER NOT NULL,
+            sentAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+            success INTEGER DEFAULT 1,
+            errorMessage TEXT,
+            FOREIGN KEY (reminderId) REFERENCES reminders(id) ON DELETE CASCADE
+          )
+        `);
+
+        // Create indexes for reminder performance
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_reminders_when ON reminders(when_datetime)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_reminders_status ON reminders(status)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_reminders_category ON reminders(category)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_reminder_assignments_reminderId ON reminder_assignments(reminderId)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_reminder_assignments_assigneeId ON reminder_assignments(assigneeId)');
+        await runAsync('CREATE INDEX IF NOT EXISTS idx_reminder_notifications_reminderId ON reminder_notifications(reminderId)');
+
         resolve();
       } catch (err) {
         logError('schema.enhance', err, ERROR_LEVELS.MEDIUM);
