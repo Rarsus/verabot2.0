@@ -99,11 +99,11 @@ function validateChannelId(channelId) {
  */
 function sanitizeForLogging(content) {
   if (!content) return '';
-  
+
   // Truncate long messages
   const maxLength = 100;
   const sanitized = content.substring(0, maxLength);
-  
+
   // Remove potential tokens or secrets (basic pattern matching)
   return sanitized
     .replace(/[a-zA-Z0-9_-]{20,}/g, '[REDACTED]')

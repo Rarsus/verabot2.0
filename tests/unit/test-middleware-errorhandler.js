@@ -17,12 +17,12 @@ function createMockInteraction() {
     commandName: 'test-command',
     replied: false,
     deferred: false,
-    reply: async function(msg) { 
-      this.replied = true; 
-      return msg; 
+    reply: async function(msg) {
+      this.replied = true;
+      return msg;
     },
-    followUp: async function(msg) { 
-      return msg; 
+    followUp: async function(msg) {
+      return msg;
     }
   };
 }
@@ -101,7 +101,7 @@ console.log('\n=== Test 6: Handle Error on New Interaction ===');
 try {
   const interaction = createMockInteraction();
   const error = new Error('Interaction error');
-  
+
   handleInteractionError(interaction, error, 'test.command').then(() => {
     if (interaction.replied) {
       console.log('✅ Test 6 Passed: Error handled on new interaction');
@@ -125,7 +125,7 @@ try {
   const interaction = createMockInteraction();
   interaction.replied = true;
   const error = new Error('Already replied error');
-  
+
   handleInteractionError(interaction, error, 'test.command').then(() => {
     console.log('✅ Test 7 Passed: Error handled on replied interaction');
     passed++;
@@ -144,7 +144,7 @@ try {
   const interaction = createMockInteraction();
   interaction.deferred = true;
   const error = new Error('Deferred error');
-  
+
   handleInteractionError(interaction, error, 'test.command').then(() => {
     console.log('✅ Test 8 Passed: Error handled on deferred interaction');
     passed++;
@@ -179,7 +179,7 @@ try {
       allWork = false;
     }
   });
-  
+
   if (allWork) {
     console.log('✅ Test 10 Passed: All error levels work');
     passed++;

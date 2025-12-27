@@ -3,7 +3,6 @@
  * Tests notification scheduling and delivery logic
  */
 
-/* eslint-disable no-unused-vars */
 
 const {
   createReminderEmbed
@@ -42,9 +41,9 @@ try {
     'createReminderEmbed',
     'sendReminderNotification'
   ];
-  
+
   const allExported = requiredFunctions.every(fn => typeof notificationService[fn] === 'function');
-  
+
   if (allExported) {
     console.log('✅ Test 2 Passed: All required functions exported');
     passed++;
@@ -69,9 +68,9 @@ try {
     link: 'https://example.com',
     image: 'https://example.com/image.png'
   };
-  
+
   const embed = createReminderEmbed(reminder);
-  
+
   if (embed && embed.data && embed.data.title && embed.data.title.includes('Test Reminder')) {
     console.log('✅ Test 3 Passed: Reminder embed created');
     passed++;
@@ -93,9 +92,9 @@ try {
     category: 'Task',
     when_datetime: '2024-12-31T10:00:00.000Z'
   };
-  
+
   const embed = createReminderEmbed(reminder);
-  
+
   if (embed && embed.data && embed.data.title) {
     console.log('✅ Test 4 Passed: Minimal embed created');
     passed++;
@@ -117,9 +116,9 @@ try {
     category: 'Event',
     when_datetime: '2024-12-31T10:00:00.000Z'
   };
-  
+
   const embed = createReminderEmbed(reminder);
-  
+
   if (embed && embed.data && embed.data.color === 0xFFD700) {
     console.log('✅ Test 5 Passed: Embed has correct color');
     passed++;
@@ -141,9 +140,9 @@ try {
     category: 'Task',
     when_datetime: '2024-12-31T10:00:00.000Z'
   };
-  
+
   const embed = createReminderEmbed(reminder);
-  
+
   if (embed && embed.data && embed.data.footer && embed.data.footer.text.includes('123')) {
     console.log('✅ Test 6 Passed: Embed includes ID in footer');
     passed++;
@@ -165,12 +164,12 @@ try {
     category: 'Meeting',
     when_datetime: '2024-12-31T10:00:00.000Z'
   };
-  
+
   const embed = createReminderEmbed(reminder);
-  
-  const hasCategory = embed.data.fields && 
+
+  const hasCategory = embed.data.fields &&
                       embed.data.fields.some(f => f.name.includes('Category') && f.value === 'Meeting');
-  
+
   if (hasCategory) {
     console.log('✅ Test 7 Passed: Embed includes category field');
     passed++;
@@ -192,12 +191,12 @@ try {
     category: 'Task',
     when_datetime: '2024-12-31T10:00:00.000Z'
   };
-  
+
   const embed = createReminderEmbed(reminder);
-  
-  const hasWhen = embed.data.fields && 
+
+  const hasWhen = embed.data.fields &&
                   embed.data.fields.some(f => f.name.includes('When'));
-  
+
   if (hasWhen) {
     console.log('✅ Test 8 Passed: Embed includes when field');
     passed++;
@@ -220,12 +219,12 @@ try {
     when_datetime: '2024-12-31T10:00:00.000Z',
     link: 'https://example.com'
   };
-  
+
   const embed = createReminderEmbed(reminder);
-  
-  const hasLink = embed.data.fields && 
+
+  const hasLink = embed.data.fields &&
                   embed.data.fields.some(f => f.name.includes('Link') && f.value.includes('example.com'));
-  
+
   if (hasLink) {
     console.log('✅ Test 9 Passed: Embed includes link field');
     passed++;
@@ -248,9 +247,9 @@ try {
     when_datetime: '2024-12-31T10:00:00.000Z',
     image: 'https://example.com/image.png'
   };
-  
+
   const embed = createReminderEmbed(reminder);
-  
+
   if (embed && embed.data && embed.data.image && embed.data.image.url === 'https://example.com/image.png') {
     console.log('✅ Test 10 Passed: Embed includes image');
     passed++;
@@ -273,9 +272,9 @@ try {
     when_datetime: '2024-12-31T10:00:00.000Z',
     content: 'This is test content for the reminder'
   };
-  
+
   const embed = createReminderEmbed(reminder);
-  
+
   if (embed && embed.data && embed.data.description === 'This is test content for the reminder') {
     console.log('✅ Test 11 Passed: Embed includes content as description');
     passed++;
@@ -292,8 +291,8 @@ try {
 console.log('\n=== Test 12: Check Default Constants ===');
 try {
   const constants = require('../../src/utils/constants/reminder-constants');
-  
-  if (constants.NOTIFICATION_DEFAULTS && 
+
+  if (constants.NOTIFICATION_DEFAULTS &&
       constants.NOTIFICATION_DEFAULTS.CHECK_INTERVAL &&
       constants.NOTIFICATION_DEFAULTS.RETRY_ATTEMPTS) {
     console.log('✅ Test 12 Passed: Notification constants defined');

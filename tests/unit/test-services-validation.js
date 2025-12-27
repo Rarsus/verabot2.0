@@ -3,7 +3,6 @@
  * Tests input validation functions
  */
 
-/* eslint-disable no-unused-vars */
 
 const {
   validateQuoteText,

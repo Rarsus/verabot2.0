@@ -35,25 +35,25 @@ class UpdateReminderCommand extends Command {
 
     // Collect updates
     const updates = {};
-    
+
     const subject = interaction.options.getString('subject');
     if (subject !== null) updates.subject = subject;
-    
+
     const category = interaction.options.getString('category');
     if (category !== null) updates.category = category;
-    
+
     const when = interaction.options.getString('when');
     if (when !== null) updates.when = when;
-    
+
     const content = interaction.options.getString('content');
     if (content !== null) updates.content = content;
-    
+
     const link = interaction.options.getString('link');
     if (link !== null) updates.link = link;
-    
+
     const image = interaction.options.getString('image');
     if (image !== null) updates.image = image;
-    
+
     const status = interaction.options.getString('status');
     if (status !== null) updates.status = status;
 

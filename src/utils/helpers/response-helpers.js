@@ -34,7 +34,7 @@ async function sendQuoteEmbed(interaction, quote, title = 'Quote') {
  */
 async function sendSuccess(interaction, message, ephemeral = false) {
   const flags = ephemeral ? 64 : undefined;
-  
+
   if (interaction.deferred || interaction.replied) {
     await interaction.editReply({ content: `✅ ${message}`, flags });
   } else {
@@ -51,7 +51,7 @@ async function sendSuccess(interaction, message, ephemeral = false) {
 async function sendError(interaction, message, ephemeral = true) {
   const flags = ephemeral ? 64 : undefined;
   const content = `❌ ${message}`;
-  
+
   if (interaction.deferred || interaction.replied) {
     await interaction.editReply({ content, flags });
   } else {

@@ -81,7 +81,7 @@ try {
   const helpers = require('../../src/utils/helpers/response-helpers');
   const required = ['sendQuoteEmbed', 'sendSuccess', 'sendError', 'sendDM', 'deferReply'];
   const missing = required.filter(h => typeof helpers[h] !== 'function');
-  
+
   if (missing.length === 0) {
     console.log('✅ Test 3 Passed: All response helpers load');
     passed++;
@@ -98,7 +98,7 @@ try {
 console.log('\n=== Test 4: Basic Command Structure ===');
 try {
   const Command = require('../../src/core/CommandBase');
-  
+
   class SimpleCommand extends Command {
     constructor() {
       super({
@@ -107,20 +107,20 @@ try {
         data: { toJSON: () => ({}) }
       });
     }
-    
+
     async execute(_message) {
       return 'executed';
     }
-    
+
     async executeInteraction(_interaction) {
       return 'executed';
     }
   }
-  
+
   const cmd = new SimpleCommand().register();
-  
-  if (cmd.name === 'simple' && 
-      typeof cmd.execute === 'function' && 
+
+  if (cmd.name === 'simple' &&
+      typeof cmd.execute === 'function' &&
       typeof cmd.executeInteraction === 'function') {
     console.log('✅ Test 4 Passed: Basic command structure valid');
     passed++;
@@ -138,25 +138,25 @@ console.log('\n=== Test 5: Command with Options ===');
 try {
   const Command = require('../../src/core/CommandBase');
   const buildCommandOptions = require('../../src/core/CommandOptions');
-  
+
   const { data, options } = buildCommandOptions(
     'test-cmd',
     'Test command',
     [{ name: 'text', type: 'string', description: 'Text', required: true }]
   );
-  
+
   class TestCommand extends Command {
     constructor() {
       super({ name: 'test-cmd', description: 'Test', data, options });
     }
-    
+
     async executeInteraction(_interaction) {
       return 'success';
     }
   }
-  
+
   const cmd = new TestCommand().register();
-  
+
   if (cmd.options && cmd.options.length === 1) {
     console.log('✅ Test 5 Passed: Command with options created');
     passed++;
@@ -174,22 +174,22 @@ console.log('\n=== Test 6: Command Error Handling ===');
 (async () => {
   try {
     const Command = require('../../src/core/CommandBase');
-    
+
     class ErrorCommand extends Command {
       constructor() {
         super({ name: 'error-cmd', description: 'Error test' });
       }
-      
+
       async executeInteraction(_interaction) {
         throw new Error('Test error');
       }
     }
-    
+
     const cmd = new ErrorCommand().register();
     const interaction = createMockInteraction();
-    
+
     await cmd.executeInteraction(interaction);
-    
+
     if (interaction.replied) {
       console.log('✅ Test 6 Passed: Error handled and reply sent');
       passed++;
@@ -209,22 +209,22 @@ console.log('\n=== Test 7: Response Helpers in Command ===');
   try {
     const Command = require('../../src/core/CommandBase');
     const { sendSuccess } = require('../../src/utils/helpers/response-helpers');
-    
+
     class SuccessCommand extends Command {
       constructor() {
         super({ name: 'success', description: 'Success test' });
       }
-      
+
       async executeInteraction(_interaction) {
         await sendSuccess(interaction, 'Command completed');
       }
     }
-    
+
     const cmd = new SuccessCommand().register();
     const interaction = createMockInteraction();
-    
+
     await cmd.executeInteraction(interaction);
-    
+
     if (interaction._reply && interaction._reply.content && interaction._reply.content.includes('✅')) {
       console.log('✅ Test 7 Passed: Response helpers work in commands');
       passed++;
@@ -242,16 +242,16 @@ console.log('\n=== Test 7: Response Helpers in Command ===');
 console.log('\n=== Test 8: Chainable Registration ===');
 try {
   const Command = require('../../src/core/CommandBase');
-  
+
   class ChainableCommand extends Command {
     constructor() {
       super({ name: 'chain', description: 'Test' });
     }
     async executeInteraction(_interaction) {}
   }
-  
+
   const cmd = new ChainableCommand().register();
-  
+
   if (cmd instanceof Command && cmd.name === 'chain') {
     console.log('✅ Test 8 Passed: Registration is chainable');
     passed++;
@@ -268,7 +268,7 @@ try {
 console.log('\n=== Test 9: Multiple Options Builder ===');
 try {
   const buildCommandOptions = require('../../src/core/CommandOptions');
-  
+
   const { data, options } = buildCommandOptions(
     'multi',
     'Multiple options test',
@@ -278,7 +278,7 @@ try {
       { name: 'active', type: 'boolean', description: 'Active' }
     ]
   );
-  
+
   if (options.length === 3 && data) {
     console.log('✅ Test 9 Passed: Multiple options builder works');
     passed++;
@@ -295,7 +295,7 @@ try {
 console.log('\n=== Test 10: Simple Command No Boilerplate ===');
 try {
   const Command = require('../../src/core/CommandBase');
-  
+
   // This should be much simpler than before
   class SimpleCmd extends Command {
     constructor() {
@@ -305,13 +305,13 @@ try {
       await i.reply('hello');
     }
   }
-  
+
   const _cmd = new SimpleCmd().register();
-  
+
   // Count number of try-catch blocks needed (should be 0 in the implementation)
   const source = SimpleCmd.prototype.executeInteraction.toString();
   const hasTryCatch = source.includes('try') && source.includes('catch');
-  
+
   if (!hasTryCatch) {
     console.log('✅ Test 10 Passed: Command code has no boilerplate try-catch');
     passed++;
@@ -329,9 +329,8 @@ setTimeout(() => {
   console.log(`✅ Passed: ${passed}`);
   console.log(`❌ Failed: ${failed}`);
   console.log(`Total: ${passed + failed}`);
-  
+
   if (failed > 0) {
     process.exit(1);
   }
 }, 1000);
-

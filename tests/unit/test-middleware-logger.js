@@ -125,7 +125,7 @@ console.log('\n=== Test 10: Log Different Contexts ===');
 try {
   const contexts = ['command', 'database', 'middleware', 'service.quote'];
   let allPassed = true;
-  
+
   contexts.forEach(context => {
     try {
       log(LOG_LEVELS.INFO, context, 'Test message for ' + context);
@@ -133,7 +133,7 @@ try {
       allPassed = false;
     }
   });
-  
+
   if (allPassed) {
     console.log('✅ Test 10 Passed: All context strings logged');
     passed++;

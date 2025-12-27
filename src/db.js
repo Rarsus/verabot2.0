@@ -1,6 +1,6 @@
 /**
  * Database Module - Wrapper for SQLite database operations
- * 
+ *
  * This module provides a clean interface for quote management operations.
  * The underlying implementation uses SQLite for better performance and scalability.
  */

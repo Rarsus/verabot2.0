@@ -447,7 +447,7 @@ async function runTests() {
       when: pastDate.toISOString(),
       notificationTime: pastDate.toISOString()
     });
-    
+
     const dueReminders = await getRemindersForNotification(new Date());
     if (Array.isArray(dueReminders)) {
       console.log(`✅ Test 23 Passed: Found ${dueReminders.length} due reminders`);

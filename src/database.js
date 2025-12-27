@@ -58,7 +58,7 @@ function setupSchema(db) {
 
       // Create index on addedAt for faster queries
       db.run(
-        `CREATE INDEX IF NOT EXISTS idx_quotes_addedAt ON quotes(addedAt)`,
+        'CREATE INDEX IF NOT EXISTS idx_quotes_addedAt ON quotes(addedAt)',
         (err) => {
           if (err) {
             logError('database.setupSchema.createIndex', err, ERROR_LEVELS.MEDIUM);
@@ -340,7 +340,7 @@ function rateQuote(quoteId, userId, rating) {
     database.run(
       'INSERT OR REPLACE INTO quote_ratings (quoteId, userId, rating) VALUES (?, ?, ?)',
       [quoteId, userId, rating],
-      function(err) {
+      (err) => {
         if (err) {
           logError('database.rateQuote.insert', err, ERROR_LEVELS.MEDIUM);
           resolve({ success: false, message: 'Failed to save rating' });

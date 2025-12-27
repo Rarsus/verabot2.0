@@ -26,8 +26,8 @@ class SearchQuotesCommand extends Command {
       }
 
       const quotes = await getAllQuotes();
-      const results = quotes.filter(q => 
-        q.text.toLowerCase().includes(query) || 
+      const results = quotes.filter(q =>
+        q.text.toLowerCase().includes(query) ||
         q.author.toLowerCase().includes(query)
       );
 
@@ -66,8 +66,8 @@ class SearchQuotesCommand extends Command {
     const query = interaction.options.getString('query').toLowerCase();
 
     const quotes = await getAllQuotes();
-    const results = quotes.filter(q => 
-      q.text.toLowerCase().includes(query) || 
+    const results = quotes.filter(q =>
+      q.text.toLowerCase().includes(query) ||
       q.author.toLowerCase().includes(query)
     );
 

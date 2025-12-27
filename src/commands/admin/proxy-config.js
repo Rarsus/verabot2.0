@@ -140,7 +140,7 @@ class ProxyConfigCommand extends Command {
       if (removeChannel) {
         const channels = await proxyConfig.getMonitoredChannels();
         const filtered = channels.filter(ch => ch !== removeChannel);
-        
+
         if (filtered.length < channels.length) {
           await proxyConfig.setMonitoredChannels(filtered);
           updates.push(`Removed channel <#${removeChannel}> from monitoring`);

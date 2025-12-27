@@ -54,11 +54,11 @@ const commandsPath = path.join(__dirname, 'commands');
 
 function loadCommands(dirPath) {
   if (!fs.existsSync(dirPath)) return;
-  
+
   const entries = fs.readdirSync(dirPath, { withFileTypes: true });
   for (const entry of entries) {
     const fullPath = path.join(dirPath, entry.name);
-    
+
     if (entry.isDirectory()) {
       // Recursively load from subdirectories
       loadCommands(fullPath);
@@ -102,11 +102,11 @@ client.once('ready', async () => {
 
     if (isProxyEnabled) {
       webhookListener = new WebhookListenerService(client);
-      
+
       if (!webhookSecret) {
         console.warn('⚠️  WARNING: Webhook listener starting without signature verification. Configure a secret with /proxy-config for better security.');
       }
-      
+
       await webhookListener.startServer(proxyPort, webhookSecret);
       console.log(`✓ Webhook listener started on port ${proxyPort}`);
     }

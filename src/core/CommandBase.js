@@ -30,7 +30,7 @@ class Command {
       } catch (err) {
         const [firstArg] = args;
         const isInteraction = firstArg?.isCommand?.() || firstArg?.isChatInputCommand?.();
-        
+
         logError(context, err, ERROR_LEVELS.MEDIUM, {
           commandName: this.name
         });

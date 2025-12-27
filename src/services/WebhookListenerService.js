@@ -24,8 +24,8 @@ class WebhookListenerService {
       // Validate payload
       const validation = this.validateIncomingPayload(payload);
       if (!validation.valid) {
-        return { 
-          success: false, 
+        return {
+          success: false,
           error: `Validation failed: ${validation.errors.join(', ')}`,
           messageId: null
         };
@@ -39,8 +39,8 @@ class WebhookListenerService {
           `Channel not found: ${payload.channel}`,
           ERROR_LEVELS.MEDIUM
         );
-        return { 
-          success: false, 
+        return {
+          success: false,
           error: 'Channel not found or bot lacks access',
           messageId: null
         };
@@ -49,8 +49,8 @@ class WebhookListenerService {
       // Send message to Discord channel
       const sentMessage = await channel.send(payload.content);
 
-      return { 
-        success: true, 
+      return {
+        success: true,
         error: null,
         messageId: sentMessage.id
       };
@@ -61,8 +61,8 @@ class WebhookListenerService {
         ERROR_LEVELS.MEDIUM,
         { channel: payload?.channel }
       );
-      return { 
-        success: false, 
+      return {
+        success: false,
         error: err.message || 'Failed to process incoming message',
         messageId: null
       };
@@ -150,7 +150,7 @@ class WebhookListenerService {
         req.on('end', async () => {
           try {
             const payload = JSON.parse(body);
-            
+
             // Verify signature if secret is provided
             if (secret) {
               const signature = req.headers['x-webhook-signature'];
@@ -166,15 +166,15 @@ class WebhookListenerService {
 
             if (result.success) {
               res.writeHead(200, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ 
-                success: true, 
-                messageId: result.messageId 
+              res.end(JSON.stringify({
+                success: true,
+                messageId: result.messageId
               }));
             } else {
               res.writeHead(400, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({ 
-                success: false, 
-                error: result.error 
+              res.end(JSON.stringify({
+                success: false,
+                error: result.error
               }));
             }
           } catch (err) {
@@ -184,9 +184,9 @@ class WebhookListenerService {
               ERROR_LEVELS.MEDIUM
             );
             res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ 
-              success: false, 
-              error: 'Internal server error' 
+            res.end(JSON.stringify({
+              success: false,
+              error: 'Internal server error'
             }));
           }
         });

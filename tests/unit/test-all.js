@@ -24,12 +24,12 @@ async function runTest(testFile) {
     console.log(`\n${'='.repeat(60)}`);
     console.log(`Running: ${testName}`);
     console.log('='.repeat(60));
-    
+
     const proc = spawn('node', [testFile], {
       cwd: path.join(__dirname, '..'),
       stdio: 'inherit'
     });
-    
+
     proc.on('close', (code) => {
       if (code === 0) {
         passed++;
@@ -47,7 +47,7 @@ async function runAllTests() {
   for (const testFile of testFiles) {
     await runTest(testFile);
   }
-  
+
   console.log(`\n${'='.repeat(60)}`);
   console.log('📊 Test Summary');
   console.log('='.repeat(60));
@@ -55,7 +55,7 @@ async function runAllTests() {
   console.log(`✅ Passed: ${passed}`);
   console.log(`❌ Failed: ${failed}`);
   console.log('='.repeat(60));
-  
+
   if (failed > 0) {
     console.error(`\n❌ ${failed} test suite(s) failed`);
     process.exit(1);

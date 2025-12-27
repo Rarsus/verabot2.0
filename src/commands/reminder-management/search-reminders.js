@@ -44,11 +44,11 @@ class SearchRemindersCommand extends Command {
     for (const reminder of reminders.slice(0, 10)) {
       const whenDate = new Date(reminder.when_datetime);
       const timeStr = `<t:${Math.floor(whenDate.getTime() / 1000)}:R>`;
-      
+
       // Create preview with keyword context
       let preview = '';
       const keywordLower = keyword.toLowerCase();
-      
+
       if (reminder.subject.toLowerCase().includes(keywordLower)) {
         preview = `**${reminder.subject}**`;
       } else if (reminder.category.toLowerCase().includes(keywordLower)) {
@@ -61,7 +61,7 @@ class SearchRemindersCommand extends Command {
         const end = Math.min(reminder.content.length, index + keyword.length + 30);
         preview = `${start > 0 ? '...' : ''}${reminder.content.substring(start, end)}${end < reminder.content.length ? '...' : ''}`;
       }
-      
+
       embed.addFields({
         name: `#${reminder.id} - ${reminder.subject}`,
         value: `${preview}\n📂 ${reminder.category} • 📅 ${timeStr}`,

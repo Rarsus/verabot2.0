@@ -61,7 +61,7 @@ function enhanceSchema(db) {
 
         // Add new columns to quotes table if they don't exist
         const columns = await new Promise((res) => {
-          db.all("PRAGMA table_info(quotes)", (err, cols) => {
+          db.all('PRAGMA table_info(quotes)', (err, cols) => {
             if (err) {
               logError('schema.pragma_check', err, ERROR_LEVELS.MEDIUM);
               res([]);

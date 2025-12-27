@@ -3,7 +3,6 @@
  * Tests quote business logic operations
  */
 
-/* eslint-disable no-unused-vars */
 
 const {
   getAllQuotes,

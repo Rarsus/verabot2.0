@@ -10,8 +10,16 @@
     "test:all": "node tests/unit/test-all.js",
     "test:quick": "node tests/unit/run-tests.js",
     "test:coverage": "c8 npm test",
+    "test:security": "node tests/unit/test-security-validation.js",
+    "test:integration": "node tests/integration/test-security-integration.js",
     "coverage:report": "c8 report",
-    "coverage:check": "c8 check-coverage"
+    "coverage:check": "c8 check-coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "lint:check": "eslint .",
+    "security:audit": "npm audit --audit-level=moderate",
+    "security:check": "npm run security:audit && npm run lint",
+    "prepare": "husky || true"
   },
   "keywords": ["discord", "bot"],
   "author": "Rarsus",
@@ -24,7 +32,17 @@
   },
   "devDependencies": {
     "c8": "^7.13.0",
+    "eslint": "^9.0.0",
+    "eslint-plugin-security": "^3.0.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0",
     "mocha": "^10.2.0",
     "nodemon": "^3.0.1"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
   }
 }

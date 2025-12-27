@@ -46,15 +46,15 @@ class WebhookProxyService {
           'WebhookProxyService.forwardMessage',
           `Webhook returned status ${response.status}`,
           ERROR_LEVELS.MEDIUM,
-          { 
-            status: response.status, 
+          {
+            status: response.status,
             messageId: message.id,
             channel: sanitizeForLogging(message.channel?.id)
           }
         );
-        return { 
-          success: false, 
-          error: `Webhook request failed with status ${response.status}` 
+        return {
+          success: false,
+          error: `Webhook request failed with status ${response.status}`
         };
       }
 
@@ -66,9 +66,9 @@ class WebhookProxyService {
         ERROR_LEVELS.MEDIUM,
         { messageId: message.id }
       );
-      return { 
-        success: false, 
-        error: err.message || 'Failed to forward message' 
+      return {
+        success: false,
+        error: err.message || 'Failed to forward message'
       };
     }
   }
@@ -88,9 +88,9 @@ class WebhookProxyService {
 
     while (attempts < maxRetries) {
       attempts++;
-      
+
       const result = await this.forwardMessage(message, webhookUrl, token);
-      
+
       if (result.success) {
         return { success: true, error: null, attempts };
       }
@@ -115,10 +115,10 @@ class WebhookProxyService {
       { messageId: message.id, attempts }
     );
 
-    return { 
-      success: false, 
-      error: lastError || 'Max retries exceeded', 
-      attempts 
+    return {
+      success: false,
+      error: lastError || 'Max retries exceeded',
+      attempts
     };
   }
 
@@ -165,7 +165,7 @@ class WebhookProxyService {
 
     for (const message of messages) {
       const result = await this.forwardMessageWithRetry(message, webhookUrl, token);
-      
+
       if (result.success) {
         successful++;
       } else {
