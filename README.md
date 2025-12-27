@@ -418,10 +418,35 @@ npm run lint                # Check for style issues
 ```
 
 ### Docker
+
+**Using Pre-built Images from GitHub Container Registry:**
 ```bash
-docker build -t verabot2 .
+# Pull the latest release
+docker pull ghcr.io/rarsus/verabot2.0:latest
+
+# Or pull a specific version
+docker pull ghcr.io/rarsus/verabot2.0:3.0.0
+
+# Run with your .env file
+docker run -d --env-file .env --name verabot ghcr.io/rarsus/verabot2.0:latest
+
+# Or use docker-compose (update image in docker-compose.yml to ghcr.io/rarsus/verabot2.0:latest)
 docker-compose up -d
 ```
+
+**Building Locally:**
+```bash
+# Build your own image
+docker build -t verabot2 .
+
+# Run locally built image
+docker-compose up -d
+```
+
+**Available Tags:**
+- `latest` - Latest stable release
+- `3.0.0`, `3.0`, `3` - Specific version tags
+- `main-<sha>` - Development builds from main branch
 
 ### Environment Variables
 ```env

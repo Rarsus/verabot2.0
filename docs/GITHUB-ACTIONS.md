@@ -68,7 +68,65 @@ ghcr.io/rarsus/verabot2.0:main-<sha>
 
 ---
 
-### 3. **PR Validation** (`pr-validation.yml`)
+### 3. **Docker Release Publishing** (`docker-publish.yml`)
+Builds and publishes versioned Docker images to GitHub Container Registry on release.
+
+**Triggers:**
+- GitHub Release published
+- Manual trigger (`workflow_dispatch` with version input)
+
+**Jobs:**
+- **build-and-push-release**
+  - Builds multi-platform Docker image (amd64, arm64)
+  - Extracts version from release tag or manual input
+  - Pushes to GitHub Container Registry with multiple tags
+  - Uses layer caching for fast builds
+  - Generates detailed build summary
+
+- **verify-image**
+  - Pulls published image to verify availability
+  - Inspects image metadata and labels
+  - Ensures image is accessible
+
+**Requirements:**
+- GitHub Container Registry access (automatic)
+- `GITHUB_TOKEN` (automatic)
+
+**Docker Images Published (for version 3.0.0):**
+```
+ghcr.io/rarsus/verabot2.0:3.0.0      # Full version
+ghcr.io/rarsus/verabot2.0:3.0        # Major.minor
+ghcr.io/rarsus/verabot2.0:3          # Major version
+ghcr.io/rarsus/verabot2.0:latest     # Latest release
+```
+
+**Usage - Creating a Release:**
+1. Tag your commit: `git tag v3.0.0`
+2. Push the tag: `git push origin v3.0.0`
+3. Create GitHub release from tag
+4. Workflow automatically builds and publishes Docker images
+
+**Usage - Manual Trigger:**
+1. Go to Actions → Docker Release Publishing
+2. Click "Run workflow"
+3. Enter version number (e.g., "3.0.0")
+4. Wait for build to complete
+
+**Pulling Published Images:**
+```bash
+# Pull specific version
+docker pull ghcr.io/rarsus/verabot2.0:3.0.0
+
+# Pull latest release
+docker pull ghcr.io/rarsus/verabot2.0:latest
+
+# Run the container
+docker run -d --env-file .env ghcr.io/rarsus/verabot2.0:latest
+```
+
+---
+
+### 4. **PR Validation** (`pr-validation.yml`)
 Enhanced validation for pull requests with automated comments.
 
 **Triggers:**
@@ -90,7 +148,7 @@ Enhanced validation for pull requests with automated comments.
 
 ---
 
-### 4. **Scheduled Checks** (`scheduled-checks.yml`)
+### 5. **Scheduled Checks** (`scheduled-checks.yml`)
 Weekly health checks and dependency monitoring.
 
 **Triggers:**
