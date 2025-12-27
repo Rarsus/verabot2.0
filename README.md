@@ -444,9 +444,9 @@ docker-compose up -d
 ```
 
 **Available Tags:**
-- `latest` - Latest stable release
-- `3.0.0`, `3.0`, `3` - Specific version tags
-- `main-<sha>` - Development builds from main branch
+- `latest` - Latest stable release (from docker-publish.yml on release)
+- `3.0.0`, `3.0`, `3` - Specific version tags (from docker-publish.yml)
+- `main`, `main-<sha>` - Development builds from main branch (from deploy.yml)
 
 ### Environment Variables
 ```env
