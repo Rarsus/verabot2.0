@@ -1,0 +1,130 @@
+name: Docker - Build & Publish Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Docker image tag (e.g., 3.0.0)'
+        required: true
+        type: string
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔑 Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🏷️ Extract version and metadata
+        id: meta
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            VERSION="${{ github.event.release.tag_name }}"
+            VERSION="${VERSION#v}"  # Remove 'v' prefix if present
+          else
+            VERSION="${{ github.event.inputs.tag }}"
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "📌 Building version: ${VERSION}"
+
+      - name: 📝 Generate Docker metadata
+        id: docker_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}},value=${{ steps.meta.outputs.version }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ steps.meta.outputs.version }}
+            type=semver,pattern={{major}},value=${{ steps.meta.outputs.version }}
+            type=raw,value=latest,enable=true
+
+      - name: 🏗️ Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+
+      - name: ✅ Image published successfully
+        run: |
+          echo "✅ Docker image published to GitHub Container Registry"
+          echo ""
+          echo "📦 Repository: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+          echo "🏷️ Version: ${{ steps.meta.outputs.version }}"
+          echo ""
+          echo "Available tags:"
+          echo "${{ steps.docker_meta.outputs.tags }}" | sed 's/,/\n/g'
+          echo ""
+          echo "🚀 Pull the image with:"
+          echo "   docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}"
+          echo "   docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+
+      - name: 📊 Image details
+        run: |
+          echo "### 🐳 Docker Image Published" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Registry:** \`${{ env.REGISTRY }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Repository:** \`${{ env.IMAGE_NAME }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** \`${{ steps.meta.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### Available Tags" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.docker_meta.outputs.tags }}" | sed 's/,/\n/g' >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### Pull Command" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+  verify-image:
+    needs: build-and-push-release
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+
+    steps:
+      - name: 🔑 Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🔍 Verify image can be pulled
+        run: |
+          echo "🔍 Verifying published image..."
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          echo "✅ Image verified successfully!"
+
+      - name: 📋 Image inspection
+        run: |
+          echo "📋 Inspecting image details..."
+          docker images ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          docker inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --format='{{.Config.Labels}}'
+          echo "✅ Image inspection complete"
