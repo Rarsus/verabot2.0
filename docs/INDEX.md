@@ -11,6 +11,8 @@ Master index of all VeraBot2.0 documentation with full cross-references.
 | [guides/01-CREATING-COMMANDS.md](guides/01-CREATING-COMMANDS.md) | Step-by-step guide for creating new commands | Developers |
 | [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md) | Comprehensive testing with TDD principles | QA, Developers |
 | [guides/03-HUGGINGFACE-SETUP.md](guides/03-HUGGINGFACE-SETUP.md) | AI poem generation setup and configuration | DevOps, Developers |
+| [guides/04-PROXY-SETUP.md](guides/04-PROXY-SETUP.md) | Webhook proxy system setup and configuration | DevOps, Developers |
+| [guides/05-REMINDER-SYSTEM.md](guides/05-REMINDER-SYSTEM.md) | **Reminder Management System guide** | Developers, Users |
 
 ### Reference (Architecture & API)
 
@@ -19,6 +21,7 @@ Master index of all VeraBot2.0 documentation with full cross-references.
 | [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md) | System design, patterns, utility modules | Tech Leads, Architects |
 | [reference/REFACTORING-GUIDE.md](reference/REFACTORING-GUIDE.md) | Before/after code examples and patterns | Developers, Reviewers |
 | [reference/TDD-QUICK-REFERENCE.md](reference/TDD-QUICK-REFERENCE.md) | Quick testing reference and commands | QA, Developers |
+| [reference/REMINDER-SCHEMA.md](reference/REMINDER-SCHEMA.md) | **Reminder system database schema** | Developers, DBAs |
 
 ### Project Information (Background & Metrics)
 
