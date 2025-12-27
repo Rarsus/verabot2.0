@@ -1,0 +1,43 @@
+{
+  "reporter": [
+    "text",
+    "html",
+    "lcov"
+  ],
+  "report-dir": "./coverage",
+  "exclude": [
+    "tests/**",
+    "node_modules/**",
+    "coverage/**",
+    "**/*.test.js",
+    "**/*.spec.js",
+    "src/index.js",
+    "src/register-commands.js",
+    "src/database.js",
+    "src/db.js",
+    "src/detectReadyEvent.js",
+    "src/commands/**",
+    "src/types/**",
+    "src/migration.js",
+    "src/core/EventBase.js",
+    "src/services/index.js",
+    "src/services/DiscordService.js",
+    "src/utils/command-base.js",
+    "src/utils/command-options.js",
+    "src/utils/response-helpers.js",
+    "src/utils/constants.js",
+    "src/utils/error-handler.js",
+    "src/lib/migration.js",
+    "src/lib/detectReadyEvent.js"
+  ],
+  "check-coverage": true,
+  "lines": 70,
+  "functions": 70,
+  "branches": 65,
+  "statements": 70,
+  "per-file": false,
+  "all": true,
+  "include": [
+    "src/**/*.js"
+  ]
+}
