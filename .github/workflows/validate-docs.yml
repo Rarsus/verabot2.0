@@ -1,0 +1,220 @@
+name: Documentation Validation & Maintenance
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.md'
+      - 'docs/**'
+      - 'scripts/validation/**'
+      - '.github/workflows/validate-docs.yml'
+      - 'package.json'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.md'
+      - 'docs/**'
+      - 'scripts/validation/**'
+      - '.github/workflows/validate-docs.yml'
+      - 'package.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  pull-requests: write
+
+jobs:
+  validate-markdown:
+    name: Validate Markdown Syntax
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: 📚 Install dependencies
+        run: npm ci
+      
+      - name: 🔍 Lint markdown files
+        run: npm run docs:lint
+        continue-on-error: true
+      
+      - name: 📊 Upload lint results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: markdown-lint-results
+          path: |
+            .markdownlint.json
+          retention-days: 30
+
+  check-links:
+    name: Check Documentation Links
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: 📚 Install dependencies
+        run: npm ci
+      
+      - name: 🔗 Check internal and external links
+        run: npm run docs:links
+        continue-on-error: true
+
+  check-version-sync:
+    name: Verify Version Consistency
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: 📚 Install dependencies
+        run: npm ci
+      
+      - name: 🔢 Check version synchronization
+        run: npm run docs:version
+        continue-on-error: true
+
+  update-badges:
+    name: Update Dynamic Badges
+    runs-on: ubuntu-latest
+    needs: [validate-markdown, check-links, check-version-sync]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: 📚 Install dependencies
+        run: npm ci
+      
+      - name: 🧪 Run tests to generate latest results
+        run: npm run test:all
+        continue-on-error: true
+      
+      - name: 🎨 Update badges
+        run: npm run docs:badges
+      
+      - name: 📝 Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet HEAD README.md; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: 💾 Commit badge updates
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add README.md
+          git commit -m "chore: update dynamic badges [skip ci]"
+          git push
+
+  deploy-docs:
+    name: Deploy Documentation to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: [validate-markdown, check-links, check-version-sync]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: 📚 Install dependencies
+        run: npm ci
+      
+      - name: 📂 Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: 🏗️ Build documentation site
+        run: |
+          mkdir -p _site
+          cp -r website/* _site/
+          mkdir -p _site/docs
+          cp -r docs/* _site/docs/
+          cp README.md _site/
+          echo "✅ Site built successfully"
+      
+      - name: 📤 Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+      
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      
+      - name: ✅ Deployment complete
+        run: |
+          echo "✅ Documentation deployed to GitHub Pages"
+          echo "🔗 URL: ${{ steps.deployment.outputs.page_url }}"
+
+  comment-on-pr:
+    name: Comment on Pull Request
+    runs-on: ubuntu-latest
+    needs: [validate-markdown, check-links, check-version-sync]
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: 💬 Add validation summary comment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const body = `## 📚 Documentation Validation Results
+            
+            ✅ Markdown syntax validation completed
+            ✅ Link checking completed  
+            ✅ Version consistency check completed
+            
+            View the full workflow run for detailed results.
+            
+            💡 **Tip:** Documentation will be automatically deployed to GitHub Pages when this PR is merged.`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });

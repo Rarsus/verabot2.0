@@ -1,8 +1,9 @@
 # VeraBot2.0
 
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![Code Coverage](https://img.shields.io/badge/coverage-100%25-success)
-![Dependencies](https://img.shields.io/badge/dependencies-up--to--date-green)
+![Version](https://img.shields.io/badge/version-v3.0.0-blue)
+![Tests](https://img.shields.io/badge/tests-74%2F74%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-100%25-success)
+![Node Version](https://img.shields.io/badge/node-%3E%3D18-green)
 
 Advanced Discord bot with organized commands, quote management system, and modern architecture. Features slash commands, legacy prefix commands, comprehensive testing, and database integration.
 

@@ -31,7 +31,12 @@
     "lint:fix": "eslint --ext .js src/ tests/ scripts/ --fix",
     "format": "npm run lint:fix",
     "check": "npm run lint && npm test",
-    "ci": "npm ci && npm test"
+    "ci": "npm ci && npm test",
+    "docs:lint": "markdownlint '**/*.md' --ignore node_modules --ignore .git",
+    "docs:links": "node scripts/validation/check-links.js",
+    "docs:version": "node scripts/validation/check-version.js",
+    "docs:validate": "npm run docs:lint && npm run docs:links && npm run docs:version",
+    "docs:badges": "node scripts/validation/update-badges.js"
   },
   "engines": {
     "node": ">=18"
@@ -43,6 +48,8 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "eslint": "^8.48.0"
+    "eslint": "^8.48.0",
+    "markdownlint-cli": "^0.37.0",
+    "markdown-link-check": "^3.11.2"
   }
 }
