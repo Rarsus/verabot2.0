@@ -3,9 +3,9 @@
  * Core business logic for reminder management
  */
 
-const { getDatabase } = require('../database');
+const { getDatabase } = require('./DatabaseService');
 const { REMINDER_STATUS, REMINDER_LIMITS } = require('../utils/constants/reminder-constants');
-const { logError, ERROR_LEVELS } = require('../middleware/errorHandler');
+const { logError, ERROR_LEVELS } = require('../utils/error-handler');
 
 /**
  * Validate reminder subject

@@ -6,7 +6,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { getRemindersForNotification, recordNotification, updateReminder } = require('./ReminderService');
 const { REMINDER_STATUS, NOTIFICATION_DEFAULTS } = require('../utils/constants/reminder-constants');
-const { logError, ERROR_LEVELS } = require('../middleware/errorHandler');
+const { logError, ERROR_LEVELS } = require('../utils/error-handler');
 
 // Store the check interval timer
 let notificationInterval = null;
