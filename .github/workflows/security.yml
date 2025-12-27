@@ -1,0 +1,168 @@
+name: Security Scanning
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sunday at midnight
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: write
+
+jobs:
+  dependency-scan:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 🔐 Run npm audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: 📊 Generate audit report
+        run: npm audit --json > audit-report.json
+        continue-on-error: true
+
+      - name: 📁 Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-report
+          path: audit-report.json
+          retention-days: 30
+
+  eslint-security:
+    name: ESLint Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Run ESLint with security rules
+        run: npm run lint -- --max-warnings=100
+        continue-on-error: true
+
+      - name: 📊 Generate ESLint report
+        run: npm run lint -- --format json --output-file eslint-report.json
+        continue-on-error: true
+
+      - name: 📁 Upload ESLint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-security-report
+          path: eslint-report.json
+          retention-days: 30
+
+  security-tests:
+    name: Security Validation Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 🧪 Run security validation tests
+        run: npm run test:security
+
+      - name: 🧪 Run security integration tests
+        run: npm run test:integration
+
+      - name: ✅ Security tests passed
+        if: success()
+        run: echo "✅ All security tests passed"
+
+  secret-detection:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔍 Run TruffleHog
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
+
+  security-summary:
+    name: Security Summary
+    runs-on: ubuntu-latest
+    needs: [dependency-scan, eslint-security, security-tests, secret-detection]
+    if: always()
+    
+    steps:
+      - name: 📊 Security scan summary
+        run: |
+          echo "🔐 Security Scanning Complete"
+          echo "================================"
+          echo "Dependency Scan: ${{ needs.dependency-scan.result }}"
+          echo "ESLint Security: ${{ needs.eslint-security.result }}"
+          echo "Security Tests: ${{ needs.security-tests.result }}"
+          echo "Secret Detection: ${{ needs.secret-detection.result }}"
+
+      - name: 💬 Post security summary on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const summary = `
+            ## 🔐 Security Scan Summary
+            
+            | Check | Status |
+            |-------|--------|
+            | Dependency Scan | ${{ needs.dependency-scan.result == 'success' ? '✅ Passed' : '❌ Failed' }} |
+            | ESLint Security | ${{ needs.eslint-security.result == 'success' ? '✅ Passed' : '⚠️ Warnings' }} |
+            | Security Tests | ${{ needs.security-tests.result == 'success' ? '✅ Passed' : '❌ Failed' }} |
+            | Secret Detection | ${{ needs.secret-detection.result == 'success' ? '✅ Passed' : '⚠️ Check Logs' }} |
+            
+            **Overall Status:** ${{ needs.dependency-scan.result == 'success' && needs.security-tests.result == 'success' ? '✅ Security checks passed' : '⚠️ Review security issues' }}
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });

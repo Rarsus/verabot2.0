@@ -29,11 +29,20 @@ jobs:
         run: npm ci
 
       - name: 🔍 Lint changes
-        run: npm run lint
-        continue-on-error: true
+        run: npm run lint -- --max-warnings=100
+        continue-on-error: false
 
       - name: 🧪 Run tests
         run: npm run test:all
+
+      - name: 🔐 Run security tests
+        run: |
+          npm run test:security
+          npm run test:integration
+
+      - name: 🔐 Security audit
+        run: npm run security:audit
+        continue-on-error: true
 
       - name: 💬 Add comment on success
         if: success()
@@ -45,7 +54,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '✅ All checks passed! Code quality and tests verified.'
+              body: '✅ All checks passed! Code quality, tests, and security validation verified.'
             })
 
       - name: 💬 Add comment on failure

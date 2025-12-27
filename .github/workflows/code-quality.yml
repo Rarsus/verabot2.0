@@ -1,0 +1,194 @@
+name: Code Quality Analysis
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  lint-check:
+    name: ESLint Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Run ESLint
+        run: npm run lint -- --max-warnings=100
+        continue-on-error: true
+
+      - name: 📊 Generate ESLint report
+        run: |
+          npm run lint -- --format json --output-file eslint-report.json || true
+          npm run lint -- --format html --output-file eslint-report.html || true
+        continue-on-error: true
+
+      - name: 📁 Upload ESLint reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-quality-report
+          path: |
+            eslint-report.json
+            eslint-report.html
+          retention-days: 30
+
+  complexity-analysis:
+    name: Complexity & Metrics
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 📊 Analyze code complexity
+        run: |
+          echo "## Code Complexity Analysis" > complexity-report.md
+          echo "" >> complexity-report.md
+          echo "### High Complexity Functions (>15)" >> complexity-report.md
+          echo "" >> complexity-report.md
+          npm run lint 2>&1 | grep "complexity" | head -20 >> complexity-report.md || echo "No high complexity issues found" >> complexity-report.md
+          cat complexity-report.md
+
+      - name: 📁 Upload complexity report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: complexity-report
+          path: complexity-report.md
+          retention-days: 30
+
+  code-metrics:
+    name: Code Metrics & Stats
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📊 Calculate code metrics
+        run: |
+          echo "## Code Metrics Report" > metrics-report.md
+          echo "" >> metrics-report.md
+          echo "### File Statistics" >> metrics-report.md
+          echo "- Total JavaScript files: $(find src -name '*.js' | wc -l)" >> metrics-report.md
+          echo "- Total test files: $(find tests -name '*.js' | wc -l)" >> metrics-report.md
+          echo "- Total lines of code: $(find src -name '*.js' -exec wc -l {} + | tail -1 | awk '{print $1}')" >> metrics-report.md
+          echo "" >> metrics-report.md
+          echo "### Directory Structure" >> metrics-report.md
+          echo "\`\`\`" >> metrics-report.md
+          tree -L 2 -d src >> metrics-report.md || ls -R src >> metrics-report.md
+          echo "\`\`\`" >> metrics-report.md
+          cat metrics-report.md
+
+      - name: 📁 Upload metrics report
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-metrics-report
+          path: metrics-report.md
+          retention-days: 30
+
+  quality-summary:
+    name: Quality Summary
+    runs-on: ubuntu-latest
+    needs: [lint-check, complexity-analysis, code-metrics]
+    if: always() && github.event_name == 'pull_request'
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 📊 Generate quality score
+        id: quality
+        run: |
+          # Run lint and count warnings/errors
+          LINT_OUTPUT=$(npm run lint 2>&1 || true)
+          WARNINGS=$(echo "$LINT_OUTPUT" | grep -oP '\d+(?= warnings?)' | head -1 || echo "0")
+          ERRORS=$(echo "$LINT_OUTPUT" | grep -oP '\d+(?= errors?)' | head -1 || echo "0")
+          
+          # Calculate quality score (100 - (errors * 5) - (warnings * 0.5))
+          SCORE=$((100 - (ERRORS * 5) - (WARNINGS / 2)))
+          if [ $SCORE -lt 0 ]; then SCORE=0; fi
+          if [ $SCORE -gt 100 ]; then SCORE=100; fi
+          
+          echo "warnings=$WARNINGS" >> $GITHUB_OUTPUT
+          echo "errors=$ERRORS" >> $GITHUB_OUTPUT
+          echo "score=$SCORE" >> $GITHUB_OUTPUT
+
+      - name: 💬 Post quality summary on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const warnings = '${{ steps.quality.outputs.warnings }}';
+            const errors = '${{ steps.quality.outputs.errors }}';
+            const score = '${{ steps.quality.outputs.score }}';
+            
+            const getGrade = (score) => {
+              if (score >= 95) return 'A+';
+              if (score >= 90) return 'A';
+              if (score >= 85) return 'B+';
+              if (score >= 80) return 'B';
+              if (score >= 75) return 'C+';
+              if (score >= 70) return 'C';
+              if (score >= 65) return 'D';
+              return 'F';
+            };
+            
+            const summary = `
+            ## 📊 Code Quality Report
+            
+            **Quality Score:** ${score}/100 (Grade: ${getGrade(parseInt(score))})
+            
+            | Metric | Value | Status |
+            |--------|-------|--------|
+            | **ESLint Errors** | ${errors} | ${errors == 0 ? '✅' : '❌'} |
+            | **ESLint Warnings** | ${warnings} | ${warnings < 100 ? '✅' : '⚠️'} |
+            | **Lint Check** | ${{ needs.lint-check.result }} | ${{ needs.lint-check.result == 'success' ? '✅' : '⚠️' }} |
+            | **Complexity Check** | ${{ needs.complexity-analysis.result }} | ${{ needs.complexity-analysis.result == 'success' ? '✅' : '⚠️' }} |
+            | **Metrics Check** | ${{ needs.code-metrics.result }} | ${{ needs.code-metrics.result == 'success' ? '✅' : '⚠️' }} |
+            
+            ${score >= 80 ? '✅ Code quality is good!' : '⚠️ Code quality could be improved. Consider addressing warnings and errors.'}
+            
+            📁 Detailed reports available in artifacts.
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
