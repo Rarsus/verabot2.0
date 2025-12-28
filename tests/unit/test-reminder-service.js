@@ -47,6 +47,7 @@ const {
 
 let passed = 0;
 let failed = 0;
+let createdReminderId = null;
 
 async function runTests() {
   console.log('\n=== Reminder Service Tests ===\n');
@@ -227,6 +228,7 @@ async function runTests() {
       image: null
     });
     if (typeof reminderId === 'number' && reminderId > 0) {
+      createdReminderId = reminderId; // Save for later tests
       console.log(`✅ Test 11 Passed: Reminder created with ID ${reminderId}`);
       passed++;
     } else {
@@ -261,7 +263,7 @@ async function runTests() {
   // Test 13: Add reminder assignment - user
   console.log('\n=== Test 13: Add Reminder Assignment (User) ===');
   try {
-    const assignmentId = await addReminderAssignment(1, 'user', '123456789');
+    const assignmentId = await addReminderAssignment(createdReminderId, 'user', '123456789');
     if (typeof assignmentId === 'number' && assignmentId > 0) {
       console.log('✅ Test 13 Passed: User assignment added');
       passed++;
@@ -277,7 +279,7 @@ async function runTests() {
   // Test 14: Add reminder assignment - invalid type
   console.log('\n=== Test 14: Add Reminder Assignment (Invalid Type) ===');
   try {
-    await addReminderAssignment(1, 'invalid', '123456789');
+    await addReminderAssignment(createdReminderId, 'invalid', '123456789');
     console.error('❌ Test 14 Failed: Invalid assignee type not rejected');
     failed++;
   } catch (err) {
@@ -293,8 +295,8 @@ async function runTests() {
   // Test 15: Get reminder by ID
   console.log('\n=== Test 15: Get Reminder by ID ===');
   try {
-    const reminder = await getReminderById(1);
-    if (reminder && reminder.id === 1 && reminder.subject === 'Test Reminder') {
+    const reminder = await getReminderById(createdReminderId);
+    if (reminder && reminder.id === createdReminderId && reminder.subject === 'Test Reminder') {
       console.log('✅ Test 15 Passed: Reminder retrieved');
       passed++;
     } else {
@@ -325,9 +327,9 @@ async function runTests() {
   // Test 17: Update reminder
   console.log('\n=== Test 17: Update Reminder ===');
   try {
-    const success = await updateReminder(1, { subject: 'Updated Subject' });
+    const success = await updateReminder(createdReminderId, { subject: 'Updated Subject' });
     if (success) {
-      const reminder = await getReminderById(1);
+      const reminder = await getReminderById(createdReminderId);
       if (reminder.subject === 'Updated Subject') {
         console.log('✅ Test 17 Passed: Reminder updated');
         passed++;
@@ -347,7 +349,7 @@ async function runTests() {
   // Test 18: Update reminder - invalid field
   console.log('\n=== Test 18: Update Reminder (Invalid Field) ===');
   try {
-    await updateReminder(1, { subject: 'AB' });
+    await updateReminder(createdReminderId, { subject: 'AB' });
     console.error('❌ Test 18 Failed: Invalid update not rejected');
     failed++;
   } catch (err) {
@@ -416,9 +418,9 @@ async function runTests() {
   // Test 22: Delete reminder - soft delete
   console.log('\n=== Test 22: Delete Reminder (Soft Delete) ===');
   try {
-    const success = await deleteReminder(1, false);
+    const success = await deleteReminder(createdReminderId, false);
     if (success) {
-      const reminder = await getReminderById(1);
+      const reminder = await getReminderById(createdReminderId);
       if (reminder && reminder.status === 'cancelled') {
         console.log('✅ Test 22 Passed: Soft delete works');
         passed++;
