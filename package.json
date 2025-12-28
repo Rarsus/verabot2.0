@@ -27,6 +27,7 @@
     "docs:links": "node scripts/validation/check-links.js",
     "docs:version": "node scripts/validation/check-version.js",
     "docs:badges": "node scripts/validation/update-badges.js",
+    "test:docs:update": "node scripts/update-test-docs.js",
     "db:migrate": "node scripts/db/migrate.js",
     "db:migrate:status": "node scripts/db/migrate-status.js",
     "db:rollback": "node scripts/db/rollback.js",

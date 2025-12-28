@@ -32,6 +32,11 @@ jobs:
       - name: 🧪 Run tests with coverage
         run: npm run test:coverage
 
+      - name: 📝 Update test documentation
+        if: always()
+        run: npm run test:docs:update
+        continue-on-error: true
+
       - name: 📊 Check coverage thresholds
         run: npm run coverage:check
         continue-on-error: true

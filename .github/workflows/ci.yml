@@ -44,6 +44,11 @@ jobs:
         if: always()
         run: npm run coverage:report
 
+      - name: 📝 Update test documentation
+        if: always()
+        run: npm run test:docs:update
+        continue-on-error: true
+
       - name: ☁️ Upload coverage to Codecov
         if: matrix.node-version == '20.x'
         uses: codecov/codecov-action@v4
