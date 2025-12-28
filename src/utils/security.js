@@ -93,7 +93,7 @@ function encrypt(plaintext, key = null) {
 
     // Return format: iv:authTag:ciphertext
     return `${iv.toString('hex')}:${authTag.toString('hex')}:${ciphertext}`;
-  } catch (error) {
+  } catch {
     throw new Error(`Encryption failed: ${error.message}`);
   }
 }
@@ -125,7 +125,7 @@ function decrypt(encryptedData, key = null) {
     plaintext += decipher.final('utf8');
 
     return plaintext;
-  } catch (error) {
+  } catch {
     throw new Error(`Decryption failed: ${error.message}`);
   }
 }
@@ -144,7 +144,7 @@ function generateHMAC(data, secret = null) {
     const hmac = crypto.createHmac('sha256', secretKey);
     hmac.update(data);
     return hmac.digest('hex');
-  } catch (error) {
+  } catch {
     throw new Error(`HMAC generation failed: ${error.message}`);
   }
 }
@@ -165,7 +165,7 @@ function verifyHMAC(data, signature, secret = null) {
       Buffer.from(signature, 'hex'),
       Buffer.from(expectedSignature, 'hex')
     );
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -186,7 +186,7 @@ function hashPassword(password, salt = null) {
     const hash = crypto.pbkdf2Sync(password, passwordSalt, PBKDF2_ITERATIONS, KEY_LENGTH, 'sha256');
 
     return `${passwordSalt.toString('hex')}:${hash.toString('hex')}`;
-  } catch (error) {
+  } catch {
     throw new Error(`Password hashing failed: ${error.message}`);
   }
 }
@@ -211,7 +211,7 @@ function verifyPassword(password, hashedPassword) {
     const hash = crypto.pbkdf2Sync(password, salt, PBKDF2_ITERATIONS, KEY_LENGTH, 'sha256');
 
     return crypto.timingSafeEqual(hash, expectedHash);
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -307,7 +307,7 @@ function constantTimeCompare(a, b) {
 
   try {
     return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
-  } catch (error) {
+  } catch {
     return false;
   }
 }

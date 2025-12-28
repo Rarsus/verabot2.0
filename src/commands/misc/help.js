@@ -52,7 +52,7 @@ class HelpCommand extends Command {
       let sentMessage;
       try {
         sentMessage = await message.author.send({ embeds: [pages[0]], components: [components(0)] });
-      } catch (e) {
+      } catch {
         if (message.channel && typeof message.channel.send === 'function') {
           sentMessage = await message.channel.send({ embeds: [pages[0]], components: [components(0)] });
         } else if (message.reply) {
@@ -77,12 +77,12 @@ class HelpCommand extends Command {
             await i.update({ content: 'Help closed.', embeds: [], components: [] });
             collector.stop();
           }
-        } catch (err) { void 0; }
+        } catch { void 0; }
       });
       collector.on('end', async () => {
-        try { await sentMessage.edit({ components: [] }); } catch (e) { void 0; }
+        try { await sentMessage.edit({ components: [] }); } catch { void 0; }
       });
-    } catch (err) {
+    } catch {
       console.error('Help command (message) error', err);
     }
   }
@@ -156,12 +156,12 @@ class HelpCommand extends Command {
             await i.update({ content: 'Help closed.', embeds: [], components: [] });
             collector.stop();
           }
-        } catch (err) { void 0; }
+        } catch { void 0; }
       });
       collector.on('end', async () => {
-        try { await reply.edit({ components: [] }); } catch (e) { void 0; }
+        try { await reply.edit({ components: [] }); } catch { void 0; }
       });
-    } catch (err) {
+    } catch {
       console.error('Help command (interaction) error', err);
       try { await interaction.reply({ content: 'Could not list commands.', ephemeral: true }); } catch(e){ void 0; }
     }

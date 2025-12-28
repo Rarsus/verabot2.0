@@ -43,7 +43,7 @@ function checkAdminPermission(interaction) {
     }
 
     return interaction.member.permissions.has(PermissionFlagsBits.Administrator);
-  } catch (err) {
+  } catch {
     console.error('Error checking admin permission:', err);
     return false;
   }
@@ -71,7 +71,7 @@ function validateWebhookUrl(url) {
     if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
       return { valid: false, error: 'Webhook URL must use HTTP or HTTPS protocol' };
     }
-  } catch (err) {
+  } catch {
     return { valid: false, error: 'Invalid webhook URL format' };
   }
 

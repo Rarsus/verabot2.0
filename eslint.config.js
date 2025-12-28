@@ -98,8 +98,18 @@ module.exports = [
     rules: {
       'no-unused-expressions': 'off',
       'max-lines-per-function': 'off',
+      'complexity': 'off', // Test files often have complex test scenarios
       'security/detect-object-injection': 'off',
       'security/detect-non-literal-fs-filename': 'off'
+    }
+  },
+  // Script files - relaxed fs and complexity rules
+  {
+    files: ['scripts/**/*.js'],
+    rules: {
+      'complexity': 'off', // Scripts often have linear but lengthy logic
+      'security/detect-non-literal-fs-filename': 'off', // Scripts use dynamic file paths
+      'security/detect-non-literal-require': 'off'
     }
   }
 ];
