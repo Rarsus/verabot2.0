@@ -86,7 +86,7 @@ async function testProxyConfigService() {
     assert.strictEqual(allConfig.webhookUrl, 'https://example.com/webhook', 'Config should include webhook URL');
 
     console.log('✅ ProxyConfigService tests passed');
-  } catch (err) {
+  } catch {
     console.error('❌ ProxyConfigService tests failed:', err.message);
     throw err;
   }
@@ -139,7 +139,7 @@ async function testProxyDatabaseSchema() {
     });
 
     console.log('✅ Proxy Database Schema tests passed');
-  } catch (err) {
+  } catch {
     console.error('❌ Proxy Database Schema tests failed:', err.message);
     throw err;
   }
@@ -164,7 +164,7 @@ async function testConfigEncryption() {
     assert.strictEqual(decrypted, plaintext, 'Decrypted value should match original');
 
     console.log('✅ Configuration Encryption tests passed');
-  } catch (err) {
+  } catch {
     if (err.code === 'MODULE_NOT_FOUND') {
       console.log('⚠️  Encryption module not yet implemented (expected in TDD)');
     } else {
@@ -189,7 +189,7 @@ async function runTests() {
 
     console.log('\n✅ All proxy configuration tests passed!');
     process.exit(0);
-  } catch (err) {
+  } catch {
     console.error('\n❌ Some tests failed');
     process.exit(1);
   }

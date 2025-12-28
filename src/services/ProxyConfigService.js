@@ -30,7 +30,7 @@ class ProxyConfigService {
     try {
       await this.db.setProxyConfig(CONFIG_KEYS.WEBHOOK_URL, url, false);
       return true;
-    } catch (err) {
+    } catch {
       logError('ProxyConfigService.setWebhookUrl', err, ERROR_LEVELS.MEDIUM);
       throw err;
     }
@@ -44,7 +44,7 @@ class ProxyConfigService {
     try {
       const config = await this.db.getProxyConfig(CONFIG_KEYS.WEBHOOK_URL);
       return config ? config.value : null;
-    } catch (err) {
+    } catch {
       logError('ProxyConfigService.getWebhookUrl', err, ERROR_LEVELS.LOW);
       return null;
     }
@@ -60,7 +60,7 @@ class ProxyConfigService {
       const encrypted = encryptValue(token);
       await this.db.setProxyConfig(CONFIG_KEYS.WEBHOOK_TOKEN, encrypted, true);
       return true;
-    } catch (err) {
+    } catch {
       logError('ProxyConfigService.setWebhookToken', err, ERROR_LEVELS.MEDIUM);
       throw err;
     }
@@ -76,7 +76,7 @@ class ProxyConfigService {
       if (!config) return null;
 
       return decryptValue(config.value);
-    } catch (err) {
+    } catch {
       logError('ProxyConfigService.getWebhookToken', err, ERROR_LEVELS.MEDIUM);
       return null;
     }
@@ -92,7 +92,7 @@ class ProxyConfigService {
       const value = JSON.stringify(channels);
       await this.db.setProxyConfig(CONFIG_KEYS.MONITORED_CHANNELS, value, false);
       return true;
-    } catch (err) {
+    } catch {
       logError('ProxyConfigService.setMonitoredChannels', err, ERROR_LEVELS.MEDIUM);
       throw err;
     }
@@ -108,7 +108,7 @@ class ProxyConfigService {
       if (!config) return [];
 
       return JSON.parse(config.value);
-    } catch (err) {
+    } catch {
       logError('ProxyConfigService.getMonitoredChannels', err, ERROR_LEVELS.LOW);
       return [];
     }
@@ -123,7 +123,7 @@ class ProxyConfigService {
     try {
       await this.db.setProxyConfig(CONFIG_KEYS.PROXY_ENABLED, enabled ? '1' : '0', false);
       return true;
-    } catch (err) {
+    } catch {
       logError('ProxyConfigService.setProxyEnabled', err, ERROR_LEVELS.MEDIUM);
       throw err;
     }
@@ -137,7 +137,7 @@ class ProxyConfigService {
     try {
       const config = await this.db.getProxyConfig(CONFIG_KEYS.PROXY_ENABLED);
       return config ? config.value === '1' : false;
-    } catch (err) {
+    } catch {
       logError('ProxyConfigService.isProxyEnabled', err, ERROR_LEVELS.LOW);
       return false;
     }
@@ -153,7 +153,7 @@ class ProxyConfigService {
       const encrypted = encryptValue(secret);
       await this.db.setProxyConfig(CONFIG_KEYS.WEBHOOK_SECRET, encrypted, true);
       return true;
-    } catch (err) {
+    } catch {
       logError('ProxyConfigService.setWebhookSecret', err, ERROR_LEVELS.MEDIUM);
       throw err;
     }
@@ -169,7 +169,7 @@ class ProxyConfigService {
       if (!config) return null;
 
       return decryptValue(config.value);
-    } catch (err) {
+    } catch {
       logError('ProxyConfigService.getWebhookSecret', err, ERROR_LEVELS.MEDIUM);
       return null;
     }
@@ -207,7 +207,7 @@ class ProxyConfigService {
           case CONFIG_KEYS.MONITORED_CHANNELS:
             try {
               config.monitoredChannels = JSON.parse(entry.value);
-            } catch (err) {
+            } catch {
               config.monitoredChannels = [];
             }
             break;
@@ -218,7 +218,7 @@ class ProxyConfigService {
       }
 
       return config;
-    } catch (err) {
+    } catch {
       logError('ProxyConfigService.getAllConfig', err, ERROR_LEVELS.MEDIUM);
       return {
         webhookUrl: null,
@@ -242,7 +242,7 @@ class ProxyConfigService {
         )
       );
       return true;
-    } catch (err) {
+    } catch {
       logError('ProxyConfigService.clearAllConfig', err, ERROR_LEVELS.MEDIUM);
       return false;
     }

@@ -39,7 +39,7 @@ let webhookListener = null;
 
     // Run migration from JSON if needed
     await migrateFromJson(database);
-  } catch (err) {
+  } catch {
     console.error('Failed to initialize database:', err);
     process.exit(1);
   }
@@ -110,7 +110,7 @@ client.once('ready', async () => {
       await webhookListener.startServer(proxyPort, webhookSecret);
       console.log(`✓ Webhook listener started on port ${proxyPort}`);
     }
-  } catch (err) {
+  } catch {
     console.error('Failed to start webhook listener:', err.message);
     // Continue without webhook listener if it fails
   }
@@ -120,7 +120,7 @@ client.once('ready', async () => {
     const ReminderNotificationService = require('./services/ReminderNotificationService');
     ReminderNotificationService.initializeNotificationService(client);
     console.log('✓ Reminder notification service initialized');
-  } catch (err) {
+  } catch {
     console.error('Failed to start reminder notification service:', err.message);
     // Continue without reminder notifications if it fails
   }
@@ -139,7 +139,7 @@ client.on('interactionCreate', async (interaction) => {
       const args = [];
       await command.execute(interaction, args);
     }
-  } catch (err) {
+  } catch {
     console.error('Command error', err);
     try {
       if (interaction.replied || interaction.deferred) {
@@ -147,7 +147,7 @@ client.on('interactionCreate', async (interaction) => {
       } else {
         await interaction.reply('There was an error executing that command.');
       }
-    } catch (e) {
+    } catch {
       /* ignore follow-up errors */
     }
   }
@@ -190,7 +190,7 @@ client.on('messageCreate', async (message) => {
     if (typeof command.execute === 'function') {
       await command.execute(message, args);
     }
-  } catch (err) {
+  } catch {
     console.error('Message command error', err);
   }
 });
@@ -209,7 +209,7 @@ process.on('SIGINT', async () => {
     }
     await client.destroy();
     await database.closeDatabase();
-  } catch (err) {
+  } catch {
     console.error('Error during shutdown:', err);
   }
   process.exit(0);
@@ -223,7 +223,7 @@ async function shutdown() {
       await webhookListener.stopServer();
     }
     client.destroy();
-  } catch (e) {
+  } catch {
     /* ignore errors on shutdown */
   }
   process.exit(0);

@@ -115,7 +115,7 @@ async function testProxyConfigCommand() {
     );
 
     console.log('✅ proxy-config command tests passed');
-  } catch (err) {
+  } catch {
     if (err.code === 'MODULE_NOT_FOUND') {
       console.log('⚠️  proxy-config command not yet implemented (expected in TDD)');
     } else {
@@ -176,7 +176,7 @@ async function testProxyEnableCommand() {
     );
 
     console.log('✅ proxy-enable command tests passed');
-  } catch (err) {
+  } catch {
     if (err.code === 'MODULE_NOT_FOUND') {
       console.log('⚠️  proxy-enable command not yet implemented (expected in TDD)');
     } else {
@@ -222,7 +222,7 @@ async function testProxyStatusCommand() {
     );
 
     console.log('✅ proxy-status command tests passed');
-  } catch (err) {
+  } catch {
     if (err.code === 'MODULE_NOT_FOUND') {
       console.log('⚠️  proxy-status command not yet implemented (expected in TDD)');
     } else {
@@ -258,7 +258,7 @@ async function testAdminPermissionChecks() {
     );
 
     console.log('✅ Admin Permission Checks tests passed');
-  } catch (err) {
+  } catch {
     if (err.code === 'MODULE_NOT_FOUND') {
       console.log('⚠️  Admin permission helpers not yet implemented (expected in TDD)');
     } else {
@@ -282,7 +282,7 @@ async function runTests() {
 
     console.log('\n✅ All proxy admin command tests passed!');
     process.exit(0);
-  } catch (err) {
+  } catch {
     console.error('\n❌ Some tests failed');
     process.exit(1);
   }

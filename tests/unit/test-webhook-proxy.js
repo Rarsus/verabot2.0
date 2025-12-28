@@ -108,7 +108,7 @@ async function testWebhookProxyService() {
     assert.strictEqual(invalidPayload.valid, false, 'Invalid payload should fail validation');
 
     console.log('✅ WebhookProxyService tests passed');
-  } catch (err) {
+  } catch {
     if (err.code === 'MODULE_NOT_FOUND') {
       console.log('⚠️  WebhookProxyService not yet implemented (expected in TDD)');
     } else {
@@ -185,7 +185,7 @@ async function testWebhookListenerService() {
     assert.strictEqual(wrongVerify, false, 'Should reject invalid signature');
 
     console.log('✅ WebhookListenerService tests passed');
-  } catch (err) {
+  } catch {
     if (err.code === 'MODULE_NOT_FOUND') {
       console.log('⚠️  WebhookListenerService not yet implemented (expected in TDD)');
     } else {
@@ -226,7 +226,7 @@ async function testMessageFiltering() {
     );
 
     console.log('✅ Message Filtering tests passed');
-  } catch (err) {
+  } catch {
     if (err.code === 'MODULE_NOT_FOUND') {
       console.log('⚠️  Proxy helpers not yet implemented (expected in TDD)');
     } else {
@@ -249,7 +249,7 @@ async function runTests() {
 
     console.log('\n✅ All webhook proxy tests passed!');
     process.exit(0);
-  } catch (err) {
+  } catch {
     console.error('\n❌ Some tests failed');
     process.exit(1);
   }

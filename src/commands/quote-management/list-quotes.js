@@ -31,14 +31,14 @@ class ListQuotesCommand extends Command {
         } else if (message.reply) {
           await message.reply('Quote list sent to your DMs!');
         }
-      } catch (err) {
+      } catch {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send('Could not send DM. Make sure DMs are enabled.');
         } else if (message.reply) {
           await message.reply('Could not send DM. Make sure DMs are enabled.');
         }
       }
-    } catch (err) {
+    } catch {
       console.error('List-quotes command error', err);
     }
   }

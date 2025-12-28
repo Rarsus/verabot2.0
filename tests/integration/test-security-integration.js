@@ -25,7 +25,7 @@ function test(name, fn) {
     fn();
     passed++;
     console.log(`✅ Test ${passed + failed}: ${name}`);
-  } catch (error) {
+  } catch {
     failed++;
     console.error(`❌ Test ${passed + failed}: ${name}`);
     console.error(`   Error: ${error.message}`);
@@ -68,7 +68,7 @@ test('Decryption of invalid data fails', () => {
   let errorThrown = false;
   try {
     decrypt('invalid:data:format');
-  } catch (error) {
+  } catch {
     errorThrown = true;
   }
   assert(errorThrown === true, 'Decrypting invalid data should throw error');

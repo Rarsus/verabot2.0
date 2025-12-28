@@ -9,7 +9,7 @@ function detectReadyEvent(installedVersion) {
     try {
       const djPkg = require('discord.js/package.json');
       version = djPkg && djPkg.version;
-    } catch (e) {
+    } catch {
       // If we can't read the package.json, prefer clientReady
       return 'clientReady';
     }

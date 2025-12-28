@@ -21,7 +21,7 @@ async function addQuote(quote, author = 'Anonymous') {
     throw new Error('Author must be a string');
   }
 
-  return await database.addQuote(quote, author);
+  return database.addQuote(quote, author);
 }
 
 /**
@@ -29,7 +29,7 @@ async function addQuote(quote, author = 'Anonymous') {
  * @returns {Promise<Array>} Array of quotes
  */
 async function getAllQuotes() {
-  return await database.getAllQuotes();
+  return database.getAllQuotes();
 }
 
 /**
@@ -42,7 +42,7 @@ async function getQuoteByNumber(number) {
     throw new Error('Quote number must be an integer');
   }
 
-  return await database.getQuoteById(number);
+  return database.getQuoteById(number);
 }
 
 /**
@@ -55,7 +55,7 @@ async function searchQuotes(keyword) {
     throw new Error('Search keyword must be a string');
   }
 
-  return await database.searchQuotes(keyword);
+  return database.searchQuotes(keyword);
 }
 
 /**
@@ -70,7 +70,7 @@ async function updateQuote(id, text, author) {
     throw new Error('Quote ID must be an integer');
   }
 
-  return await database.updateQuote(id, text, author);
+  return database.updateQuote(id, text, author);
 }
 
 /**
@@ -83,7 +83,7 @@ async function deleteQuote(id) {
     throw new Error('Quote ID must be an integer');
   }
 
-  return await database.deleteQuote(id);
+  return database.deleteQuote(id);
 }
 
 /**
@@ -91,7 +91,7 @@ async function deleteQuote(id) {
  * @returns {Promise<number>} Total quotes
  */
 async function getQuoteCount() {
-  return await database.getQuoteCount();
+  return database.getQuoteCount();
 }
 
 /**
@@ -112,7 +112,7 @@ async function rateQuote(quoteId, userId, rating) {
     throw new Error('Rating must be an integer between 1 and 5');
   }
 
-  return await database.rateQuote(quoteId, userId, rating);
+  return database.rateQuote(quoteId, userId, rating);
 }
 
 /**
@@ -125,7 +125,7 @@ async function getQuoteById(id) {
     throw new Error('Quote ID must be an integer');
   }
 
-  return await database.getQuoteById(id);
+  return database.getQuoteById(id);
 }
 
 /**
@@ -138,7 +138,7 @@ async function addTag(tagName) {
     throw new Error('Tag name must be a string');
   }
 
-  return await database.addTag(tagName);
+  return database.addTag(tagName);
 }
 
 /**
@@ -151,7 +151,7 @@ async function getTagByName(tagName) {
     throw new Error('Tag name must be a string');
   }
 
-  return await database.getTagByName(tagName);
+  return database.getTagByName(tagName);
 }
 
 /**
@@ -168,7 +168,7 @@ async function addTagToQuote(quoteId, tagId) {
     throw new Error('Tag ID must be an integer');
   }
 
-  return await database.addTagToQuote(quoteId, tagId);
+  return database.addTagToQuote(quoteId, tagId);
 }
 
 /**
@@ -181,7 +181,7 @@ async function exportQuotesAsJson(filePath) {
     throw new Error('File path must be a string');
   }
 
-  return await database.exportQuotesAsJson(filePath);
+  return database.exportQuotesAsJson(filePath);
 }
 
 /**
@@ -194,7 +194,7 @@ async function exportQuotesAsCsv(filePath) {
     throw new Error('File path must be a string');
   }
 
-  return await database.exportQuotesAsCsv(filePath);
+  return database.exportQuotesAsCsv(filePath);
 }
 
 module.exports = {

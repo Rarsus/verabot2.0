@@ -108,7 +108,7 @@ function validateLink(link) {
   // Basic URL validation
   try {
     new URL(trimmed);
-  } catch (err) {
+  } catch {
     return { valid: false, error: 'Invalid URL format' };
   }
 
@@ -137,7 +137,7 @@ function validateImage(image) {
   // Basic URL validation
   try {
     new URL(trimmed);
-  } catch (err) {
+  } catch {
     return { valid: false, error: 'Invalid image URL format' };
   }
 
