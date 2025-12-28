@@ -1,6 +1,6 @@
 # Test Run Summary
 
-**Generated:** 2025-12-28T00:22:40.056Z
+**Generated:** 2025-12-28T00:24:47.815Z
 
 ✅ **test-cache-manager.js** - 38/38 passed
 ✅ **test-command-base.js** - 7/7 passed
@@ -36,5 +36,5 @@
 - **Passed:** 212
 - **Failed:** 33
 - **Pass Rate:** 86.5%
-- **Duration:** 3472ms
+- **Duration:** 3443ms
 - **Status:** ❌ SOME TESTS FAILING
