@@ -4,3 +4,8 @@
     env_file:
       - .env
     restart: unless-stopped
+    volumes:
+      - verabot_data:/app/data
+
+volumes:
+  verabot_data:
