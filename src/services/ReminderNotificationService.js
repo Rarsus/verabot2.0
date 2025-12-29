@@ -130,7 +130,25 @@ async function sendReminderNotification(reminder) {
   };
 
   for (const assignee of assignees) {
-    const [type, id] = assignee.split(':');
+    const [type, rawId] = assignee.split(':');
+
+    // Extract snowflake ID from mention format if present
+    let id = rawId;
+    const mentionMatch = rawId.match(/<@!?&?(\d+)>/);
+    if (mentionMatch) {
+      id = mentionMatch[1];
+    }
+
+    // Validate ID format
+    if (!id || !/^\d+$/.test(id)) {
+      logError('ReminderNotificationService.sendReminderNotification.malformedId',
+        new Error(`Invalid ID format: ${rawId}`),
+        ERROR_LEVELS.LOW,
+        { assigneeType: type, assigneeId: rawId }
+      );
+      sent.errors.push({ type, id: rawId, error: 'Invalid ID format' });
+      continue;
+    }
 
     try {
       if (type === 'user') {

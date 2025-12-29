@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "register-commands": "node src/register-commands.js",
     "test": "node tests/unit/test-all.js",
     "test:all": "node tests/unit/test-all.js",
     "test:quick": "node tests/unit/run-tests.js",

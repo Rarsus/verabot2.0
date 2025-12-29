@@ -46,4 +46,5 @@ temp/
 # Build artifacts
 build/
 out/
-_site/
+_site/.env
+!.env.example

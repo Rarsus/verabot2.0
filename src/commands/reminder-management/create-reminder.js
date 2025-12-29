@@ -31,13 +31,28 @@ class CreateReminderCommand extends Command {
     const link = interaction.options.getString('link');
     const image = interaction.options.getString('image');
 
-    // Parse assignee (format: "role:123456" or "123456" for user)
+    // Parse assignee (format: "role:123456" or "123456" for user, or mention format)
     let assigneeType = 'user';
     let assigneeId = who;
 
     if (who.startsWith('role:')) {
       assigneeType = 'role';
       assigneeId = who.substring(5);
+    }
+
+    // Extract snowflake ID from mention format (<@123456> or <@&123456>)
+    const mentionMatch = assigneeId.match(/<@!?&?(\d+)>/);
+    if (mentionMatch) {
+      assigneeId = mentionMatch[1];
+      // Detect if this was a role mention (<@&...>)
+      if (who.includes('<@&')) {
+        assigneeType = 'role';
+      }
+    }
+
+    // Validate snowflake format (must be numeric)
+    if (!/^\d+$/.test(assigneeId)) {
+      throw new Error('Invalid ID format. Must be a numeric snowflake ID or valid mention format.');
     }
 
     // Create reminder
