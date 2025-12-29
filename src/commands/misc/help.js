@@ -140,7 +140,7 @@ class HelpCommand extends Command {
         new ButtonBuilder().setCustomId('close').setLabel('Close').setStyle(ButtonStyle.Danger)
       );
 
-      const reply = await interaction.reply({ embeds: [pages[0]], components: [components(0)], ephemeral: true, fetchReply: true });
+      const reply = await interaction.reply({ embeds: [pages[0]], components: [components(0)], flags: 64 }).then(() => interaction.fetchReply());
       const filter = (i) => i.user.id === interaction.user.id;
       const collector = reply.createMessageComponentCollector({ filter, time: 120000 });
       let idx = 0;

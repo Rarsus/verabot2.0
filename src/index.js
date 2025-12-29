@@ -27,6 +27,10 @@ const proxyConfig = new ProxyConfigService(database);
 const webhookProxy = new WebhookProxyService();
 let webhookListener = null;
 
+// For slash commands we always need `Guilds`. For prefix message handling we add message intents.
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+
+// Initialize database before starting bot
 (async () => {
   try {
     // Setup database schema
@@ -39,14 +43,14 @@ let webhookListener = null;
 
     // Run migration from JSON if needed
     await migrateFromJson(database);
-  } catch {
+
+    // Start the bot only after database is ready
+    await client.login(TOKEN);
+  } catch (err) {
     console.error('Failed to initialize database:', err);
     process.exit(1);
   }
 })();
-
-// For slash commands we always need `Guilds`. For prefix message handling we add message intents.
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
 // Load commands
 const commands = new Map();
@@ -193,11 +197,6 @@ client.on('messageCreate', async (message) => {
   } catch {
     console.error('Message command error', err);
   }
-});
-
-client.login(TOKEN).catch(err => {
-  console.error('Failed to login:', err);
-  process.exit(1);
 });
 
 // Graceful shutdown
