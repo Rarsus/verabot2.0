@@ -1,6 +1,6 @@
 /**
  * Migration 001: Initial Schema
- * Creates base tables for quotes, ratings, tags, and migrations
+ * Creates base tables for quotes, ratings, tags, migrations, and proxy configuration
  */
 
 /**
@@ -11,6 +11,18 @@
 async function up(db) {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
+      // Schema versions table (MUST be created first)
+      db.run(`
+        CREATE TABLE IF NOT EXISTS schema_versions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          version INTEGER NOT NULL UNIQUE,
+          description TEXT,
+          applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `, (err) => {
+        if (err) reject(err);
+      });
+
       // Quotes table
       db.run(`
         CREATE TABLE IF NOT EXISTS quotes (
@@ -67,6 +79,19 @@ async function up(db) {
         )
       `, (err) => {
         if (err) reject(err);
+      });
+
+      // Proxy config table
+      db.run(`
+        CREATE TABLE IF NOT EXISTS proxy_config (
+          key TEXT PRIMARY KEY,
+          value TEXT NOT NULL,
+          encrypted INTEGER DEFAULT 0,
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `, (err) => {
+        if (err) reject(err);
         else resolve();
       });
     });
@@ -81,6 +106,9 @@ async function up(db) {
 async function down(db) {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
+      db.run('DROP TABLE IF EXISTS proxy_config', (err) => {
+        if (err) reject(err);
+      });
       db.run('DROP TABLE IF EXISTS quote_tags', (err) => {
         if (err) reject(err);
       });
@@ -92,6 +120,8 @@ async function down(db) {
       });
       db.run('DROP TABLE IF EXISTS quotes', (err) => {
         if (err) reject(err);
+        // NOTE: Do NOT drop schema_versions - it's needed by the migration manager
+        // to track migration history even after rollback
         else resolve();
       });
     });

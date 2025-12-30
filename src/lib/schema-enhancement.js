@@ -25,6 +25,15 @@ function enhanceSchema(db) {
 
     db.serialize(async () => {
       try {
+        // Create schema_versions table if it doesn't exist (backup for setupSchema)
+        await runAsync(`
+          CREATE TABLE IF NOT EXISTS schema_versions (
+            version INTEGER PRIMARY KEY,
+            description TEXT,
+            executedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+          )
+        `);
+
         // Create tags table
         await runAsync(`
           CREATE TABLE IF NOT EXISTS tags (
