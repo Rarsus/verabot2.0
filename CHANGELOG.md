@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/Rarsus/verabot2.0/compare/v2.1.0...v2.2.0) (2025-12-30)
+
+
+### Features
+
+* implement feature module system with per-instance configuration ([ea9e912](https://github.com/Rarsus/verabot2.0/commit/ea9e912c0374e4c78889fee88121113cb63a940d))
+
 # [2.1.0](https://github.com/Rarsus/verabot2.0/compare/v2.0.0...v2.1.0) (2025-12-30)
 
 
