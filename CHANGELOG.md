@@ -1,3 +1,18 @@
+# [2.1.0](https://github.com/Rarsus/verabot2.0/compare/v2.0.0...v2.1.0) (2025-12-30)
+
+
+### Bug Fixes
+
+* add release scripts to package.json ([53fadfc](https://github.com/Rarsus/verabot2.0/commit/53fadfce1aeb079ab0be47a68a3375780ecbc592))
+* Update documentation paths to fetch from GitHub raw URLs ([#32](https://github.com/Rarsus/verabot2.0/issues/32)) ([9772976](https://github.com/Rarsus/verabot2.0/commit/9772976dd1d0440c3caf3f1609de3d1e3c69bc58))
+
+
+### Features
+
+* Add comprehensive CI/CD workflows and security hardening ([#42](https://github.com/Rarsus/verabot2.0/issues/42)) ([0e95802](https://github.com/Rarsus/verabot2.0/commit/0e95802d9152b41635a5c2c20bebc107a3f0acf8))
+* Add Reminder Management System v3.0.0 ([#38](https://github.com/Rarsus/verabot2.0/issues/38)) ([ec5e4d9](https://github.com/Rarsus/verabot2.0/commit/ec5e4d94ead90164a02f8e6fafaac4ac9e15f5d1))
+* Implement database optimization with caching, connection pooling, and performance monitoring ([#44](https://github.com/Rarsus/verabot2.0/issues/44)) ([0cba7c1](https://github.com/Rarsus/verabot2.0/commit/0cba7c102981e411792ba3822215738585b69c9a))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
