@@ -37,6 +37,53 @@ class WhisperCommand extends Command {
     await sendError(message, 'This command is only available as a slash command. Use `/whisper`', true);
   }
 
+  async resolveUsers(interaction, target) {
+    if (target.startsWith('role:')) {
+      return this.resolveRoleUsers(interaction, target);
+    }
+    return this.resolveIndividualUser(interaction, target);
+  }
+
+  async resolveRoleUsers(interaction, target) {
+    const roleId = target.substring(5);
+    const role = await interaction.guild.roles.fetch(roleId);
+
+    if (!role) {
+      return { users: [], error: `${target} (role not found)` };
+    }
+
+    const members = await interaction.guild.members.fetch();
+    const users = members.filter(m => m.roles.has(roleId)).map(m => m.user);
+
+    if (users.length === 0) {
+      return { users: [], error: `${target} (no members in role)` };
+    }
+
+    return { users, error: null };
+  }
+
+  async resolveIndividualUser(interaction, target) {
+    try {
+      const user = await interaction.client.users.fetch(target);
+      return { users: [user], error: null };
+    } catch {
+      return { users: [], error: `${target} (user not found)` };
+    }
+  }
+
+  async sendDMToUsers(users, messageContent, results) {
+    for (const user of users) {
+      try {
+        await user.send(messageContent);
+        if (!results.success.includes(user.id)) {
+          results.success.push(user.username);
+        }
+      } catch (err) {
+        results.failed.push(`${user.username} (${err.message})`);
+      }
+    }
+  }
+
   async executeInteraction(interaction) {
     try {
       // Check admin permission
@@ -47,57 +94,18 @@ class WhisperCommand extends Command {
 
       const targetsInput = interaction.options.getString('targets');
       const messageContent = interaction.options.getString('message');
-
       const targetList = targetsInput.split(',').map(t => t.trim());
-      const results = {
-        success: [],
-        failed: []
-      };
+
+      const results = { success: [], failed: [] };
 
       for (const target of targetList) {
         try {
-          let users = [];
-
-          if (target.startsWith('role:')) {
-            // Handle role targets
-            const roleId = target.substring(5);
-            const role = await interaction.guild.roles.fetch(roleId);
-
-            if (!role) {
-              results.failed.push(`${target} (role not found)`);
-              continue;
-            }
-
-            // Get all members with this role
-            const members = await interaction.guild.members.fetch();
-            users = members.filter(m => m.roles.has(roleId)).map(m => m.user);
-
-            if (users.length === 0) {
-              results.failed.push(`${target} (no members in role)`);
-              continue;
-            }
-          } else {
-            // Handle user targets
-            try {
-              const user = await interaction.client.users.fetch(target);
-              users = [user];
-            } catch {
-              results.failed.push(`${target} (user not found)`);
-              continue;
-            }
+          const { users, error } = await this.resolveUsers(interaction, target);
+          if (error) {
+            results.failed.push(error);
+            continue;
           }
-
-          // Send DM to each user
-          for (const user of users) {
-            try {
-              await user.send(messageContent);
-              if (!results.success.includes(user.id)) {
-                results.success.push(user.username);
-              }
-            } catch (err) {
-              results.failed.push(`${user.username} (${err.message})`);
-            }
-          }
+          await this.sendDMToUsers(users, messageContent, results);
         } catch (err) {
           results.failed.push(`${target} (${err.message})`);
         }
