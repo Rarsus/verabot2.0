@@ -11,21 +11,25 @@ if (!TOKEN) {
   process.exit(1);
 }
 
+// Load feature configuration
+const features = require('./config/features');
+
 // Initialize database
 const database = require('./services/DatabaseService');
 const { migrateFromJson } = require('./lib/migration');
 const { enhanceSchema } = require('./lib/schema-enhancement');
 
-// Initialize proxy services
-const ProxyConfigService = require('./services/ProxyConfigService');
-const WebhookProxyService = require('./services/WebhookProxyService');
-const WebhookListenerService = require('./services/WebhookListenerService');
-const { shouldForwardMessage } = require('./utils/proxy-helpers');
-
-// Create service instances
-const proxyConfig = new ProxyConfigService(database);
-const webhookProxy = new WebhookProxyService();
+// Initialize proxy services (only if enabled)
+let proxyConfig = null;
+let webhookProxy = null;
 let webhookListener = null;
+
+if (features.proxy.enabled) {
+  const ProxyConfigService = require('./services/ProxyConfigService');
+  const WebhookProxyService = require('./services/WebhookProxyService');
+  proxyConfig = new ProxyConfigService(database);
+  webhookProxy = new WebhookProxyService();
+}
 
 // For slash commands we always need `Guilds`. For prefix message handling we add message intents.
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
@@ -42,6 +46,18 @@ function loadCommands(dirPath) {
     const fullPath = path.join(dirPath, entry.name);
 
     if (entry.isDirectory()) {
+      // Skip admin commands if admin feature is disabled
+      if (entry.name === 'admin' && !features.admin.enabled) {
+        console.log('ℹ️  Skipping admin commands (ENABLE_ADMIN_COMMANDS=false)');
+        continue;
+      }
+
+      // Skip reminder commands if reminders feature is disabled
+      if (entry.name === 'reminder-management' && !features.reminders.enabled) {
+        console.log('ℹ️  Skipping reminder commands (ENABLE_REMINDERS=false)');
+        continue;
+      }
+
       // Recursively load from subdirectories
       loadCommands(fullPath);
     } else if (entry.isFile() && entry.name.endsWith('.js')) {
@@ -108,37 +124,42 @@ const _attachReadyEvent = () => {
 
 _attachReadyEvent();
 
-// Start webhook listener when bot is ready
+// Start webhook listener when bot is ready (only if proxy is enabled)
 client.once('ready', async () => {
   try {
     // Check if proxy is enabled and start listener
-    const isProxyEnabled = await proxyConfig.isProxyEnabled();
-    const webhookSecret = await proxyConfig.getWebhookSecret();
-    const proxyPort = process.env.PROXY_PORT || 3000;
+    if (features.proxy.enabled && proxyConfig) {
+      const WebhookListenerService = require('./services/WebhookListenerService');
+      const isProxyEnabled = await proxyConfig.isProxyEnabled();
+      const webhookSecret = await proxyConfig.getWebhookSecret();
+      const proxyPort = features.proxy.webhookPort;
 
-    if (isProxyEnabled) {
-      webhookListener = new WebhookListenerService(client);
+      if (isProxyEnabled) {
+        webhookListener = new WebhookListenerService(client);
 
-      if (!webhookSecret) {
-        console.warn('⚠️  WARNING: Webhook listener starting without signature verification. Configure a secret with /proxy-config for better security.');
+        if (!webhookSecret) {
+          console.warn('⚠️  WARNING: Webhook listener starting without signature verification. Configure a secret with /proxy-config for better security.');
+        }
+
+        await webhookListener.startServer(proxyPort, webhookSecret);
+        console.log(`✓ Webhook listener started on port ${proxyPort}`);
       }
-
-      await webhookListener.startServer(proxyPort, webhookSecret);
-      console.log(`✓ Webhook listener started on port ${proxyPort}`);
     }
   } catch (err) {
     console.error('Failed to start webhook listener:', err.message);
     // Continue without webhook listener if it fails
   }
 
-  // Initialize reminder notification service
-  try {
-    const ReminderNotificationService = require('./services/ReminderNotificationService');
-    ReminderNotificationService.initializeNotificationService(client);
-    console.log('✓ Reminder notification service initialized');
-  } catch {
-    console.error('Failed to start reminder notification service:', err.message);
-    // Continue without reminder notifications if it fails
+  // Initialize reminder notification service (if reminders are enabled)
+  if (features.reminders.enabled) {
+    try {
+      const ReminderNotificationService = require('./services/ReminderNotificationService');
+      ReminderNotificationService.initializeNotificationService(client);
+      console.log('✓ Reminder notification service initialized');
+    } catch (err) {
+      console.error('Failed to start reminder notification service:', err.message);
+      // Continue without reminder notifications if it fails
+    }
   }
 });
 
@@ -175,20 +196,23 @@ client.on('messageCreate', async (message) => {
     if (!message || !message.content) return;
     if (message.author?.bot) return;
 
-    // Handle webhook proxy forwarding (if enabled)
-    const isProxyEnabled = await proxyConfig.isProxyEnabled();
-    if (isProxyEnabled) {
-      const monitoredChannels = await proxyConfig.getMonitoredChannels();
-      if (shouldForwardMessage(message, monitoredChannels)) {
-        const webhookUrl = await proxyConfig.getWebhookUrl();
-        const webhookToken = await proxyConfig.getWebhookToken();
+    // Handle webhook proxy forwarding (only if proxy is enabled)
+    if (features.proxy.enabled && proxyConfig && webhookProxy) {
+      const { shouldForwardMessage } = require('./utils/proxy-helpers');
+      const isProxyEnabled = await proxyConfig.isProxyEnabled();
+      if (isProxyEnabled) {
+        const monitoredChannels = await proxyConfig.getMonitoredChannels();
+        if (shouldForwardMessage(message, monitoredChannels)) {
+          const webhookUrl = await proxyConfig.getWebhookUrl();
+          const webhookToken = await proxyConfig.getWebhookToken();
 
-        if (webhookUrl && webhookToken) {
-          // Forward message asynchronously (don't block command processing)
-          webhookProxy.forwardMessageWithRetry(message, webhookUrl, webhookToken, 3, 1000)
-            .catch(err => {
-              console.error('Failed to forward message:', err);
-            });
+          if (webhookUrl && webhookToken) {
+            // Forward message asynchronously (don't block command processing)
+            webhookProxy.forwardMessageWithRetry(message, webhookUrl, webhookToken, 3, 1000)
+              .catch(err => {
+                console.error('Failed to forward message:', err);
+              });
+          }
         }
       }
     }
@@ -206,7 +230,7 @@ client.on('messageCreate', async (message) => {
     if (typeof command.execute === 'function') {
       await command.execute(message, args);
     }
-  } catch {
+  } catch (err) {
     console.error('Message command error', err);
   }
 });
@@ -220,7 +244,7 @@ process.on('SIGINT', async () => {
     }
     await client.destroy();
     await database.closeDatabase();
-  } catch {
+  } catch (err) {
     console.error('Error during shutdown:', err);
   }
   process.exit(0);
@@ -234,7 +258,7 @@ async function shutdown() {
       await webhookListener.stopServer();
     }
     client.destroy();
-  } catch {
+  } catch (err) {
     /* ignore errors on shutdown */
   }
   process.exit(0);
