@@ -147,17 +147,26 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            const dependencyScan = '${{ needs.dependency-scan.result }}' === 'success' ? '✅ Passed' : '❌ Failed';
+            const eslintSecurity = '${{ needs.eslint-security.result }}' === 'success' ? '✅ Passed' : '⚠️ Warnings';
+            const securityTests = '${{ needs.security-tests.result }}' === 'success' ? '✅ Passed' : '❌ Failed';
+            const secretDetection = '${{ needs.secret-detection.result }}' === 'success' ? '✅ Passed' : '⚠️ Check Logs';
+            
+            const overallStatus = '${{ needs.dependency-scan.result }}' === 'success' && '${{ needs.security-tests.result }}' === 'success' 
+              ? '✅ Security checks passed' 
+              : '⚠️ Review security issues';
+            
             const summary = `
             ## 🔐 Security Scan Summary
             
             | Check | Status |
             |-------|--------|
-            | Dependency Scan | ${{ needs.dependency-scan.result == 'success' ? '✅ Passed' : '❌ Failed' }} |
-            | ESLint Security | ${{ needs.eslint-security.result == 'success' ? '✅ Passed' : '⚠️ Warnings' }} |
-            | Security Tests | ${{ needs.security-tests.result == 'success' ? '✅ Passed' : '❌ Failed' }} |
-            | Secret Detection | ${{ needs.secret-detection.result == 'success' ? '✅ Passed' : '⚠️ Check Logs' }} |
+            | Dependency Scan | ${dependencyScan} |
+            | ESLint Security | ${eslintSecurity} |
+            | Security Tests | ${securityTests} |
+            | Secret Detection | ${secretDetection} |
             
-            **Overall Status:** ${{ needs.dependency-scan.result == 'success' && needs.security-tests.result == 'success' ? '✅ Security checks passed' : '⚠️ Review security issues' }}
+            **Overall Status:** ${overallStatus}
             `;
             
             github.rest.issues.createComment({

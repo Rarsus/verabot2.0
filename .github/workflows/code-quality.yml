@@ -156,6 +156,9 @@ jobs:
             const warnings = '${{ steps.quality.outputs.warnings }}';
             const errors = '${{ steps.quality.outputs.errors }}';
             const score = '${{ steps.quality.outputs.score }}';
+            const lintCheckResult = '${{ needs.lint-check.result }}';
+            const complexityResult = '${{ needs.complexity-analysis.result }}';
+            const metricsResult = '${{ needs.code-metrics.result }}';
             
             const getGrade = (score) => {
               if (score >= 95) return 'A+';
@@ -168,6 +171,11 @@ jobs:
               return 'F';
             };
             
+            const lintStatus = lintCheckResult === 'success' ? '✅' : '⚠️';
+            const complexityStatus = complexityResult === 'success' ? '✅' : '⚠️';
+            const metricsStatus = metricsResult === 'success' ? '✅' : '⚠️';
+            const qualityMessage = score >= 80 ? '✅ Code quality is good!' : '⚠️ Code quality could be improved. Consider addressing warnings and errors.';
+            
             const summary = `
             ## 📊 Code Quality Report
             
@@ -177,11 +185,11 @@ jobs:
             |--------|-------|--------|
             | **ESLint Errors** | ${errors} | ${errors == 0 ? '✅' : '❌'} |
             | **ESLint Warnings** | ${warnings} | ${warnings < 100 ? '✅' : '⚠️'} |
-            | **Lint Check** | ${{ needs.lint-check.result }} | ${{ needs.lint-check.result == 'success' ? '✅' : '⚠️' }} |
-            | **Complexity Check** | ${{ needs.complexity-analysis.result }} | ${{ needs.complexity-analysis.result == 'success' ? '✅' : '⚠️' }} |
-            | **Metrics Check** | ${{ needs.code-metrics.result }} | ${{ needs.code-metrics.result == 'success' ? '✅' : '⚠️' }} |
+            | **Lint Check** | ${lintCheckResult} | ${lintStatus} |
+            | **Complexity Check** | ${complexityResult} | ${complexityStatus} |
+            | **Metrics Check** | ${metricsResult} | ${metricsStatus} |
             
-            ${score >= 80 ? '✅ Code quality is good!' : '⚠️ Code quality could be improved. Consider addressing warnings and errors.'}
+            ${qualityMessage}
             
             📁 Detailed reports available in artifacts.
             `;
