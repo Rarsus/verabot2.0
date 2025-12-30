@@ -43,7 +43,13 @@ function setupSchema(db) {
       const checkComplete = () => {
         completed++;
         if (completed === totalOperations) {
-          resolve();
+          // Force WAL checkpoint to flush to disk
+          db.run('PRAGMA wal_checkpoint(TRUNCATE)', (err) => {
+            if (err) {
+              logError('database.setupSchema.wal_checkpoint', err, ERROR_LEVELS.MEDIUM);
+            }
+            resolve();
+          });
         }
       };
 

@@ -111,14 +111,14 @@ src/
 #### Imports at Top
 ```javascript
 // ✅ Group imports by type
-const { Command } = require('../utils/command-base');
-const { sendError } = require('../utils/response-helpers');
-const database = require('../database');
+const { Command } = require('../core/CommandBase');
+const { sendError } = require('../utils/helpers/response-helpers');
+const database = require('../services/DatabaseService');
 
 // ❌ Mixed imports and code
-const database = require('../database');
+const database = require('../services/DatabaseService');
 const config = loadConfig();
-const { Command } = require('../utils/command-base');
+const { Command } = require('../core/CommandBase');
 ```
 
 #### Max Line Length

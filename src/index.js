@@ -30,36 +30,6 @@ let webhookListener = null;
 // For slash commands we always need `Guilds`. For prefix message handling we add message intents.
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
-// Initialize database before starting bot
-(async () => {
-  try {
-    console.log('⏳ Initializing database...');
-
-    // Setup database schema
-    const dbInstance = database.getDatabase();
-    await database.setupSchema(dbInstance);
-    console.log('✓ Database schema initialized');
-
-    // Enhance schema with new tables for tags, ratings, voting
-    await enhanceSchema(dbInstance);
-    console.log('✓ Database schema enhanced');
-
-    // Run migration from JSON if needed
-    await migrateFromJson(database);
-    console.log('✓ Database migration completed');
-
-    // Small delay to ensure all database operations are flushed
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    // Start the bot only after database is ready
-    console.log('🤖 Starting Discord bot...');
-    await client.login(TOKEN);
-  } catch (err) {
-    console.error('❌ Failed to initialize database:', err);
-    process.exit(1);
-  }
-})();
-
 // Load commands
 const commands = new Map();
 const commandsPath = path.join(__dirname, 'commands');
@@ -82,9 +52,43 @@ function loadCommands(dirPath) {
   }
 }
 
-loadCommands(commandsPath);
-// Expose commands on client for command modules (help, etc.)
-client.commands = commands;
+// Initialize database before starting bot
+(async () => {
+  try {
+    console.log('⏳ Initializing database...');
+
+    // Setup database schema
+    const dbInstance = database.getDatabase();
+    await database.setupSchema(dbInstance);
+    console.log('✓ Database schema initialized');
+
+    // Enhance schema with new tables for tags, ratings, voting
+    await enhanceSchema(dbInstance);
+    console.log('✓ Database schema enhanced');
+
+    // Run migration from JSON if needed
+    await migrateFromJson(database);
+    console.log('✓ Database migration completed');
+
+    // Small delay to ensure all database operations are flushed
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // Load commands AFTER database is ready
+    console.log('📂 Loading commands...');
+    loadCommands(commandsPath);
+    console.log(`✓ Loaded ${commands.size} commands`);
+
+    // Expose commands on client for command modules (help, etc.)
+    client.commands = commands;
+
+    // Start the bot only after database is ready
+    console.log('🤖 Starting Discord bot...');
+    await client.login(TOKEN);
+  } catch (err) {
+    console.error('❌ Failed to initialize:', err);
+    process.exit(1);
+  }
+})();
 
 const detectReadyEvent = require('./lib/detectReadyEvent');
 
@@ -122,7 +126,7 @@ client.once('ready', async () => {
       await webhookListener.startServer(proxyPort, webhookSecret);
       console.log(`✓ Webhook listener started on port ${proxyPort}`);
     }
-  } catch {
+  } catch (err) {
     console.error('Failed to start webhook listener:', err.message);
     // Continue without webhook listener if it fails
   }

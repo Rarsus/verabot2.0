@@ -31,10 +31,10 @@ The following are excluded from coverage:
 - `**/*.spec.js` - Spec files
 - `src/index.js` - Application entry point (integration-level)
 - `src/commands/**` - Command files (integration-level testing)
-- `src/database.js`, `src/db.js` - Low-level database wrappers
+- `src/db.js` - Wrapper for DatabaseService (tested via DatabaseService tests)
 - Infrastructure and deprecated utility files
 
-**Coverage Focus:** Core business logic in services, middleware, and utility helpers.
+**Coverage Focus:** Core business logic in services, middleware, and utility helpers. DatabaseService is the single source of truth for all database operations.
 
 ## NPM Scripts
 

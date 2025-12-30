@@ -131,8 +131,7 @@ Complete documentation is also organized in the [docs/](docs/) folder:
 src/
 ├── index.js                 # Bot entry point
 ├── register-commands.js     # Command registration
-├── db.js                    # Database layer (SQLite)
-├── database.js              # Database connection management
+├── db.js                    # Database wrapper for quote operations
 ├── schema-enhancement.js    # Database schema initialization
 ├── core/
 │   ├── CommandBase.js       # Base class for all commands

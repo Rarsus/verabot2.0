@@ -142,6 +142,17 @@ function enhanceSchema(db) {
         await runAsync('CREATE INDEX IF NOT EXISTS idx_reminder_assignments_assigneeId ON reminder_assignments(assigneeId)');
         await runAsync('CREATE INDEX IF NOT EXISTS idx_reminder_notifications_reminderId ON reminder_notifications(reminderId)');
 
+        // Create proxy_config table
+        await runAsync(`
+          CREATE TABLE IF NOT EXISTS proxy_config (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL,
+            encrypted INTEGER DEFAULT 0,
+            createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+          )
+        `);
+
         resolve();
       } catch (err) {
         logError('schema.enhance', err, ERROR_LEVELS.MEDIUM);

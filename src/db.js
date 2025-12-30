@@ -5,7 +5,7 @@
  * The underlying implementation uses SQLite for better performance and scalability.
  */
 
-const database = require('./database');
+const database = require('./services/DatabaseService');
 
 /**
  * Add a quote with validation

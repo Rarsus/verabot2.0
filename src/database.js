@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const { logError, ERROR_LEVELS } = require('./utils/error-handler');
 
-const dbPath = path.join(__dirname, '..', 'data', 'quotes.db');
+const dbPath = path.join(__dirname, '..', 'data', 'db', 'quotes.db');
 
 /**
  * Initialize SQLite database

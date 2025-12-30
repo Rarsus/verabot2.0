@@ -125,11 +125,10 @@ ls docs/
 
 #### Database Operations
 ```javascript
-// OLD
-const db = require('./database');
-const { logError } = require('./utils/error-handler');
+// For quote operations - use the wrapper
+const db = require('./db'); // Exports from DatabaseService
 
-// NEW
+// For direct database access (initialization, admin operations)
 const DatabaseService = require('./services/DatabaseService');
 const { logError } = require('./middleware/errorHandler');
 ```
@@ -426,7 +425,7 @@ npm run lint  # Now checks src/, tests/, scripts/ all correctly
 
 | Aspect | Before | After |
 |--------|--------|-------|
-| **Database** | `src/database.js` | `src/services/DatabaseService.js` |
+| **Database** | `src/database.js` + `src/db.js` (duplicate) | `src/services/DatabaseService.js` + `src/db.js` (wrapper) |
 | **Commands** | `src/utils/command-base.js` | `src/core/CommandBase.js` |
 | **Errors** | `src/utils/error-handler.js` | `src/middleware/errorHandler.js` |
 | **Tests** | `scripts/test-*.js` | `tests/unit/test-*.js` |
