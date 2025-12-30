@@ -12,7 +12,7 @@ async function up(db) {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
       let completed = 0;
-      const total = 6;
+      const total = 7; // 6 creates + 1 category column check
 
       const checkComplete = (err) => {
         if (err) {
@@ -95,6 +95,14 @@ async function up(db) {
           updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
       `, checkComplete);
+
+      // Ensure category column exists (for databases that existed before this migration)
+      db.run(`
+        ALTER TABLE quotes ADD COLUMN category TEXT DEFAULT 'General'
+      `, (err) => {
+        // Ignore error if column already exists
+        checkComplete(null);
+      });
     });
   });
 }
