@@ -33,21 +33,29 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 // Initialize database before starting bot
 (async () => {
   try {
+    console.log('⏳ Initializing database...');
+
     // Setup database schema
-    await database.setupSchema(database.getDatabase());
+    const dbInstance = database.getDatabase();
+    await database.setupSchema(dbInstance);
     console.log('✓ Database schema initialized');
 
     // Enhance schema with new tables for tags, ratings, voting
-    await enhanceSchema(database.getDatabase());
+    await enhanceSchema(dbInstance);
     console.log('✓ Database schema enhanced');
 
     // Run migration from JSON if needed
     await migrateFromJson(database);
+    console.log('✓ Database migration completed');
+
+    // Small delay to ensure all database operations are flushed
+    await new Promise(resolve => setTimeout(resolve, 500));
 
     // Start the bot only after database is ready
+    console.log('🤖 Starting Discord bot...');
     await client.login(TOKEN);
   } catch (err) {
-    console.error('Failed to initialize database:', err);
+    console.error('❌ Failed to initialize database:', err);
     process.exit(1);
   }
 })();

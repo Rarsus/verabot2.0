@@ -32,10 +32,21 @@ function initializeDatabase() {
 /**
  * Set up database schema
  * @param {sqlite3.Database} db - Database connection
+ * @returns {Promise<void>}
  */
 function setupSchema(db) {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
+      let completed = 0;
+      const totalOperations = 3;
+
+      const checkComplete = () => {
+        completed++;
+        if (completed === totalOperations) {
+          resolve();
+        }
+      };
+
       // Create quotes table
       db.run(
         `
@@ -52,6 +63,8 @@ function setupSchema(db) {
           if (err) {
             logError('database.setupSchema.createQuotesTable', err, ERROR_LEVELS.CRITICAL);
             reject(err);
+          } else {
+            checkComplete();
           }
         }
       );
@@ -62,8 +75,9 @@ function setupSchema(db) {
         (err) => {
           if (err) {
             logError('database.setupSchema.createIndex', err, ERROR_LEVELS.MEDIUM);
-            // Don't reject on index creation failure
+            // Don't reject on index creation failure, just continue
           }
+          checkComplete();
         }
       );
 
@@ -81,7 +95,7 @@ function setupSchema(db) {
             logError('database.setupSchema.createSchemaVersions', err, ERROR_LEVELS.CRITICAL);
             reject(err);
           } else {
-            resolve();
+            checkComplete();
           }
         }
       );

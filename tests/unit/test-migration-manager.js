@@ -3,7 +3,7 @@
  * Tests for MigrationManager service
  */
 
-/* eslint-disable no-unused-vars, complexity */
+/* eslint-disable no-unused-vars */
 
 const MigrationManager = require('../../src/services/MigrationManager');
 const DatabaseService = require('../../src/services/DatabaseService');
