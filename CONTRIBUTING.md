@@ -2,6 +2,68 @@
 
 Thank you for your interest in contributing to VeraBot!
 
+## 📝 Commit Message Format (IMPORTANT FOR RELEASES)
+
+This project uses **Semantic Versioning** with **Conventional Commits**. Your commit messages determine automatic version bumps:
+
+### Commit Message Structure
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+### Types
+
+| Type | Version Bump | Description |
+|------|-------------|-------------|
+| `feat` | **MINOR** ↑ | New feature |
+| `fix` | **PATCH** ↑ | Bug fix |
+| `docs` | No change | Documentation updates |
+| `style` | No change | Code style (formatting, semicolons, etc.) |
+| `refactor` | No change | Code refactoring (no feature/fix) |
+| `test` | No change | Adding or updating tests |
+| `chore` | No change | Build, dependencies, tooling |
+| `ci` | No change | CI/CD configuration |
+| `perf` | **PATCH** ↑ | Performance improvements |
+
+### Examples
+
+```bash
+# New feature (triggers MINOR version bump)
+git commit -m "feat(commands): add quote export functionality"
+
+# Bug fix (triggers PATCH version bump)
+git commit -m "fix(database): resolve migration race condition"
+
+# Breaking change (triggers MAJOR version bump)
+git commit -m "feat(api): redesign webhook structure
+
+BREAKING CHANGE: Webhook payload format has changed from v1 to v2"
+
+# Documentation (no version bump)
+git commit -m "docs: update installation instructions"
+
+# Chore (no version bump)
+git commit -m "chore(deps): update discord.js to v14.11.0"
+```
+
+### Breaking Changes
+
+Mark breaking changes with `BREAKING CHANGE:` in the commit body:
+
+```
+feat(auth): remove legacy token support
+
+BREAKING CHANGE: Old authentication tokens are no longer supported. 
+Users must migrate to the new OAuth2 system.
+```
+
+---
+
 ## Contribution Workflow
 1. **Fork & Clone**: Fork the repository and clone it locally.
 2. **Create a Branch**: Create a descriptive branch for your feature or fix (`feature/user-auth` or `bugfix/login-error`).
@@ -25,6 +87,55 @@ Thank you for your interest in contributing to VeraBot!
 - Each Pull Request must include:
   - A description of the rationale.
   - Reference to keywords (`fixes/partially implements/related`) issues.
+- **Follow commit message format** - Your commits determine automatic version bumps!
+
+---
+
+## 🚀 Automatic Release Process
+
+This project uses **Semantic Release** for automated versioning and releases:
+
+### How It Works
+
+1. **You push commits to `main`** with proper commit messages
+2. **GitHub Actions analyzes commits** and determines version bump (MAJOR/MINOR/PATCH)
+3. **Semantic Release automatically:**
+   - Bumps version in `package.json`
+   - Updates `CHANGELOG.md` with release notes
+   - Creates a git tag (e.g., `v1.1.0`)
+   - Creates a GitHub Release with generated notes
+   - Pushes changes back to `main`
+
+### What Gets Updated Automatically
+
+✅ `package.json` - version field  
+✅ `package-lock.json` - version lock  
+✅ `CHANGELOG.md` - release notes generated from commits  
+✅ `README.md` - version badge  
+✅ GitHub Releases - created with generated notes  
+✅ Git tags - semantic version tags  
+
+### Manual Testing
+
+Before pushing to main, you can test locally:
+
+```bash
+# Test what version would be released (no changes made)
+npm run release:dry
+
+# Check version consistency across files
+npm run release:check
+```
+
+### Version Format
+
+Versions follow **Semantic Versioning**: `MAJOR.MINOR.PATCH`
+
+Example progression:
+- `1.0.0` (initial release)
+- `1.1.0` (new feature via `feat` commit)
+- `1.1.1` (bug fix via `fix` commit)
+- `2.0.0` (breaking change via `feat` with `BREAKING CHANGE:`)
 
 ---
 
