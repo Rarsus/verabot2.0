@@ -11,6 +11,20 @@
 async function up(db) {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
+      let completed = 0;
+      const total = 6;
+
+      const checkComplete = (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          completed++;
+          if (completed === total) {
+            resolve();
+          }
+        }
+      };
+
       // Schema versions table (MUST be created first)
       db.run(`
         CREATE TABLE IF NOT EXISTS schema_versions (
@@ -19,9 +33,7 @@ async function up(db) {
           description TEXT,
           applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-      `, (err) => {
-        if (err) reject(err);
-      });
+      `, checkComplete);
 
       // Quotes table
       db.run(`
@@ -36,9 +48,7 @@ async function up(db) {
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
           updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-      `, (err) => {
-        if (err) reject(err);
-      });
+      `, checkComplete);
 
       // Ratings table
       db.run(`
@@ -51,9 +61,7 @@ async function up(db) {
           UNIQUE(quoteId, userId),
           FOREIGN KEY(quoteId) REFERENCES quotes(id) ON DELETE CASCADE
         )
-      `, (err) => {
-        if (err) reject(err);
-      });
+      `, checkComplete);
 
       // Tags table
       db.run(`
@@ -63,9 +71,7 @@ async function up(db) {
           description TEXT,
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-      `, (err) => {
-        if (err) reject(err);
-      });
+      `, checkComplete);
 
       // Quote-Tag junction table
       db.run(`
@@ -77,9 +83,7 @@ async function up(db) {
           FOREIGN KEY(quoteId) REFERENCES quotes(id) ON DELETE CASCADE,
           FOREIGN KEY(tagId) REFERENCES tags(id) ON DELETE CASCADE
         )
-      `, (err) => {
-        if (err) reject(err);
-      });
+      `, checkComplete);
 
       // Proxy config table
       db.run(`
@@ -90,10 +94,7 @@ async function up(db) {
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
           updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-      `, (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
+      `, checkComplete);
     });
   });
 }

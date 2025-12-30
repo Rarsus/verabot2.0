@@ -328,6 +328,132 @@ console.log('\n=== Test 12: Error on Deferred Uses editReply ===');
   }
 })();
 
+// Test 13: sendError with ephemeral = true sets flags to 64
+console.log('\n=== Test 13: sendError Ephemeral True Sets Flags 64 ===');
+(async () => {
+  try {
+    const interaction = createMockInteraction(false, false);
+
+    await sendError(interaction, 'Test error', true);
+
+    if (interaction._lastReply && interaction._lastReply.flags === 64) {
+      console.log('✅ Test 13 Passed: sendError with ephemeral=true sets flags to 64');
+      passed++;
+    } else {
+      console.error(`❌ Test 13 Failed: flags should be 64, got ${interaction._lastReply?.flags}`);
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 13 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 14: sendError with ephemeral = false sets flags to undefined
+console.log('\n=== Test 14: sendError Ephemeral False Sets Flags Undefined ===');
+(async () => {
+  try {
+    const interaction = createMockInteraction(false, false);
+
+    await sendError(interaction, 'Test error', false);
+
+    if (interaction._lastReply && interaction._lastReply.flags === undefined) {
+      console.log('✅ Test 14 Passed: sendError with ephemeral=false sets flags to undefined');
+      passed++;
+    } else {
+      console.error(`❌ Test 14 Failed: flags should be undefined, got ${interaction._lastReply?.flags}`);
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 14 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 15: sendSuccess with ephemeral = true sets flags to 64
+console.log('\n=== Test 15: sendSuccess Ephemeral True Sets Flags 64 ===');
+(async () => {
+  try {
+    const interaction = createMockInteraction(false, false);
+
+    await sendSuccess(interaction, 'Test success', true);
+
+    if (interaction._lastReply && interaction._lastReply.flags === 64) {
+      console.log('✅ Test 15 Passed: sendSuccess with ephemeral=true sets flags to 64');
+      passed++;
+    } else {
+      console.error(`❌ Test 15 Failed: flags should be 64, got ${interaction._lastReply?.flags}`);
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 15 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 16: sendSuccess with ephemeral = false sets flags to undefined
+console.log('\n=== Test 16: sendSuccess Ephemeral False Sets Flags Undefined ===');
+(async () => {
+  try {
+    const interaction = createMockInteraction(false, false);
+
+    await sendSuccess(interaction, 'Test success', false);
+
+    if (interaction._lastReply && interaction._lastReply.flags === undefined) {
+      console.log('✅ Test 16 Passed: sendSuccess with ephemeral=false sets flags to undefined');
+      passed++;
+    } else {
+      console.error(`❌ Test 16 Failed: flags should be undefined, got ${interaction._lastReply?.flags}`);
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 16 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 17: sendError ephemeral flag on deferred interaction
+console.log('\n=== Test 17: sendError Ephemeral Flag on Deferred Interaction ===');
+(async () => {
+  try {
+    const interaction = createMockInteraction(false, true);
+
+    await sendError(interaction, 'Test error', true);
+
+    if (interaction._lastEdit && interaction._lastEdit.flags === 64) {
+      console.log('✅ Test 17 Passed: sendError with ephemeral=true sets flags to 64 on deferred');
+      passed++;
+    } else {
+      console.error(`❌ Test 17 Failed: flags should be 64, got ${interaction._lastEdit?.flags}`);
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 17 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 18: sendError with ephemeral = false on deferred interaction
+console.log('\n=== Test 18: sendError Ephemeral False on Deferred Interaction ===');
+(async () => {
+  try {
+    const interaction = createMockInteraction(false, true);
+
+    await sendError(interaction, 'Test error', false);
+
+    if (interaction._lastEdit && interaction._lastEdit.flags === undefined) {
+      console.log('✅ Test 18 Passed: sendError with ephemeral=false sets flags to undefined on deferred');
+      passed++;
+    } else {
+      console.error(`❌ Test 18 Failed: flags should be undefined, got ${interaction._lastEdit?.flags}`);
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 18 Failed:', err.message);
+    failed++;
+  }
+})();
+
 // Wait for async tests
 setTimeout(() => {
   console.log('\n=== Test Summary ===');
