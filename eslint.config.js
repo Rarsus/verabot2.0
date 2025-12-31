@@ -13,6 +13,8 @@ module.exports = [
       'dist/**',
       'build/**',
       '.husky/**',
+      '.github/**',
+      '.vscode/**',
       'data/**',
       'logs/**',
       'website/**'

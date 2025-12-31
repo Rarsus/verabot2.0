@@ -48,8 +48,8 @@ async function resolveChannel(input, guild) {
 
   // Try fuzzy match (partial name)
   const fuzzyMatches = guild.channels.cache.filter(
-    channel => 
-      channel.name?.toLowerCase().includes(cleanName) && 
+    channel =>
+      channel.name?.toLowerCase().includes(cleanName) &&
       channel.isTextBased?.()
   );
 
@@ -94,7 +94,7 @@ async function resolveUser(input, client) {
   // Try as username from cached users
   const cleanName = trimmedInput.replace(/^@/, '').toLowerCase();
   const foundUser = client.users.cache.find(
-    user => 
+    user =>
       user.username?.toLowerCase() === cleanName ||
       user.globalName?.toLowerCase() === cleanName
   );
