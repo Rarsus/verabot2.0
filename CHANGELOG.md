@@ -1,3 +1,10 @@
+# [2.4.0](https://github.com/Rarsus/verabot2.0/compare/v2.3.1...v2.4.0) (2025-12-31)
+
+
+### Features
+
+* Add natural language datetime parsing for reminders ([#46](https://github.com/Rarsus/verabot2.0/issues/46)) ([c605451](https://github.com/Rarsus/verabot2.0/commit/c60545172fe57da875a1235bbc27510ba0ee15c9))
+
 ## [2.3.1](https://github.com/Rarsus/verabot2.0/compare/v2.3.0...v2.3.1) (2025-12-31)
 
 
