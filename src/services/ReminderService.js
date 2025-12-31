@@ -6,6 +6,7 @@
 const { getDatabase } = require('./DatabaseService');
 const { REMINDER_STATUS, REMINDER_LIMITS } = require('../utils/constants/reminder-constants');
 const { logError, ERROR_LEVELS } = require('../utils/error-handler');
+const { parseDateTime } = require('../utils/helpers/datetime-parser');
 
 /**
  * Validate reminder subject
@@ -48,6 +49,7 @@ function validateCategory(category) {
 
 /**
  * Validate reminder datetime
+ * Supports multiple formats: ISO dates, relative time, natural language, etc.
  * @param {string} whenDatetime - When the reminder is for
  * @returns {Object} Validation result
  */
@@ -56,12 +58,21 @@ function validateDatetime(whenDatetime) {
     return { valid: false, error: 'Date/time is required and must be a string' };
   }
 
-  const date = new Date(whenDatetime);
-  if (isNaN(date.getTime())) {
-    return { valid: false, error: 'Invalid date/time format' };
+  // Use the datetime parser to handle all formats
+  const parseResult = parseDateTime(whenDatetime);
+
+  if (!parseResult.valid) {
+    // Provide more helpful error message
+    return {
+      valid: false,
+      error: parseResult.error || 'Invalid date/time format. Try formats like: "1 day", "tomorrow", "3:30 PM", "2025-12-31", or "tomorrow at 3 PM"'
+    };
   }
 
-  return { valid: true, sanitized: date.toISOString() };
+  return {
+    valid: true,
+    sanitized: parseResult.isoString
+  };
 }
 
 /**

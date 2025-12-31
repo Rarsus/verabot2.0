@@ -123,7 +123,12 @@ async function runTests() {
   // Test 5: Validate datetime - valid ISO
   console.log('\n=== Test 5: Validate Datetime (Valid ISO) ===');
   try {
-    const result = validateDatetime('2024-12-31T23:59:59.000Z');
+    // Use a future date
+    const futureDate = new Date();
+    futureDate.setFullYear(futureDate.getFullYear() + 1);
+    const isoDate = futureDate.toISOString();
+
+    const result = validateDatetime(isoDate);
     if (result.valid && result.sanitized) {
       console.log('✅ Test 5 Passed: Valid ISO datetime accepted');
       passed++;
@@ -219,10 +224,14 @@ async function runTests() {
   // Test 11: Create reminder - valid data
   console.log('\n=== Test 11: Create Reminder (Valid) ===');
   try {
+    // Use a future date
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 7); // 7 days from now
+
     const reminderId = await createReminder({
       subject: 'Test Reminder',
       category: 'Meeting',
-      when: '2024-12-31T10:00:00.000Z',
+      when: futureDate.toISOString(),
       content: 'This is a test reminder',
       link: 'https://example.com',
       image: null
@@ -243,10 +252,14 @@ async function runTests() {
   // Test 12: Create reminder - invalid subject
   console.log('\n=== Test 12: Create Reminder (Invalid Subject) ===');
   try {
+    // Use a future date
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 7);
+
     await createReminder({
       subject: 'AB',
       category: 'Meeting',
-      when: '2024-12-31T10:00:00.000Z'
+      when: futureDate.toISOString()
     });
     console.error('❌ Test 12 Failed: Invalid subject not rejected');
     failed++;
@@ -397,10 +410,14 @@ async function runTests() {
   // Test 21: Search reminders
   console.log('\n=== Test 21: Search Reminders ===');
   try {
+    // Use a future date
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 10);
+
     await createReminder({
       subject: 'Searchable Reminder',
       category: 'Task',
-      when: '2024-12-31T10:00:00.000Z'
+      when: futureDate.toISOString()
     });
     const results = await searchReminders('Searchable');
     if (Array.isArray(results) && results.some(r => r.subject.includes('Searchable'))) {
@@ -440,17 +457,20 @@ async function runTests() {
   // Test 23: Get reminders for notification
   console.log('\n=== Test 23: Get Reminders for Notification ===');
   try {
-    // Create a reminder with past notification time
-    const pastDate = new Date();
-    pastDate.setHours(pastDate.getHours() - 1);
+    // Create a reminder with notification time very soon (2 minutes from now)
+    const soonDate = new Date();
+    soonDate.setMinutes(soonDate.getMinutes() + 2);
     const reminderId = await createReminder({
-      subject: 'Past Reminder',
+      subject: 'Soon Reminder',
       category: 'Task',
-      when: pastDate.toISOString(),
-      notificationTime: pastDate.toISOString()
+      when: soonDate.toISOString(),
+      notificationTime: soonDate.toISOString()
     });
 
-    const dueReminders = await getRemindersForNotification(new Date());
+    // Check for reminders due in 5 minutes
+    const checkTime = new Date();
+    checkTime.setMinutes(checkTime.getMinutes() + 5);
+    const dueReminders = await getRemindersForNotification(checkTime);
     if (Array.isArray(dueReminders)) {
       console.log(`✅ Test 23 Passed: Found ${dueReminders.length} due reminders`);
       passed++;
