@@ -7,6 +7,7 @@ const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
 const { checkAdminPermission } = require('../../utils/proxy-helpers');
+const { resolveChannel } = require('../../utils/helpers/resolution-helpers');
 const { EmbedBuilder } = require('discord.js');
 
 const { data, options } = buildCommandOptions(
@@ -17,7 +18,7 @@ const { data, options } = buildCommandOptions(
       name: 'channel',
       type: 'string',
       required: true,
-      description: 'Channel ID where the embed should be sent'
+      description: 'Channel name, ID, or mention'
     },
     {
       name: 'title',
@@ -78,7 +79,7 @@ class EmbedCommand extends Command {
         return sendError(interaction, 'You need admin permissions to use this command', true);
       }
 
-      const channelId = interaction.options.getString('channel');
+      const channelInput = interaction.options.getString('channel');
       const title = interaction.options.getString('title');
       const description = interaction.options.getString('description');
       const colorInput = interaction.options.getString('color') || null;
@@ -86,15 +87,14 @@ class EmbedCommand extends Command {
       const thumbnail = interaction.options.getString('thumbnail') || null;
       const image = interaction.options.getString('image') || null;
 
-      // Fetch the channel
-      let channel;
-      try {
-        channel = await interaction.client.channels.fetch(channelId);
-      } catch {
-        return sendError(interaction, `Could not find channel with ID: ${channelId}`, true);
+      // Fetch the channel using resolution helper
+      const channel = await resolveChannel(channelInput, interaction.guild);
+
+      if (!channel) {
+        return sendError(interaction, `Could not find channel: ${channelInput}. Try using the channel name or ID.`, true);
       }
 
-      if (!channel || !channel.isTextBased()) {
+      if (!channel.isTextBased()) {
         return sendError(interaction, 'That is not a text channel', true);
       }
 

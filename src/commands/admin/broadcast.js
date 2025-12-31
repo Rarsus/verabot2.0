@@ -7,6 +7,7 @@ const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
 const { checkAdminPermission } = require('../../utils/proxy-helpers');
+const { resolveChannel } = require('../../utils/helpers/resolution-helpers');
 
 const { data, options } = buildCommandOptions(
   'broadcast',
@@ -23,7 +24,7 @@ const { data, options } = buildCommandOptions(
       name: 'channels',
       type: 'string',
       required: true,
-      description: 'Comma-separated channel IDs (e.g., "123,456,789")'
+      description: 'Channel names, IDs, or mentions (comma-separated)'
     }
   ]
 );
@@ -46,10 +47,10 @@ class BroadcastCommand extends Command {
       }
 
       const messageContent = interaction.options.getString('message');
-      const channelIds = interaction.options.getString('channels').split(',').map(id => id.trim());
+      const channelInputs = interaction.options.getString('channels').split(',').map(id => id.trim());
 
-      if (channelIds.length === 0) {
-        return sendError(interaction, 'No valid channel IDs provided', true);
+      if (channelInputs.length === 0) {
+        return sendError(interaction, 'No valid channel identifiers provided', true);
       }
 
       const results = {
@@ -57,25 +58,31 @@ class BroadcastCommand extends Command {
         failed: []
       };
 
-      for (const channelId of channelIds) {
+      for (const channelInput of channelInputs) {
         try {
-          const channel = await interaction.client.channels.fetch(channelId);
+          // Use resolution helper to find channel by name, ID, or mention
+          const channel = await resolveChannel(channelInput, interaction.guild);
 
-          if (!channel || !channel.isTextBased()) {
-            results.failed.push(`${channelId} (not a text channel)`);
+          if (!channel) {
+            results.failed.push(`${channelInput} (channel not found)`);
+            continue;
+          }
+
+          if (!channel.isTextBased()) {
+            results.failed.push(`${channel.name} (not a text channel)`);
             continue;
           }
 
           // Check bot permissions
           if (channel.guild && !channel.permissionsFor(interaction.client.user).has('SendMessages')) {
-            results.failed.push(`${channelId} (no send permission)`);
+            results.failed.push(`${channel.name} (no send permission)`);
             continue;
           }
 
           await channel.send(messageContent);
-          results.success.push(channelId);
+          results.success.push(channel.name || channelInput);
         } catch (err) {
-          results.failed.push(`${channelId} (${err.message})`);
+          results.failed.push(`${channelInput} (${err.message})`);
         }
       }
 
