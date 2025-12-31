@@ -1,3 +1,10 @@
+## [2.3.1](https://github.com/Rarsus/verabot2.0/compare/v2.3.0...v2.3.1) (2025-12-31)
+
+
+### Bug Fixes
+
+* implement channel resolution helpers for broadcast and embed commands ([15b5193](https://github.com/Rarsus/verabot2.0/commit/15b519380a19739ef6017868ca049f964d52f9bb))
+
 # [2.3.0](https://github.com/Rarsus/verabot2.0/compare/v2.2.0...v2.3.0) (2025-12-30)
 
 
