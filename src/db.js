@@ -173,28 +173,20 @@ async function addTagToQuote(quoteId, tagId) {
 
 /**
  * Export quotes as JSON
- * @param {string} filePath - File path to export to
- * @returns {Promise<void>}
+ * @param {array} quotes - Quotes to export (optional, exports all if not provided)
+ * @returns {Promise<string>} JSON string
  */
-async function exportQuotesAsJson(filePath) {
-  if (typeof filePath !== 'string') {
-    throw new Error('File path must be a string');
-  }
-
-  return database.exportQuotesAsJson(filePath);
+async function exportQuotesAsJson(quotes) {
+  return database.exportQuotesAsJson(quotes);
 }
 
 /**
  * Export quotes as CSV
- * @param {string} filePath - File path to export to
- * @returns {Promise<void>}
+ * @param {array} quotes - Quotes to export (optional, exports all if not provided)
+ * @returns {Promise<string>} CSV string
  */
-async function exportQuotesAsCsv(filePath) {
-  if (typeof filePath !== 'string') {
-    throw new Error('File path must be a string');
-  }
-
-  return database.exportQuotesAsCsv(filePath);
+async function exportQuotesAsCsv(quotes) {
+  return database.exportQuotesAsCsv(quotes);
 }
 
 module.exports = {
