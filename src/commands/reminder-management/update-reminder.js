@@ -7,7 +7,7 @@ const { data, options } = buildCommandOptions('update-reminder', 'Update an exis
   { name: 'id', type: 'integer', description: 'Reminder ID', required: true, minValue: 1 },
   { name: 'subject', type: 'string', description: 'New subject (optional)', required: false, minLength: 3, maxLength: 200 },
   { name: 'category', type: 'string', description: 'New category (optional)', required: false, maxLength: 50 },
-  { name: 'when', type: 'string', description: 'New datetime (optional)', required: false },
+  { name: 'when', type: 'string', description: 'New date/time: "1 day", "tomorrow at 3 PM", etc. (optional)', required: false },
   { name: 'content', type: 'string', description: 'New content (optional)', required: false, maxLength: 2000 },
   { name: 'link', type: 'string', description: 'New link (optional)', required: false },
   { name: 'image', type: 'string', description: 'New image URL (optional)', required: false },

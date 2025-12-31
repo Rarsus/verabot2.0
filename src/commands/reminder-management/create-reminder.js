@@ -6,7 +6,7 @@ const { createReminder, addReminderAssignment } = require('../../services/Remind
 const { data, options } = buildCommandOptions('create-reminder', 'Create a new reminder', [
   { name: 'subject', type: 'string', description: 'Reminder subject/title', required: true, minLength: 3, maxLength: 200 },
   { name: 'category', type: 'string', description: 'Reminder category', required: true, maxLength: 50 },
-  { name: 'when', type: 'string', description: 'When the reminder is for (ISO date or natural)', required: true },
+  { name: 'when', type: 'string', description: 'When: "1 day", "tomorrow", "3:30 PM", "2025-12-31", "tomorrow at 3 PM"', required: true },
   { name: 'who', type: 'string', description: 'User ID or Role ID (prefix role with "role:")', required: true },
   { name: 'content', type: 'string', description: 'Detailed description (optional)', required: false, maxLength: 2000 },
   { name: 'link', type: 'string', description: 'Associated URL (optional)', required: false },
