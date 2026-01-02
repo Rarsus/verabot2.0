@@ -41,7 +41,7 @@ function getPackageVersion() {
 /**
  * Extract version references from file content
  */
-function extractVersions(content, filePath) {
+function extractVersions(content, _filePath) {
   const versions = [];
 
   // Match version patterns like v1.0.0, version 1.0.0, etc.

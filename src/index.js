@@ -163,29 +163,122 @@ client.once('ready', async () => {
   }
 });
 
-// Handle slash commands (interactions)
+// Handle slash commands and button interactions
 client.on('interactionCreate', async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
-  const command = commands.get(interaction.commandName);
-  if (!command) return;
+  // Handle slash commands
+  if (interaction.isChatInputCommand()) {
+    const command = commands.get(interaction.commandName);
+    if (!command) return;
 
-  try {
-    if (typeof command.executeInteraction === 'function') {
-      await command.executeInteraction(interaction);
-    } else if (typeof command.execute === 'function') {
-      const args = [];
-      await command.execute(interaction, args);
-    }
-  } catch {
-    console.error('Command error', err);
     try {
-      if (interaction.replied || interaction.deferred) {
-        await interaction.followUp('There was an error executing that command.');
-      } else {
-        await interaction.reply('There was an error executing that command.');
+      if (typeof command.executeInteraction === 'function') {
+        await command.executeInteraction(interaction);
+      } else if (typeof command.execute === 'function') {
+        const args = [];
+        await command.execute(interaction, args);
       }
     } catch {
-      /* ignore follow-up errors */
+      console.error('Command error', err);
+      try {
+        if (interaction.replied || interaction.deferred) {
+          await interaction.followUp('There was an error executing that command.');
+        } else {
+          await interaction.reply('There was an error executing that command.');
+        }
+      } catch {
+        /* ignore follow-up errors */
+      }
+    }
+    return;
+  }
+
+  // Handle button interactions
+  if (interaction.isButton()) {
+    const customId = interaction.customId;
+
+    try {
+      // Handle reminder decision buttons
+      if (customId.startsWith('reminder_cancel_')) {
+        // Cancel and delete the reminder
+        await interaction.deferReply({ ephemeral: true });
+
+        // Extract reminder ID from stored context
+        const context = Object.values(client.reminderContexts || {}).find(
+          ctx => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
+        );
+
+        if (context && context.reminderId) {
+          const { deleteReminder } = require('./services/ReminderService');
+          await deleteReminder(context.reminderId);
+          await interaction.editReply('✅ Reminder cancelled.');
+        } else {
+          await interaction.editReply('❌ Could not find reminder to cancel.');
+        }
+      } else if (customId.startsWith('reminder_server_')) {
+        // Create reminder with server-only notification method
+        await interaction.deferReply({ ephemeral: true });
+
+        const context = Object.values(client.reminderContexts || {}).find(
+          ctx => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
+        );
+
+        if (context && context.reminderId) {
+          const { updateNotificationMethod } = require('./services/ReminderService');
+          await updateNotificationMethod(context.reminderId, 'server');
+          await interaction.editReply(`✅ Reminder created with server-only notifications for "${context.subject}".`);
+        } else {
+          await interaction.editReply('❌ Could not update reminder notification method.');
+        }
+      } else if (customId.startsWith('reminder_notify_')) {
+        // Send opt-in request to the recipient
+        await interaction.deferReply({ ephemeral: true });
+
+        const context = Object.values(client.reminderContexts || {}).find(
+          ctx => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
+        );
+
+        if (context && context.recipient) {
+          const { updateNotificationMethod } = require('./services/ReminderService');
+          await updateNotificationMethod(context.reminderId, 'dm');
+
+          // Send opt-in request to the user
+          const { sendOptInRequest } = require('./utils/helpers/response-helpers');
+          try {
+            await sendOptInRequest(context.recipient, interaction.user.username, context.subject);
+            await interaction.editReply(`📢 Sent opt-in request to ${context.recipient.username}. They can respond with '/opt-in'.`);
+          } catch {
+            await interaction.editReply('✅ Reminder set to DM mode. Could not send opt-in request (user may have DMs disabled).');
+          }
+        } else {
+          await interaction.editReply('❌ Could not send opt-in request.');
+        }
+      } else if (customId === 'optin_reminder_request') {
+        // User clicked "Opt In" from the opt-in request message
+        await interaction.deferReply({ ephemeral: true });
+
+        // Execute the /opt-in command
+        const optInCommand = commands.get('opt-in');
+        if (optInCommand) {
+          try {
+            await optInCommand.executeInteraction(interaction);
+          } catch {
+            await interaction.editReply('❌ Error processing opt-in request.');
+          }
+        } else {
+          await interaction.editReply('❌ Opt-in command not available.');
+        }
+      }
+    } catch (err) {
+      console.error('Button interaction error:', err);
+      try {
+        if (interaction.deferred) {
+          await interaction.editReply('❌ There was an error processing this action.');
+        } else if (!interaction.replied) {
+          await interaction.reply({ content: '❌ There was an error processing this action.', ephemeral: true });
+        }
+      } catch {
+        /* ignore follow-up errors */
+      }
     }
   }
 });
@@ -235,6 +328,50 @@ client.on('messageCreate', async (message) => {
   }
 });
 
+// Handle new members joining - send onboarding message about opt-in system
+client.on('guildMemberAdd', async (member) => {
+  if (member.user.bot) return; // Don't message bots
+
+  try {
+    const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+
+    const embed = new EmbedBuilder()
+      .setColor('#5865F2')
+      .setTitle('Welcome to the Server! 👋')
+      .setDescription('Thanks for joining! We use a communication opt-in system to respect your privacy.')
+      .addFields(
+        {
+          name: '📢 What is Opt-In?',
+          value: 'The bot can send you reminders and notifications. You control whether you get DMs or just server-only messages.'
+        },
+        {
+          name: '✅ Getting Started',
+          value: 'Use `/comm-status` to check your preferences, or `/opt-in` to enable direct messages.'
+        },
+        {
+          name: '📖 Learn More',
+          value: 'See our full guide with examples and workflows for the opt-in system.'
+        }
+      )
+      .setFooter({ text: 'You can always change your preferences with /opt-out' })
+      .setTimestamp();
+
+    const row = new ActionRowBuilder()
+      .addComponents(
+        new ButtonBuilder()
+          .setCustomId('optin_reminder_request')
+          .setLabel('📖 Learn About Opt-In')
+          .setStyle(ButtonStyle.Primary)
+      );
+
+    // Send DM to the new member
+    await member.send({ embeds: [embed], components: [row] });
+  } catch {
+    // Silently fail if we can't DM the user (they might have DMs disabled)
+    console.log(`Could not send onboarding DM to ${member.user.tag}: DMs likely disabled`);
+  }
+});
+
 // Graceful shutdown
 process.on('SIGINT', async () => {
   console.log('\nShutting down gracefully...');
@@ -258,7 +395,7 @@ async function shutdown() {
       await webhookListener.stopServer();
     }
     client.destroy();
-  } catch (err) {
+  } catch {
     /* ignore errors on shutdown */
   }
   process.exit(0);

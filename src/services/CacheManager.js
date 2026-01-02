@@ -198,7 +198,7 @@ class CacheManager {
       bytes += key.length * 2; // UTF-16 chars
       try {
         bytes += JSON.stringify(entry.value).length * 2;
-      } catch (_e) {
+      } catch {
         bytes += 100; // Fallback estimate for unstringifiable values
       }
       bytes += 16; // Overhead for timestamps

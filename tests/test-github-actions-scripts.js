@@ -14,7 +14,7 @@ console.log('\n🧪 Testing GitHub Actions Validation Scripts\n');
 function test(name, command, expectNonZero = false) {
   try {
     console.log(`Testing: ${name}...`);
-    const output = execSync(command, { stdio: 'pipe', encoding: 'utf8' });
+    const _output = execSync(command, { stdio: 'pipe', encoding: 'utf8' });
     if (!expectNonZero) {
       passed++;
       console.log(`✅ ${name} - PASSED\n`);

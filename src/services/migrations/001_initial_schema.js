@@ -99,7 +99,7 @@ async function up(db) {
       // Ensure category column exists (for databases that existed before this migration)
       db.run(`
         ALTER TABLE quotes ADD COLUMN category TEXT DEFAULT 'General'
-      `, (err) => {
+      `, (_err) => {
         // Ignore error if column already exists
         checkComplete(null);
       });

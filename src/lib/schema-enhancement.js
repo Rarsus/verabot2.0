@@ -114,10 +114,16 @@ function enhanceSchema(db) {
             image TEXT,
             notificationTime TEXT NOT NULL,
             status TEXT NOT NULL DEFAULT 'active',
+            notification_method TEXT NOT NULL DEFAULT 'dm' CHECK(notification_method IN ('dm', 'server')),
             createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
             updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
           )
         `);
+
+        // Add notification_method column to existing reminders table if it doesn't exist
+        await runAsync(`
+          ALTER TABLE reminders ADD COLUMN notification_method TEXT NOT NULL DEFAULT 'dm' CHECK(notification_method IN ('dm', 'server'))
+        `, true);
 
         // Create reminder_assignments table for user/role relationships
         await runAsync(`

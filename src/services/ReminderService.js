@@ -556,6 +556,82 @@ async function recordNotification(reminderId, success, errorMessage = null) {
   });
 }
 
+/**
+ * Check if a reminder recipient has opted in to receive DMs
+ * @param {string} userId - Discord user ID
+ * @returns {Promise<boolean>} True if user opted in, false otherwise
+ */
+async function isRecipientOptedIn(userId) {
+  const CommunicationService = require('./CommunicationService');
+  return CommunicationService.isOptedIn(userId);
+}
+
+/**
+ * Get recipient information for a reminder
+ * @param {number} reminderId - Reminder ID
+ * @returns {Promise<Object>} Recipients with user details { userId, optedIn }
+ */
+async function getReminderRecipients(reminderId) {
+  const db = getDatabase();
+  const CommunicationService = require('./CommunicationService');
+
+  return new Promise(async (resolve, reject) => {
+    db.all(
+      'SELECT assigneeType, assigneeId FROM reminder_assignments WHERE reminderId = ? AND assigneeType = ?',
+      [reminderId, 'user'],
+      async (err, rows) => {
+        if (err) {
+          logError('ReminderService.getReminderRecipients', err, ERROR_LEVELS.MEDIUM);
+          reject(err);
+        } else {
+          try {
+            // Check opt-in status for each user recipient
+            const recipients = await Promise.all(
+              (rows || []).map(async (row) => ({
+                userId: row.assigneeId,
+                optedIn: await CommunicationService.isOptedIn(row.assigneeId)
+              }))
+            );
+            resolve(recipients);
+          } catch (error) {
+            logError('ReminderService.getReminderRecipients.checkOptIn', error, ERROR_LEVELS.MEDIUM);
+            reject(error);
+          }
+        }
+      }
+    );
+  });
+}
+
+/**
+ * Update reminder notification method
+ * @param {number} reminderId - Reminder ID
+ * @param {string} method - 'dm' or 'server'
+ * @returns {Promise<void>}
+ */
+async function updateNotificationMethod(reminderId, method) {
+  const db = getDatabase();
+
+  if (!['dm', 'server'].includes(method)) {
+    throw new Error('Notification method must be either "dm" or "server"');
+  }
+
+  return new Promise((resolve, reject) => {
+    db.run(
+      'UPDATE reminders SET notification_method = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?',
+      [method, reminderId],
+      (err) => {
+        if (err) {
+          logError('ReminderService.updateNotificationMethod', err, ERROR_LEVELS.MEDIUM);
+          reject(err);
+        } else {
+          resolve();
+        }
+      }
+    );
+  });
+}
+
 module.exports = {
   // Validation functions
   validateSubject,
@@ -576,5 +652,8 @@ module.exports = {
 
   // Notification support
   getRemindersForNotification,
-  recordNotification
+  recordNotification,
+  isRecipientOptedIn,
+  getReminderRecipients,
+  updateNotificationMethod
 };

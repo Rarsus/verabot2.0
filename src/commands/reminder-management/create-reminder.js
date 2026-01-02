@@ -1,7 +1,7 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
-const { sendSuccess } = require('../../utils/helpers/response-helpers');
-const { createReminder, addReminderAssignment } = require('../../services/ReminderService');
+const { sendSuccess, sendOptInDecisionPrompt } = require('../../utils/helpers/response-helpers');
+const { createReminder, addReminderAssignment, isRecipientOptedIn } = require('../../services/ReminderService');
 
 const { data, options } = buildCommandOptions('create-reminder', 'Create a new reminder', [
   { name: 'subject', type: 'string', description: 'Reminder subject/title', required: true, minLength: 3, maxLength: 200 },
@@ -55,23 +55,74 @@ class CreateReminderCommand extends Command {
       throw new Error('Invalid ID format. Must be a numeric snowflake ID or valid mention format.');
     }
 
-    // Create reminder
-    const reminderId = await createReminder({
-      subject,
-      category,
-      when,
-      content,
-      link,
-      image
-    });
+    // Check opt-in status for user assignments
+    let optedIn = true;
+    let recipient = null;
 
-    // Add assignment
-    await addReminderAssignment(reminderId, assigneeType, assigneeId);
+    if (assigneeType === 'user') {
+      try {
+        optedIn = await isRecipientOptedIn(assigneeId);
+        // Fetch user info for decision prompt
+        recipient = await interaction.client.users.fetch(assigneeId);
+      } catch {
+        // If user not found or other error, proceed with creating reminder
+        // The system will handle delivery failure gracefully
+      }
+    }
 
-    await sendSuccess(
-      interaction,
-      `Reminder #${reminderId} created successfully! It will be sent at the specified time.`
-    );
+    // If user is opted out and this is a DM-based notification, show decision prompt
+    if (assigneeType === 'user' && !optedIn && recipient) {
+      // Create reminder first, then show decision buttons
+      const reminderId = await createReminder({
+        subject,
+        category,
+        when,
+        content,
+        link,
+        image,
+        notification_method: 'dm' // Default, user will choose
+      });
+
+      // Add assignment
+      await addReminderAssignment(reminderId, assigneeType, assigneeId);
+
+      // Store reminder context for button handlers
+      interaction.client.reminderContexts = interaction.client.reminderContexts || {};
+      interaction.client.reminderContexts[`${Date.now()}`] = {
+        reminderId,
+        subject,
+        recipientId: assigneeId,
+        recipient
+      };
+
+      // Show decision prompt
+      await sendOptInDecisionPrompt(interaction, recipient, subject);
+    } else {
+      // User opted in or this is a role-based reminder, create normally
+      const reminderId = await createReminder({
+        subject,
+        category,
+        when,
+        content,
+        link,
+        image
+      });
+
+      // Add assignment
+      await addReminderAssignment(reminderId, assigneeType, assigneeId);
+
+      if (assigneeType === 'user') {
+        await sendSuccess(
+          interaction,
+          `Reminder #${reminderId} created successfully for <@${assigneeId}>!`
+        );
+      } else {
+        await sendSuccess(
+          interaction,
+          `Reminder #${reminderId} created successfully for role <@&${assigneeId}>!`
+        );
+      }
+    }
   }
 }
 

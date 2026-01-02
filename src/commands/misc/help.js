@@ -163,7 +163,7 @@ class HelpCommand extends Command {
       });
     } catch {
       console.error('Help command (interaction) error', err);
-      try { await interaction.reply({ content: 'Could not list commands.', ephemeral: true }); } catch(e){ void 0; }
+      try { await interaction.reply({ content: 'Could not list commands.', ephemeral: true }); } catch (_e){ void 0; }
     }
   }
 }

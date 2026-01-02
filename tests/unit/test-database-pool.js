@@ -34,7 +34,7 @@ function cleanupTestDb() {
   if (fs.existsSync(testDbPath)) {
     try {
       fs.unlinkSync(testDbPath);
-    } catch (_e) {
+    } catch {
       // Ignore
     }
   }
@@ -180,7 +180,7 @@ setTimeout(async () => {
     await smallPool.close();
   } catch (err) {
     assert(false, `Connection queuing failed: ${err.message}`);
-    try { await smallPool.close(); } catch (_e) { /* ignore */ }
+    try { await smallPool.close(); } catch { /* ignore */ }
   }
 
   // Test 11: Reset statistics
