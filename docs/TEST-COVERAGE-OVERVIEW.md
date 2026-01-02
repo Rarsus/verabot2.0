@@ -1,25 +1,28 @@
 # Test Coverage Overview
 
-**Last Updated:** 2025-12-28  
+**Last Updated:** 2026-01-02  
 **Repository:** VeraBot2.0  
-**Test Files:** 27  
-**Total Tests:** 456  
+**Test Files:** 30  
+**Total Tests:** 503  
 **Pass Rate:** 100.0%
 
 ## Executive Summary
 
-VeraBot2.0 has **456 tests** across **27 test files** with a **100.0% pass rate**. The test suite covers core framework components, commands, services, and utilities.
+VeraBot2.0 has **503 tests** across **30 test files** with a **100.0% pass rate**. The test suite covers core framework components, commands, services, and utilities.
 
-> **Note:** This documentation is automatically generated. Last run: 2025-12-28T06:38:28.303Z
+> **Note:** This documentation is automatically generated. Last run: 2026-01-02T23:56:39.825Z
 
 ## Test Files Overview
 
 | Test File | Tests | Passed | Status | Description |
 |-----------|-------|--------|--------|-------------|
+| test-admin-communication.js | 1 | 1 | ✅ | Test Suite: Admin Communication Commands |
 | test-cache-manager.js | 38 | 38 | ✅ | Cache Manager Unit Tests |
 | test-command-base.js | 7 | 7 | ✅ | Test Suite: Command Base Class |
 | test-command-options.js | 10 | 10 | ✅ | Test Suite: Command Options Builder |
+| test-communication-service.js | 10 | 10 | ✅ | Test Suite: Communication Service |
 | test-database-pool.js | 32 | 32 | ✅ | Database Pool Unit Tests |
+| test-datetime-parser.js | 30 | 30 | ✅ | Test Suite: Datetime Parser |
 | test-integration-refactor.js | 10 | 10 | ✅ | Integration Test: Refactored Commands |
 | test-middleware-errorhandler.js | 11 | 11 | ✅ | Test Suite: Error Handler Middleware |
 | test-middleware-logger.js | 11 | 11 | ✅ | Test Suite: Logger Middleware |
@@ -36,15 +39,23 @@ VeraBot2.0 has **456 tests** across **27 test files** with a **100.0% pass rate*
 | test-reminder-database.js | 10 | 10 | ✅ | Test Suite: Reminder Database Schema and Operations |
 | test-reminder-notifications.js | 12 | 12 | ✅ | Test Suite: Reminder Notification Service |
 | test-reminder-service.js | 25 | 25 | ✅ | Test Suite: Reminder Service |
-| test-response-helpers.js | 12 | 12 | ✅ | Test Suite: Response Helpers |
+| test-response-helpers.js | 18 | 18 | ✅ | Test Suite: Response Helpers |
 | test-security-utils.js | 30 | 30 | ✅ | Security Utils Tests |
 | test-security-validation.js | 21 | 21 | ✅ | Security Validation Tests |
-| test-services-database.js | 19 | 19 | ✅ | Test Suite: DatabaseService |
+| test-services-database.js | 19 | 19 | ✅ | Services Database |
 | test-services-quote.js | 13 | 13 | ✅ | Test Suite: QuoteService |
 | test-services-validation.js | 13 | 13 | ✅ | Test Suite: ValidationService |
 | test-webhook-proxy.js | 4 | 4 | ✅ | Tests for Webhook Proxy Service |
 
 ## Detailed Test Breakdown
+
+### test-admin-communication.js
+
+**Description:** Test Suite: Admin Communication Commands
+
+**Test Count:** 1  
+**Status:** ✅ Passing  
+**Pass Rate:** 100.0%
 
 ### test-cache-manager.js
 
@@ -116,6 +127,27 @@ VeraBot2.0 has **456 tests** across **27 test files** with a **100.0% pass rate*
 9. Command name and description in data
 10. String option with constraints
 
+### test-communication-service.js
+
+**Description:** Test Suite: Communication Service
+
+**Test Count:** 10  
+**Status:** ✅ Passing  
+**Pass Rate:** 100.0%
+
+**Tests:**
+
+1. isOptedIn returns false for non-existent user
+2. optIn successfully opts user in
+3. optOut successfully opts user out
+4. optIn is idempotent (can be called multiple times)
+5. optOut is idempotent (can be called multiple times)
+6. getStatus returns correct opted_in value
+7. getStatus returns false for non-existent user
+8. State transitions work correctly (in -> out -> in)
+9. Multiple users can have different opt-in states
+10. Timestamps are updated on state changes
+
 ### test-database-pool.js
 
 **Description:** Database Pool Unit Tests
@@ -127,6 +159,14 @@ VeraBot2.0 has **456 tests** across **27 test files** with a **100.0% pass rate*
 **Tests:**
 
 1. Pool initialization
+
+### test-datetime-parser.js
+
+**Description:** Test Suite: Datetime Parser
+
+**Test Count:** 30  
+**Status:** ✅ Passing  
+**Pass Rate:** 100.0%
 
 ### test-integration-refactor.js
 
@@ -223,7 +263,6 @@ VeraBot2.0 has **456 tests** across **27 test files** with a **100.0% pass rate*
 **Tests:**
 
 1. Initialize manager
-2. Get version (initial)
 
 ### test-misc-commands.js
 
@@ -401,7 +440,7 @@ VeraBot2.0 has **456 tests** across **27 test files** with a **100.0% pass rate*
 
 **Description:** Test Suite: Response Helpers
 
-**Test Count:** 12  
+**Test Count:** 18  
 **Status:** ✅ Passing  
 **Pass Rate:** 100.0%
 
@@ -419,6 +458,12 @@ VeraBot2.0 has **456 tests** across **27 test files** with a **100.0% pass rate*
 10. Defer reply skips if already deferred
 11. Success on deferred interaction uses editReply
 12. Error on deferred interaction uses editReply
+13. sendError with ephemeral = true sets flags to 64
+14. sendError with ephemeral = false sets flags to undefined
+15. sendSuccess with ephemeral = true sets flags to 64
+16. sendSuccess with ephemeral = false sets flags to undefined
+17. sendError ephemeral flag on deferred interaction
+18. sendError with ephemeral = false on deferred interaction
 
 ### test-security-utils.js
 
@@ -484,7 +529,7 @@ VeraBot2.0 has **456 tests** across **27 test files** with a **100.0% pass rate*
 
 ### test-services-database.js
 
-**Description:** Test Suite: DatabaseService
+**Description:** Services Database
 
 **Test Count:** 19  
 **Status:** ✅ Passing  

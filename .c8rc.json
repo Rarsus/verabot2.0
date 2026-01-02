@@ -2,7 +2,9 @@
   "reporter": [
     "text",
     "html",
-    "lcov"
+    "lcov",
+    "json-summary",
+    "json"
   ],
   "report-dir": "./coverage",
   "exclude": [
