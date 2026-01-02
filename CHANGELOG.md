@@ -1,3 +1,10 @@
+# [2.6.0](https://github.com/Rarsus/verabot2.0/compare/v2.5.0...v2.6.0) (2026-01-02)
+
+
+### Features
+
+* Update test coverage reports and add new test cases for communication service ([44f3116](https://github.com/Rarsus/verabot2.0/commit/44f3116e763dd2f4f89398dbb0b6a2cdc0c51abc))
+
 # [2.5.0](https://github.com/Rarsus/verabot2.0/compare/v2.4.0...v2.5.0) (2026-01-02)
 
 
