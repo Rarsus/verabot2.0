@@ -175,7 +175,10 @@ async function runTests() {
   // Test 7: ISO format - full timestamp
   console.log('\n=== Test 7: ISO Format (Full) ===');
   try {
-    const isoDate = '2025-12-31T15:30:00.000Z';
+    // Use a future date (1 year from now)
+    const futureDate = new Date();
+    futureDate.setFullYear(futureDate.getFullYear() + 1);
+    const isoDate = futureDate.toISOString();
     const result = parseDateTime(isoDate);
     if (result.valid && result.isoString === isoDate) {
       console.log('✅ Test 7 Passed: ISO format maintained');
@@ -192,7 +195,11 @@ async function runTests() {
   // Test 8: ISO format - without milliseconds
   console.log('\n=== Test 8: ISO Format (No Milliseconds) ===');
   try {
-    const result = parseDateTime('2025-12-31T15:30:00Z');
+    // Use a future date (2 years from now)
+    const futureDate = new Date();
+    futureDate.setFullYear(futureDate.getFullYear() + 2);
+    const isoDate = futureDate.toISOString().replace(/\.\d{3}Z$/, 'Z'); // Remove milliseconds
+    const result = parseDateTime(isoDate);
     if (result.valid && result.isoString) {
       console.log('✅ Test 8 Passed: ISO without milliseconds parsed');
       passed++;
