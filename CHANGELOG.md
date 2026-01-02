@@ -1,3 +1,10 @@
+# [2.5.0](https://github.com/Rarsus/verabot2.0/compare/v2.4.0...v2.5.0) (2026-01-02)
+
+
+### Features
+
+* Implement communication opt-in/opt-out system ([25becf9](https://github.com/Rarsus/verabot2.0/commit/25becf9215300e56f4729ac640a295049aa9c63e))
+
 # [2.4.0](https://github.com/Rarsus/verabot2.0/compare/v2.3.1...v2.4.0) (2025-12-31)
 
 
