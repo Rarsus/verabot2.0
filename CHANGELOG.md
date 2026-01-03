@@ -1,3 +1,12 @@
+# [2.9.0](https://github.com/Rarsus/verabot2.0/compare/v2.8.0...v2.9.0) (2026-01-03)
+
+
+### Features
+
+* add permission enforcement tests for CommandBase ([c54c781](https://github.com/Rarsus/verabot2.0/commit/c54c7818ff7d43464606b0b474566f872773eedc))
+* add permission metadata to all 32 commands - Phase 2 integration ([104de8a](https://github.com/Rarsus/verabot2.0/commit/104de8a59809f712a85d412d45299f72c4f40e3b))
+* implement permission enforcement in CommandBase ([e2384f5](https://github.com/Rarsus/verabot2.0/commit/e2384f5ec5fefe9a500f7ee24ef8674f084dbcf4))
+
 # [2.8.0](https://github.com/Rarsus/verabot2.0/compare/v2.7.0...v2.8.0) (2026-01-03)
 
 
