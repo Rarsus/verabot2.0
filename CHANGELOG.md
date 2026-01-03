@@ -1,3 +1,12 @@
+# [2.10.0](https://github.com/Rarsus/verabot2.0/compare/v2.9.0...v2.10.0) (2026-01-03)
+
+
+### Features
+
+* **multi-database:** implement complete per-guild database architecture ([3a47b12](https://github.com/Rarsus/verabot2.0/commit/3a47b1235925e4333410fccefb67d69fd0add1b4))
+* **phase-1-3:** implement guild-aware database architecture with per-guild databases and updated commands ([747618e](https://github.com/Rarsus/verabot2.0/commit/747618e510ca66d6867a560a9f21a757ba7134db))
+* **phase-3-extended:** implement guild-aware ReminderService and CommunicationService for GDPR compliance ([0414841](https://github.com/Rarsus/verabot2.0/commit/0414841ee7bcc2ad555730f11a67d43ef63516b5))
+
 # [2.9.0](https://github.com/Rarsus/verabot2.0/compare/v2.8.0...v2.9.0) (2026-01-03)
 
 
