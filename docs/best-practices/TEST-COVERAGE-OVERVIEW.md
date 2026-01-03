@@ -1,6 +1,6 @@
 # Test Coverage Overview
 
-**Last Updated:** 2026-01-03  
+**Last Updated:** 2026-01-02  
 **Repository:** VeraBot2.0  
 **Test Files:** 30  
 **Total Tests:** 503  
@@ -10,7 +10,7 @@
 
 VeraBot2.0 has **503 tests** across **30 test files** with a **100.0% pass rate**. The test suite covers core framework components, commands, services, and utilities.
 
-> **Note:** This documentation is automatically generated. Last run: 2026-01-03T21:36:21.636Z
+> **Note:** This documentation is automatically generated. Last run: 2026-01-02T23:56:39.825Z
 
 ## Test Files Overview
 
@@ -134,6 +134,19 @@ VeraBot2.0 has **503 tests** across **30 test files** with a **100.0% pass rate*
 **Test Count:** 10  
 **Status:** ✅ Passing  
 **Pass Rate:** 100.0%
+
+**Tests:**
+
+1. isOptedIn returns false for non-existent user
+2. optIn successfully opts user in
+3. optOut successfully opts user out
+4. optIn is idempotent (can be called multiple times)
+5. optOut is idempotent (can be called multiple times)
+6. getStatus returns correct opted_in value
+7. getStatus returns false for non-existent user
+8. State transitions work correctly (in -> out -> in)
+9. Multiple users can have different opt-in states
+10. Timestamps are updated on state changes
 
 ### test-database-pool.js
 

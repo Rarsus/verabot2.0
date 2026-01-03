@@ -1,264 +1,270 @@
-# Complete Documentation Index
+# VeraBot2.0 Documentation Index
 
-Master index of all VeraBot2.0 documentation with full cross-references.
-
-## 📚 All Documents
-
-### Guides (How-To & Tutorials)
-
-| Document | Purpose | Audience |
-|----------|---------|----------|
-| [guides/01-CREATING-COMMANDS.md](guides/01-CREATING-COMMANDS.md) | Step-by-step guide for creating new commands | Developers |
-| [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md) | Comprehensive testing with TDD principles | QA, Developers |
-| [guides/03-HUGGINGFACE-SETUP.md](guides/03-HUGGINGFACE-SETUP.md) | AI poem generation setup and configuration | DevOps, Developers |
-| [guides/04-PROXY-SETUP.md](guides/04-PROXY-SETUP.md) | Webhook proxy system setup and configuration | DevOps, Developers |
-| [guides/05-REMINDER-SYSTEM.md](guides/05-REMINDER-SYSTEM.md) | **Reminder Management System guide** | Developers, Users |
-
-### Reference (Architecture & API)
-
-| Document | Purpose | Audience |
-|----------|---------|----------|
-| [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md) | System design, patterns, utility modules | Tech Leads, Architects |
-| [reference/REFACTORING-GUIDE.md](reference/REFACTORING-GUIDE.md) | Before/after code examples and patterns | Developers, Reviewers |
-| [reference/TDD-QUICK-REFERENCE.md](reference/TDD-QUICK-REFERENCE.md) | Quick testing reference and commands | QA, Developers |
-| [reference/REMINDER-SCHEMA.md](reference/REMINDER-SCHEMA.md) | **Reminder system database schema** | Developers, DBAs |
-
-### Project Information (Background & Metrics)
-
-| Document | Purpose | Audience |
-|----------|---------|----------|
-| [project/REFACTORING-COMPLETE.md](project/REFACTORING-COMPLETE.md) | Complete refactoring summary with metrics | Project Managers, Tech Leads |
-| [project/ACTION-PLAN.md](project/ACTION-PLAN.md) | Implementation strategy and phases | Project Managers, Tech Leads |
-| [project/IMPROVEMENTS.md](project/IMPROVEMENTS.md) | Technical improvements analysis | Tech Leads, Architects |
-| [project/TDD-TEST-RESULTS.md](project/TDD-TEST-RESULTS.md) | Detailed test analysis and coverage | QA, Tech Leads |
-| [TEST-COVERAGE-OVERVIEW.md](TEST-COVERAGE-OVERVIEW.md) | **Comprehensive test coverage analysis** | QA, Developers, Tech Leads |
-| [TEST-SUMMARY-LATEST.md](TEST-SUMMARY-LATEST.md) | Latest test run results (auto-generated) | QA, Developers |
+Complete navigation for all VeraBot2.0 documentation. Choose your path below.
 
 ---
 
-## 🎯 By Role
+## 🚀 Quick Start
 
-### Project Manager
-**Goals:** Understand what was done and why
-1. Start: [project/REFACTORING-COMPLETE.md](project/REFACTORING-COMPLETE.md) - Summary
-2. Metrics: [../README.md](../README.md#-code-quality-metrics) - Performance improvements
-3. Plan: [project/ACTION-PLAN.md](project/ACTION-PLAN.md) - How it was implemented
-4. Results: [project/TDD-TEST-RESULTS.md](project/TDD-TEST-RESULTS.md) - Quality metrics
+**New to VeraBot2.0?**
+1. Start: [Getting Started Guide](user-guides/01-CREATING-COMMANDS.md)
+2. Learn: [Architecture Overview](architecture/ARCHITECTURE-OVERVIEW.md)
+3. Build: [Create Your First Command](user-guides/01-CREATING-COMMANDS.md#creating-your-first-command)
 
-### Tech Lead
-**Goals:** Understand architecture and make decisions
-1. Design: [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md) - System architecture
-2. Patterns: [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md#design-patterns) - Design patterns
-3. Code: [reference/REFACTORING-GUIDE.md](reference/REFACTORING-GUIDE.md) - Implementation
-4. Quality: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md) - Testing strategy
-
-### Developer
-**Goals:** Build features and maintain code
-1. Quickstart: [../README.md](../README.md#-quick-start) - Setup
-2. Commands: [guides/01-CREATING-COMMANDS.md](guides/01-CREATING-COMMANDS.md) - Create commands
-3. Architecture: [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md) - Understand design
-4. Testing: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md) - Write tests
-
-### QA Engineer
-**Goals:** Test and verify quality
-1. Testing: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md) - Testing approach
-2. Reference: [reference/TDD-QUICK-REFERENCE.md](reference/TDD-QUICK-REFERENCE.md) - Quick commands
-3. Results: [project/TDD-TEST-RESULTS.md](project/TDD-TEST-RESULTS.md) - Current status
-4. Coverage: [TEST-COVERAGE-OVERVIEW.md](TEST-COVERAGE-OVERVIEW.md) - **Comprehensive coverage analysis**
-5. Latest Results: [TEST-SUMMARY-LATEST.md](TEST-SUMMARY-LATEST.md) - Latest test runs
-
-### DevOps/Deployment
-**Goals:** Setup and maintain infrastructure
-1. Setup: [../README.md](../README.md#-quick-start) - Installation
-2. Environment: [../README.md](../README.md#environment-variables) - Configuration
-3. AI Setup: [guides/03-HUGGINGFACE-SETUP.md](guides/03-HUGGINGFACE-SETUP.md) - Optional features
-4. Docker: [../README.md](../README.md#docker) - Containerization
+**Deploy or Configure?**
+1. Docker: [Docker Setup Guide](user-guides/DOCKER-SETUP.md)
+2. Reminders: [Reminder System Guide](user-guides/05-REMINDER-SYSTEM.md)
+3. Proxy: [Proxy Setup Guide](user-guides/04-PROXY-SETUP.md)
 
 ---
 
-## 🔍 By Use Case
+## 📚 Documentation by Category
 
-### Creating a New Command
+### 👥 User Guides (How-To)
 
-**Sequential Steps:**
-1. Read: [guides/01-CREATING-COMMANDS.md](guides/01-CREATING-COMMANDS.md#creating-your-first-command)
-2. Reference: [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md#utility-modules)
-3. Review: [guides/01-CREATING-COMMANDS.md](guides/01-CREATING-COMMANDS.md#common-command-patterns)
-4. Copy: Template from [guides/01-CREATING-COMMANDS.md](guides/01-CREATING-COMMANDS.md#step-1-create-the-command-file)
-5. Test: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#writing-new-tests)
-6. Check: [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md#best-practices)
+Step-by-step guides for common tasks:
 
-**Related Sections:**
-- Command structure: [guides/01-CREATING-COMMANDS.md](guides/01-CREATING-COMMANDS.md#command-structure-deep-dive)
-- Database access: [guides/01-CREATING-COMMANDS.md](guides/01-CREATING-COMMANDS.md#working-with-the-database)
-- Discord integration: [guides/01-CREATING-COMMANDS.md](guides/01-CREATING-COMMANDS.md#working-with-discordjs)
-- Error handling: [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md#error-handling)
-- Testing: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md)
-
-### Learning the Architecture
-
-**Structured Path:**
-1. Overview: [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md#overview)
-2. Patterns: [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md#design-patterns)
-3. Utilities: [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md#utility-modules)
-4. Examples: [reference/REFACTORING-GUIDE.md](reference/REFACTORING-GUIDE.md)
-5. Benefits: [project/IMPROVEMENTS.md](project/IMPROVEMENTS.md)
-
-**Key Concepts:**
-- Command Base Class: [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md#command-base-class-command-basejs)
-- Options Builder: [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md#command-options-builder-command-optionsjs)
-- Response Helpers: [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md#response-helpers-response-helpersjs)
-
-### Writing and Running Tests
-
-**Quick Start:**
-1. Overview: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#quick-start)
-2. Run tests: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#run-all-tests)
-3. Understand: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#test-philosophy)
-
-**Detailed Guide:**
-1. Organization: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#test-organization)
-2. Write tests: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#writing-new-tests)
-3. Patterns: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#testing-patterns)
-4. Debug: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#debugging-tests)
-
-**Quick Reference:**
-- Commands: [reference/TDD-QUICK-REFERENCE.md](reference/TDD-QUICK-REFERENCE.md)
-- Results: [project/TDD-TEST-RESULTS.md](project/TDD-TEST-RESULTS.md)
-
-### Troubleshooting Issues
-
-**Command Problems:**
-- Not showing in Discord: [guides/01-CREATING-COMMANDS.md](guides/01-CREATING-COMMANDS.md#issue-command-not-showing-up-in-discord)
-- Module not found: [guides/01-CREATING-COMMANDS.md](guides/01-CREATING-COMMANDS.md#issue-cannot-find-module-error)
-- Prefix command fails: [guides/01-CREATING-COMMANDS.md](guides/01-CREATING-COMMANDS.md#issue-slash-command-works-but-prefix-command-doesnt)
-- Database error: [guides/01-CREATING-COMMANDS.md](guides/01-CREATING-COMMANDS.md#issue-database-error-when-adding-command)
-
-**Architecture Questions:**
-- Error handling: [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md#error-handling)
-- Performance: [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md#performance-considerations)
-- Design decisions: [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md#design-patterns)
-- Troubleshooting: [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md#troubleshooting)
-
-**Testing Issues:**
-- Tests failing: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#common-testing-issues)
-- Timeout errors: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#issue-test-times-out)
-- Module errors: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#issue-cannot-find-module-error-in-test)
-- Debugging: [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md#debugging-tests)
+| Guide | Topic | Time |
+|-------|-------|------|
+| [01-CREATING-COMMANDS.md](user-guides/01-CREATING-COMMANDS.md) | Create new commands | 15 min |
+| [02-TESTING-GUIDE.md](user-guides/02-TESTING-GUIDE.md) | Write tests (TDD) | 20 min |
+| [03-HUGGINGFACE-SETUP.md](user-guides/03-HUGGINGFACE-SETUP.md) | Enable AI poem generation | 10 min |
+| [04-PROXY-SETUP.md](user-guides/04-PROXY-SETUP.md) | Configure webhook proxy | 15 min |
+| [05-REMINDER-SYSTEM.md](user-guides/05-REMINDER-SYSTEM.md) | Use reminder system | 10 min |
+| [DOCKER-SETUP.md](user-guides/DOCKER-SETUP.md) | Run with Docker | 10 min |
+| [DOCKER-WORKFLOW.md](user-guides/DOCKER-WORKFLOW.md) | Docker development workflow | 10 min |
+| [OPT-IN-SYSTEM.md](user-guides/OPT-IN-SYSTEM.md) | User opt-in communication | 10 min |
+| [RESOLUTION-HELPERS-GUIDE.md](user-guides/RESOLUTION-HELPERS-GUIDE.md) | Use response helpers | 10 min |
+| [SLASH-COMMANDS-TROUBLESHOOTING.md](user-guides/SLASH-COMMANDS-TROUBLESHOOTING.md) | Fix slash command issues | 20 min |
 
 ---
 
-## 📖 Documentation Map
+### 👨‍💼 Admin Guides
 
-### Quick Reference Links
+For server administrators and bot operators:
 
-**Command Development:**
-- Creating commands: [guides/01-CREATING-COMMANDS.md#creating-your-first-command](guides/01-CREATING-COMMANDS.md#creating-your-first-command)
-- Command patterns: [guides/01-CREATING-COMMANDS.md#common-command-patterns](guides/01-CREATING-COMMANDS.md#common-command-patterns)
-- Best practices: [guides/01-CREATING-COMMANDS.md#best-practices](guides/01-CREATING-COMMANDS.md#best-practices)
-
-**Architecture & Design:**
-- Design patterns: [reference/ARCHITECTURE.md#design-patterns](reference/ARCHITECTURE.md#design-patterns)
-- Utility modules: [reference/ARCHITECTURE.md#utility-modules](reference/ARCHITECTURE.md#utility-modules)
-- Code organization: [reference/ARCHITECTURE.md#code-organization](reference/ARCHITECTURE.md#code-organization)
-
-**Testing & Quality:**
-- Test philosophy: [guides/02-TESTING-GUIDE.md#test-philosophy](guides/02-TESTING-GUIDE.md#test-philosophy)
-- Writing tests: [guides/02-TESTING-GUIDE.md#writing-new-tests](guides/02-TESTING-GUIDE.md#writing-new-tests)
-- Test patterns: [guides/02-TESTING-GUIDE.md#testing-patterns](guides/02-TESTING-GUIDE.md#testing-patterns)
-- Test coverage: [TEST-COVERAGE-OVERVIEW.md](TEST-COVERAGE-OVERVIEW.md)
-- Latest results: [TEST-SUMMARY-LATEST.md](TEST-SUMMARY-LATEST.md)
-
-**Project Information:**
-- Refactoring summary: [project/REFACTORING-COMPLETE.md#summary](project/REFACTORING-COMPLETE.md#summary)
-- Code metrics: [project/REFACTORING-COMPLETE.md#code-metrics](project/REFACTORING-COMPLETE.md#code-metrics)
-- Improvements: [project/IMPROVEMENTS.md](project/IMPROVEMENTS.md)
+| Guide | Topic | Time |
+|-------|-------|------|
+| [06-ADMIN-COMMUNICATION-COMMANDS.md](admin-guides/06-ADMIN-COMMUNICATION-COMMANDS.md) | Admin commands | 15 min |
+| [AUTOMATIC-REGISTRATION-QUICK-START.md](admin-guides/AUTOMATIC-REGISTRATION-QUICK-START.md) | Auto-register commands | 5 min |
 
 ---
 
-## 🏆 Document Relationships
+### 🏗️ Architecture & Design
 
-### Documents That Reference Each Other
+Deep dives into system design:
 
-**Guides Reference Reference Docs:**
-- Guides → Architecture: Examples of patterns
-- Guides → Quick Reference: Testing commands
-- Guides → Refactoring Guide: Code examples
-
-**Reference Docs Reference Project Info:**
-- Architecture → Improvements: Why changes were made
-- Refactoring Guide → Refactoring Complete: Detailed summary
-- Testing Guide → Test Results: Current status
-
-**Project Info Reference Each Other:**
-- Action Plan → Improvements: What was improved
-- Refactoring Complete → Action Plan: How it was executed
-- Test Results → Testing Guide: How tests work
+| Document | Topic |
+|----------|-------|
+| [ARCHITECTURE-OVERVIEW.md](architecture/ARCHITECTURE-OVERVIEW.md) | System design and patterns |
+| [FOLDER-STRUCTURE-ANALYSIS.md](architecture/FOLDER-STRUCTURE-ANALYSIS.md) | Project folder organization |
 
 ---
 
-## 📊 Statistics
+### 📖 Reference Documentation
 
-### Documentation Breadth
-- **Total documents:** 12 markdown files
-- **Total lines:** ~4,000+ lines
-- **Code examples:** 100+
-- **Sections:** 120+
-- **Cross-references:** 320+
+Technical reference and API docs:
 
-### Documentation by Category
-- **Guides:** 3 files, ~1,200 lines (30%)
-- **Reference:** 3 files, ~600 lines (15%)
-- **Project Info:** 4 files, ~800 lines (20%)
-- **Test Documentation:** 2 files, ~1,400 lines (35%)
-- **Navigation:** 320+ cross-references
+**Permission System (Latest)**
+| Document | Purpose |
+|----------|---------|
+| [PHASE-3-PERMISSION-ENFORCEMENT.md](reference/PHASE-3-PERMISSION-ENFORCEMENT.md) | Permission enforcement implementation |
+| [ROLE-BASED-PERMISSIONS-COMPLETE.md](reference/ROLE-BASED-PERMISSIONS-COMPLETE.md) | Complete permission system overview |
 
-### Content Coverage
-- ✅ New developer onboarding
-- ✅ Command creation guide
-- ✅ Testing & TDD
-- ✅ Architecture & design
-- ✅ Best practices
-- ✅ Troubleshooting
-- ✅ API reference
-- ✅ Performance tips
-- ✅ Code examples
-- ✅ Project history
+**Database & Configuration**
+| Document | Purpose |
+|----------|---------|
+| [DATABASE-MIGRATIONS.md](reference/DATABASE-MIGRATIONS.md) | Database schema changes |
+| [DATABASE-OPTIMIZATION.md](reference/DATABASE-OPTIMIZATION.md) | Database performance tuning |
+| [DATABASE-MIGRATION-FIXES.md](reference/DATABASE-MIGRATION-FIXES.md) | Migration troubleshooting |
 
----
+**Permissions Deep Dive**
+| Document | Purpose |
+|----------|---------|
+| [PERMISSION-MODEL.md](reference/PERMISSION-MODEL.md) | Permission system design |
+| [PERMISSIONS-INDEX.md](reference/PERMISSIONS-INDEX.md) | Permission reference index |
+| [PERMISSIONS-MATRIX.md](reference/PERMISSIONS-MATRIX.md) | Permission matrix reference |
+| [PERMISSIONS-OVERVIEW.md](reference/PERMISSIONS-OVERVIEW.md) | Permission system overview |
+| [PERMISSIONS-QUICK-REFERENCE.md](reference/PERMISSIONS-QUICK-REFERENCE.md) | Quick permission reference |
 
-## 🔗 Navigation
-
-**Main Entry Points:**
-- [../README.md](../README.md) - Project README (main)
-- [README.md](README.md) - Docs overview (this section)
-- [INDEX.md](INDEX.md) - You are here
-
-**Quick Paths:**
-- New Developer? → [guides/01-CREATING-COMMANDS.md](guides/01-CREATING-COMMANDS.md)
-- Want to Code? → [guides/01-CREATING-COMMANDS.md#creating-your-first-command](guides/01-CREATING-COMMANDS.md#creating-your-first-command)
-- Need to Test? → [guides/02-TESTING-GUIDE.md](guides/02-TESTING-GUIDE.md)
-- Want Architecture? → [reference/ARCHITECTURE.md](reference/ARCHITECTURE.md)
-- Project Metrics? → [project/REFACTORING-COMPLETE.md](project/REFACTORING-COMPLETE.md)
+**Security & Operations**
+| Document | Purpose |
+|----------|---------|
+| [SECURITY.md](reference/SECURITY.md) | Security best practices |
+| [FEATURE-MODULES.md](reference/FEATURE-MODULES.md) | Feature module reference |
+| [QUICK-REFERENCE.md](reference/QUICK-REFERENCE.md) | Quick reference guide |
 
 ---
 
-## ✨ Features
+### 🎯 Best Practices
 
-- ✅ 12 comprehensive documents
-- ✅ Organized into 4 categories
-- ✅ 320+ cross-references
-- ✅ Multiple entry points
-- ✅ Role-based navigation
-- ✅ Use-case organized
-- ✅ Search-friendly
-- ✅ Quick reference guides
-- ✅ Code examples throughout
-- ✅ Troubleshooting sections
-- ✅ **Comprehensive test coverage analysis**
-- ✅ **Auto-generated test summaries**
+Recommended practices and standards:
+
+| Document | Topic |
+|----------|-------|
+| [CI-CD-QUICK-START.md](best-practices/CI-CD-QUICK-START.md) | CI/CD setup quick start |
+| [CI-CD-SETUP.md](best-practices/CI-CD-SETUP.md) | Complete CI/CD setup |
+| [CODE-QUALITY.md](best-practices/CODE-QUALITY.md) | Code quality standards |
+| [COVERAGE-SETUP.md](best-practices/COVERAGE-SETUP.md) | Test coverage setup |
+| [ERROR-HANDLING.md](best-practices/ERROR-HANDLING.md) | Error handling patterns |
+| [GITHUB-ACTIONS-GUIDE.md](best-practices/GITHUB-ACTIONS-GUIDE.md) | GitHub Actions setup |
+| [GITHUB-ACTIONS.md](best-practices/GITHUB-ACTIONS.md) | GitHub Actions reference |
+| [PERFORMANCE-MONITORING.md](best-practices/PERFORMANCE-MONITORING.md) | Performance monitoring |
+| [SECURITY-HARDENING.md](best-practices/SECURITY-HARDENING.md) | Security hardening guide |
+| [SEMANTIC-RELEASE-SETUP.md](best-practices/SEMANTIC-RELEASE-SETUP.md) | Semantic versioning setup |
+| [STABILITY-CHECKLIST.md](best-practices/STABILITY-CHECKLIST.md) | Stability verification |
+| [TEST-COVERAGE-OVERVIEW.md](best-practices/TEST-COVERAGE-OVERVIEW.md) | Test coverage analysis |
+| [TEST-SUMMARY-LATEST.md](best-practices/TEST-SUMMARY-LATEST.md) | Latest test results |
 
 ---
 
-**Last Updated:** December 2025  
-**Status:** Complete and Current
+### 🎓 Tutorials
+
+In-depth tutorials and learning materials:
+
+Currently available in `tutorials/` directory.
+
+---
+
+### 🔌 API Documentation
+
+API reference and endpoint documentation:
+
+Currently available in `api/` directory.
+
+---
+
+## 🎯 Find What You Need
+
+### By Role
+
+**👨‍💻 Developer**
+- Creating commands? → [01-CREATING-COMMANDS.md](user-guides/01-CREATING-COMMANDS.md)
+- Writing tests? → [02-TESTING-GUIDE.md](user-guides/02-TESTING-GUIDE.md)
+- Understanding architecture? → [ARCHITECTURE-OVERVIEW.md](architecture/ARCHITECTURE-OVERVIEW.md)
+
+**🛠️ DevOps/Operator**
+- Docker setup? → [DOCKER-SETUP.md](user-guides/DOCKER-SETUP.md)
+- CI/CD? → [CI-CD-SETUP.md](best-practices/CI-CD-SETUP.md)
+- Monitoring? → [PERFORMANCE-MONITORING.md](best-practices/PERFORMANCE-MONITORING.md)
+
+**🔐 Administrator**
+- Admin commands? → [06-ADMIN-COMMUNICATION-COMMANDS.md](admin-guides/06-ADMIN-COMMUNICATION-COMMANDS.md)
+- Permissions? → [ROLE-BASED-PERMISSIONS-COMPLETE.md](reference/ROLE-BASED-PERMISSIONS-COMPLETE.md)
+- Security? → [SECURITY-HARDENING.md](best-practices/SECURITY-HARDENING.md)
+
+**📚 New Team Member**
+1. Project overview → Project root [README.md](../README.md)
+2. Architecture → [ARCHITECTURE-OVERVIEW.md](architecture/ARCHITECTURE-OVERVIEW.md)
+3. Command creation → [01-CREATING-COMMANDS.md](user-guides/01-CREATING-COMMANDS.md)
+4. Testing → [02-TESTING-GUIDE.md](user-guides/02-TESTING-GUIDE.md)
+5. Troubleshooting → [SLASH-COMMANDS-TROUBLESHOOTING.md](user-guides/SLASH-COMMANDS-TROUBLESHOOTING.md)
+
+### By Topic
+
+**Permission System**
+- Getting started → [ROLE-BASED-PERMISSIONS-COMPLETE.md](reference/ROLE-BASED-PERMISSIONS-COMPLETE.md)
+- Implementation details → [PHASE-3-PERMISSION-ENFORCEMENT.md](reference/PHASE-3-PERMISSION-ENFORCEMENT.md)
+- Quick reference → [PERMISSIONS-QUICK-REFERENCE.md](reference/PERMISSIONS-QUICK-REFERENCE.md)
+
+**Commands & Slash Commands**
+- Creating → [01-CREATING-COMMANDS.md](user-guides/01-CREATING-COMMANDS.md)
+- Troubleshooting → [SLASH-COMMANDS-TROUBLESHOOTING.md](user-guides/SLASH-COMMANDS-TROUBLESHOOTING.md)
+
+**Database**
+- Migrations → [DATABASE-MIGRATIONS.md](reference/DATABASE-MIGRATIONS.md)
+- Optimization → [DATABASE-OPTIMIZATION.md](reference/DATABASE-OPTIMIZATION.md)
+
+**Deployment**
+- Docker → [DOCKER-SETUP.md](user-guides/DOCKER-SETUP.md)
+- CI/CD → [CI-CD-SETUP.md](best-practices/CI-CD-SETUP.md)
+
+**Testing**
+- Getting started → [02-TESTING-GUIDE.md](user-guides/02-TESTING-GUIDE.md)
+- Coverage setup → [COVERAGE-SETUP.md](best-practices/COVERAGE-SETUP.md)
+
+---
+
+## 📋 Directory Structure
+
+```
+docs/
+├── user-guides/              # Step-by-step guides for developers
+│   ├── 01-CREATING-COMMANDS.md
+│   ├── 02-TESTING-GUIDE.md
+│   ├── 03-HUGGINGFACE-SETUP.md
+│   ├── 04-PROXY-SETUP.md
+│   ├── 05-REMINDER-SYSTEM.md
+│   ├── DOCKER-SETUP.md
+│   ├── DOCKER-WORKFLOW.md
+│   ├── OPT-IN-SYSTEM.md
+│   ├── RESOLUTION-HELPERS-GUIDE.md
+│   └── SLASH-COMMANDS-TROUBLESHOOTING.md
+├── admin-guides/             # Admin and operator guides
+│   ├── 06-ADMIN-COMMUNICATION-COMMANDS.md
+│   └── AUTOMATIC-REGISTRATION-QUICK-START.md
+├── architecture/             # System design and structure
+│   ├── ARCHITECTURE-OVERVIEW.md
+│   └── FOLDER-STRUCTURE-ANALYSIS.md
+├── best-practices/           # Recommended practices
+│   ├── CI-CD-QUICK-START.md
+│   ├── CODE-QUALITY.md
+│   ├── ERROR-HANDLING.md
+│   ├── SECURITY-HARDENING.md
+│   ├── STABILITY-CHECKLIST.md
+│   └── ... (13 total)
+├── reference/                # Technical reference
+│   ├── PHASE-3-PERMISSION-ENFORCEMENT.md
+│   ├── ROLE-BASED-PERMISSIONS-COMPLETE.md
+│   ├── DATABASE-MIGRATIONS.md
+│   ├── PERMISSIONS-QUICK-REFERENCE.md
+│   ├── SECURITY.md
+│   └── ... (18 total)
+├── tutorials/                # In-depth learning materials
+├── api/                      # API documentation
+├── archived/                 # Historical and obsolete docs
+│   └── ... (20+ outdated files)
+└── INDEX.md                  # This file
+```
+
+---
+
+## 🔗 External Resources
+
+- **[Project README](../README.md)** - Project overview and quick start
+- **[Copilot Instructions](./.github/copilot-instructions.md)** - AI assistant guidelines
+- **[Contributing Guide](../CONTRIBUTING.md)** - Contribution standards
+
+---
+
+## 🆘 Troubleshooting
+
+**Can't find what you're looking for?**
+
+1. Check the [Directory Structure](#-directory-structure) above
+2. Use Ctrl+F to search this file
+3. Check [archived/](archived/) for historical documentation
+4. Review the [Troubleshooting Guide](user-guides/SLASH-COMMANDS-TROUBLESHOOTING.md)
+
+**Links not working?**
+- All links are relative to the `docs/` directory
+- For links outside docs/, use `../` prefix
+
+---
+
+## 📈 Documentation Status
+
+- **Last Updated:** January 3, 2026
+- **Total Files:** 50+ active documents
+- **Archived Files:** 20+ historical documents
+- **Coverage:** Comprehensive (all major systems)
+
+---
+
+## 🤝 Contributing to Docs
+
+Found a typo or outdated information?
+1. Check if the file is in `archived/` (if so, it's intentionally archived)
+2. Update the document directly
+3. Verify all links still work
+4. Keep inline with documentation style and structure

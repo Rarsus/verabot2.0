@@ -55,7 +55,7 @@ npm start
 - **Automatic delivery** via DM or channel announcements
 - **Notification history** and retry logic
 
-[📖 Read the Reminder System Guide](docs/guides/05-REMINDER-SYSTEM.md)
+[📖 Read the Reminder System Guide](docs/user-guides/05-REMINDER-SYSTEM.md)
 
 ### 💬 Bi-Directional Message Proxy
 - **Forward messages** from Discord channels to external webhooks
@@ -66,7 +66,7 @@ npm start
 - **Automatic retry logic** for failed webhook requests
 - **Channel-specific monitoring** for fine-grained control
 
-[📖 Read the Proxy Setup Guide](docs/guides/04-PROXY-SETUP.md)
+[📖 Read the Proxy Setup Guide](docs/user-guides/04-PROXY-SETUP.md)
 
 ### 🤖 AI Integration
 - **AI poem generation** using HuggingFace API
@@ -98,30 +98,24 @@ Features include:
 
 ### 📁 Documentation Files
 
-Complete documentation is also organized in the [docs/](docs/) folder:
+Complete documentation is organized in the [docs/](docs/) folder. 
 
-### 🚀 Getting Started
-- [docs/README.md](docs/README.md) - Documentation overview
-- [docs/INDEX.md](docs/INDEX.md) - Complete documentation index
+**[📖 Start with the Documentation Index](docs/INDEX.md)** for complete navigation.
 
-### 📚 Guides (How-To)
-- [docs/guides/01-CREATING-COMMANDS.md](docs/guides/01-CREATING-COMMANDS.md) - Create new commands
-- [docs/guides/02-TESTING-GUIDE.md](docs/guides/02-TESTING-GUIDE.md) - Comprehensive testing with TDD
-- [docs/guides/03-HUGGINGFACE-SETUP.md](docs/guides/03-HUGGINGFACE-SETUP.md) - AI poem generation setup
-- [docs/guides/04-PROXY-SETUP.md](docs/guides/04-PROXY-SETUP.md) - **Webhook proxy configuration and security**
-- [docs/guides/05-REMINDER-SYSTEM.md](docs/guides/05-REMINDER-SYSTEM.md) - **Reminder Management System guide**
+### 🚀 Quick Links
+- **New developer?** → [docs/user-guides/01-CREATING-COMMANDS.md](docs/user-guides/01-CREATING-COMMANDS.md)
+- **Set up Docker?** → [docs/user-guides/DOCKER-SETUP.md](docs/user-guides/DOCKER-SETUP.md)
+- **Learn architecture?** → [docs/architecture/ARCHITECTURE-OVERVIEW.md](docs/architecture/ARCHITECTURE-OVERVIEW.md)
+- **Admin commands?** → [docs/admin-guides/06-ADMIN-COMMUNICATION-COMMANDS.md](docs/admin-guides/06-ADMIN-COMMUNICATION-COMMANDS.md)
+- **Permission system?** → [docs/reference/ROLE-BASED-PERMISSIONS-COMPLETE.md](docs/reference/ROLE-BASED-PERMISSIONS-COMPLETE.md)
 
-### 🏗️ Reference (Deep Dives)
-- [docs/reference/ARCHITECTURE.md](docs/reference/ARCHITECTURE.md) - System design and patterns
-- [docs/reference/REFACTORING-GUIDE.md](docs/reference/REFACTORING-GUIDE.md) - Code examples before/after
-- [docs/reference/TDD-QUICK-REFERENCE.md](docs/reference/TDD-QUICK-REFERENCE.md) - Testing quick reference
-
-### 📋 Project Information (Background)
-- [docs/project/REFACTORING-COMPLETE.md](docs/project/REFACTORING-COMPLETE.md) - Refactoring summary with metrics
-- [docs/project/ACTION-PLAN.md](docs/project/ACTION-PLAN.md) - Implementation strategy
-- [docs/project/IMPROVEMENTS.md](docs/project/IMPROVEMENTS.md) - Technical improvements
-- [docs/project/TDD-TEST-RESULTS.md](docs/project/TDD-TEST-RESULTS.md) - Test analysis and coverage
-- [docs/TEST-COVERAGE-OVERVIEW.md](docs/TEST-COVERAGE-OVERVIEW.md) - **Comprehensive test coverage analysis**
+### 📚 All Guides
+- [User Guides](docs/user-guides/) - Step-by-step how-to guides
+- [Admin Guides](docs/admin-guides/) - Admin and operator documentation
+- [Architecture](docs/architecture/) - System design and structure
+- [Best Practices](docs/best-practices/) - Recommended patterns and standards
+- [Reference](docs/reference/) - Technical reference documentation
+- [Tutorials](docs/tutorials/) - In-depth learning materials
 
 ---
 
