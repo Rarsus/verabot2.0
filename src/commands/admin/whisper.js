@@ -7,6 +7,7 @@ const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
 const { checkAdminPermission } = require('../../utils/proxy-helpers');
+const CommunicationService = require('../../services/CommunicationService');
 
 const { data, options } = buildCommandOptions(
   'whisper',
@@ -64,16 +65,62 @@ class WhisperCommand extends Command {
 
   async resolveIndividualUser(interaction, target) {
     try {
-      const user = await interaction.client.users.fetch(target);
-      return { users: [user], error: null };
-    } catch {
+      // Handle mention format: <@123456>
+      const mentionMatch = target.match(/<@!?(\d+)>/);
+      if (mentionMatch) {
+        const userId = mentionMatch[1];
+        try {
+          const user = await interaction.client.users.fetch(userId);
+          return { users: [user], error: null };
+        } catch {
+          return { users: [], error: `${target} (user not found)` };
+        }
+      }
+
+      // Try direct snowflake ID first
+      if (/^\d+$/.test(target)) {
+        try {
+          const user = await interaction.client.users.fetch(target);
+          return { users: [user], error: null };
+        } catch {
+          return { users: [], error: `${target} (user not found)` };
+        }
+      }
+
+      // Try to resolve by username from guild members
+      try {
+        const members = await interaction.guild.members.fetch();
+        const member = members.find(m =>
+          m.user.username === target ||
+          m.user.tag === target ||
+          m.displayName === target ||
+          m.nickname === target
+        );
+
+        if (member) {
+          return { users: [member.user], error: null };
+        }
+      } catch {
+        // Continue to next attempt
+      }
+
+      // If nothing worked, return error
       return { users: [], error: `${target} (user not found)` };
+    } catch (err) {
+      return { users: [], error: `${target} (${err.message})` };
     }
   }
 
   async sendDMToUsers(users, messageContent, results) {
     for (const user of users) {
       try {
+        // Check if user has opted in to receive DMs
+        const optedIn = await CommunicationService.isOptedIn(user.id);
+        if (!optedIn) {
+          results.failed.push(`${user.username} (opted out of DMs)`);
+          continue;
+        }
+
         await user.send(messageContent);
         if (!results.success.includes(user.id)) {
           results.success.push(user.username);
@@ -85,6 +132,9 @@ class WhisperCommand extends Command {
   }
 
   async executeInteraction(interaction) {
+    // Defer the interaction immediately to avoid timeout (3 second Discord limit)
+    await interaction.deferReply({ ephemeral: true });
+
     try {
       // Check admin permission
       const isAdmin = checkAdminPermission(interaction);

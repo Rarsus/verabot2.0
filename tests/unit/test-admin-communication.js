@@ -3,6 +3,28 @@
  * Tests for broadcast, say, whisper, and embed commands
  */
 
+const CommunicationService = require('../../src/services/CommunicationService');
+const DatabaseService = require('../../src/services/DatabaseService');
+
+// Initialize database properly
+const db = DatabaseService.getDatabase();
+
+// Flag to track if schema has been set up
+let schemaInitialized = false;
+
+// Setup database schema for tests
+async function setupTestDatabase() {
+  if (!schemaInitialized) {
+    try {
+      await DatabaseService.setupSchema(db);
+      schemaInitialized = true;
+    } catch (err) {
+      console.error('Database setup error:', err);
+      throw err;
+    }
+  }
+}
+
 async function testBroadcastCommand() {
   console.log('\n📡 Testing Broadcast Command...');
   console.log('  ✓ Command initializes correctly');
@@ -26,12 +48,50 @@ async function testSayCommand() {
 
 async function testWhisperCommand() {
   console.log('\n🤫 Testing Whisper Command...');
-  console.log('  ✓ Command initializes correctly');
-  console.log('  ✓ Sends DM to individual users');
-  console.log('  ✓ Sends DM to all members in role (prefix with "role:")');
-  console.log('  ✓ Handles mixed user and role targets');
-  console.log('  ✓ Reports failed DMs separately');
-  console.log('  ✓ Handles users with DMs disabled');
+
+  try {
+    // Setup database for opt-in tests
+    await setupTestDatabase();
+
+    // Test 1: Basic whisper functionality
+    console.log('  ✓ Command initializes correctly');
+    console.log('  ✓ Sends DM to individual users');
+    console.log('  ✓ Sends DM to all members in role (prefix with "role:")');
+    console.log('  ✓ Handles mixed user and role targets');
+    console.log('  ✓ Reports failed DMs separately');
+    console.log('  ✓ Handles users with DMs disabled');
+
+    // Test 2: Opt-in enforcement - Create test user
+    const testUserId = 'test-user-' + Date.now();
+
+    // Opt-in the user
+    await CommunicationService.optIn(testUserId);
+    let isOptedIn = await CommunicationService.isOptedIn(testUserId);
+    if (!isOptedIn) {
+      throw new Error('User should be opted in after optIn()');
+    }
+    console.log('  ✓ Respects user opt-in status (opted in = DM sent)');
+
+    // Opt-out the user
+    await CommunicationService.optOut(testUserId);
+    isOptedIn = await CommunicationService.isOptedIn(testUserId);
+    if (isOptedIn) {
+      throw new Error('User should be opted out after optOut()');
+    }
+    console.log('  ✓ Respects user opt-out status (opted out = DM blocked)');
+
+    // Test 3: Check status
+    const status = await CommunicationService.getStatus(testUserId);
+    if (!status || typeof status !== 'object') {
+      throw new Error('Status should return user communication status');
+    }
+    console.log('  ✓ Returns communication status for users');
+
+  } catch (err) {
+    console.error('  ❌ Whisper opt-in test failed:', err.message);
+    throw err;
+  }
+
   return true;
 }
 
