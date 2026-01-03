@@ -1,7 +1,7 @@
 # VeraBot2.0
 
-![Version](https://img.shields.io/badge/version-v2.4.0-blue)
-![Tests](https://img.shields.io/badge/tests-456%2F456%20passing-brightgreen)
+![Version](https://img.shields.io/badge/version-v2.5.0-blue)
+![Tests](https://img.shields.io/badge/tests-503%2F503%20passing-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-100%25-success)
 ![Node Version](https://img.shields.io/badge/node-%3E%3D18-green)
 
