@@ -3,7 +3,32 @@ const path = require('path');
 const fs = require('fs');
 const { logError, ERROR_LEVELS } = require('../middleware/errorHandler');
 
+// Guild-aware database services (Phase 2)
+const GuildAwareDatabaseService = require('./GuildAwareDatabaseService');
+const guildManager = require('./GuildDatabaseManager');
+
 const dbPath = path.join(__dirname, '..', '..', 'data', 'db', 'quotes.db');
+
+/**
+ * GUILD-AWARE API COMPATIBILITY LAYER
+ *
+ * Detects if a call is using the new guild-aware API and routes accordingly.
+ * Old API: db.addQuote(text, author)
+ * New API: db.addQuote(guildId, text, author)
+ *
+ * Detection: If first parameter is a Discord ID (string of 18-20 digits),
+ * treat as guild-aware call and route to GuildAwareDatabaseService.
+ */
+
+/**
+ * Check if a value looks like a Discord guild ID (18-20 digit string)
+ * @private
+ * @param {*} val - Value to check
+ * @returns {boolean} True if looks like Discord ID
+ */
+function isDiscordId(val) {
+  return typeof val === 'string' && /^\d{18,20}$/.test(val);
+}
 
 /**
  * Initialize SQLite database
@@ -142,12 +167,32 @@ function getDatabase() {
 }
 
 /**
- * Add a quote to the database
- * @param {string} text - Quote text
- * @param {string} author - Quote author
+ * Add a quote - supports both legacy and guild-aware API
+ *
+ * Legacy API (shared database):
+ *   addQuote(text, author)
+ *
+ * Guild-Aware API (per-guild database):
+ *   addQuote(guildId, text, author)
+ *
+ * @param {string} textOrGuildId - Quote text (legacy) or guild ID (guild-aware)
+ * @param {string} authorOrText - Author (legacy) or quote text (guild-aware)
+ * @param {string} optionalAuthor - Author (guild-aware only)
  * @returns {Promise<number>} Quote ID
  */
-function addQuote(text, author = 'Anonymous') {
+function addQuote(textOrGuildId, authorOrText, optionalAuthor) {
+  // Detect if using guild-aware API
+  if (isDiscordId(textOrGuildId)) {
+    const guildId = textOrGuildId;
+    const text = authorOrText;
+    const author = optionalAuthor || 'Anonymous';
+    return GuildAwareDatabaseService.addQuote(guildId, text, author);
+  }
+
+  // Legacy API - use shared database
+  const text = textOrGuildId;
+  const author = authorOrText || 'Anonymous';
+
   return new Promise((resolve, reject) => {
     const database = getDatabase();
     const addedAt = new Date().toISOString();
@@ -168,10 +213,16 @@ function addQuote(text, author = 'Anonymous') {
 }
 
 /**
- * Get all quotes
+ * Get all quotes - supports both legacy and guild-aware API
+ * @param {string} guildIdOrNothing - Guild ID (guild-aware) or omit for legacy
  * @returns {Promise<Array>} Array of quotes
  */
-function getAllQuotes() {
+function getAllQuotes(guildIdOrNothing) {
+  // Detect if using guild-aware API
+  if (isDiscordId(guildIdOrNothing)) {
+    return GuildAwareDatabaseService.getAllQuotes(guildIdOrNothing);
+  }
+
   return new Promise((resolve, reject) => {
     const database = getDatabase();
 
@@ -190,13 +241,22 @@ function getAllQuotes() {
 }
 
 /**
- * Get quote by ID
- * @param {number} id - Quote ID
+ * Get quote by ID - supports both legacy and guild-aware API
+ * @param {number|string} idOrGuildId - Quote ID (legacy) or guild ID (guild-aware)
+ * @param {number} optionalId - Quote ID (guild-aware only)
  * @returns {Promise<Object|null>} Quote object or null
  */
-function getQuoteById(id) {
+function getQuoteById(idOrGuildId, optionalId) {
+  // Detect if using guild-aware API
+  if (isDiscordId(idOrGuildId)) {
+    const guildId = idOrGuildId;
+    const id = optionalId;
+    return GuildAwareDatabaseService.getQuoteById(guildId, id);
+  }
+
   return new Promise((resolve, reject) => {
     const database = getDatabase();
+    const id = idOrGuildId;
 
     database.get(
       'SELECT id, text, author, addedAt FROM quotes WHERE id = ?',
@@ -212,6 +272,7 @@ function getQuoteById(id) {
     );
   });
 }
+
 
 /**
  * Search quotes by keyword
@@ -360,6 +421,10 @@ module.exports = {
   deleteProxyConfig,
   getAllProxyConfig
 };
+
+// Enable guild-aware API wrapper
+const { enableGuildAwareAPI } = require('./DatabaseServiceGuildAwareWrapper');
+enableGuildAwareAPI(module.exports);
 
 /**
  * Rate a quote

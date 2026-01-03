@@ -101,11 +101,12 @@ class UpdateQuoteCommand extends Command {
       return;
     }
 
+    const guildId = interaction.guildId;
     const id = interaction.options.getInteger('id');
     const newText = interaction.options.getString('quote');
     const newAuthor = interaction.options.getString('author');
 
-    const quote = await getQuoteById(id);
+    const quote = await getQuoteById(guildId, id);
     if (!quote) {
       await sendError(interaction, `Quote #${id} not found`);
       return;
@@ -127,7 +128,7 @@ class UpdateQuoteCommand extends Command {
       author = authorValidation.sanitized;
     }
 
-    await updateQuote(id, quoteValidation.sanitized, author);
+    await updateQuote(guildId, id, quoteValidation.sanitized, author);
     await sendSuccess(interaction, `Quote #${id} updated successfully!`);
   }
 }

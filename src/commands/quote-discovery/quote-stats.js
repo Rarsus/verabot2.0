@@ -68,7 +68,8 @@ class QuoteStatsCommand extends Command {
 
   async executeInteraction(interaction) {
     await interaction.deferReply();
-    const quotes = await getAllQuotes();
+    const guildId = interaction.guildId;
+    const quotes = await getAllQuotes(guildId);
     if (!quotes || quotes.length === 0) {
       await sendError(interaction, 'No quotes in database');
       return;

@@ -5,6 +5,7 @@
 
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
+const RolePermissionService = require('../../services/RolePermissionService');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
 const { checkAdminPermission } = require('../../utils/proxy-helpers');
 const CommunicationService = require('../../services/CommunicationService');
@@ -31,7 +32,16 @@ const { data, options } = buildCommandOptions(
 
 class WhisperCommand extends Command {
   constructor() {
-    super({ name: 'whisper', description: 'Send DMs from the bot to users or roles (Admin only)', data, options });
+    super({
+      name: 'whisper',
+      description: 'Send DMs from the bot to users or roles (Admin only)',
+      data,
+      options,
+      permissions: {
+        minTier: 3,      // Administrator tier
+        visible: false   // Hidden from non-admins
+      }
+    });
   }
 
   async execute(message, _args) {
@@ -132,15 +142,24 @@ class WhisperCommand extends Command {
   }
 
   async executeInteraction(interaction) {
+    // Check role-based permission
+    const permissionCheck = await this.checkPermission(
+      {
+        userId: interaction.user.id,
+        guildId: interaction.guildId,
+        commandName: 'whisper'
+      },
+      interaction.client
+    );
+
+    if (!permissionCheck.allowed) {
+      return sendError(interaction, `Permission denied: ${permissionCheck.reason}`, true);
+    }
+
     // Defer the interaction immediately to avoid timeout (3 second Discord limit)
     await interaction.deferReply({ ephemeral: true });
 
     try {
-      // Check admin permission
-      const isAdmin = checkAdminPermission(interaction);
-      if (!isAdmin) {
-        return sendError(interaction, 'You need admin permissions to use this command', true);
-      }
 
       const targetsInput = interaction.options.getString('targets');
       const messageContent = interaction.options.getString('message');

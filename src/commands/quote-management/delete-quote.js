@@ -77,15 +77,16 @@ class DeleteQuoteCommand extends Command {
       return;
     }
 
+    const guildId = interaction.guildId;
     const id = interaction.options.getInteger('id');
 
-    const quote = await getQuoteById(id);
+    const quote = await getQuoteById(guildId, id);
     if (!quote) {
       await sendError(interaction, `Quote #${id} not found`);
       return;
     }
 
-    await deleteQuote(id);
+    await deleteQuote(guildId, id);
     await sendSuccess(interaction, `Quote #${id} deleted successfully!`);
   }
 }

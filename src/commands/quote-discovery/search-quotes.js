@@ -72,9 +72,10 @@ class SearchQuotesCommand extends Command {
 
   async executeInteraction(interaction) {
     await interaction.deferReply();
+    const guildId = interaction.guildId;
     const query = interaction.options.getString('query').toLowerCase();
 
-    const quotes = await getAllQuotes();
+    const quotes = await getAllQuotes(guildId);
     const results = quotes.filter(q =>
       q.text.toLowerCase().includes(query) ||
       q.author.toLowerCase().includes(query)

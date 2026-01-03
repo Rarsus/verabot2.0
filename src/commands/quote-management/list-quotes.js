@@ -56,7 +56,8 @@ class ListQuotesCommand extends Command {
     // Defer the interaction immediately to avoid timeout (3 second Discord limit)
     await interaction.deferReply({ ephemeral: true });
 
-    const quotes = await getAllQuotes();
+    const guildId = interaction.guildId;
+    const quotes = await getAllQuotes(guildId);
     if (quotes.length === 0) {
       await sendError(interaction, 'No quotes in the database yet', true);
       return;

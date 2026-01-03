@@ -84,24 +84,25 @@ class TagQuoteCommand extends Command {
 
   async executeInteraction(interaction) {
     await interaction.deferReply();
+    const guildId = interaction.guildId;
     const id = interaction.options.getInteger('id');
     const tagName = interaction.options.getString('tag');
 
-    const quote = await getQuoteById(id);
+    const quote = await getQuoteById(guildId, id);
     if (!quote) {
       await sendError(interaction, `Quote #${id} not found`);
       return;
     }
 
-    await addTag(tagName);
-    const tag = await getTagByName(tagName);
+    await addTag(guildId, tagName);
+    const tag = await getTagByName(guildId, tagName);
 
     if (!tag) {
       await sendError(interaction, 'Failed to create/find tag');
       return;
     }
 
-    const success = await addTagToQuote(id, tag.id);
+    const success = await addTagToQuote(guildId, id, tag.id);
     if (success) {
       await sendSuccess(interaction, `Added tag "#${tagName}" to quote #${id}`);
     } else {

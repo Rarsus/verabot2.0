@@ -82,16 +82,17 @@ class RateQuoteCommand extends Command {
 
   async executeInteraction(interaction) {
     await interaction.deferReply();
+    const guildId = interaction.guildId;
     const id = interaction.options.getInteger('id');
     const rating = interaction.options.getInteger('rating');
 
-    const quote = await getQuoteById(id);
+    const quote = await getQuoteById(guildId, id);
     if (!quote) {
       await sendError(interaction, `Quote #${id} not found`);
       return;
     }
 
-    const result = await rateQuote(id, interaction.user.id, rating);
+    const result = await rateQuote(guildId, id, interaction.user.id, rating);
     if (result.success) {
       const stars = '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
       await sendSuccess(interaction, `Rated quote #${id}: ${stars} (Avg: ${result.averageRating}⭐)`);

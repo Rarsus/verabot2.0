@@ -82,9 +82,10 @@ class ExportQuotesCommand extends Command {
 
   async executeInteraction(interaction) {
     await interaction.deferReply();
+    const guildId = interaction.guildId;
     const format = interaction.options.getString('format');
 
-    const quotes = await getAllQuotes();
+    const quotes = await getAllQuotes(guildId);
     if (!quotes || quotes.length === 0) {
       await sendError(interaction, 'No quotes to export');
       return;

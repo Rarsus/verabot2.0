@@ -58,8 +58,9 @@ class QuoteCommand extends Command {
   }
 
   async executeInteraction(interaction) {
+    const guildId = interaction.guildId;
     const number = interaction.options.getInteger('number');
-    const allQuotes = await getAllQuotes();
+    const allQuotes = await getAllQuotes(guildId);
     const validation = validateQuoteNumber(number, allQuotes.length);
 
     if (!validation.valid) {
@@ -67,7 +68,7 @@ class QuoteCommand extends Command {
       return;
     }
 
-    const quote = await getQuoteByNumber(number);
+    const quote = await getQuoteByNumber(guildId, number);
     if (!quote) {
       await sendError(interaction, `Quote #${number} not found`, true);
       return;

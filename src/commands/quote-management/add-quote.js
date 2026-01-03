@@ -60,6 +60,7 @@ class AddQuoteCommand extends Command {
   }
 
   async executeInteraction(interaction) {
+    const guildId = interaction.guildId;
     const quote = interaction.options.getString('quote');
     const author = interaction.options.getString('author') || 'Anonymous';
 
@@ -75,7 +76,7 @@ class AddQuoteCommand extends Command {
       return;
     }
 
-    const id = await addQuote(quoteValidation.sanitized, authorValidation.sanitized);
+    const id = await addQuote(guildId, quoteValidation.sanitized, authorValidation.sanitized);
     await sendSuccess(interaction, `Quote #${id} added successfully!`);
   }
 }
