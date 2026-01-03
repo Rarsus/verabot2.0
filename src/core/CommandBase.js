@@ -4,6 +4,7 @@
  */
 
 const { logError, ERROR_LEVELS } = require('../middleware/errorHandler');
+const RolePermissionService = require('../services/RolePermissionService');
 
 /**
  * Base class for all commands
@@ -15,6 +16,70 @@ class Command {
     this.description = config.description;
     this.data = config.data;
     this.options = config.options || [];
+    // NEW: Permission and visibility config
+    this.permissions = config.permissions || {
+      minTier: 0,
+      visible: true,
+      allowGuildOverride: true
+    };
+  }
+
+  /**
+   * Check if user has permission to execute this command
+   * @param {Object} context - Interaction or message
+   * @param {Object} client - Discord.js client
+   * @returns {Promise<{allowed: boolean, reason?: string}>}
+   */
+  async checkPermission(context, client) {
+    const userId = context.user?.id || context.author?.id;
+    const guildId = context.guildId;
+
+    if (!userId || !guildId) {
+      return { allowed: true };  // Allow DMs
+    }
+
+    const hasPermission = await RolePermissionService.canExecuteCommand(
+      userId,
+      guildId,
+      this.name,
+      client
+    );
+
+    if (!hasPermission) {
+      const userTier = await RolePermissionService.getUserTier(userId, guildId, client);
+      const cmdConfig = RolePermissionService.getCommandConfig(this.name, guildId);
+      const minTier = cmdConfig?.minTier || 0;
+      const tierName = RolePermissionService.getRoleDescription(minTier);
+
+      return {
+        allowed: false,
+        reason: `You need **${tierName}** to use this command. Your tier: ${RolePermissionService.getRoleDescription(userTier)}`
+      };
+    }
+
+    return { allowed: true };
+  }
+
+  /**
+   * Check if command is visible to user
+   * @param {Object} context - Interaction or message
+   * @param {Object} client - Discord.js client
+   * @returns {Promise<boolean>}
+   */
+  async checkVisibility(context, client) {
+    const userId = context.user?.id || context.author?.id;
+    const guildId = context.guildId;
+
+    if (!userId || !guildId) {
+      return true;  // Always visible in DMs
+    }
+
+    return await RolePermissionService.isCommandVisible(
+      userId,
+      guildId,
+      this.name,
+      client
+    );
   }
 
   /**
