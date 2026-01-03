@@ -17,7 +17,8 @@ module.exports = [
       '.vscode/**',
       'data/**',
       'logs/**',
-      'website/**'
+      'website/**',
+      'src/utils/auto-register-commands.js'
     ]
   },
   {

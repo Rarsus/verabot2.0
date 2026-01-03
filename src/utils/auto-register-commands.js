@@ -32,6 +32,19 @@ async function autoRegisterCommands(options = {}) {
   const seenNames = new Set();
   const skippedCommands = [];
 
+  // Check if a directory should be skipped based on feature flags
+  function shouldSkipDirectory(dirName) {
+    if (dirName === 'admin' && !features.admin.enabled) {
+      skippedCommands.push('admin commands (ENABLE_ADMIN_COMMANDS=false)');
+      return true;
+    }
+    if (dirName === 'reminder-management' && !features.reminders.enabled) {
+      skippedCommands.push('reminder commands (ENABLE_REMINDERS=false)');
+      return true;
+    }
+    return false;
+  }
+
   // Recursively find all command files, respecting feature flags
   function findCommandFiles(dir, relativePath = '') {
     let files = [];
@@ -43,24 +56,56 @@ async function autoRegisterCommands(options = {}) {
       const relPath = relativePath ? `${relativePath}/${entry.name}` : entry.name;
 
       if (entry.isDirectory()) {
-        // Skip admin commands if admin feature is disabled
-        if (entry.name === 'admin' && !features.admin.enabled) {
-          skippedCommands.push('admin commands (ENABLE_ADMIN_COMMANDS=false)');
-          continue;
-        }
-
-        // Skip reminder commands if reminders feature is disabled
-        if (entry.name === 'reminder-management' && !features.reminders.enabled) {
-          skippedCommands.push('reminder commands (ENABLE_REMINDERS=false)');
-          continue;
-        }
-
+        if (shouldSkipDirectory(entry.name)) continue;
         files = files.concat(findCommandFiles(fullPath, relPath));
       } else if (entry.isFile() && entry.name.endsWith('.js')) {
         files.push(fullPath);
       }
     }
     return files;
+  }
+
+  // Process a single command file and extract its definition
+  function processCommandFile(file, cmd) {
+    const filename = path.basename(file);
+
+    // Prefer `data` builder (SlashCommandBuilder). If present, use its JSON.
+    if (cmd && cmd.data && typeof cmd.data.toJSON === 'function') {
+      const json = cmd.data.toJSON();
+      if (!json.name || typeof json.name !== 'string') {
+        if (verbose) console.warn(`${filename} skipped: builder missing valid name`);
+        return null;
+      }
+      if (seenNames.has(json.name)) {
+        if (verbose) console.warn(`${filename} skipped: duplicate command name ${json.name}`);
+        return null;
+      }
+      seenNames.add(json.name);
+      return json;
+    }
+
+    if (!cmd || !cmd.name || typeof cmd.name !== 'string') {
+      if (verbose) console.warn(`${filename} skipped: missing string 'name' export`);
+      return null;
+    }
+
+    // Validate command name per Discord limits (1-32 chars, alphanumeric, dashes/underscores)
+    if (!/^[\w-]{1,32}$/.test(cmd.name)) {
+      if (verbose) console.warn(`${filename} skipped: invalid command name '${cmd.name}'`);
+      return null;
+    }
+    if (seenNames.has(cmd.name)) {
+      if (verbose) console.warn(`${filename} skipped: duplicate command name ${cmd.name}`);
+      return null;
+    }
+
+    const data = {
+      name: cmd.name,
+      description: cmd.description || 'No description',
+      options: Array.isArray(cmd.options) ? cmd.options : []
+    };
+    seenNames.add(cmd.name);
+    return data;
   }
 
   const commandFiles = findCommandFiles(commandsPath);
@@ -75,54 +120,10 @@ async function autoRegisterCommands(options = {}) {
       continue;
     }
 
-    // Prefer `data` builder (SlashCommandBuilder). If present, use its JSON.
-    if (cmd && cmd.data && typeof cmd.data.toJSON === 'function') {
-      const json = cmd.data.toJSON();
-      if (!json.name || typeof json.name !== 'string') {
-        if (verbose) {
-          console.warn(`${path.basename(file)} skipped: builder missing valid name`);
-        }
-        continue;
-      }
-      if (seenNames.has(json.name)) {
-        if (verbose) {
-          console.warn(`${path.basename(file)} skipped: duplicate command name ${json.name}`);
-        }
-        continue;
-      }
-      seenNames.add(json.name);
-      commands.push(json);
-      continue;
+    const cmdData = processCommandFile(file, cmd);
+    if (cmdData) {
+      commands.push(cmdData);
     }
-
-    if (!cmd || !cmd.name || typeof cmd.name !== 'string') {
-      if (verbose) {
-        console.warn(`${path.basename(file)} skipped: missing string 'name' export`);
-      }
-      continue;
-    }
-
-    // Validate command name per Discord limits (1-32 chars, alphanumeric, dashes/underscores)
-    if (!/^[\w-]{1,32}$/.test(cmd.name)) {
-      if (verbose) {
-        console.warn(`${path.basename(file)} skipped: invalid command name '${cmd.name}'`);
-      }
-      continue;
-    }
-    if (seenNames.has(cmd.name)) {
-      if (verbose) {
-        console.warn(`${path.basename(file)} skipped: duplicate command name ${cmd.name}`);
-      }
-      continue;
-    }
-
-    const data = {
-      name: cmd.name,
-      description: cmd.description || 'No description',
-      options: Array.isArray(cmd.options) ? cmd.options : []
-    };
-    seenNames.add(cmd.name);
-    commands.push(data);
   }
 
   if (commands.length === 0) {
