@@ -1,3 +1,10 @@
+## [2.6.1](https://github.com/Rarsus/verabot2.0/compare/v2.6.0...v2.6.1) (2026-01-03)
+
+
+### Bug Fixes
+
+* Add interaction.deferReply() to prevent timeout errors in reminder and quote commands ([d18eb46](https://github.com/Rarsus/verabot2.0/commit/d18eb46cc9f6f106be2342bdf76029671feb04d3))
+
 # [2.6.0](https://github.com/Rarsus/verabot2.0/compare/v2.5.0...v2.6.0) (2026-01-02)
 
 
