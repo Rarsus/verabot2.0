@@ -1,5 +1,6 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
+const RolePermissionService = require('../../services/RolePermissionService');
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 function formatUsage(cmd, prefix = '!') {
@@ -93,6 +94,10 @@ class HelpCommand extends Command {
       const commands = client && client.commands ? client.commands : new Map();
       const requested = interaction.options.getString('command');
 
+      // Get user tier and filter visible commands
+      const userId = interaction.user.id;
+      const guildId = interaction.guildId;
+
       if (requested) {
         const cmd = commands.get(requested);
         if (!cmd) {
@@ -100,14 +105,25 @@ class HelpCommand extends Command {
           return;
         }
 
+        // Check if command is visible to user
+        const isVisible = await RolePermissionService.isCommandVisible(userId, guildId, requested, client);
+        if (!isVisible) {
+          await interaction.reply({ content: 'You do not have access to that command.', ephemeral: true });
+          return;
+        }
+
         const opts = (cmd.data && typeof cmd.data.toJSON === 'function') ? (cmd.data.toJSON().options || []) : (cmd.options || []);
         const usage = formatUsage(cmd, interaction.client?.config?.PREFIX || '!');
+        const userTier = await RolePermissionService.getUserTier(userId, guildId, client);
+        const tierDesc = RolePermissionService.getRoleDescription(userTier);
+
         const embed = new EmbedBuilder()
           .setTitle(`Help: ${cmd.name}`)
           .setDescription(cmd.description || 'No description')
           .addFields(
             { name: 'Slash usage', value: usage.slash, inline: false },
-            { name: 'Message usage', value: usage.message, inline: false }
+            { name: 'Message usage', value: usage.message, inline: false },
+            { name: 'Your role', value: tierDesc, inline: false }
           )
           .setColor(0x00AE86);
 
@@ -122,16 +138,30 @@ class HelpCommand extends Command {
         return;
       }
 
+      // Filter commands by visibility
       const items = [];
-      for (const [name, cmd] of commands) items.push({ name, desc: cmd.description || 'No description', cmd });
-      if (items.length === 0) return interaction.reply({ content: 'No commands available.', ephemeral: true });
+      for (const [name, cmd] of commands) {
+        const isVisible = await RolePermissionService.isCommandVisible(userId, guildId, name, client);
+        if (isVisible) {
+          items.push({ name, desc: cmd.description || 'No description', cmd });
+        }
+      }
 
+      if (items.length === 0) {
+        return interaction.reply({ content: 'No commands available to you.', ephemeral: true });
+      }
+
+      const userTier = await RolePermissionService.getUserTier(userId, guildId, client);
       const pageSize = 6;
       const pages = [];
       for (let i = 0; i < items.length; i += pageSize) {
         const chunk = items.slice(i, i + pageSize);
         const desc = chunk.map(it => `**${it.name}** — ${it.desc}`).join('\n');
-        pages.push(new EmbedBuilder().setTitle('Available commands').setDescription(desc).setColor(0x00AE86));
+        pages.push(new EmbedBuilder()
+          .setTitle('Available commands')
+          .setDescription(desc)
+          .setFooter({ text: `Role: ${RolePermissionService.getRoleDescription(userTier)}` })
+          .setColor(0x00AE86));
       }
 
       const components = (pageIndex) => new ActionRowBuilder().addComponents(
@@ -161,9 +191,9 @@ class HelpCommand extends Command {
       collector.on('end', async () => {
         try { await reply.edit({ components: [] }); } catch { void 0; }
       });
-    } catch {
+    } catch (err) {
       console.error('Help command (interaction) error', err);
-      try { await interaction.reply({ content: 'Could not list commands.', ephemeral: true }); } catch (_e){ void 0; }
+      try { await interaction.reply({ content: 'Could not list commands.', ephemeral: true }); } catch { void 0; }
     }
   }
 }

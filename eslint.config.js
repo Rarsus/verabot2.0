@@ -18,7 +18,9 @@ module.exports = [
       'data/**',
       'logs/**',
       'website/**',
-      'src/utils/auto-register-commands.js'
+      'src/utils/auto-register-commands.js',
+      'scripts/test-quotes-advanced.js',
+      'tests/test-github-actions-scripts.js'
     ]
   },
   {

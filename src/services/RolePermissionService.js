@@ -250,23 +250,18 @@ class RolePermissionService {
    * @returns {Promise<Object>} - Role ID -> tier mappings
    */
   async getGuildRoleMappings(_guildId) {
-    try {
-      // This would query a guild_role_mappings table if it exists
-      // For now, return empty object (can be implemented with database schema)
-      // const db = DatabaseService.getDatabase();
-      // const rows = db.prepare('SELECT * FROM guild_role_mappings WHERE guild_id = ?')
-      //   .all(_guildId);
-      // const mappings = {};
-      // for (const row of rows) {
-      //   mappings[row.discord_role_id] = row.role_tier;
-      // }
-      // return mappings;
+    // This would query a guild_role_mappings table if it exists
+    // For now, return empty object (can be implemented with database schema)
+    // const db = DatabaseService.getDatabase();
+    // const rows = db.prepare('SELECT * FROM guild_role_mappings WHERE guild_id = ?')
+    //   .all(_guildId);
+    // const mappings = {};
+    // for (const row of rows) {
+    //   mappings[row.discord_role_id] = row.role_tier;
+    // }
+    // return mappings;
 
-      return {};
-    } catch (err) {
-      logError('RolePermissionService.getGuildRoleMappings', err, ERROR_LEVELS.LOW);
-      return {};
-    }
+    return {};
   }
 
   /**

@@ -74,7 +74,7 @@ class Command {
       return true;  // Always visible in DMs
     }
 
-    return await RolePermissionService.isCommandVisible(
+    return RolePermissionService.isCommandVisible(
       userId,
       guildId,
       this.name,
