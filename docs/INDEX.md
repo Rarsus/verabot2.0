@@ -74,6 +74,7 @@ Technical reference and API docs:
 **Database & Configuration**
 | Document | Purpose |
 |----------|---------|
+| [DB-DEPRECATION-TIMELINE.md](reference/DB-DEPRECATION-TIMELINE.md) | Legacy db.js deprecation (READ THIS!) |
 | [DATABASE-MIGRATIONS.md](reference/DATABASE-MIGRATIONS.md) | Database schema changes |
 | [DATABASE-OPTIMIZATION.md](reference/DATABASE-OPTIMIZATION.md) | Database performance tuning |
 | [DATABASE-MIGRATION-FIXES.md](reference/DATABASE-MIGRATION-FIXES.md) | Migration troubleshooting |

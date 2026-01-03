@@ -165,18 +165,63 @@ await sendDM(user, 'Direct message content');
 await interaction.reply({ content: 'Message', ephemeral: true });
 ```
 
-### Database Patterns
+### Database Patterns - Guild-Aware Services
 
-**ALWAYS use the db module for database operations:**
+**⚠️ IMPORTANT: Use guild-aware services, NOT the legacy db.js wrapper**
 
+All database operations must use guild-aware services that enforce mandatory guild context:
+
+**For Quote Operations:**
 ```javascript
-const db = require('../../db');
+// ✅ CORRECT - Use QuoteService with guild context
+const quoteService = require('../../services/QuoteService');
 
-// Prepared statements are handled automatically
-const quote = await db.getQuote(id);
-const quotes = await db.getAllQuotes();
-await db.addQuote(text, author);
+const guildId = interaction.guildId;
+const quote = await quoteService.getQuoteById(guildId, id);
+const quotes = await quoteService.getAllQuotes(guildId);
+await quoteService.addQuote(guildId, text, author);
 ```
+
+**For Reminder Operations:**
+```javascript
+// ✅ CORRECT - Use GuildAwareReminderService with guild context
+const reminderService = require('../../services/GuildAwareReminderService');
+
+const guildId = interaction.guildId;
+const reminder = await reminderService.getReminderById(guildId, id);
+await reminderService.addReminder(guildId, userId, text, dueDate);
+```
+
+**For Direct Database Access (rare):**
+```javascript
+// ✅ CORRECT - Use GuildAwareDatabaseService for raw operations
+const guildDbService = require('../../services/GuildAwareDatabaseService');
+
+const guildId = interaction.guildId;
+const result = await guildDbService.executeQuery(guildId, sql, params);
+```
+
+**❌ DEPRECATED - Do NOT use:**
+```javascript
+// ❌ WRONG - db.js wrapper is deprecated, remove all uses
+const db = require('../../db');
+await db.getQuote(id);  // No guild context!
+await db.addQuote(text, author);  // No guild isolation!
+```
+
+**Why guild-aware services?**
+- ✅ Mandatory guild context prevents cross-guild data leaks
+- ✅ Clear intent: every operation is explicitly guild-scoped
+- ✅ Easy to test by mocking a single service
+- ✅ Supports multi-guild and multi-database architectures
+- ✅ Consistent API across all commands
+
+**Timeline:**
+- db.js is marked **DEPRECATED** as of January 2026
+- All new code MUST use guild-aware services
+- db.js will be removed in v0.3.0 (March 2026)
+
+See `docs/reference/DB-DEPRECATION-TIMELINE.md` for detailed migration guide.
 
 ### Testing Requirements
 

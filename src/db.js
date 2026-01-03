@@ -1,8 +1,38 @@
 /**
- * Database Module - Wrapper for SQLite database operations
+ * ⚠️  DEPRECATED - Database Module
  *
- * This module provides a clean interface for quote management operations.
- * The underlying implementation uses SQLite for better performance and scalability.
+ * This module is DEPRECATED and will be removed in a future release.
+ * All code has been migrated to guild-aware services for better scalability
+ * and to ensure proper guild isolation in multi-guild environments.
+ *
+ * MIGRATION PATH:
+ * ================
+ *
+ * For Quote Operations:
+ *   OLD: const { addQuote } = require('./db');
+ *   NEW: const quoteService = require('./services/QuoteService');
+ *        await quoteService.addQuote(guildId, text, author);
+ *
+ * For Reminder Operations:
+ *   OLD: const { addReminder } = require('./db');
+ *   NEW: const reminderService = require('./services/GuildAwareReminderService');
+ *        await reminderService.addReminder(guildId, ...args);
+ *
+ * TIMELINE:
+ * =========
+ * - January 2026: Mark as deprecated (THIS RELEASE)
+ * - February 2026: Final warning period
+ * - March 2026: Remove this file in v0.3.0
+ *
+ * For detailed migration guide, see:
+ * - docs/reference/COMMAND-DATABASE-PATTERNS-ANALYSIS.md
+ * - docs/reference/DB-DEPRECATION-TIMELINE.md
+ * - .github/copilot-instructions.md
+ *
+ * If you see an error, please use guild-aware services directly:
+ * - src/services/QuoteService.js
+ * - src/services/GuildAwareReminderService.js
+ * - src/services/GuildAwareDatabaseService.js
  */
 
 const database = require('./services/DatabaseService');
