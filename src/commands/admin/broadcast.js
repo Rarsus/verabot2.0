@@ -31,7 +31,16 @@ const { data, options } = buildCommandOptions(
 
 class BroadcastCommand extends Command {
   constructor() {
-    super({ name: 'broadcast', description: 'Broadcast a message to multiple channels (Admin only)', data, options });
+    super({
+      name: 'broadcast',
+      description: 'Broadcast a message to multiple channels',
+      data,
+      options,
+      permissions: {
+        minTier: 3,
+        visible: false
+      }
+    });
   }
 
   async execute(message, _args) {

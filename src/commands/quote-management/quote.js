@@ -10,7 +10,16 @@ const { data, options } = buildCommandOptions('quote', 'Retrieve a quote from th
 
 class QuoteCommand extends Command {
   constructor() {
-    super({ name: 'quote', description: 'Retrieve a quote from the database by number', data, options });
+    super({
+      name: 'quote',
+      description: 'Retrieve a quote from the database by number',
+      data,
+      options,
+      permissions: {
+        minTier: 0,
+        visible: true
+      }
+    });
   }
 
   async execute(message, args) {

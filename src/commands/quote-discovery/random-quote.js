@@ -7,7 +7,16 @@ const { data, options } = buildCommandOptions('random-quote', 'Get a random quot
 
 class RandomQuoteCommand extends Command {
   constructor() {
-    super({ name: 'random-quote', description: 'Get a random quote', data, options });
+    super({
+      name: 'random-quote',
+      description: 'Get a random quote',
+      data,
+      options,
+      permissions: {
+        minTier: 0,
+        visible: true
+      }
+    });
   }
 
   async execute(message) {

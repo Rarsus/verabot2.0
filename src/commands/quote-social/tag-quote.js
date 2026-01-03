@@ -10,7 +10,16 @@ const { data, options } = buildCommandOptions('tag-quote', 'Add a tag to a quote
 
 class TagQuoteCommand extends Command {
   constructor() {
-    super({ name: 'tag-quote', description: 'Add a tag to a quote', data, options });
+    super({
+      name: 'tag-quote',
+      description: 'Add a tag to a quote',
+      data,
+      options,
+      permissions: {
+        minTier: 1,
+        visible: true
+      }
+    });
   }
 
   async execute(message, args) {

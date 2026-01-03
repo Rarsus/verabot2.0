@@ -7,7 +7,16 @@ const { data, options } = buildCommandOptions('comm-status', 'Check your current
 
 class CommStatusCommand extends Command {
   constructor() {
-    super({ name: 'comm-status', description: 'Check your current communication opt-in status', data, options });
+    super({
+      name: 'comm-status',
+      description: 'Check your current communication opt-in status',
+      data,
+      options,
+      permissions: {
+        minTier: 0,
+        visible: true
+      }
+    });
   }
 
   async execute(message, _args) {

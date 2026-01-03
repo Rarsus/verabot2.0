@@ -10,7 +10,16 @@ const { data, options } = buildCommandOptions('get-reminder', 'Get a specific re
 
 class GetReminderCommand extends Command {
   constructor() {
-    super({ name: 'get-reminder', description: 'Get a specific reminder by ID', data, options });
+    super({
+      name: 'get-reminder',
+      description: 'Get a specific reminder by ID',
+      data,
+      options,
+      permissions: {
+        minTier: 1,
+        visible: true
+      }
+    });
   }
 
   async execute(message, _args) {

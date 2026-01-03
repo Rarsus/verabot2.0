@@ -12,7 +12,16 @@ const { data, options } = buildCommandOptions('update-quote', 'Update an existin
 
 class UpdateQuoteCommand extends Command {
   constructor() {
-    super({ name: 'update-quote', description: 'Update an existing quote (admin only)', data, options });
+    super({
+      name: 'update-quote',
+      description: 'Update an existing quote',
+      data,
+      options,
+      permissions: {
+        minTier: 2,
+        visible: true
+      }
+    });
   }
 
   async execute(message, args) {

@@ -10,7 +10,16 @@ const { data, options } = buildCommandOptions('search-quotes', 'Search quotes by
 
 class SearchQuotesCommand extends Command {
   constructor() {
-    super({ name: 'search-quotes', description: 'Search quotes by text or author', data, options });
+    super({
+      name: 'search-quotes',
+      description: 'Search quotes by text or author',
+      data,
+      options,
+      permissions: {
+        minTier: 0,
+        visible: true
+      }
+    });
   }
 
   async execute(message, args) {

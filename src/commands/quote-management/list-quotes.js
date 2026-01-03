@@ -7,7 +7,16 @@ const { data, options } = buildCommandOptions('list-quotes', 'Get a list of all 
 
 class ListQuotesCommand extends Command {
   constructor() {
-    super({ name: 'list-quotes', description: 'Get a list of all quotes in a private message', data, options });
+    super({
+      name: 'list-quotes',
+      description: 'Get a list of all quotes in a private message',
+      data,
+      options,
+      permissions: {
+        minTier: 1,
+        visible: true
+      }
+    });
   }
 
   async execute(message) {

@@ -64,7 +64,16 @@ const { data, options } = buildCommandOptions(
 
 class EmbedCommand extends Command {
   constructor() {
-    super({ name: 'embed', description: 'Send a formatted embed message as the bot (Admin only)', data, options });
+    super({
+      name: 'embed',
+      description: 'Send a formatted embed message as the bot',
+      data,
+      options,
+      permissions: {
+        minTier: 3,
+        visible: false
+      }
+    });
   }
 
   async execute(message, _args) {

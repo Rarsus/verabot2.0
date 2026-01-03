@@ -9,7 +9,16 @@ const { data, options } = buildCommandOptions('delete-quote', 'Delete a quote (a
 
 class DeleteQuoteCommand extends Command {
   constructor() {
-    super({ name: 'delete-quote', description: 'Delete a quote (admin only)', data, options });
+    super({
+      name: 'delete-quote',
+      description: 'Delete a quote',
+      data,
+      options,
+      permissions: {
+        minTier: 2,
+        visible: true
+      }
+    });
   }
 
   async execute(message, args) {

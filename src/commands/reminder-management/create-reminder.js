@@ -15,7 +15,16 @@ const { data, options } = buildCommandOptions('create-reminder', 'Create a new r
 
 class CreateReminderCommand extends Command {
   constructor() {
-    super({ name: 'create-reminder', description: 'Create a new reminder', data, options });
+    super({
+      name: 'create-reminder',
+      description: 'Create a new reminder',
+      data,
+      options,
+      permissions: {
+        minTier: 1,
+        visible: true
+      }
+    });
   }
 
   async execute(message, _args) {

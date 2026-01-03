@@ -8,7 +8,16 @@ const { data, options } = buildCommandOptions('quote-stats', 'Get statistics abo
 
 class QuoteStatsCommand extends Command {
   constructor() {
-    super({ name: 'quote-stats', description: 'Get statistics about the quote database', data, options });
+    super({
+      name: 'quote-stats',
+      description: 'Get statistics about the quote database',
+      data,
+      options,
+      permissions: {
+        minTier: 1,
+        visible: true
+      }
+    });
   }
 
   async execute(message) {

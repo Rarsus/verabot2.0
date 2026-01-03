@@ -25,9 +25,13 @@ class ProxyStatusCommand extends Command {
   constructor() {
     super({
       name: 'proxy-status',
-      description: 'View webhook proxy configuration and status (Admin only)',
+      description: 'View webhook proxy configuration and status',
       data,
-      options
+      options,
+      permissions: {
+        minTier: 3,
+        visible: false
+      }
     });
   }
 

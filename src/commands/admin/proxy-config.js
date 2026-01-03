@@ -61,9 +61,13 @@ class ProxyConfigCommand extends Command {
   constructor() {
     super({
       name: 'proxy-config',
-      description: 'Configure webhook proxy settings (Admin only)',
+      description: 'Configure webhook proxy settings',
       data,
-      options
+      options,
+      permissions: {
+        minTier: 3,
+        visible: false
+      }
     });
   }
 

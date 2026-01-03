@@ -10,7 +10,16 @@ const { data, options } = buildCommandOptions('delete-reminder', 'Delete a remin
 
 class DeleteReminderCommand extends Command {
   constructor() {
-    super({ name: 'delete-reminder', description: 'Delete a reminder', data, options });
+    super({
+      name: 'delete-reminder',
+      description: 'Delete a reminder',
+      data,
+      options,
+      permissions: {
+        minTier: 1,
+        visible: true
+      }
+    });
   }
 
   async execute(message, _args) {

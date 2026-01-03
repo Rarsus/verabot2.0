@@ -13,7 +13,16 @@ const { data, options } = buildCommandOptions('list-reminders', 'List reminders 
 
 class ListRemindersCommand extends Command {
   constructor() {
-    super({ name: 'list-reminders', description: 'List reminders with filters', data, options });
+    super({
+      name: 'list-reminders',
+      description: 'List reminders with filters',
+      data,
+      options,
+      permissions: {
+        minTier: 1,
+        visible: true
+      }
+    });
   }
 
   async execute(message, _args) {

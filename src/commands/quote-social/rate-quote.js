@@ -10,7 +10,16 @@ const { data, options } = buildCommandOptions('rate-quote', 'Rate a quote (1-5 s
 
 class RateQuoteCommand extends Command {
   constructor() {
-    super({ name: 'rate-quote', description: 'Rate a quote (1-5 stars)', data, options });
+    super({
+      name: 'rate-quote',
+      description: 'Rate a quote (1-5 stars)',
+      data,
+      options,
+      permissions: {
+        minTier: 1,
+        visible: true
+      }
+    });
   }
 
   async execute(message, args) {

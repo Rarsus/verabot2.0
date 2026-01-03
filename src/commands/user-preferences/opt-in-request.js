@@ -9,7 +9,16 @@ const { data, options } = buildCommandOptions('opt-in-request', 'Request a user 
 
 class OptInRequestCommand extends Command {
   constructor() {
-    super({ name: 'opt-in-request', description: 'Request a user to opt in to DM notifications', data, options });
+    super({
+      name: 'opt-in-request',
+      description: 'Request a user to opt in to DM notifications',
+      data,
+      options,
+      permissions: {
+        minTier: 1,
+        visible: true
+      }
+    });
   }
 
   async execute(message, _args) {

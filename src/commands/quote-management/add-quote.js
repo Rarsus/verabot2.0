@@ -11,7 +11,16 @@ const { data, options } = buildCommandOptions('add-quote', 'Add a quote to the d
 
 class AddQuoteCommand extends Command {
   constructor() {
-    super({ name: 'add-quote', description: 'Add a quote to the database', data, options });
+    super({
+      name: 'add-quote',
+      description: 'Add a quote to the database',
+      data,
+      options,
+      permissions: {
+        minTier: 1,
+        visible: true
+      }
+    });
   }
 
   async execute(message, args) {

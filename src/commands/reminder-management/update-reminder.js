@@ -16,7 +16,16 @@ const { data, options } = buildCommandOptions('update-reminder', 'Update an exis
 
 class UpdateReminderCommand extends Command {
   constructor() {
-    super({ name: 'update-reminder', description: 'Update an existing reminder', data, options });
+    super({
+      name: 'update-reminder',
+      description: 'Update an existing reminder',
+      data,
+      options,
+      permissions: {
+        minTier: 1,
+        visible: true
+      }
+    });
   }
 
   async execute(message, _args) {

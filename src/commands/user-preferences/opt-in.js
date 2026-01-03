@@ -7,7 +7,16 @@ const { data, options } = buildCommandOptions('opt-in', 'Opt in to receive direc
 
 class OptInCommand extends Command {
   constructor() {
-    super({ name: 'opt-in', description: 'Opt in to receive direct messages and use VeraBot communication features', data, options });
+    super({
+      name: 'opt-in',
+      description: 'Opt in to receive direct messages and use VeraBot communication features',
+      data,
+      options,
+      permissions: {
+        minTier: 0,
+        visible: true
+      }
+    });
   }
 
   async execute(message, _args) {

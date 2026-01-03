@@ -10,7 +10,16 @@ const { data, options } = buildCommandOptions('export-quotes', 'Export quotes as
 
 class ExportQuotesCommand extends Command {
   constructor() {
-    super({ name: 'export-quotes', description: 'Export quotes as JSON or CSV file', data, options });
+    super({
+      name: 'export-quotes',
+      description: 'Export quotes as JSON or CSV file',
+      data,
+      options,
+      permissions: {
+        minTier: 1,
+        visible: true
+      }
+    });
   }
 
   async execute(message, args) {

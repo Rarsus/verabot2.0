@@ -7,7 +7,16 @@ const { data, options } = buildCommandOptions('opt-out', 'Opt out of receiving d
 
 class OptOutCommand extends Command {
   constructor() {
-    super({ name: 'opt-out', description: 'Opt out of receiving direct messages from VeraBot', data, options });
+    super({
+      name: 'opt-out',
+      description: 'Opt out of receiving direct messages from VeraBot',
+      data,
+      options,
+      permissions: {
+        minTier: 0,
+        visible: true
+      }
+    });
   }
 
   async execute(message, _args) {

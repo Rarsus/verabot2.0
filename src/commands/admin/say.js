@@ -31,7 +31,16 @@ const { data, options } = buildCommandOptions(
 
 class SayCommand extends Command {
   constructor() {
-    super({ name: 'say', description: 'Make the bot say something in a channel (Admin only)', data, options });
+    super({
+      name: 'say',
+      description: 'Make the bot say something in a channel',
+      data,
+      options,
+      permissions: {
+        minTier: 3,
+        visible: false
+      }
+    });
   }
 
   async execute(message, _args) {

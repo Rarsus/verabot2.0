@@ -11,7 +11,16 @@ const { data, options } = buildCommandOptions('search-reminders', 'Search remind
 
 class SearchRemindersCommand extends Command {
   constructor() {
-    super({ name: 'search-reminders', description: 'Search reminders by keyword', data, options });
+    super({
+      name: 'search-reminders',
+      description: 'Search reminders by keyword',
+      data,
+      options,
+      permissions: {
+        minTier: 1,
+        visible: true
+      }
+    });
   }
 
   async execute(message, _args) {

@@ -97,7 +97,16 @@ const { options } = buildCommandOptions('poem', 'Generate a poem (sonnet, haiku,
 
 class PoemCommand extends Command {
   constructor() {
-    super({ name: 'poem', description: 'Generate a poem (sonnet, haiku, other)', data, options });
+    super({
+      name: 'poem',
+      description: 'Generate a poem (sonnet, haiku, other)',
+      data,
+      options,
+      permissions: {
+        minTier: 0,
+        visible: true
+      }
+    });
   }
 
   async execute(message, args) {

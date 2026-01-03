@@ -31,9 +31,13 @@ class ProxyEnableCommand extends Command {
   constructor() {
     super({
       name: 'proxy-enable',
-      description: 'Enable or disable the webhook proxy (Admin only)',
+      description: 'Enable or disable the webhook proxy',
       data,
-      options
+      options,
+      permissions: {
+        minTier: 3,
+        visible: false
+      }
     });
   }
 

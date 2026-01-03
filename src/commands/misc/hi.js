@@ -7,7 +7,16 @@ const { data, options } = buildCommandOptions('hi', 'Say hi to someone', [
 
 class HiCommand extends Command {
   constructor() {
-    super({ name: 'hi', description: 'Say hi to someone', data, options });
+    super({
+      name: 'hi',
+      description: 'Say hi to someone',
+      data,
+      options,
+      permissions: {
+        minTier: 0,
+        visible: true
+      }
+    });
   }
 
   async execute(message, args) {
