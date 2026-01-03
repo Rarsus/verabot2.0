@@ -128,6 +128,14 @@ module.exports = [
       'security/detect-unsafe-regex': 'off' // Safe in command context
     }
   },
+  // Core files - allow higher complexity for base infrastructure
+  {
+    files: ['src/core/**/*.js'],
+    rules: {
+      'complexity': ['warn', 25],
+      'max-lines-per-function': ['warn', { max: 250, skipBlankLines: true, skipComments: true }]
+    }
+  },
   // Core index.js - allow higher complexity for event handler
   {
     files: ['src/index.js'],

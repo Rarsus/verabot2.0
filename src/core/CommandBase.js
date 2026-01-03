@@ -83,14 +83,30 @@ class Command {
   }
 
   /**
-   * Wrap an async function with error handling
+   * Wrap an async function with error handling AND permission checks
    * @param {Function} fn - Async function to wrap
    * @param {string} context - Context for logging
+   * @param {boolean} isInteractionHandler - True if this is executeInteraction
    * @returns {Function} Wrapped function
    */
-  wrapError(fn, context) {
+  wrapError(fn, context, isInteractionHandler = false) {
     return async (...args) => {
       try {
+        const [firstArg] = args;
+        const isInteraction = firstArg?.isCommand?.() || firstArg?.isChatInputCommand?.();
+
+        // Get client from context
+        const client = isInteraction ? firstArg.client : firstArg?.client;
+
+        // Check permission before execution
+        if (isInteractionHandler && client) {
+          const permissionCheck = await this.checkPermission(firstArg, client);
+          if (!permissionCheck.allowed) {
+            const { sendError } = require('../utils/helpers/response-helpers');
+            return await sendError(firstArg, permissionCheck.reason, true);
+          }
+        }
+
         return await fn(...args);
       } catch (err) {
         const [firstArg] = args;
@@ -119,13 +135,17 @@ class Command {
   /**
    * Register this command
    * Automatically wraps execute and executeInteraction
+   * Slash commands (executeInteraction) get permission checks
+   * Prefix commands (execute) rely on legacy handling
    */
   register() {
     if (this.execute) {
-      this.execute = this.wrapError(this.execute.bind(this), `${this.name}.execute`);
+      // Prefix commands don't get permission checks (no Discord role context easily)
+      this.execute = this.wrapError(this.execute.bind(this), `${this.name}.execute`, false);
     }
     if (this.executeInteraction) {
-      this.executeInteraction = this.wrapError(this.executeInteraction.bind(this), `${this.name}.executeInteraction`);
+      // Slash commands get permission checks (interaction has full context)
+      this.executeInteraction = this.wrapError(this.executeInteraction.bind(this), `${this.name}.executeInteraction`, true);
     }
     return this;
   }
