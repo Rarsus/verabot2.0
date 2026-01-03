@@ -1,3 +1,15 @@
+# [2.7.0](https://github.com/Rarsus/verabot2.0/compare/v2.6.3...v2.7.0) (2026-01-03)
+
+
+### Bug Fixes
+
+* refactor auto-register-commands and exclude from linting ([2f464c3](https://github.com/Rarsus/verabot2.0/commit/2f464c3c0927aa5c7986baadd4dde551f01f4e98))
+
+
+### Features
+
+* add automatic command registration on bot join ([7587c01](https://github.com/Rarsus/verabot2.0/commit/7587c0100a4764ad541893bdf92515bc0a6b97e4))
+
 ## [2.6.3](https://github.com/Rarsus/verabot2.0/compare/v2.6.2...v2.6.3) (2026-01-03)
 
 
