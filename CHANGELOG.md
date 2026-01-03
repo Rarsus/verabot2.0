@@ -1,3 +1,10 @@
+# [2.11.0](https://github.com/Rarsus/verabot2.0/compare/v2.10.0...v2.11.0) (2026-01-03)
+
+
+### Features
+
+* Migrate all quote commands to guild-aware QuoteService pattern ([b913d04](https://github.com/Rarsus/verabot2.0/commit/b913d0424c0f9959cdb3c08b5fe30b9d92c1f3f9))
+
 # [2.10.0](https://github.com/Rarsus/verabot2.0/compare/v2.9.0...v2.10.0) (2026-01-03)
 
 
