@@ -18,6 +18,9 @@ class DeleteReminderCommand extends Command {
   }
 
   async executeInteraction(interaction) {
+    // Defer the interaction immediately to avoid timeout (3 second Discord limit)
+    await interaction.deferReply();
+
     const id = interaction.options.getInteger('id');
     const hard = interaction.options.getBoolean('hard') || false;
 

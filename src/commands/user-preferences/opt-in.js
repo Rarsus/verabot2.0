@@ -20,6 +20,9 @@ class OptInCommand extends Command {
   }
 
   async executeInteraction(interaction) {
+    // Defer the interaction immediately to avoid timeout (3 second Discord limit)
+    await interaction.deferReply();
+
     try {
       await CommunicationService.optIn(interaction.user.id);
       await sendOptInSuccess(interaction);

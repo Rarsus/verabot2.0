@@ -20,6 +20,9 @@ class CommStatusCommand extends Command {
   }
 
   async executeInteraction(interaction) {
+    // Defer the interaction immediately to avoid timeout (3 second Discord limit)
+    await interaction.deferReply();
+
     try {
       const status = await CommunicationService.getStatus(interaction.user.id);
       await sendOptInStatus(interaction, status.opted_in, status.updated_at);

@@ -44,6 +44,9 @@ class ListQuotesCommand extends Command {
   }
 
   async executeInteraction(interaction) {
+    // Defer the interaction immediately to avoid timeout (3 second Discord limit)
+    await interaction.deferReply({ ephemeral: true });
+
     const quotes = await getAllQuotes();
     if (quotes.length === 0) {
       await sendError(interaction, 'No quotes in the database yet', true);

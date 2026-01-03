@@ -23,6 +23,9 @@ class CreateReminderCommand extends Command {
   }
 
   async executeInteraction(interaction) {
+    // Defer the interaction immediately to avoid timeout (3 second Discord limit)
+    await interaction.deferReply();
+
     const subject = interaction.options.getString('subject');
     const category = interaction.options.getString('category');
     const when = interaction.options.getString('when');

@@ -21,6 +21,9 @@ class ListRemindersCommand extends Command {
   }
 
   async executeInteraction(interaction) {
+    // Defer the interaction immediately to avoid timeout (3 second Discord limit)
+    await interaction.deferReply();
+
     const status = interaction.options.getString('status');
     const category = interaction.options.getString('category');
     const assigneeId = interaction.options.getString('assignee');
