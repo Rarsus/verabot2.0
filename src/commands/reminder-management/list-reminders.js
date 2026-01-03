@@ -2,7 +2,7 @@ const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendError } = require('../../utils/helpers/response-helpers');
 const { EmbedBuilder } = require('discord.js');
-const { listReminders } = require('../../services/ReminderService');
+const { getAllReminders } = require('../../services/GuildAwareReminderService');
 
 const { data, options } = buildCommandOptions('list-reminders', 'List reminders with filters', [
   { name: 'status', type: 'string', description: 'Filter by status (active, completed, cancelled)', required: false },
@@ -33,6 +33,7 @@ class ListRemindersCommand extends Command {
     // Defer the interaction immediately to avoid timeout (3 second Discord limit)
     await interaction.deferReply();
 
+    const guildId = interaction.guildId;
     const status = interaction.options.getString('status');
     const category = interaction.options.getString('category');
     const assigneeId = interaction.options.getString('assignee');
@@ -41,13 +42,8 @@ class ListRemindersCommand extends Command {
     const filters = {};
     if (status) filters.status = status;
     if (category) filters.category = category;
-    if (assigneeId) filters.assigneeId = assigneeId;
 
-    const pageSize = 10;
-    filters.limit = pageSize;
-    filters.offset = (page - 1) * pageSize;
-
-    const reminders = await listReminders(filters);
+    const reminders = await getAllReminders(guildId, filters);
 
     if (reminders.length === 0) {
       await sendError(interaction, 'No reminders found matching the filters.', false);

@@ -2,7 +2,7 @@ const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendError } = require('../../utils/helpers/response-helpers');
 const { EmbedBuilder } = require('discord.js');
-const { getReminderById } = require('../../services/ReminderService');
+const { getReminderById } = require('../../services/GuildAwareReminderService');
 
 const { data, options } = buildCommandOptions('get-reminder', 'Get a specific reminder by ID', [
   { name: 'id', type: 'integer', description: 'Reminder ID', required: true, minValue: 1 }
@@ -30,9 +30,10 @@ class GetReminderCommand extends Command {
     // Defer the interaction immediately to avoid timeout (3 second Discord limit)
     await interaction.deferReply();
 
+    const guildId = interaction.guildId;
     const id = interaction.options.getInteger('id');
 
-    const reminder = await getReminderById(id);
+    const reminder = await getReminderById(guildId, id);
 
     if (!reminder) {
       await sendError(interaction, `Reminder #${id} not found.`);

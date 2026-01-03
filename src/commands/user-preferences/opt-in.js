@@ -1,7 +1,7 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendOptInSuccess } = require('../../utils/helpers/response-helpers');
-const CommunicationService = require('../../services/CommunicationService');
+const { optIn } = require('../../services/GuildAwareCommunicationService');
 
 const { data, options } = buildCommandOptions('opt-in', 'Opt in to receive direct messages and use VeraBot communication features');
 
@@ -21,7 +21,8 @@ class OptInCommand extends Command {
 
   async execute(message, _args) {
     try {
-      await CommunicationService.optIn(message.author.id);
+      const guildId = message.guildId;
+      await optIn(guildId, message.author.id);
       await sendOptInSuccess(message);
     } catch (err) {
       throw err;
@@ -33,7 +34,8 @@ class OptInCommand extends Command {
     await interaction.deferReply();
 
     try {
-      await CommunicationService.optIn(interaction.user.id);
+      const guildId = interaction.guildId;
+      await optIn(guildId, interaction.user.id);
       await sendOptInSuccess(interaction);
     } catch (err) {
       throw err;

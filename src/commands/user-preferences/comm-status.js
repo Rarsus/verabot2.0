@@ -1,7 +1,7 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendOptInStatus } = require('../../utils/helpers/response-helpers');
-const CommunicationService = require('../../services/CommunicationService');
+const { getStatus } = require('../../services/GuildAwareCommunicationService');
 
 const { data, options } = buildCommandOptions('comm-status', 'Check your current communication opt-in status');
 
@@ -21,7 +21,8 @@ class CommStatusCommand extends Command {
 
   async execute(message, _args) {
     try {
-      const status = await CommunicationService.getStatus(message.author.id);
+      const guildId = message.guildId;
+      const status = await getStatus(guildId, message.author.id);
       await sendOptInStatus(message, status.opted_in, status.updated_at);
     } catch (err) {
       throw err;
@@ -33,7 +34,8 @@ class CommStatusCommand extends Command {
     await interaction.deferReply();
 
     try {
-      const status = await CommunicationService.getStatus(interaction.user.id);
+      const guildId = interaction.guildId;
+      const status = await getStatus(guildId, interaction.user.id);
       await sendOptInStatus(interaction, status.opted_in, status.updated_at);
     } catch (err) {
       throw err;

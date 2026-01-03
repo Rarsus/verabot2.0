@@ -2,7 +2,7 @@ const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendError } = require('../../utils/helpers/response-helpers');
 const { EmbedBuilder } = require('discord.js');
-const { searchReminders } = require('../../services/ReminderService');
+const { searchReminders } = require('../../services/GuildAwareReminderService');
 
 const { data, options } = buildCommandOptions('search-reminders', 'Search reminders by keyword', [
   { name: 'keyword', type: 'string', description: 'Search keyword', required: true, minLength: 2 },
@@ -31,16 +31,11 @@ class SearchRemindersCommand extends Command {
     // Defer the interaction immediately to avoid timeout (3 second Discord limit)
     await interaction.deferReply();
 
+    const guildId = interaction.guildId;
     const keyword = interaction.options.getString('keyword');
     const page = interaction.options.getInteger('page') || 1;
 
-    const pageSize = 10;
-    const options = {
-      limit: pageSize,
-      offset: (page - 1) * pageSize
-    };
-
-    const reminders = await searchReminders(keyword, options);
+    const reminders = await searchReminders(guildId, keyword);
 
     if (reminders.length === 0) {
       await sendError(interaction, `No reminders found matching "${keyword}".`, false);

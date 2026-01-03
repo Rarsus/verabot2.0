@@ -1,7 +1,8 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess, sendOptInDecisionPrompt } = require('../../utils/helpers/response-helpers');
-const { createReminder, addReminderAssignment, isRecipientOptedIn } = require('../../services/ReminderService');
+const { createReminder, addReminderAssignment } = require('../../services/GuildAwareReminderService');
+const { isOptedIn } = require('../../services/GuildAwareCommunicationService');
 
 const { data, options } = buildCommandOptions('create-reminder', 'Create a new reminder', [
   { name: 'subject', type: 'string', description: 'Reminder subject/title', required: true, minLength: 3, maxLength: 200 },
@@ -35,6 +36,7 @@ class CreateReminderCommand extends Command {
     // Defer the interaction immediately to avoid timeout (3 second Discord limit)
     await interaction.deferReply();
 
+    const guildId = interaction.guildId;
     const subject = interaction.options.getString('subject');
     const category = interaction.options.getString('category');
     const when = interaction.options.getString('when');
@@ -73,7 +75,7 @@ class CreateReminderCommand extends Command {
 
     if (assigneeType === 'user') {
       try {
-        optedIn = await isRecipientOptedIn(assigneeId);
+        optedIn = await isOptedIn(guildId, assigneeId);
         // Fetch user info for decision prompt
         recipient = await interaction.client.users.fetch(assigneeId);
       } catch {
@@ -85,7 +87,7 @@ class CreateReminderCommand extends Command {
     // If user is opted out and this is a DM-based notification, show decision prompt
     if (assigneeType === 'user' && !optedIn && recipient) {
       // Create reminder first, then show decision buttons
-      const reminderId = await createReminder({
+      const reminderId = await createReminder(guildId, {
         subject,
         category,
         when,
@@ -96,7 +98,7 @@ class CreateReminderCommand extends Command {
       });
 
       // Add assignment
-      await addReminderAssignment(reminderId, assigneeType, assigneeId);
+      await addReminderAssignment(guildId, reminderId, assigneeType, assigneeId);
 
       // Store reminder context for button handlers
       interaction.client.reminderContexts = interaction.client.reminderContexts || {};
@@ -111,7 +113,7 @@ class CreateReminderCommand extends Command {
       await sendOptInDecisionPrompt(interaction, recipient, subject);
     } else {
       // User opted in or this is a role-based reminder, create normally
-      const reminderId = await createReminder({
+      const reminderId = await createReminder(guildId, {
         subject,
         category,
         when,
@@ -121,7 +123,7 @@ class CreateReminderCommand extends Command {
       });
 
       // Add assignment
-      await addReminderAssignment(reminderId, assigneeType, assigneeId);
+      await addReminderAssignment(guildId, reminderId, assigneeType, assigneeId);
 
       if (assigneeType === 'user') {
         await sendSuccess(

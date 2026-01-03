@@ -1,7 +1,7 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
-const { updateReminder, getReminderById } = require('../../services/ReminderService');
+const { updateReminder, getReminderById } = require('../../services/GuildAwareReminderService');
 
 const { data, options } = buildCommandOptions('update-reminder', 'Update an existing reminder', [
   { name: 'id', type: 'integer', description: 'Reminder ID', required: true, minValue: 1 },
@@ -36,10 +36,11 @@ class UpdateReminderCommand extends Command {
     // Defer the interaction immediately to avoid timeout (3 second Discord limit)
     await interaction.deferReply();
 
+    const guildId = interaction.guildId;
     const id = interaction.options.getInteger('id');
 
     // Check if reminder exists
-    const existing = await getReminderById(id);
+    const existing = await getReminderById(guildId, id);
     if (!existing) {
       await sendError(interaction, `Reminder #${id} not found.`);
       return;
@@ -74,7 +75,7 @@ class UpdateReminderCommand extends Command {
       return;
     }
 
-    const success = await updateReminder(id, updates);
+    const success = await updateReminder(guildId, id, updates);
 
     if (success) {
       await sendSuccess(interaction, `Reminder #${id} updated successfully!`);

@@ -1,7 +1,7 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
-const { deleteReminder, getReminderById } = require('../../services/ReminderService');
+const { deleteReminder, getReminderById } = require('../../services/GuildAwareReminderService');
 
 const { data, options } = buildCommandOptions('delete-reminder', 'Delete a reminder', [
   { name: 'id', type: 'integer', description: 'Reminder ID', required: true, minValue: 1 },
@@ -30,17 +30,18 @@ class DeleteReminderCommand extends Command {
     // Defer the interaction immediately to avoid timeout (3 second Discord limit)
     await interaction.deferReply();
 
+    const guildId = interaction.guildId;
     const id = interaction.options.getInteger('id');
     const hard = interaction.options.getBoolean('hard') || false;
 
     // Check if reminder exists
-    const existing = await getReminderById(id);
+    const existing = await getReminderById(guildId, id);
     if (!existing) {
       await sendError(interaction, `Reminder #${id} not found.`);
       return;
     }
 
-    const success = await deleteReminder(id, hard);
+    const success = await deleteReminder(guildId, id, hard);
 
     if (success) {
       const deleteType = hard ? 'permanently deleted' : 'cancelled';
