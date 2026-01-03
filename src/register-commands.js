@@ -12,20 +12,38 @@ if (!TOKEN || !CLIENT_ID) {
   process.exit(1);
 }
 
+// Load feature configuration to respect disabled features
+const features = require('./config/features');
+
 const commands = [];
 const seenNames = new Set();
 const commandsPath = path.join(__dirname, 'commands');
+const skippedCommands = [];
 
-// Recursively find all command files
-function findCommandFiles(dir) {
+// Recursively find all command files, respecting feature flags
+function findCommandFiles(dir, relativePath = '') {
   let files = [];
   if (!fs.existsSync(dir)) return files;
 
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
+    const relPath = relativePath ? `${relativePath}/${entry.name}` : entry.name;
+
     if (entry.isDirectory()) {
-      files = files.concat(findCommandFiles(fullPath));
+      // Skip admin commands if admin feature is disabled
+      if (entry.name === 'admin' && !features.admin.enabled) {
+        skippedCommands.push(`admin commands (ENABLE_ADMIN_COMMANDS=false)`);
+        continue;
+      }
+
+      // Skip reminder commands if reminders feature is disabled
+      if (entry.name === 'reminder-management' && !features.reminders.enabled) {
+        skippedCommands.push(`reminder commands (ENABLE_REMINDERS=false)`);
+        continue;
+      }
+
+      files = files.concat(findCommandFiles(fullPath, relPath));
     } else if (entry.isFile() && entry.name.endsWith('.js')) {
       files.push(fullPath);
     }
@@ -87,20 +105,26 @@ const rest = new REST({ version: '10' }).setToken(TOKEN);
 
 (async () => {
   try {
-    console.log(`Registering ${commands.length} commands.`);
+    // Show what's being registered and what's being skipped
+    console.log(`\nRegistering ${commands.length} commands.`);
+    if (skippedCommands.length > 0) {
+      console.log(`⏭️  Skipped: ${skippedCommands.join(', ')}`);
+    }
+    
     if (commands.length === 0) {
       console.log('No commands to register. Exiting.');
       process.exit(0);
     }
     if (GUILD_ID) {
-      console.log(`Registering commands to guild ${GUILD_ID}`);
+      console.log(`\nRegistering commands to guild ${GUILD_ID}`);
       await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: commands });
-      console.log('Successfully registered guild commands.');
+      console.log('✅ Successfully registered guild commands.');
     } else {
-      console.log('Registering global application commands (may take up to an hour to propagate).');
+      console.log('\nRegistering global application commands (may take up to an hour to propagate).');
       await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });
-      console.log('Successfully registered global commands.');
+      console.log('✅ Successfully registered global commands.');
     }
+    console.log();
   } catch (err) {
     console.error('Failed to register commands:', err);
     process.exit(1);
