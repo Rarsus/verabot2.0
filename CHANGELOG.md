@@ -1,3 +1,10 @@
+## [2.6.2](https://github.com/Rarsus/verabot2.0/compare/v2.6.1...v2.6.2) (2026-01-03)
+
+
+### Bug Fixes
+
+* Enhance Whisper Command with user opt-in/out functionality and error handling ([ecbf92f](https://github.com/Rarsus/verabot2.0/commit/ecbf92f063ecdba74c2337fb65283168287145c9))
+
 ## [2.6.1](https://github.com/Rarsus/verabot2.0/compare/v2.6.0...v2.6.1) (2026-01-03)
 
 
