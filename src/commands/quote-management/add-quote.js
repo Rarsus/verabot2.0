@@ -1,7 +1,7 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
-const { addQuote } = require('../../db');
+const quoteService = require('../../services/QuoteService');
 const { validateQuoteText, validateAuthor } = require('../../middleware/errorHandler');
 
 const { data, options } = buildCommandOptions('add-quote', 'Add a quote to the database', [
@@ -48,7 +48,8 @@ class AddQuoteCommand extends Command {
         return;
       }
 
-      const id = await addQuote(quoteValidation.sanitized, authorValidation.sanitized);
+      const guildId = message.guildId;
+      const id = await quoteService.addQuote(guildId, quoteValidation.sanitized, authorValidation.sanitized);
       if (message.channel && typeof message.channel.send === 'function') {
         await message.channel.send(`✅ Quote #${id} added successfully!`);
       } else if (message.reply) {
@@ -76,7 +77,7 @@ class AddQuoteCommand extends Command {
       return;
     }
 
-    const id = await addQuote(guildId, quoteValidation.sanitized, authorValidation.sanitized);
+    const id = await quoteService.addQuote(guildId, quoteValidation.sanitized, authorValidation.sanitized);
     await sendSuccess(interaction, `Quote #${id} added successfully!`);
   }
 }

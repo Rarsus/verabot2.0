@@ -1,7 +1,7 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendError } = require('../../utils/helpers/response-helpers');
-const { getAllQuotes } = require('../../db');
+const quoteService = require('../../services/QuoteService');
 const { EmbedBuilder } = require('discord.js');
 
 const { data, options } = buildCommandOptions('quote-stats', 'Get statistics about the quote database', []);
@@ -22,7 +22,8 @@ class QuoteStatsCommand extends Command {
 
   async execute(message) {
     try {
-      const quotes = await getAllQuotes();
+      const guildId = message.guildId;
+      const quotes = await quoteService.getAllQuotes(guildId);
       if (!quotes || quotes.length === 0) {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send('❌ No quotes in database.');
@@ -69,7 +70,7 @@ class QuoteStatsCommand extends Command {
   async executeInteraction(interaction) {
     await interaction.deferReply();
     const guildId = interaction.guildId;
-    const quotes = await getAllQuotes(guildId);
+    const quotes = await quoteService.getAllQuotes(guildId);
     if (!quotes || quotes.length === 0) {
       await sendError(interaction, 'No quotes in database');
       return;

@@ -1,7 +1,7 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
-const { deleteQuote, getQuoteById } = require('../../db');
+const quoteService = require('../../services/QuoteService');
 
 const { data, options } = buildCommandOptions('delete-quote', 'Delete a quote (admin only)', [
   { name: 'id', type: 'integer', description: 'Quote ID to delete', required: true }
@@ -42,7 +42,8 @@ class DeleteQuoteCommand extends Command {
         return;
       }
 
-      const quote = await getQuoteById(id);
+      const guildId = message.guildId;
+      const quote = await quoteService.getQuoteById(guildId, id);
       if (!quote) {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send(`❌ Quote #${id} not found.`);
@@ -52,7 +53,7 @@ class DeleteQuoteCommand extends Command {
         return;
       }
 
-      await deleteQuote(id);
+      await quoteService.deleteQuote(guildId, id);
       if (message.channel && typeof message.channel.send === 'function') {
         await message.channel.send(`✅ Quote #${id} deleted successfully!`);
       } else if (message.reply) {
@@ -80,13 +81,13 @@ class DeleteQuoteCommand extends Command {
     const guildId = interaction.guildId;
     const id = interaction.options.getInteger('id');
 
-    const quote = await getQuoteById(guildId, id);
+    const quote = await quoteService.getQuoteById(guildId, id);
     if (!quote) {
       await sendError(interaction, `Quote #${id} not found`);
       return;
     }
 
-    await deleteQuote(guildId, id);
+    await quoteService.deleteQuote(guildId, id);
     await sendSuccess(interaction, `Quote #${id} deleted successfully!`);
   }
 }

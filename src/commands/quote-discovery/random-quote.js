@@ -1,7 +1,7 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendQuoteEmbed, sendError } = require('../../utils/helpers/response-helpers');
-const { getAllQuotes } = require('../../db');
+const quoteService = require('../../services/QuoteService');
 
 const { data, options } = buildCommandOptions('random-quote', 'Get a random quote', []);
 
@@ -21,7 +21,8 @@ class RandomQuoteCommand extends Command {
 
   async execute(message) {
     try {
-      const quotes = await getAllQuotes();
+      const guildId = message.guildId;
+      const quotes = await quoteService.getAllQuotes(guildId);
       if (!quotes || quotes.length === 0) {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send('❌ No quotes available.');
@@ -57,7 +58,7 @@ class RandomQuoteCommand extends Command {
   async executeInteraction(interaction) {
     await interaction.deferReply();
     const guildId = interaction.guildId;
-    const quotes = await getAllQuotes(guildId);
+    const quotes = await quoteService.getAllQuotes(guildId);
     if (!quotes || quotes.length === 0) {
       await sendError(interaction, 'No quotes available');
       return;

@@ -1,7 +1,7 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendError, sendDM } = require('../../utils/helpers/response-helpers');
-const { getAllQuotes } = require('../../db');
+const quoteService = require('../../services/QuoteService');
 
 const { data, options } = buildCommandOptions('list-quotes', 'Get a list of all quotes in a private message', []);
 
@@ -21,7 +21,8 @@ class ListQuotesCommand extends Command {
 
   async execute(message) {
     try {
-      const quotes = await getAllQuotes();
+      const guildId = message.guildId;
+      const quotes = await quoteService.getAllQuotes(guildId);
       if (quotes.length === 0) {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send('No quotes in the database yet.');
@@ -57,7 +58,7 @@ class ListQuotesCommand extends Command {
     await interaction.deferReply({ ephemeral: true });
 
     const guildId = interaction.guildId;
-    const quotes = await getAllQuotes(guildId);
+    const quotes = await quoteService.getAllQuotes(guildId);
     if (quotes.length === 0) {
       await sendError(interaction, 'No quotes in the database yet', true);
       return;

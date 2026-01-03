@@ -1,7 +1,7 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
-const { addTag, getTagByName, addTagToQuote, getQuoteById } = require('../../db');
+const quoteService = require('../../services/QuoteService');
 
 const { data, options } = buildCommandOptions('tag-quote', 'Add a tag to a quote', [
   { name: 'id', type: 'integer', description: 'Quote ID to tag', required: true },
@@ -24,6 +24,7 @@ class TagQuoteCommand extends Command {
 
   async execute(message, args) {
     try {
+      const guildId = message.guildId;
       const id = parseInt(args[0], 10);
       const tagName = args.slice(1).join(' ');
 
@@ -36,7 +37,7 @@ class TagQuoteCommand extends Command {
         return;
       }
 
-      const quote = await getQuoteById(id);
+      const quote = await quoteService.getQuoteById(guildId, id);
       if (!quote) {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send(`❌ Quote #${id} not found.`);
@@ -46,19 +47,7 @@ class TagQuoteCommand extends Command {
         return;
       }
 
-      await addTag(tagName);
-      const tag = await getTagByName(tagName);
-
-      if (!tag) {
-        if (message.channel && typeof message.channel.send === 'function') {
-          await message.channel.send('❌ Failed to create/find tag.');
-        } else if (message.reply) {
-          await message.reply('❌ Failed to create/find tag.');
-        }
-        return;
-      }
-
-      const success = await addTagToQuote(id, tag.id);
+      const success = await quoteService.tagQuote(guildId, id, tagName);
       if (success) {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send(`✅ Added tag "#${tagName}" to quote #${id}`);
@@ -88,21 +77,13 @@ class TagQuoteCommand extends Command {
     const id = interaction.options.getInteger('id');
     const tagName = interaction.options.getString('tag');
 
-    const quote = await getQuoteById(guildId, id);
+    const quote = await quoteService.getQuoteById(guildId, id);
     if (!quote) {
       await sendError(interaction, `Quote #${id} not found`);
       return;
     }
 
-    await addTag(guildId, tagName);
-    const tag = await getTagByName(guildId, tagName);
-
-    if (!tag) {
-      await sendError(interaction, 'Failed to create/find tag');
-      return;
-    }
-
-    const success = await addTagToQuote(guildId, id, tag.id);
+    const success = await quoteService.tagQuote(guildId, id, tagName);
     if (success) {
       await sendSuccess(interaction, `Added tag "#${tagName}" to quote #${id}`);
     } else {

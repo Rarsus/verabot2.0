@@ -1,7 +1,7 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendError } = require('../../utils/helpers/response-helpers');
-const { getQuoteByNumber, getAllQuotes } = require('../../db');
+const quoteService = require('../../services/QuoteService');
 const { validateQuoteNumber } = require('../../middleware/errorHandler');
 
 const { data, options } = buildCommandOptions('quote', 'Retrieve a quote from the database by number', [
@@ -24,8 +24,9 @@ class QuoteCommand extends Command {
 
   async execute(message, args) {
     try {
+      const guildId = message.guildId;
       const number = parseInt(args[0], 10);
-      const allQuotes = await getAllQuotes();
+      const allQuotes = await quoteService.getAllQuotes(guildId);
       const validation = validateQuoteNumber(number, allQuotes.length);
 
       if (!validation.valid) {
@@ -37,7 +38,7 @@ class QuoteCommand extends Command {
         return;
       }
 
-      const quote = await getQuoteByNumber(number);
+      const quote = await quoteService.getQuoteById(guildId, number);
       if (!quote) {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send(`❌ Quote #${number} not found.`);
@@ -60,7 +61,7 @@ class QuoteCommand extends Command {
   async executeInteraction(interaction) {
     const guildId = interaction.guildId;
     const number = interaction.options.getInteger('number');
-    const allQuotes = await getAllQuotes(guildId);
+    const allQuotes = await quoteService.getAllQuotes(guildId);
     const validation = validateQuoteNumber(number, allQuotes.length);
 
     if (!validation.valid) {
@@ -68,7 +69,7 @@ class QuoteCommand extends Command {
       return;
     }
 
-    const quote = await getQuoteByNumber(guildId, number);
+    const quote = await quoteService.getQuoteById(guildId, number);
     if (!quote) {
       await sendError(interaction, `Quote #${number} not found`, true);
       return;

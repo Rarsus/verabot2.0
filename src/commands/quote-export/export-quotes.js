@@ -1,7 +1,7 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendError } = require('../../utils/helpers/response-helpers');
-const { exportQuotesAsJson, exportQuotesAsCsv, getAllQuotes } = require('../../db');
+const quoteService = require('../../services/QuoteService');
 const { AttachmentBuilder } = require('discord.js');
 
 const { data, options } = buildCommandOptions('export-quotes', 'Export quotes as JSON or CSV file', [
@@ -24,6 +24,7 @@ class ExportQuotesCommand extends Command {
 
   async execute(message, args) {
     try {
+      const guildId = message.guildId;
       const format = (args[0] || 'json').toLowerCase();
 
       if (!['json', 'csv'].includes(format)) {
@@ -35,7 +36,7 @@ class ExportQuotesCommand extends Command {
         return;
       }
 
-      const quotes = await getAllQuotes();
+      const quotes = await quoteService.getAllQuotes(guildId);
       if (!quotes || quotes.length === 0) {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send('❌ No quotes to export.');
@@ -48,11 +49,11 @@ class ExportQuotesCommand extends Command {
       let data, filename, extension;
 
       if (format === 'json') {
-        data = await exportQuotesAsJson(quotes);
+        data = await quoteService.exportAsJson(guildId, quotes);
         filename = `quotes_${Date.now()}.json`;
         extension = 'json';
       } else {
-        data = await exportQuotesAsCsv(quotes);
+        data = await quoteService.exportAsCSV(guildId, quotes);
         filename = `quotes_${Date.now()}.csv`;
         extension = 'csv';
       }
@@ -85,7 +86,7 @@ class ExportQuotesCommand extends Command {
     const guildId = interaction.guildId;
     const format = interaction.options.getString('format');
 
-    const quotes = await getAllQuotes(guildId);
+    const quotes = await quoteService.getAllQuotes(guildId);
     if (!quotes || quotes.length === 0) {
       await sendError(interaction, 'No quotes to export');
       return;
@@ -94,11 +95,11 @@ class ExportQuotesCommand extends Command {
     let data, filename, extension;
 
     if (format === 'json') {
-      data = await exportQuotesAsJson(quotes);
+      data = await quoteService.exportAsJson(guildId, quotes);
       filename = `quotes_${Date.now()}.json`;
       extension = 'json';
     } else {
-      data = await exportQuotesAsCsv(quotes);
+      data = await quoteService.exportAsCSV(guildId, quotes);
       filename = `quotes_${Date.now()}.csv`;
       extension = 'csv';
     }

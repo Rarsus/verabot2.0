@@ -1,7 +1,7 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
-const { rateQuote, getQuoteById } = require('../../db');
+const quoteService = require('../../services/QuoteService');
 
 const { data, options } = buildCommandOptions('rate-quote', 'Rate a quote (1-5 stars)', [
   { name: 'id', type: 'integer', description: 'Quote ID to rate', required: true },
@@ -45,7 +45,8 @@ class RateQuoteCommand extends Command {
         return;
       }
 
-      const quote = await getQuoteById(id);
+      const guildId = message.guildId;
+      const quote = await quoteService.getQuoteById(guildId, id);
       if (!quote) {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send(`❌ Quote #${id} not found.`);
@@ -55,20 +56,13 @@ class RateQuoteCommand extends Command {
         return;
       }
 
-      const result = await rateQuote(id, message.author.id, rating);
-      if (result.success) {
-        const stars = '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
-        if (message.channel && typeof message.channel.send === 'function') {
-          await message.channel.send(`✅ Rated quote #${id}: ${stars} (Avg: ${result.averageRating}⭐)`);
-        } else if (message.reply) {
-          await message.reply(`✅ Rated quote #${id}: ${stars} (Avg: ${result.averageRating}⭐)`);
-        }
-      } else {
-        if (message.channel && typeof message.channel.send === 'function') {
-          await message.channel.send(`❌ ${result.message}`);
-        } else if (message.reply) {
-          await message.reply(`❌ ${result.message}`);
-        }
+      await quoteService.rateQuote(guildId, id, message.author.id, rating);
+      const ratingInfo = await quoteService.getQuoteRating(guildId, id);
+      const stars = '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
+      if (message.channel && typeof message.channel.send === 'function') {
+        await message.channel.send(`✅ Rated quote #${id}: ${stars} (Avg: ${ratingInfo.average.toFixed(1)}⭐)`);
+      } else if (message.reply) {
+        await message.reply(`✅ Rated quote #${id}: ${stars} (Avg: ${ratingInfo.average.toFixed(1)}⭐)`);
       }
     } catch (err) {
       console.error('Error in rate-quote command:', err);
@@ -86,19 +80,16 @@ class RateQuoteCommand extends Command {
     const id = interaction.options.getInteger('id');
     const rating = interaction.options.getInteger('rating');
 
-    const quote = await getQuoteById(guildId, id);
+    const quote = await quoteService.getQuoteById(guildId, id);
     if (!quote) {
       await sendError(interaction, `Quote #${id} not found`);
       return;
     }
 
-    const result = await rateQuote(guildId, id, interaction.user.id, rating);
-    if (result.success) {
-      const stars = '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
-      await sendSuccess(interaction, `Rated quote #${id}: ${stars} (Avg: ${result.averageRating}⭐)`);
-    } else {
-      await sendError(interaction, result.message);
-    }
+    await quoteService.rateQuote(guildId, id, interaction.user.id, rating);
+    const ratingInfo = await quoteService.getQuoteRating(guildId, id);
+    const stars = '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
+    await sendSuccess(interaction, `Rated quote #${id}: ${stars} (Avg: ${ratingInfo.average.toFixed(1)}⭐)`);
   }
 }
 

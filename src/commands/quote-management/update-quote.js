@@ -1,7 +1,7 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
-const { updateQuote, getQuoteById } = require('../../db');
+const quoteService = require('../../services/QuoteService');
 const { validateQuoteText, validateAuthor } = require('../../middleware/errorHandler');
 
 const { data, options } = buildCommandOptions('update-quote', 'Update an existing quote (admin only)', [
@@ -45,7 +45,8 @@ class UpdateQuoteCommand extends Command {
         return;
       }
 
-      const quote = await getQuoteById(id);
+      const guildId = message.guildId;
+      const quote = await quoteService.getQuoteById(guildId, id);
       if (!quote) {
         if (message.channel && typeof message.channel.send === 'function') {
           await message.channel.send(`❌ Quote #${id} not found.`);
@@ -76,7 +77,7 @@ class UpdateQuoteCommand extends Command {
       }
 
       const author = quote.author || 'Anonymous';
-      await updateQuote(id, quoteValidation.sanitized, author);
+      await quoteService.updateQuote(guildId, id, quoteValidation.sanitized, author);
       if (message.channel && typeof message.channel.send === 'function') {
         await message.channel.send(`✅ Quote #${id} updated successfully!`);
       } else if (message.reply) {
@@ -106,7 +107,7 @@ class UpdateQuoteCommand extends Command {
     const newText = interaction.options.getString('quote');
     const newAuthor = interaction.options.getString('author');
 
-    const quote = await getQuoteById(guildId, id);
+    const quote = await quoteService.getQuoteById(guildId, id);
     if (!quote) {
       await sendError(interaction, `Quote #${id} not found`);
       return;
@@ -128,7 +129,7 @@ class UpdateQuoteCommand extends Command {
       author = authorValidation.sanitized;
     }
 
-    await updateQuote(guildId, id, quoteValidation.sanitized, author);
+    await quoteService.updateQuote(guildId, id, quoteValidation.sanitized, author);
     await sendSuccess(interaction, `Quote #${id} updated successfully!`);
   }
 }

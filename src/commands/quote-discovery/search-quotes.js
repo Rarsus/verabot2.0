@@ -1,7 +1,7 @@
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendError } = require('../../utils/helpers/response-helpers');
-const { getAllQuotes } = require('../../db');
+const quoteService = require('../../services/QuoteService');
 const { EmbedBuilder } = require('discord.js');
 
 const { data, options } = buildCommandOptions('search-quotes', 'Search quotes by text or author', [
@@ -24,6 +24,7 @@ class SearchQuotesCommand extends Command {
 
   async execute(message, args) {
     try {
+      const guildId = message.guildId;
       const query = args.join(' ').toLowerCase();
       if (!query) {
         if (message.channel && typeof message.channel.send === 'function') {
@@ -34,7 +35,7 @@ class SearchQuotesCommand extends Command {
         return;
       }
 
-      const quotes = await getAllQuotes();
+      const quotes = await quoteService.getAllQuotes(guildId);
       const results = quotes.filter(q =>
         q.text.toLowerCase().includes(query) ||
         q.author.toLowerCase().includes(query)
@@ -75,7 +76,7 @@ class SearchQuotesCommand extends Command {
     const guildId = interaction.guildId;
     const query = interaction.options.getString('query').toLowerCase();
 
-    const quotes = await getAllQuotes(guildId);
+    const quotes = await quoteService.getAllQuotes(guildId);
     const results = quotes.filter(q =>
       q.text.toLowerCase().includes(query) ||
       q.author.toLowerCase().includes(query)
