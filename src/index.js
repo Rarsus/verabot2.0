@@ -204,7 +204,7 @@ client.on('interactionCreate', async (interaction) => {
 
         // Extract reminder ID from stored context
         const context = Object.values(client.reminderContexts || {}).find(
-          ctx => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
+          _ctx => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
         );
 
         if (context && context.reminderId) {
@@ -219,7 +219,7 @@ client.on('interactionCreate', async (interaction) => {
         await interaction.deferReply({ ephemeral: true });
 
         const context = Object.values(client.reminderContexts || {}).find(
-          ctx => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
+          _ctx => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
         );
 
         if (context && context.reminderId) {
@@ -234,7 +234,7 @@ client.on('interactionCreate', async (interaction) => {
         await interaction.deferReply({ ephemeral: true });
 
         const context = Object.values(client.reminderContexts || {}).find(
-          ctx => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
+          _ctx => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
         );
 
         if (context && context.recipient) {

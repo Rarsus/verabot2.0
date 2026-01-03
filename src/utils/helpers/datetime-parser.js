@@ -3,8 +3,6 @@
  * Parses various datetime formats into ISO 8601 strings for reminder system
  */
 
-/* eslint-disable complexity */
-
 /**
  * Parse relative time expressions (e.g., "1 day", "2 hours", "30 minutes")
  * @param {string} input - Relative time expression
