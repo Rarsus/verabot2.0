@@ -328,6 +328,59 @@ client.on('messageCreate', async (message) => {
   }
 });
 
+// Auto-register commands when bot is added to a new guild
+client.on('guildCreate', async (guild) => {
+  try {
+    const { autoRegisterCommands } = require('./utils/auto-register-commands');
+
+    console.log(`\n🆕 Bot added to new guild: ${guild.name} (ID: ${guild.id})`);
+    console.log('⏳ Auto-registering slash commands for this guild...');
+
+    const result = await autoRegisterCommands({
+      token: TOKEN,
+      clientId: process.env.CLIENT_ID,
+      guildId: guild.id,
+      verbose: true
+    });
+
+    if (result.success) {
+      console.log(`✅ Automatically registered ${result.commandCount} commands to ${guild.name}\n`);
+
+      // Notify guild owner about automatic registration
+      try {
+        const owner = await guild.fetchOwner();
+        const { EmbedBuilder } = require('discord.js');
+
+        const embed = new EmbedBuilder()
+          .setColor('#5865F2')
+          .setTitle('✅ Commands Registered!')
+          .setDescription(`I've automatically registered ${result.commandCount} slash commands for your server.`)
+          .addFields(
+            {
+              name: '🎯 Getting Started',
+              value: 'Type `/` in any channel and select a command to get started.'
+            },
+            {
+              name: '📖 Need Help?',
+              value: 'Use `/help` to see all available commands and their descriptions.'
+            }
+          )
+          .setFooter({ text: 'Thank you for adding me to your server!' })
+          .setTimestamp();
+
+        await owner.send({ embeds: [embed] });
+      } catch {
+        // Silently fail if we can't DM the owner
+        console.log(`Could not send registration confirmation to ${guild.name} owner: DMs likely disabled`);
+      }
+    } else {
+      console.error(`❌ Failed to auto-register commands to ${guild.name}: ${result.error}\n`);
+    }
+  } catch (err) {
+    console.error(`Error during auto-registration for guild ${guild.name}:`, err.message);
+  }
+});
+
 // Handle new members joining - send onboarding message about opt-in system
 client.on('guildMemberAdd', async (member) => {
   if (member.user.bot) return; // Don't message bots
