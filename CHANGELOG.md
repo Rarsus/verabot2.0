@@ -1,3 +1,10 @@
+# [2.12.0](https://github.com/Rarsus/verabot2.0/compare/v2.11.0...v2.12.0) (2026-01-03)
+
+
+### Features
+
+* Add WebSocket integration for external services (XToys, etc.) ([c273310](https://github.com/Rarsus/verabot2.0/commit/c27331094cba8217c3779cf42fb53d9862894e79))
+
 # [2.11.0](https://github.com/Rarsus/verabot2.0/compare/v2.10.0...v2.11.0) (2026-01-03)
 
 
