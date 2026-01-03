@@ -33,13 +33,13 @@ function findCommandFiles(dir, relativePath = '') {
     if (entry.isDirectory()) {
       // Skip admin commands if admin feature is disabled
       if (entry.name === 'admin' && !features.admin.enabled) {
-        skippedCommands.push(`admin commands (ENABLE_ADMIN_COMMANDS=false)`);
+        skippedCommands.push('admin commands (ENABLE_ADMIN_COMMANDS=false)');
         continue;
       }
 
       // Skip reminder commands if reminders feature is disabled
       if (entry.name === 'reminder-management' && !features.reminders.enabled) {
-        skippedCommands.push(`reminder commands (ENABLE_REMINDERS=false)`);
+        skippedCommands.push('reminder commands (ENABLE_REMINDERS=false)');
         continue;
       }
 
@@ -110,7 +110,7 @@ const rest = new REST({ version: '10' }).setToken(TOKEN);
     if (skippedCommands.length > 0) {
       console.log(`⏭️  Skipped: ${skippedCommands.join(', ')}`);
     }
-    
+
     if (commands.length === 0) {
       console.log('No commands to register. Exiting.');
       process.exit(0);
