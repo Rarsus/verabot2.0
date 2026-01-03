@@ -1,3 +1,11 @@
+# [2.8.0](https://github.com/Rarsus/verabot2.0/compare/v2.7.0...v2.8.0) (2026-01-03)
+
+
+### Features
+
+* implement role-based permission system core ([a0f296e](https://github.com/Rarsus/verabot2.0/commit/a0f296e471d1407e8e72f417e5b961c55be9a1fc))
+* integrate permission system into whisper and ping commands ([b79bc5a](https://github.com/Rarsus/verabot2.0/commit/b79bc5a7a9093233de4bf978435eae7d90b7f70f))
+
 # [2.7.0](https://github.com/Rarsus/verabot2.0/compare/v2.6.3...v2.7.0) (2026-01-03)
 
 
