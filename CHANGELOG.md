@@ -1,3 +1,11 @@
+## [2.6.3](https://github.com/Rarsus/verabot2.0/compare/v2.6.2...v2.6.3) (2026-01-03)
+
+
+### Bug Fixes
+
+* Enhance command registration by respecting feature flags and logging skipped commands ([ccb1746](https://github.com/Rarsus/verabot2.0/commit/ccb174665a47557e54b78c760605e45bdcdcc6e9))
+* Improve logging for skipped admin and reminder commands based on feature flags ([f4d02f9](https://github.com/Rarsus/verabot2.0/commit/f4d02f9d15e8832b2deab29b2e1db8532aec9253))
+
 ## [2.6.2](https://github.com/Rarsus/verabot2.0/compare/v2.6.1...v2.6.2) (2026-01-03)
 
 
