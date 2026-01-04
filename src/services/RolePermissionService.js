@@ -400,9 +400,6 @@ class RolePermissionService {
     } catch (err) {
       logError('RolePermissionService.getGuildAuditLogs', err, ERROR_LEVELS.MEDIUM);
       return [];
-    } catch (err) {
-      logError('RolePermissionService.getGuildAuditLogs', err, ERROR_LEVELS.MEDIUM);
-      return [];
     }
   }
 }
