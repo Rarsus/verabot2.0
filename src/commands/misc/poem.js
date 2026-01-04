@@ -17,11 +17,12 @@ async function generateAIPoem(subject, style = 'sonnet') {
 
   try {
     const prompt = `Generate a ${style} about ${subject}. Only output the poem, no explanation.`;
-    const response = await fetch('https://api-inference.huggingface.co/models/gpt2', {
+    // Using distilgpt2 (more reliable, smaller model) instead of gpt2 (deprecated)
+    const response = await fetch('https://api-inference.huggingface.co/models/distilgpt2', {
       headers: { Authorization: `Bearer ${apiKey}` },
       method: 'POST',
-      body: JSON.stringify({ inputs: prompt }),
-      timeout: 2000
+      body: JSON.stringify({ inputs: prompt, parameters: { max_length: 200, num_return_sequences: 1 } }),
+      timeout: 5000
     });
 
     if (!response.ok) {
@@ -30,7 +31,7 @@ async function generateAIPoem(subject, style = 'sonnet') {
     }
 
     const result = await response.json();
-    if (result[0] && result[0].generated_text) {
+    if (result && Array.isArray(result) && result[0] && result[0].generated_text) {
       const poem = result[0].generated_text.replace(prompt, '').trim();
       return poem && poem.length > 10 ? poem : null;
     }

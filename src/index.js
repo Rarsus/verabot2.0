@@ -125,7 +125,7 @@ const _attachReadyEvent = () => {
 _attachReadyEvent();
 
 // Start webhook listener when bot is ready (only if proxy is enabled)
-client.once('ready', async () => {
+client.once('clientReady', async () => {
   try {
     // Check if proxy is enabled and start listener
     if (features.proxy.enabled && proxyConfig) {

@@ -189,6 +189,7 @@ class GuildDatabaseManager {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           userId TEXT NOT NULL,
           guildId TEXT NOT NULL,
+          opted_in INTEGER DEFAULT 0,
           preferences TEXT DEFAULT '{}',
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
           updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,

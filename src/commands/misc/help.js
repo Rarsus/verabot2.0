@@ -101,14 +101,14 @@ class HelpCommand extends Command {
       if (requested) {
         const cmd = commands.get(requested);
         if (!cmd) {
-          await interaction.reply({ content: `No command named '${requested}' found.`, ephemeral: true });
+          await interaction.reply({ content: `No command named '${requested}' found.`, flags: 64 });
           return;
         }
 
         // Check if command is visible to user
         const isVisible = await RolePermissionService.isCommandVisible(userId, guildId, requested, client);
         if (!isVisible) {
-          await interaction.reply({ content: 'You do not have access to that command.', ephemeral: true });
+          await interaction.reply({ content: 'You do not have access to that command.', flags: 64 });
           return;
         }
 
@@ -134,7 +134,7 @@ class HelpCommand extends Command {
           }
         }
 
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], flags: 64 });
         return;
       }
 
@@ -148,7 +148,7 @@ class HelpCommand extends Command {
       }
 
       if (items.length === 0) {
-        return interaction.reply({ content: 'No commands available to you.', ephemeral: true });
+        return interaction.reply({ content: 'No commands available to you.', flags: 64 });
       }
 
       const userTier = await RolePermissionService.getUserTier(userId, guildId, client);
@@ -193,7 +193,7 @@ class HelpCommand extends Command {
       });
     } catch (err) {
       console.error('Help command (interaction) error', err);
-      try { await interaction.reply({ content: 'Could not list commands.', ephemeral: true }); } catch { void 0; }
+      try { await interaction.reply({ content: 'Could not list commands.', flags: 64 }); } catch { void 0; }
     }
   }
 }

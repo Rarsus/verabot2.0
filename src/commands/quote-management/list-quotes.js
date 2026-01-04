@@ -55,7 +55,7 @@ class ListQuotesCommand extends Command {
 
   async executeInteraction(interaction) {
     // Defer the interaction immediately to avoid timeout (3 second Discord limit)
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: 64 });
 
     const guildId = interaction.guildId;
     const quotes = await quoteService.getAllQuotes(guildId);

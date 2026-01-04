@@ -157,7 +157,7 @@ class WhisperCommand extends Command {
     }
 
     // Defer the interaction immediately to avoid timeout (3 second Discord limit)
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: 64 });
 
     try {
 

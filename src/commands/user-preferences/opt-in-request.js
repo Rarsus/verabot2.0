@@ -29,6 +29,11 @@ class OptInRequestCommand extends Command {
     const targetUser = interaction.options.getUser('user');
     const reason = interaction.options.getString('reason');
 
+    // Validate user was provided
+    if (!targetUser) {
+      throw new Error('User not found. Please specify a valid user.');
+    }
+
     // Prevent self-requests
     if (targetUser.id === interaction.user.id) {
       throw new Error('You cannot request opt-in from yourself.');
