@@ -16,8 +16,9 @@ const features = require('./config/features');
 
 // Initialize database
 const database = require('./services/DatabaseService');
-const { migrateFromJson } = require('./lib/migration');
-const { enhanceSchema } = require('./lib/schema-enhancement');
+// Note: migrateFromJson and enhanceSchema are deprecated - skipping these
+// const { migrateFromJson } = require('./lib/migration');
+// const { enhanceSchema } = require('./lib/schema-enhancement');
 
 // Initialize proxy services (only if enabled)
 let proxyConfig = null;
@@ -27,8 +28,8 @@ let webhookListener = null;
 if (features.proxy.enabled) {
   const ProxyConfigService = require('./services/ProxyConfigService');
   const WebhookProxyService = require('./services/WebhookProxyService');
-  proxyConfig = new ProxyConfigService(database);
-  webhookProxy = new WebhookProxyService();
+  // ProxyConfigService still uses root database for global configuration
+  proxyConfig = new ProxyConfigService(database);  webhookProxy = new WebhookProxyService();
 }
 
 // For slash commands we always need `Guilds`. For prefix message handling we add message intents.
@@ -73,18 +74,23 @@ function loadCommands(dirPath) {
   try {
     console.log('⏳ Initializing database...');
 
-    // Setup database schema
-    const dbInstance = database.getDatabase();
-    await database.setupSchema(dbInstance);
-    console.log('✓ Database schema initialized');
+    // ⚠️ DEPRECATED: Root database initialization
+    // Guild-specific databases are now created on-demand by GuildDatabaseManager
+    // when a command is first used in a guild.
+    console.log('✓ Database system ready (guild-specific databases will be created on-demand)');
 
     // Enhance schema with new tables for tags, ratings, voting
-    await enhanceSchema(dbInstance);
-    console.log('✓ Database schema enhanced');
+    // Note: This is deprecated and will be removed once all guilds use the new system
+    // const dbInstance = database.getDatabase();
+    // await database.setupSchema(dbInstance);
+    // await enhanceSchema(dbInstance);
+    // console.log('✓ Database schema enhanced');
 
     // Run migration from JSON if needed
-    await migrateFromJson(database);
-    console.log('✓ Database migration completed');
+    // DEPRECATED: This uses the old root database. Skipping migration.
+    // JSON data should be manually migrated to guild-specific databases if needed.
+    // await migrateFromJson(database);
+    console.log('✓ Skipping JSON migration (deprecated in favor of guild-specific databases)');
 
     // Small delay to ensure all database operations are flushed
     await new Promise(resolve => setTimeout(resolve, 500));

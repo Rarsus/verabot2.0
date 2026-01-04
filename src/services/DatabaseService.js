@@ -32,6 +32,8 @@ function isDiscordId(val) {
 
 /**
  * Initialize SQLite database
+ * DEPRECATED: This creates a root-level database.
+ * Use GuildDatabaseManager for guild-specific databases instead.
  * @returns {sqlite3.Database} Database connection
  */
 function initializeDatabase() {
@@ -40,6 +42,10 @@ function initializeDatabase() {
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
   }
+
+  // ⚠️ DEPRECATED: Still creating root database for backwards compatibility
+  // This will be removed in v0.3.0. All new code should use GuildDatabaseManager.
+  console.warn('⚠️  DatabaseService.initializeDatabase() is deprecated. Use GuildDatabaseManager for guild-specific databases.');
 
   const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {

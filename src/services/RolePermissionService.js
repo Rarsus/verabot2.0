@@ -3,7 +3,7 @@
  * Manages role-based access control and command visibility
  */
 
-const DatabaseService = require('./DatabaseService');
+const GuildDatabaseManager = require('./GuildDatabaseManager');
 const roleConfig = require('../config/roles');
 const { logError, ERROR_LEVELS } = require('../middleware/errorHandler');
 
@@ -12,6 +12,7 @@ class RolePermissionService {
     this.roleConfig = roleConfig;
     this.cache = new Map();
     this.auditLogsEnabled = this.roleConfig.auditLogging;
+    this.guildManager = GuildDatabaseManager;
   }
 
   /**
@@ -300,40 +301,48 @@ class RolePermissionService {
    * @param {Object} entry - Audit log entry
    */
   async auditLog(entry) {
-    if (!this.auditLogsEnabled) return;
+    if (!this.auditLogsEnabled || !entry.guildId) return;
 
     try {
-      const db = DatabaseService.getDatabase();
+      const db = await this.guildManager.getGuildDatabase(entry.guildId);
 
       // Create table if it doesn't exist
-      db.exec(`
-        CREATE TABLE IF NOT EXISTS permission_audit_log (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          user_id TEXT NOT NULL,
-          guild_id TEXT NOT NULL,
-          command_name TEXT NOT NULL,
-          result TEXT,
-          user_tier INTEGER,
-          required_tier INTEGER,
-          timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-      `);
+      await new Promise((resolve, reject) => {
+        db.run(`
+          CREATE TABLE IF NOT EXISTS permission_audit_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id TEXT NOT NULL,
+            guild_id TEXT NOT NULL,
+            command_name TEXT NOT NULL,
+            result TEXT,
+            user_tier INTEGER,
+            required_tier INTEGER,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+          )
+        `, (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
 
       // Insert log entry
-      const stmt = db.prepare(`
-        INSERT INTO permission_audit_log
-        (user_id, guild_id, command_name, result, user_tier, required_tier)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `);
-
-      stmt.run(
-        entry.userId,
-        entry.guildId,
-        entry.commandName,
-        entry.result,
-        entry.userTier || null,
-        entry.requiredTier || null
-      );
+      await new Promise((resolve, reject) => {
+        db.run(`
+          INSERT INTO permission_audit_log
+          (user_id, guild_id, command_name, result, user_tier, required_tier)
+          VALUES (?, ?, ?, ?, ?, ?)
+        `, [
+          entry.userId,
+          entry.guildId,
+          entry.commandName,
+          entry.result,
+          entry.userTier || null,
+          entry.requiredTier || null
+        ], (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
     } catch (err) {
       logError('RolePermissionService.auditLog', err, ERROR_LEVELS.LOW);
     }
@@ -348,16 +357,19 @@ class RolePermissionService {
    */
   async getAuditLogs(userId, guildId, limit = 50) {
     try {
-      const db = DatabaseService.getDatabase();
+      const db = await this.guildManager.getGuildDatabase(guildId);
 
-      const stmt = db.prepare(`
-        SELECT * FROM permission_audit_log
-        WHERE user_id = ? AND guild_id = ?
-        ORDER BY timestamp DESC
-        LIMIT ?
-      `);
-
-      return stmt.all(userId, guildId, limit);
+      return new Promise((resolve, reject) => {
+        db.all(`
+          SELECT * FROM permission_audit_log
+          WHERE user_id = ? AND guild_id = ?
+          ORDER BY timestamp DESC
+          LIMIT ?
+        `, [userId, guildId, limit], (err, rows) => {
+          if (err) reject(err);
+          else resolve(rows || []);
+        });
+      });
     } catch (err) {
       logError('RolePermissionService.getAuditLogs', err, ERROR_LEVELS.MEDIUM);
       return [];
@@ -372,16 +384,22 @@ class RolePermissionService {
    */
   async getGuildAuditLogs(guildId, limit = 100) {
     try {
-      const db = DatabaseService.getDatabase();
+      const db = await this.guildManager.getGuildDatabase(guildId);
 
-      const stmt = db.prepare(`
-        SELECT * FROM permission_audit_log
-        WHERE guild_id = ?
-        ORDER BY timestamp DESC
-        LIMIT ?
-      `);
-
-      return stmt.all(guildId, limit);
+      return new Promise((resolve, reject) => {
+        db.all(`
+          SELECT * FROM permission_audit_log
+          WHERE guild_id = ?
+          ORDER BY timestamp DESC
+          LIMIT ?
+        `, [guildId, limit], (err, rows) => {
+          if (err) reject(err);
+          else resolve(rows || []);
+        });
+      });
+    } catch (err) {
+      logError('RolePermissionService.getGuildAuditLogs', err, ERROR_LEVELS.MEDIUM);
+      return [];
     } catch (err) {
       logError('RolePermissionService.getGuildAuditLogs', err, ERROR_LEVELS.MEDIUM);
       return [];
