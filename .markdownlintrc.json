@@ -1,0 +1,10 @@
+{
+  "extends": "markdownlint/style/relaxed",
+  "no-trailing-spaces": true,
+  "no-multiple-blanks": {
+    "maximum": 1
+  },
+  "no-hard-tabs": true,
+  "no-bare-urls": false,
+  "emphasis-markers": "consistent"
+}
