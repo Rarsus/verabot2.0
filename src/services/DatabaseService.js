@@ -77,7 +77,7 @@ function setupSchema(db) {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
       let completed = 0;
-      const totalOperations = 5;
+      const totalOperations = 4;
 
       const checkComplete = () => {
         completed++;
@@ -145,27 +145,7 @@ function setupSchema(db) {
         }
       );
 
-      // Create user_communications table for opt-in/out tracking
-      db.run(
-        `
-        CREATE TABLE IF NOT EXISTS user_communications (
-          user_id TEXT PRIMARY KEY,
-          opted_in BOOLEAN DEFAULT 0,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-        `,
-        (err) => {
-          if (err) {
-            logError('database.setupSchema.createUserCommunications', err, ERROR_LEVELS.CRITICAL);
-            reject(err);
-          } else {
-            checkComplete();
-          }
-        }
-      );
-
-      // Create proxy_config table for webhook configuration
+      // Create proxy_config table for webhook configuration (Phase 4: Root DB cleanup)
       db.run(
         `
         CREATE TABLE IF NOT EXISTS proxy_config (

@@ -183,17 +183,68 @@ class GuildDatabaseManager {
         )
       `);
 
+      // Create reminders table (Phase 1: Guild Isolation)
+      await this._runAsync(db, `
+        CREATE TABLE IF NOT EXISTS reminders (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          subject TEXT NOT NULL,
+          category TEXT DEFAULT 'General',
+          when_datetime TEXT NOT NULL,
+          content TEXT,
+          link TEXT,
+          image TEXT,
+          notificationTime TEXT,
+          status TEXT DEFAULT 'active',
+          notification_method TEXT DEFAULT 'dm',
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+
+      // Create reminder_assignments table (Phase 1: Guild Isolation)
+      await this._runAsync(db, `
+        CREATE TABLE IF NOT EXISTS reminder_assignments (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          reminderId INTEGER NOT NULL,
+          assigneeType TEXT NOT NULL,
+          assigneeId TEXT NOT NULL,
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (reminderId) REFERENCES reminders(id) ON DELETE CASCADE,
+          UNIQUE(reminderId, assigneeType, assigneeId)
+        )
+      `);
+
+      // Create reminder_notifications table (Phase 1: Guild Isolation)
+      await this._runAsync(db, `
+        CREATE TABLE IF NOT EXISTS reminder_notifications (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          reminderId INTEGER NOT NULL,
+          assigneeId TEXT NOT NULL,
+          notifiedAt TEXT,
+          readAt TEXT,
+          status TEXT DEFAULT 'pending',
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (reminderId) REFERENCES reminders(id) ON DELETE CASCADE
+        )
+      `);
+
+      // Create performance indexes for reminders (Phase 1: Guild Isolation - 5 indexes)
+      await this._runAsync(db, 'CREATE INDEX IF NOT EXISTS idx_reminders_status ON reminders(status)');
+      await this._runAsync(db, 'CREATE INDEX IF NOT EXISTS idx_reminders_when ON reminders(when_datetime)');
+      await this._runAsync(db, 'CREATE INDEX IF NOT EXISTS idx_reminder_assignments_reminderId ON reminder_assignments(reminderId)');
+      await this._runAsync(db, 'CREATE INDEX IF NOT EXISTS idx_reminder_notifications_reminderId ON reminder_notifications(reminderId)');
+      await this._runAsync(db, 'CREATE INDEX IF NOT EXISTS idx_reminder_notifications_assigneeId ON reminder_notifications(assigneeId)');
+
       // Create user_communications table
       await this._runAsync(db, `
         CREATE TABLE IF NOT EXISTS user_communications (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           userId TEXT NOT NULL,
-          guildId TEXT NOT NULL,
           opted_in INTEGER DEFAULT 0,
           preferences TEXT DEFAULT '{}',
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
           updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-          UNIQUE(userId, guildId)
+          UNIQUE(userId)
         )
       `);
 

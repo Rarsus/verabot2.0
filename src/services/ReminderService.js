@@ -1,4 +1,26 @@
 /**
+ * ⚠️  DEPRECATED: Reminder Service (Phase 7 Assessment)
+ *
+ * This service is DEPRECATED as of v2.13.0 and will be removed in v0.3.0 (March 2026).
+ *
+ * USE INSTEAD: GuildAwareReminderService
+ * Location: src/services/GuildAwareReminderService.js
+ *
+ * Reasons for deprecation:
+ * - Uses shared root database (not guild-isolated)
+ * - All core commands have migrated to GuildAwareReminderService
+ * - All event handlers have migrated to GuildAwareReminderService
+ * - Security risk: possible cross-guild data exposure via SQL bugs
+ *
+ * Migration Status:
+ * ✅ All commands using GuildAwareReminderService
+ * ✅ All event handlers using GuildAwareReminderService
+ * ⏳ ReminderNotificationService - PENDING update to guild-aware (Phase 6 expansion)
+ *
+ * See: docs/reference/DB-DEPRECATION-TIMELINE.md for detailed migration guide
+ */
+
+/**
  * Reminder Service
  * Core business logic for reminder management
  */

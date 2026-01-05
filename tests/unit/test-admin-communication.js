@@ -1,29 +1,13 @@
 /**
- * Test Suite: Admin Communication Commands
- * Tests for broadcast, say, whisper, and embed commands
+ * Test Suite: Admin Communication Commands (Phase 6)
+ * Tests for broadcast, say, whisper, and embed commands with guild-aware communication
  */
 
-const CommunicationService = require('../../src/services/CommunicationService');
-const DatabaseService = require('../../src/services/DatabaseService');
+const GuildAwareCommunicationService = require('../../src/services/GuildAwareCommunicationService');
+const GuildDatabaseManager = require('../../src/services/GuildDatabaseManager');
 
-// Initialize database properly
-const db = DatabaseService.getDatabase();
-
-// Flag to track if schema has been set up
-let schemaInitialized = false;
-
-// Setup database schema for tests
-async function setupTestDatabase() {
-  if (!schemaInitialized) {
-    try {
-      await DatabaseService.setupSchema(db);
-      schemaInitialized = true;
-    } catch (err) {
-      console.error('Database setup error:', err);
-      throw err;
-    }
-  }
-}
+// Test guild ID
+const TEST_GUILD_ID = 'test-guild-' + Date.now();
 
 async function testBroadcastCommand() {
   console.log('\n📡 Testing Broadcast Command...');
@@ -50,9 +34,6 @@ async function testWhisperCommand() {
   console.log('\n🤫 Testing Whisper Command...');
 
   try {
-    // Setup database for opt-in tests
-    await setupTestDatabase();
-
     // Test 1: Basic whisper functionality
     console.log('  ✓ Command initializes correctly');
     console.log('  ✓ Sends DM to individual users');
@@ -61,27 +42,27 @@ async function testWhisperCommand() {
     console.log('  ✓ Reports failed DMs separately');
     console.log('  ✓ Handles users with DMs disabled');
 
-    // Test 2: Opt-in enforcement - Create test user
+    // Test 2: Opt-in enforcement - Create test user (Phase 6: Guild Isolation)
     const testUserId = 'test-user-' + Date.now();
 
     // Opt-in the user
-    await CommunicationService.optIn(testUserId);
-    let isOptedIn = await CommunicationService.isOptedIn(testUserId);
+    await GuildAwareCommunicationService.optIn(TEST_GUILD_ID, testUserId);
+    let isOptedIn = await GuildAwareCommunicationService.isOptedIn(TEST_GUILD_ID, testUserId);
     if (!isOptedIn) {
       throw new Error('User should be opted in after optIn()');
     }
     console.log('  ✓ Respects user opt-in status (opted in = DM sent)');
 
     // Opt-out the user
-    await CommunicationService.optOut(testUserId);
-    isOptedIn = await CommunicationService.isOptedIn(testUserId);
+    await GuildAwareCommunicationService.optOut(TEST_GUILD_ID, testUserId);
+    isOptedIn = await GuildAwareCommunicationService.isOptedIn(TEST_GUILD_ID, testUserId);
     if (isOptedIn) {
       throw new Error('User should be opted out after optOut()');
     }
     console.log('  ✓ Respects user opt-out status (opted out = DM blocked)');
 
     // Test 3: Check status
-    const status = await CommunicationService.getStatus(testUserId);
+    const status = await GuildAwareCommunicationService.getStatus(TEST_GUILD_ID, testUserId);
     if (!status || typeof status !== 'object') {
       throw new Error('Status should return user communication status');
     }
@@ -134,7 +115,7 @@ async function testErrorHandling() {
 
 async function runTests() {
   console.log('\n' + '='.repeat(60));
-  console.log('🔧 Admin Communication Commands Test Suite');
+  console.log('🔧 Admin Communication Commands Test Suite (Phase 6)');
   console.log('='.repeat(60));
 
   try {
@@ -149,9 +130,24 @@ async function runTests() {
     console.log('✅ All admin communication command tests passed!');
     console.log('='.repeat(60) + '\n');
 
+    // Cleanup guild database (Phase 6)
+    try {
+      await GuildDatabaseManager.deleteGuildDatabase(TEST_GUILD_ID);
+    } catch (err) {
+      // Ignore cleanup errors
+    }
+
     return true;
   } catch (err) {
     console.error('❌ Test failed:', err);
+
+    // Cleanup on error (Phase 6)
+    try {
+      await GuildDatabaseManager.deleteGuildDatabase(TEST_GUILD_ID);
+    } catch (cleanupErr) {
+      // Ignore cleanup errors
+    }
+
     process.exit(1);
   }
 }

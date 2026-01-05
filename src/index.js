@@ -201,11 +201,12 @@ client.on('interactionCreate', async (interaction) => {
   // Handle button interactions
   if (interaction.isButton()) {
     const customId = interaction.customId;
+    const guildId = interaction.guildId; // Phase 5: Extract guildId from interaction
 
     try {
       // Handle reminder decision buttons
       if (customId.startsWith('reminder_cancel_')) {
-        // Cancel and delete the reminder
+        // Cancel and delete the reminder (Phase 5: Guild Isolation)
         await interaction.deferReply({ ephemeral: true });
 
         // Extract reminder ID from stored context
@@ -213,39 +214,39 @@ client.on('interactionCreate', async (interaction) => {
           _ctx => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
         );
 
-        if (context && context.reminderId) {
-          const { deleteReminder } = require('./services/ReminderService');
-          await deleteReminder(context.reminderId);
+        if (context && context.reminderId && guildId) {
+          const { deleteReminder } = require('./services/GuildAwareReminderService');
+          await deleteReminder(guildId, context.reminderId, true);
           await interaction.editReply('✅ Reminder cancelled.');
         } else {
           await interaction.editReply('❌ Could not find reminder to cancel.');
         }
       } else if (customId.startsWith('reminder_server_')) {
-        // Create reminder with server-only notification method
+        // Create reminder with server-only notification method (Phase 5: Guild Isolation)
         await interaction.deferReply({ ephemeral: true });
 
         const context = Object.values(client.reminderContexts || {}).find(
           _ctx => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
         );
 
-        if (context && context.reminderId) {
-          const { updateNotificationMethod } = require('./services/ReminderService');
-          await updateNotificationMethod(context.reminderId, 'server');
+        if (context && context.reminderId && guildId) {
+          const { updateReminder } = require('./services/GuildAwareReminderService');
+          await updateReminder(guildId, context.reminderId, { notification_method: 'server' });
           await interaction.editReply(`✅ Reminder created with server-only notifications for "${context.subject}".`);
         } else {
           await interaction.editReply('❌ Could not update reminder notification method.');
         }
       } else if (customId.startsWith('reminder_notify_')) {
-        // Send opt-in request to the recipient
+        // Send opt-in request to the recipient (Phase 5: Guild Isolation)
         await interaction.deferReply({ ephemeral: true });
 
         const context = Object.values(client.reminderContexts || {}).find(
           _ctx => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
         );
 
-        if (context && context.recipient) {
-          const { updateNotificationMethod } = require('./services/ReminderService');
-          await updateNotificationMethod(context.reminderId, 'dm');
+        if (context && context.recipient && guildId) {
+          const { updateReminder } = require('./services/GuildAwareReminderService');
+          await updateReminder(guildId, context.reminderId, { notification_method: 'dm' });
 
           // Send opt-in request to the user
           const { sendOptInRequest } = require('./utils/helpers/response-helpers');
