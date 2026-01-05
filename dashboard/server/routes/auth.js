@@ -34,7 +34,7 @@ router.get('/callback', async (req, res) => {
 
     // Handle OAuth errors
     if (error) {
-      const dashboardUrl = process.env.DASHBOARD_URL || 'http://localhost:3001';
+      const dashboardUrl = process.env.DASHBOARD_URL || 'http://localhost:5000';
       return res.redirect(`${dashboardUrl}/login?error=${encodeURIComponent(error)}`);
     }
 
@@ -69,11 +69,11 @@ router.get('/callback', async (req, res) => {
     });
 
     // Redirect to dashboard
-    const dashboardUrl = process.env.DASHBOARD_URL || 'http://localhost:3001';
+    const dashboardUrl = process.env.DASHBOARD_URL || 'http://localhost:5000';
     res.redirect(`${dashboardUrl}/?token=${jwtToken}`);
   } catch (error) {
     console.error('OAuth callback error:', error.message);
-    const dashboardUrl = process.env.DASHBOARD_URL || 'http://localhost:3001';
+    const dashboardUrl = process.env.DASHBOARD_URL || 'http://localhost:5000';
     res.redirect(`${dashboardUrl}/login?error=authentication_failed`);
   }
 });

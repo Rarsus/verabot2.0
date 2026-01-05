@@ -9,7 +9,7 @@ class OAuthService {
   constructor() {
     this.clientId = process.env.DISCORD_CLIENT_ID;
     this.clientSecret = process.env.DISCORD_CLIENT_SECRET;
-    this.redirectUri = process.env.DISCORD_REDIRECT_URI || 'http://localhost:3001/api/auth/callback';
+    this.redirectUri = process.env.DISCORD_REDIRECT_URI || 'http://localhost:5000/api/auth/callback';
     this.scopes = (process.env.DISCORD_SCOPES || 'identify,guilds').split(',');
     this.jwtSecret = process.env.SESSION_SECRET || 'your-secret-key-change-in-production';
     

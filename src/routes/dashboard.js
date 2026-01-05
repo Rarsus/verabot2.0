@@ -10,7 +10,7 @@ const router = express.Router();
  * POST /api/auth/verify-admin
  * Verify if user has admin access to the bot
  */
-router.post('/auth/verify-admin', (req, res) => {
+router.post('/auth/verify-admin', async (req, res) => {
   try {
     const { userId, guilds } = req.body;
 
@@ -40,24 +40,25 @@ router.post('/auth/verify-admin', (req, res) => {
     }
 
     // Check if user has admin permissions in any mutual guild
-    let isAdmin = false;
-    const adminGuilds = [];
-
-    for (const guildId of guilds) {
+    // Use Promise.all to check all guilds in parallel
+    const guildChecks = guilds.map(async (guildId) => {
       const guild = client.guilds.cache.get(guildId);
-      if (!guild) continue;
+      if (!guild) return null;
 
-      guild.members.fetch(userId)
-        .then(member => {
-          if (member && member.permissions.has('Administrator')) {
-            isAdmin = true;
-            adminGuilds.push(guildId);
-          }
-        })
-        .catch(() => {
-          // User not in guild or error fetching
-        });
-    }
+      try {
+        const member = await guild.members.fetch(userId);
+        if (member && member.permissions.has('Administrator')) {
+          return guildId;
+        }
+      } catch (err) {
+        // User not in guild or error fetching
+      }
+      return null;
+    });
+
+    const results = await Promise.all(guildChecks);
+    const adminGuilds = results.filter(g => g !== null);
+    const isAdmin = adminGuilds.length > 0;
 
     res.json({
       success: true,

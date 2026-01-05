@@ -29,7 +29,6 @@
       - NODE_ENV=production
       - PORT=5000
       - BOT_API_URL=http://verabot2:3000
-      - DASHBOARD_URL=http://localhost:5000
 
 networks:
   verabot-network:
