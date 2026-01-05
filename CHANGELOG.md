@@ -1,3 +1,16 @@
+# [2.13.0](https://github.com/Rarsus/verabot2.0/compare/v2.12.0...v2.13.0) (2026-01-05)
+
+
+### Bug Fixes
+
+* Remove duplicate catch block in RolePermissionService ([4016dad](https://github.com/Rarsus/verabot2.0/commit/4016dad030dfbab9f921947953a3b4524e6e211c))
+* Resolve database schema, deprecated APIs, and external service errors ([43541b7](https://github.com/Rarsus/verabot2.0/commit/43541b70493d18058547025a78132c9cea8e0eba))
+
+
+### Features
+
+* Add React admin dashboard for VeraBot management ([ee5412f](https://github.com/Rarsus/verabot2.0/commit/ee5412ff376f3a25d505da39fccc01dc0b327d34))
+
 # [2.12.0](https://github.com/Rarsus/verabot2.0/compare/v2.11.0...v2.12.0) (2026-01-03)
 
 
