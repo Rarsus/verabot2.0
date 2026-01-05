@@ -1,0 +1,338 @@
+#!/usr/bin/env node
+/**
+ * Database MCP Server
+ * Provides safe SQLite database access for Copilot
+ * - Query guild and root databases
+ * - Inspect schemas
+ * - Get statistics
+ * - List databases
+ * Guild isolation aware
+ */
+
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+const fs = require('fs');
+
+const DB_ROOT = process.env.MCP_DB_ROOT || path.join(process.cwd(), 'data/db');
+
+class DatabaseMCPServer {
+  constructor() {
+    this.databases = new Map();
+  }
+
+  /**
+   * Get a database connection (cached)
+   */
+  async getDatabase(guildId = 'root') {
+    if (this.databases.has(guildId)) {
+      return this.databases.get(guildId);
+    }
+
+    const dbPath = guildId === 'root'
+      ? path.join(DB_ROOT, 'quotes.db')
+      : path.join(DB_ROOT, 'guilds', guildId, 'quotes.db');
+
+    return new Promise((resolve, reject) => {
+      const db = new sqlite3.Database(dbPath, (err) => {
+        if (err) {
+          reject(new Error(`Failed to open database at ${dbPath}: ${err.message}`));
+        } else {
+          this.databases.set(guildId, db);
+          resolve(db);
+        }
+      });
+    });
+  }
+
+  /**
+   * Execute a query safely
+   */
+  async query(sql, params = [], guildId = 'root') {
+    // Prevent dangerous operations
+    if (/DELETE|DROP|UPDATE|INSERT/i.test(sql) && !sql.includes('SELECT')) {
+      throw new Error('Write operations not allowed via MCP (read-only)');
+    }
+
+    const db = await this.getDatabase(guildId);
+    return new Promise((resolve, reject) => {
+      db.all(sql, params, (err, rows) => {
+        if (err) reject(new Error(`Query failed: ${err.message}`));
+        else resolve(rows || []);
+      });
+    });
+  }
+
+  /**
+   * Get database schema
+   */
+  async getSchema(guildId = 'root') {
+    try {
+      const tables = await this.query(
+        "SELECT name FROM sqlite_master WHERE type='table'",
+        [],
+        guildId
+      );
+
+      const schema = {};
+      for (const table of tables) {
+        const columns = await this.query(
+          `PRAGMA table_info(${table.name})`,
+          [],
+          guildId
+        );
+        schema[table.name] = columns;
+      }
+
+      return schema;
+    } catch (error) {
+      throw new Error(`Failed to get schema: ${error.message}`);
+    }
+  }
+
+  /**
+   * Get quote count for a guild
+   */
+  async getQuoteCount(guildId = 'root') {
+    try {
+      const result = await this.query('SELECT COUNT(*) as count FROM quotes', [], guildId);
+      return result[0]?.count || 0;
+    } catch (error) {
+      throw new Error(`Failed to get quote count: ${error.message}`);
+    }
+  }
+
+  /**
+   * Get reminder count for a guild
+   */
+  async getReminderCount(guildId = 'root') {
+    try {
+      const result = await this.query('SELECT COUNT(*) as count FROM reminders', [], guildId);
+      return result[0]?.count || 0;
+    } catch (error) {
+      return 0; // Table might not exist
+    }
+  }
+
+  /**
+   * List all guild databases
+   */
+  async getGuildDatabases() {
+    try {
+      const guildsDir = path.join(DB_ROOT, 'guilds');
+      if (!fs.existsSync(guildsDir)) {
+        return [];
+      }
+
+      const guildDirs = fs.readdirSync(guildsDir);
+      return guildDirs.filter(dir => !dir.startsWith('.')).sort();
+    } catch (error) {
+      throw new Error(`Failed to list guild databases: ${error.message}`);
+    }
+  }
+
+  /**
+   * Get root database statistics
+   */
+  async getRootDatabaseStats() {
+    try {
+      const tables = await this.getSchema('root');
+      const stats = {
+        database: 'root',
+        tables: Object.keys(tables),
+        tableCount: Object.keys(tables).length,
+        purpose: 'Bot infrastructure (proxy_config, schema_versions)',
+        path: path.join(DB_ROOT, 'quotes.db')
+      };
+
+      return stats;
+    } catch (error) {
+      throw new Error(`Failed to get root database stats: ${error.message}`);
+    }
+  }
+
+  /**
+   * Get guild database statistics
+   */
+  async getGuildDatabaseStats(guildId) {
+    try {
+      const dbPath = path.join(DB_ROOT, 'guilds', guildId, 'quotes.db');
+
+      if (!fs.existsSync(dbPath)) {
+        return {
+          guildId,
+          exists: false,
+          error: 'Database not found'
+        };
+      }
+
+      const tables = await this.getSchema(guildId);
+      const quoteCount = await this.getQuoteCount(guildId);
+      const reminderCount = await this.getReminderCount(guildId);
+
+      return {
+        guildId,
+        exists: true,
+        tables: Object.keys(tables),
+        tableCount: Object.keys(tables).length,
+        quoteCount,
+        reminderCount,
+        path: dbPath
+      };
+    } catch (error) {
+      return {
+        guildId,
+        exists: false,
+        error: error.message
+      };
+    }
+  }
+
+  /**
+   * Get all guild database statistics
+   */
+  async getAllGuildStats() {
+    const guilds = await this.getGuildDatabases();
+    const stats = [];
+
+    for (const guildId of guilds) {
+      const stat = await this.getGuildDatabaseStats(guildId);
+      stats.push(stat);
+    }
+
+    return {
+      totalGuilds: guilds.length,
+      guilds: stats
+    };
+  }
+
+  /**
+   * Get recent quotes
+   */
+  async getRecentQuotes(guildId = 'root', limit = 10) {
+    try {
+      return await this.query(
+        'SELECT id, text, author, createdAt FROM quotes ORDER BY createdAt DESC LIMIT ?',
+        [limit],
+        guildId
+      );
+    } catch (error) {
+      throw new Error(`Failed to get recent quotes: ${error.message}`);
+    }
+  }
+
+  /**
+   * Search quotes by text or author
+   */
+  async searchQuotes(guildId, keyword, limit = 20) {
+    try {
+      return await this.query(
+        `SELECT id, text, author FROM quotes 
+         WHERE text LIKE ? OR author LIKE ? 
+         ORDER BY id DESC LIMIT ?`,
+        [`%${keyword}%`, `%${keyword}%`, limit],
+        guildId
+      );
+    } catch (error) {
+      throw new Error(`Failed to search quotes: ${error.message}`);
+    }
+  }
+
+  /**
+   * Get database summary for all guilds
+   */
+  async getSummary() {
+    try {
+      const root = await this.getRootDatabaseStats();
+      const guilds = await this.getAllGuildStats();
+      const totalQuotes = guilds.guilds.reduce((sum, g) => sum + (g.quoteCount || 0), 0);
+      const totalReminders = guilds.guilds.reduce((sum, g) => sum + (g.reminderCount || 0), 0);
+
+      return {
+        root,
+        guilds: guilds.totalGuilds,
+        totalQuotes,
+        totalReminders,
+        databases: {
+          root: 1,
+          guild: guilds.totalGuilds,
+          total: 1 + guilds.totalGuilds
+        }
+      };
+    } catch (error) {
+      throw new Error(`Failed to get summary: ${error.message}`);
+    }
+  }
+
+  /**
+   * Close all database connections
+   */
+  closeAll() {
+    this.databases.forEach(db => {
+      db.close();
+    });
+    this.databases.clear();
+  }
+}
+
+// Create singleton instance
+const instance = new DatabaseMCPServer();
+
+// Export for MCP integration
+module.exports = instance;
+
+// CLI interface for testing
+if (require.main === module) {
+  (async () => {
+    try {
+      console.log('🗄️  Database MCP Server - CLI Mode\n');
+
+      const args = process.argv.slice(2);
+      const command = args[0];
+
+      if (command === 'summary') {
+        console.log(JSON.stringify(await instance.getSummary(), null, 2));
+      } else if (command === 'root') {
+        console.log(JSON.stringify(await instance.getRootDatabaseStats(), null, 2));
+      } else if (command === 'guilds') {
+        console.log(JSON.stringify(await instance.getAllGuildStats(), null, 2));
+      } else if (command === 'guild') {
+        const guildId = args[1];
+        if (!guildId) {
+          console.error('Usage: node database-server.js guild <guildId>');
+          process.exit(1);
+        }
+        console.log(JSON.stringify(await instance.getGuildDatabaseStats(guildId), null, 2));
+      } else if (command === 'quotes') {
+        const guildId = args[1] || 'root';
+        const limit = parseInt(args[2]) || 10;
+        const quotes = await instance.getRecentQuotes(guildId, limit);
+        console.log(`Recent ${limit} quotes from guild "${guildId}":\n`);
+        console.log(JSON.stringify(quotes, null, 2));
+      } else if (command === 'search') {
+        const guildId = args[1] || 'root';
+        const keyword = args[2];
+        if (!keyword) {
+          console.error('Usage: node database-server.js search <guildId> <keyword>');
+          process.exit(1);
+        }
+        const results = await instance.searchQuotes(guildId, keyword);
+        console.log(`Search results for "${keyword}" in guild "${guildId}":\n`);
+        console.log(JSON.stringify(results, null, 2));
+      } else {
+        console.log('Usage:');
+        console.log('  node database-server.js summary        - Show database summary');
+        console.log('  node database-server.js root           - Show root database stats');
+        console.log('  node database-server.js guilds         - List all guild databases');
+        console.log('  node database-server.js guild <id>     - Show guild stats');
+        console.log('  node database-server.js quotes [guild] - Show recent quotes');
+        console.log('  node database-server.js search <guild> <keyword> - Search quotes');
+      }
+
+      instance.closeAll();
+    } catch (error) {
+      console.error('Error:', error.message);
+      instance.closeAll();
+      process.exit(1);
+    }
+  })();
+}
