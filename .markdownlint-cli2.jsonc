@@ -1,0 +1,22 @@
+{
+  "extends": "markdownlint/style/relaxed",
+  "line-length": false,
+  "blanks-around-lists": false,
+  "blanks-around-fences": false,
+  "blanks-around-headings": false,
+  "fenced-code-language": false,
+  "table-pipe-style": false,
+  "table-column-style": false,
+  "table-columns": false,
+  "no-trailing-spaces": true,
+  "no-multiple-blanks": {
+    "maximum": 1
+  },
+  "no-hard-tabs": true,
+  "no-bare-urls": true,
+  "emphasis-markers": "consistent",
+  "list-item-indent": "consistent",
+  "list-marker-space": true,
+  "proper-names": false,
+  "commands-show-output": false
+}
