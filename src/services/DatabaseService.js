@@ -52,10 +52,18 @@ function initializeDatabase() {
       logError('database.init', err, ERROR_LEVELS.CRITICAL);
       throw err;
     }
-  });
 
-  // Enable foreign keys
-  db.run('PRAGMA foreign_keys = ON');
+    // Enable foreign keys
+    db.run('PRAGMA foreign_keys = ON');
+
+    // Initialize schema for root database (in background, non-blocking)
+    // This ensures proxy_config and other tables exist for the deprecated root database
+    setImmediate(() => {
+      setupSchema(db).catch((error) => {
+        logError('database.init.setupSchema', error, ERROR_LEVELS.CRITICAL);
+      });
+    });
+  });
 
   return db;
 }
@@ -69,7 +77,7 @@ function setupSchema(db) {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
       let completed = 0;
-      const totalOperations = 4;
+      const totalOperations = 5;
 
       const checkComplete = () => {
         completed++;
@@ -154,6 +162,25 @@ function setupSchema(db) {
           } else {
             checkComplete();
           }
+        }
+      );
+
+      // Create proxy_config table for webhook configuration
+      db.run(
+        `
+        CREATE TABLE IF NOT EXISTS proxy_config (
+          key TEXT PRIMARY KEY,
+          value TEXT NOT NULL,
+          encrypted BOOLEAN DEFAULT 0,
+          updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+        `,
+        (err) => {
+          if (err) {
+            logError('database.setupSchema.createProxyConfig', err, ERROR_LEVELS.MEDIUM);
+            // Don't reject on proxy_config creation failure, just continue
+          }
+          checkComplete();
         }
       );
     });

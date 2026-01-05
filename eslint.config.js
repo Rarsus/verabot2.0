@@ -12,6 +12,7 @@ module.exports = [
       'coverage/**',
       'dist/**',
       'build/**',
+      'dashboard/**',
       '.husky/**',
       '.github/**',
       '.vscode/**',
