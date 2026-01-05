@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable security/detect-object-injection */
 
 /**
  * Migration Script: Single-Database to Multi-Database Architecture
@@ -203,7 +204,7 @@ async function migrateDataToGuild(guildManager, guildId, data) {
               quote.updatedAt || new Date().toISOString()
             ]
           );
-        } catch (err) {
+        } catch {
           log.warning(`Skipped duplicate quote: "${quote.text.substring(0, 50)}..."`);
         }
       }
@@ -218,7 +219,7 @@ async function migrateDataToGuild(guildManager, guildId, data) {
             'INSERT INTO tags (name, description, createdAt) VALUES (?, ?, ?)',
             [tag.name, tag.description || '', tag.createdAt || new Date().toISOString()]
           );
-        } catch (err) {
+        } catch {
           log.warning(`Skipped duplicate tag: ${tag.name}`);
         }
       }
@@ -230,7 +231,7 @@ async function migrateDataToGuild(guildManager, guildId, data) {
       for (const qt of data.quote_tags) {
         try {
           await runAsync('INSERT INTO quote_tags (quoteId, tagId) VALUES (?, ?)', [qt.quoteId, qt.tagId]);
-        } catch (err) {
+        } catch {
           // Silently skip if quote or tag doesn't exist
         }
       }
@@ -245,7 +246,7 @@ async function migrateDataToGuild(guildManager, guildId, data) {
             'INSERT INTO quote_ratings (quoteId, userId, rating, createdAt) VALUES (?, ?, ?, ?)',
             [rating.quoteId, rating.userId, rating.rating, rating.createdAt || new Date().toISOString()]
           );
-        } catch (err) {
+        } catch {
           log.warning(`Skipped duplicate rating for quote ${rating.quoteId}`);
         }
       }
@@ -274,7 +275,7 @@ async function migrateDataToGuild(guildManager, guildId, data) {
               reminder.updatedAt || new Date().toISOString()
             ]
           );
-        } catch (err) {
+        } catch {
           log.warning(`Skipped invalid reminder: ${reminder.subject}`);
         }
       }
@@ -298,7 +299,7 @@ async function migrateDataToGuild(guildManager, guildId, data) {
               comm.updatedAt || new Date().toISOString()
             ]
           );
-        } catch (err) {
+        } catch {
           log.warning(`Skipped duplicate communication preference for user ${comm.userId}`);
         }
       }

@@ -8,6 +8,7 @@
  * - List databases
  * Guild isolation aware
  */
+/* eslint-disable security/detect-non-literal-fs-filename, no-unused-vars */
 
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
@@ -108,7 +109,7 @@ class DatabaseMCPServer {
     try {
       const result = await this.query('SELECT COUNT(*) as count FROM reminders', [], guildId);
       return result[0]?.count || 0;
-    } catch (error) {
+    } catch (_error) {
       return 0; // Table might not exist
     }
   }
@@ -125,8 +126,8 @@ class DatabaseMCPServer {
 
       const guildDirs = fs.readdirSync(guildsDir);
       return guildDirs.filter(dir => !dir.startsWith('.')).sort();
-    } catch (error) {
-      throw new Error(`Failed to list guild databases: ${error.message}`);
+    } catch (err) {
+      throw new Error(`Failed to list guild databases: ${err.message}`);
     }
   }
 

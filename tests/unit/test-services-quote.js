@@ -22,7 +22,7 @@ let failed = 0;
 async function cleanup() {
   try {
     await GuildDatabaseManager.deleteGuildDatabase(TEST_GUILD_ID);
-  } catch (err) {
+  } catch {
     // Ignore
   }
 }

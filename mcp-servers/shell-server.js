@@ -7,8 +7,9 @@
  * - Get project information
  * - Limited to safe operations
  */
+/* eslint-disable security/detect-non-literal-fs-filename */
 
-const { execSync, spawn } = require('child_process');
+const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
@@ -179,6 +180,7 @@ class ShellMCPServer {
 
     Object.entries(scripts.scripts).forEach(([name, cmd]) => {
       if (name.includes('test')) {
+        // eslint-disable-next-line security/detect-object-injection
         testScripts[name] = cmd;
       }
     });

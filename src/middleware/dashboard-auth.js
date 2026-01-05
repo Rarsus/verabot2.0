@@ -125,7 +125,7 @@ class DashboardAuthMiddleware {
               isAdmin = true;
               break;
             }
-          } catch (err) {
+          } catch {
             // Continue checking other guilds
           }
         }

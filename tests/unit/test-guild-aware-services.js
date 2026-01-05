@@ -27,7 +27,7 @@ function assert(condition, testName) {
 async function cleanup() {
   try {
     await GuildDatabaseManager.deleteGuildDatabase(TEST_GUILD_ID);
-  } catch (err) {
+  } catch {
     // Ignore
   }
 }
@@ -119,7 +119,6 @@ async function cleanup() {
   console.log('='.repeat(70));
 
   let createdReminderId = null;
-  let createdAssignmentId = null;
 
   // Test 2.1: Create Reminder
   console.log('\n📌 Test 2.1: Create Reminder');
@@ -158,7 +157,6 @@ async function cleanup() {
       '123456789'
     );
     assert(typeof assignmentId === 'number' && assignmentId > 0, 'Creates assignment and returns ID');
-    createdAssignmentId = assignmentId;
   } catch (err) {
     assert(false, `Add assignment failed: ${err.message}`);
   }
@@ -351,7 +349,7 @@ async function cleanup() {
     const guild2 = 'test-guild-2-' + Date.now();
 
     // Create reminder in guild 1
-    const reminder1 = await GuildAwareReminderService.createReminder(TEST_GUILD_ID, {
+    await GuildAwareReminderService.createReminder(TEST_GUILD_ID, {
       subject: 'Guild 1 Reminder',
       category: 'Test',
       when: new Date().toISOString(),
@@ -359,7 +357,7 @@ async function cleanup() {
     });
 
     // Create reminder in guild 2
-    const reminder2 = await GuildAwareReminderService.createReminder(guild2, {
+    await GuildAwareReminderService.createReminder(guild2, {
       subject: 'Guild 2 Reminder',
       category: 'Test',
       when: new Date().toISOString(),
@@ -397,12 +395,12 @@ async function cleanup() {
     try {
       await GuildAwareReminderService.deleteGuildReminders(guildToDelete);
       assert(true, 'Guild database deletion succeeds');
-    } catch (err) {
+    } catch {
       // After deletion, trying to access should fail gracefully
       assert(true, 'Guild database deletion succeeds');
     }
-  } catch (err) {
-    assert(false, `GDPR deletion test failed: ${err.message}`);
+  } catch {
+    assert(false, 'GDPR deletion test failed');
   }
 
   // ============================================================================

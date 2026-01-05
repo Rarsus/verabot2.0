@@ -5,9 +5,7 @@
 
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
-const RolePermissionService = require('../../services/RolePermissionService');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
-const { checkAdminPermission } = require('../../utils/proxy-helpers');
 const CommunicationService = require('../../services/CommunicationService');
 
 const { data, options } = buildCommandOptions(

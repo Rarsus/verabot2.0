@@ -133,7 +133,7 @@ async function runTests() {
     // Cleanup guild database (Phase 6)
     try {
       await GuildDatabaseManager.deleteGuildDatabase(TEST_GUILD_ID);
-    } catch (err) {
+    } catch {
       // Ignore cleanup errors
     }
 
@@ -144,7 +144,7 @@ async function runTests() {
     // Cleanup on error (Phase 6)
     try {
       await GuildDatabaseManager.deleteGuildDatabase(TEST_GUILD_ID);
-    } catch (cleanupErr) {
+    } catch {
       // Ignore cleanup errors
     }
 

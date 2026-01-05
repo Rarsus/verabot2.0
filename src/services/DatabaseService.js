@@ -5,7 +5,6 @@ const { logError, ERROR_LEVELS } = require('../middleware/errorHandler');
 
 // Guild-aware database services (Phase 2)
 const GuildAwareDatabaseService = require('./GuildAwareDatabaseService');
-const guildManager = require('./GuildDatabaseManager');
 
 const dbPath = path.join(__dirname, '..', '..', 'data', 'db', 'quotes.db');
 

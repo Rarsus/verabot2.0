@@ -50,7 +50,7 @@ router.post('/auth/verify-admin', async (req, res) => {
         if (member && member.permissions.has('Administrator')) {
           return guildId;
         }
-      } catch (err) {
+      } catch {
         // User not in guild or error fetching
       }
       return null;

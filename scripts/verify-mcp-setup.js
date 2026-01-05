@@ -3,6 +3,7 @@
  * MCP Setup Verification Script
  * Verifies that all MCP servers are properly configured and operational
  */
+/* eslint-disable security/detect-object-injection */
 
 const fs = require('fs');
 const path = require('path');
@@ -41,7 +42,7 @@ function checkCommand(cmd, description) {
     execSync(cmd, { stdio: 'ignore' });
     log(`✅ ${description}`, 'green');
     return true;
-  } catch (error) {
+  } catch {
     log(`❌ ${description}`, 'red');
     return false;
   }
@@ -49,14 +50,14 @@ function checkCommand(cmd, description) {
 
 function testMCPServer(serverPath, testCmd, description) {
   try {
-    const result = execSync(`node ${serverPath} ${testCmd}`, {
+    execSync(`node ${serverPath} ${testCmd}`, {
       cwd: PROJECT_ROOT,
       timeout: 5000,
       stdio: 'pipe'
-    }).toString();
+    });
     log(`✅ ${description}`, 'green');
     return true;
-  } catch (error) {
+  } catch {
     log(`❌ ${description}`, 'red');
     return false;
   }
@@ -168,7 +169,7 @@ async function main() {
 
     log(`${nodeOk ? '✅' : '❌'} Node.js ${nodeVersion}${!nodeOk ? ' (requires 18+)' : ''}`, nodeOk ? 'green' : 'red');
     log(`✅ npm ${npmVersion}`, 'green');
-  } catch (error) {
+  } catch {
     log('❌ Node.js version check failed', 'red');
   }
   log('');

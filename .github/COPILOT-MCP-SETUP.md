@@ -1,13 +1,14 @@
+<!-- markdownlint-disable MD013 MD031 MD032 MD040 -->
 # MCP Server Setup Guide for VeraBot2.0
 
 ## Overview
 
-This guide covers the Model Context Protocol (MCP) server configuration for VeraBot2.0. These servers enable GitHub Copilot and other AI tools to safely interact with your project.
+This guide covers the Model Context Protocol (MCP) server configuration for VeraBot2.0.
+These servers enable GitHub Copilot and other AI tools to safely interact with your project.
 
 ## What is MCP?
 
 **Model Context Protocol** is a standardized interface that allows AI assistants to:
-
 - Read and analyze your codebase
 - View git history and status
 - Execute tests and build scripts
@@ -18,7 +19,7 @@ This guide covers the Model Context Protocol (MCP) server configuration for Vera
 
 VeraBot2.0 includes 5 MCP servers:
 
-```
+```txt
 ┌─────────────────────────────────────────┐
 │      GitHub Copilot / AI Tools          │
 └──────────────────┬──────────────────────┘
@@ -49,7 +50,6 @@ VeraBot2.0 includes 5 MCP servers:
 **Purpose:** Provide safe read-only access to project files
 
 **Capabilities:**
-
 - Read files with metadata (size, lines)
 - List directories safely
 - Find files matching patterns
@@ -57,7 +57,6 @@ VeraBot2.0 includes 5 MCP servers:
 - Get project structure overview
 
 **Usage Example:**
-
 ```bash
 # Get project structure
 node mcp-servers/filesystem-server.js structure
@@ -76,7 +75,6 @@ node mcp-servers/filesystem-server.js search src/commands/misc/ping.js "execute"
 ```
 
 **Security Features:**
-
 - Path traversal prevention
 - Whitelist of searchable directories
 - No write operations allowed
@@ -87,7 +85,6 @@ node mcp-servers/filesystem-server.js search src/commands/misc/ping.js "execute"
 **Purpose:** Provide version control insights
 
 **Capabilities:**
-
 - View commit history
 - Check repository status
 - See changed files
@@ -96,7 +93,6 @@ node mcp-servers/filesystem-server.js search src/commands/misc/ping.js "execute"
 - View staged changes
 
 **Usage Example:**
-
 ```bash
 # Get repository status
 node mcp-servers/git-server.js status
@@ -118,7 +114,6 @@ node mcp-servers/git-server.js staged
 ```
 
 **Use Cases:**
-
 - Understanding code evolution
 - Reviewing recent changes
 - Analyzing git history for context
@@ -129,7 +124,6 @@ node mcp-servers/git-server.js staged
 **Purpose:** Execute npm scripts and build commands safely
 
 **Whitelisted Commands:**
-
 - `npm test` - Run test suite
 - `npm run lint` - Run ESLint
 - `npm run lint:fix` - Fix linting errors
@@ -142,7 +136,6 @@ node mcp-servers/git-server.js staged
 - Plus more...
 
 **Usage Example:**
-
 ```bash
 # Run tests
 node mcp-servers/shell-server.js exec "npm test"
@@ -158,7 +151,6 @@ node mcp-servers/shell-server.js exec "npm run test:quotes"
 ```
 
 **Security Model:**
-
 - Only whitelisted commands can execute
 - Output limited to 10MB
 - Error handling for failed commands
@@ -169,7 +161,6 @@ node mcp-servers/shell-server.js exec "npm run test:quotes"
 **Purpose:** Query SQLite databases safely (read-only)
 
 **Capabilities:**
-
 - List all guild databases
 - Get database statistics
 - View schema information
@@ -178,8 +169,7 @@ node mcp-servers/shell-server.js exec "npm run test:quotes"
 - Get database summary
 
 **Database Structure:**
-
-```
+```txt
 data/
 ├── db/
 │   ├── quotes.db              # Root database (proxy config, schema)
@@ -192,7 +182,6 @@ data/
 ```
 
 **Usage Example:**
-
 ```bash
 # Get database summary
 node mcp-servers/database-server.js summary
@@ -214,7 +203,6 @@ node mcp-servers/database-server.js search root "meme"
 ```
 
 **Guild Isolation:**
-
 - Each guild has isolated database
 - No cross-guild data access
 - Per-guild quote and reminder storage
@@ -225,7 +213,6 @@ node mcp-servers/database-server.js search root "meme"
 **Purpose:** Access package metadata and scripts
 
 **Capabilities:**
-
 - List all npm scripts
 - Filter test scripts
 - Filter dev scripts
@@ -234,7 +221,6 @@ node mcp-servers/database-server.js search root "meme"
 - Get specific dependency versions
 
 **Usage Example:**
-
 ```bash
 # Get package version
 node mcp-servers/npm-server.js version
@@ -358,7 +344,6 @@ node scripts/verify-mcp-setup.js
 ```
 
 Expected output:
-
 ```
 ✅ Filesystem server: READY
 ✅ Git server: READY
@@ -390,7 +375,7 @@ Expected output:
 
 Once configured, you can:
 
-```
+```txt
 Ask Copilot:
 - "Show me the structure of src/commands"
 - "What changed in the last commit?"
@@ -438,7 +423,6 @@ Ask Copilot:
 **Error:** `Cannot find module 'mcp-servers/filesystem-server.js'`
 
 **Solution:**
-
 ```bash
 # Verify files exist
 ls -la mcp-servers/
@@ -452,7 +436,6 @@ npm run setup:mcp
 **Error:** `Failed to open database at data/db/quotes.db`
 
 **Solution:**
-
 ```bash
 # Initialize database
 npm run db:init
@@ -466,7 +449,6 @@ ls -la data/db/
 **Error:** `fatal: not a git repository`
 
 **Solution:**
-
 ```bash
 # Initialize git if needed
 git init
@@ -480,7 +462,6 @@ ls -la .git/
 **Error:** `ENOENT: no such file or directory, open 'node_modules/mocha'`
 
 **Solution:**
-
 ```bash
 # Install dependencies
 npm install
@@ -500,7 +481,7 @@ Edit `.mcp/servers.json`:
   "autoAllowCommands": [
     "npm test",
     "npm run lint:fix",
-    "npm run my-custom-command" // Add your command here
+    "npm run my-custom-command"  // Add your command here
   ]
 }
 ```
@@ -534,7 +515,6 @@ async getQuotesByAuthor(guildId, author) {
 ```
 
 Then test:
-
 ```bash
 node mcp-servers/database-server.js
 ```
@@ -590,7 +570,6 @@ node mcp-servers/database-server.js
 ## Support & Questions
 
 For issues or questions:
-
 1. Check [Troubleshooting](#troubleshooting) section
 2. Review server implementation code
 3. Test server individually with CLI commands

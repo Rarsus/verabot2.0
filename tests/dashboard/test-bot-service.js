@@ -69,9 +69,6 @@ try {
 console.log('\n=== Test 4: Admin Verification Logic ===');
 try {
   // Test that verifyAdminAccess is callable
-  const userId = '123456789';
-  const guilds = [{ id: '987654321' }];
-
   // This will fail without actual bot connection, but we test the logic exists
   if (typeof botService.verifyAdminAccess === 'function') {
     console.log('✅ Admin verification method exists');

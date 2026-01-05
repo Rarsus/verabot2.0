@@ -7,9 +7,9 @@
  * - Branch management
  * - File changes tracking
  */
+/* eslint-disable security/detect-object-injection */
 
 const { execSync } = require('child_process');
-const path = require('path');
 
 const REPO = process.env.MCP_GIT_REPO || process.cwd();
 

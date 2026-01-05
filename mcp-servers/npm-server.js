@@ -7,6 +7,7 @@
  * - Get version info
  * - List dependencies
  */
+/* eslint-disable security/detect-object-injection */
 
 const fs = require('fs');
 const path = require('path');

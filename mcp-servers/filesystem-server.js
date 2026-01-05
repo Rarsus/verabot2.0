@@ -7,6 +7,7 @@
  * - Find files by pattern
  * - Get project structure
  */
+/* eslint-disable security/detect-non-literal-fs-filename, security/detect-non-literal-regexp, security/detect-object-injection, no-unused-vars */
 
 const path = require('path');
 const fs = require('fs').promises;

@@ -17,7 +17,7 @@ const TEST_GUILD_ID = 'test-guild-' + Date.now();
 async function cleanupGuild() {
   try {
     await GuildDatabaseManager.deleteGuildDatabase(TEST_GUILD_ID);
-  } catch (err) {
+  } catch {
     // Guild may not exist yet, that's ok
   }
 }
@@ -26,8 +26,8 @@ async function cleanupGuild() {
 (async () => {
   try {
     await cleanupGuild();
-  } catch (err) {
-    console.error('Failed to cleanup guild for tests:', err.message);
+  } catch {
+    console.error('Failed to cleanup guild for tests:');
     process.exit(1);
   }
 
@@ -308,7 +308,7 @@ async function cleanupGuild() {
     // Cleanup guild
     try {
       await GuildDatabaseManager.deleteGuildDatabase(TEST_GUILD_ID);
-    } catch (err) {
+    } catch {
       // Ignore cleanup errors
     }
 
