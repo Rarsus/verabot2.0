@@ -1,18 +1,19 @@
 import axios from 'axios';
 
-// Configure API base URL - set via environment or default to localhost
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+// Configure API base URL - point to dashboard server (port 5000)
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Include cookies for session management
 });
 
 // Add token to requests if available
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('bot_token');
+  const token = localStorage.getItem('auth_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -24,7 +25,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('bot_token');
+      localStorage.removeItem('auth_token');
       window.location.href = '/login';
     }
     return Promise.reject(error);
@@ -119,17 +120,17 @@ export const botAPI = {
 
 // User/Auth APIs
 export const authAPI = {
-  // Verify bot token
-  verify: (token) => api.post('/auth/verify', { token }),
+  // Get Discord OAuth login URL
+  getLoginUrl: () => api.get('/auth/login'),
 
-  // Login with bot token
-  login: (token) => api.post('/auth/login', { token }),
+  // Verify JWT token
+  verify: () => api.get('/auth/verify'),
+
+  // Get current user info
+  getUser: () => api.get('/auth/user'),
 
   // Logout
-  logout: () => {
-    localStorage.removeItem('bot_token');
-    return Promise.resolve();
-  },
+  logout: () => api.post('/auth/logout'),
 };
 
 export default api;
