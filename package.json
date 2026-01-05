@@ -21,6 +21,11 @@
     "test:cache": "node tests/unit/test-cache-manager.js",
     "test:pool": "node tests/unit/test-database-pool.js",
     "test:query-builder": "node tests/unit/test-query-builder.js",
+    "test:dashboard": "node tests/dashboard/run-dashboard-tests.js",
+    "test:dashboard:oauth": "node tests/dashboard/test-oauth-service.js",
+    "test:dashboard:bot": "node tests/dashboard/test-bot-service.js",
+    "test:dashboard:auth": "node tests/dashboard/test-auth-middleware.js",
+    "test:dashboard:integration": "node tests/dashboard/test-integration.js",
     "coverage:report": "c8 report",
     "coverage:check": "c8 check-coverage",
     "lint": "eslint .",
@@ -52,7 +57,10 @@
     "discord.js": "^14.0.0",
     "dotenv": "^16.0.3",
     "node-fetch": "^2.6.9",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",

@@ -6,6 +6,33 @@
     restart: unless-stopped
     volumes:
       - verabot_data:/app/data
+    ports:
+      - "3000:3000"  # Internal API for dashboard communication
+    networks:
+      - verabot-network
+    environment:
+      - ENABLE_DASHBOARD_API=true
+      - API_PORT=3000
+
+  dashboard:
+    build: ./dashboard
+    env_file:
+      - .env
+    restart: unless-stopped
+    ports:
+      - "5000:5000"  # Dashboard server
+    depends_on:
+      - verabot2
+    networks:
+      - verabot-network
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - BOT_API_URL=http://verabot2:3000
+
+networks:
+  verabot-network:
+    driver: bridge
 
 volumes:
   verabot_data:
