@@ -47,6 +47,7 @@ External System → VeraBot Listener → Discord (Incoming)
    - `ADMINISTRATOR` - Required to configure proxy settings
 
 2. **Environment Variables:**
+
    ```env
    DISCORD_TOKEN=your_bot_token
    CLIENT_ID=your_client_id
@@ -63,6 +64,7 @@ External System → VeraBot Listener → Discord (Incoming)
 ### 🔒 Secure Storage
 
 All sensitive data is encrypted before storage:
+
 - **Webhook tokens** - Encrypted in database
 - **Webhook secrets** - Encrypted in database
 - **Encryption key** - Stored in environment variable or auto-generated
@@ -70,10 +72,12 @@ All sensitive data is encrypted before storage:
 ### 🔐 Authentication
 
 #### Outgoing Webhooks
+
 - Uses Bearer token authentication
 - Token sent in `Authorization` header: `Bearer <token>`
 
 #### Incoming Webhooks
+
 - HMAC SHA-256 signature verification
 - Signature sent in `X-Webhook-Signature` header
 - Prevents unauthorized message injection
@@ -104,6 +108,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
 Add to `.env`:
+
 ```env
 ENCRYPTION_KEY=<generated_key>
 ```
@@ -120,11 +125,13 @@ Use the `/proxy-config` command (Administrator only):
 ### Step 3: Configure Incoming Webhook Secret
 
 Generate a secure secret:
+
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
 Set the secret:
+
 ```
 /proxy-config webhook-secret:your-generated-secret
 ```
@@ -151,6 +158,7 @@ Add channels to monitor (right-click channel → Copy ID):
 ```
 
 You should see:
+
 - ✅ Status: Enabled
 - ✅ Webhook URL configured
 - ✅ Token configured
@@ -229,6 +237,7 @@ You should see:
 **Symptoms:** Messages sent in monitored channels don't reach webhook
 
 **Solutions:**
+
 1. Check proxy is enabled: `/proxy-status`
 2. Verify channel is in monitored list: `/proxy-status`
 3. Check webhook URL is correct: `/proxy-status`
@@ -246,6 +255,7 @@ You should see:
 **Symptoms:** External system can't send messages to Discord
 
 **Solutions:**
+
 1. Verify webhook listener is running (check bot startup logs)
 2. Check `PROXY_PORT` is correct and not blocked by firewall
 3. Verify webhook secret is configured: `/proxy-status`
@@ -255,21 +265,21 @@ You should see:
 ### Issue: "Invalid signature" errors
 
 **Solutions:**
+
 1. Ensure external system is generating correct HMAC signature
 2. Verify secret matches on both sides
 3. Check payload is exactly the same when generating signature
 4. Example signature generation:
    ```javascript
    const crypto = require('crypto');
-   const payload = JSON.stringify({content:"test",channel:"123"});
-   const signature = crypto.createHmac('sha256', secret)
-     .update(payload)
-     .digest('hex');
+   const payload = JSON.stringify({ content: 'test', channel: '123' });
+   const signature = crypto.createHmac('sha256', secret).update(payload).digest('hex');
    ```
 
 ### Issue: Messages not appearing in Discord
 
 **Solutions:**
+
 1. Check bot has `SEND_MESSAGES` permission in target channel
 2. Verify channel ID is correct
 3. Check payload format matches required structure
@@ -278,6 +288,7 @@ You should see:
 ### Issue: High latency or timeouts
 
 **Solutions:**
+
 1. Check network connectivity between bot and webhook
 2. Reduce number of monitored channels
 3. Implement webhook endpoint caching
@@ -316,12 +327,14 @@ https://your-bot-host:3000/webhook
 ```
 
 **Headers:**
+
 ```
 Content-Type: application/json
 X-Webhook-Signature: <hmac-sha256-signature>
 ```
 
 **Body:**
+
 ```json
 {
   "content": "Message to send to Discord",
@@ -335,6 +348,7 @@ X-Webhook-Signature: <hmac-sha256-signature>
 ```
 
 **Response (Success):**
+
 ```json
 {
   "success": true,
@@ -343,6 +357,7 @@ X-Webhook-Signature: <hmac-sha256-signature>
 ```
 
 **Response (Error):**
+
 ```json
 {
   "success": false,
@@ -355,25 +370,25 @@ X-Webhook-Signature: <hmac-sha256-signature>
 Generate HMAC SHA-256 signature for incoming webhooks:
 
 **Node.js:**
+
 ```javascript
 const crypto = require('crypto');
 
 function generateSignature(payload, secret) {
   const payloadString = JSON.stringify(payload);
-  return crypto.createHmac('sha256', secret)
-    .update(payloadString)
-    .digest('hex');
+  return crypto.createHmac('sha256', secret).update(payloadString).digest('hex');
 }
 
 const payload = {
-  content: "Hello Discord",
-  channel: "123456789012345678"
+  content: 'Hello Discord',
+  channel: '123456789012345678',
 };
 
 const signature = generateSignature(payload, 'your-webhook-secret');
 ```
 
 **Python:**
+
 ```python
 import hmac
 import hashlib
@@ -399,9 +414,11 @@ signature = generate_signature(payload, "your-webhook-secret")
 ### Admin Commands Reference
 
 #### `/proxy-config`
+
 Configure webhook proxy settings (Admin only)
 
 **Options:**
+
 - `webhook-url` (optional) - Webhook URL to forward messages to
 - `webhook-token` (optional) - Authentication token for webhook
 - `webhook-secret` (optional) - Secret for incoming webhook verification
@@ -410,6 +427,7 @@ Configure webhook proxy settings (Admin only)
 - `clear-channels` (optional) - Clear all monitored channels
 
 **Examples:**
+
 ```
 /proxy-config webhook-url:https://api.example.com/webhook
 /proxy-config webhook-token:myToken123
@@ -417,26 +435,32 @@ Configure webhook proxy settings (Admin only)
 ```
 
 #### `/proxy-enable`
+
 Enable or disable the webhook proxy (Admin only)
 
 **Options:**
+
 - `enabled` (required) - true to enable, false to disable
 
 **Examples:**
+
 ```
 /proxy-enable enabled:true
 /proxy-enable enabled:false
 ```
 
 #### `/proxy-status`
+
 View current proxy configuration and status (Admin only)
 
 **Examples:**
+
 ```
 /proxy-status
 ```
 
 Shows:
+
 - Enabled/disabled status
 - Webhook URL
 - Token status (configured/not configured)
@@ -458,6 +482,7 @@ Restart the bot for port changes to take effect.
 ### Rate Limiting
 
 The proxy includes automatic retry logic:
+
 - **Max retries:** 3 attempts
 - **Retry delay:** 1 second (exponential backoff)
 - **Timeout:** Configurable per webhook
@@ -473,11 +498,13 @@ const RETRY_DELAY = 1000;
 ### Logging and Monitoring
 
 All proxy operations are logged with appropriate error levels:
+
 - `LOW` - Minor issues (e.g., signature verification failures)
 - `MEDIUM` - Webhook failures, configuration errors
 - `HIGH` - Critical errors affecting service
 
 Check logs for patterns:
+
 ```bash
 grep "WebhookProxyService" logs/bot.log
 grep "WebhookListenerService" logs/bot.log
@@ -504,6 +531,7 @@ curl -X POST http://localhost:3000/webhook \
 ## Support
 
 For issues or questions:
+
 1. Check this documentation first
 2. Review bot logs for error messages
 3. Test webhook endpoints independently
@@ -516,6 +544,7 @@ For issues or questions:
 ## Security Disclosure
 
 If you discover a security vulnerability in the webhook proxy:
+
 - ⚠️ **DO NOT** open a public issue
 - 📧 Contact the maintainers privately
 - 🔒 Include details and reproduction steps

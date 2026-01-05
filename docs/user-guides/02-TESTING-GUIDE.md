@@ -14,6 +14,7 @@ npm run test:all      # All tests (utility + integration)
 ### Test Results
 
 Current status:
+
 - ✅ 36/38 utility tests passing (95%)
 - ✅ 35/35 quote system tests passing (100%)
 - ✅ Overall: 71/73 passing (97%)
@@ -140,7 +141,7 @@ Location: `scripts/test-command-options.js`
 // Test option creation
 function testOptionCreation() {
   const { data, options } = buildCommandOptions('test', 'Test command', [
-    { name: 'arg', type: 'string', required: true }
+    { name: 'arg', type: 'string', required: true },
   ]);
 
   assert(data !== undefined);
@@ -152,7 +153,7 @@ function testOptionCreation() {
 // Test option validation
 function testOptionValidation() {
   assert.throws(() => {
-    buildCommandOptions('', '', []);  // Empty name
+    buildCommandOptions('', '', []); // Empty name
   }, Error);
 }
 ```
@@ -231,7 +232,7 @@ describe('Add Quote Command', () => {
   it('should store quote in database', async () => {
     const command = new AddQuoteCommand();
     await command.addQuote('Test quote', 'Test Author');
-    
+
     const quote = await db.get('SELECT * FROM quotes WHERE text = ?', ['Test quote']);
     assert.ok(quote);
     assert.strictEqual(quote.author, 'Test Author');
@@ -246,6 +247,7 @@ node scripts/test-add-quote.js
 ```
 
 Expected output:
+
 ```
 ✓ should add a quote with valid text and author
 ✓ should reject empty quote text
@@ -377,7 +379,7 @@ describe('Async Operations', () => {
   });
 
   it('should handle timeouts', async () => {
-    this.timeout(5000);  // Set timeout for this test
+    this.timeout(5000); // Set timeout for this test
     const result = await slowOperation();
     assert.ok(result);
   });
@@ -396,7 +398,7 @@ const mockMessage = {
   author: { id: '123456', username: 'TestUser' },
   channel: { send: async (content) => ({ content }) },
   member: { roles: [], permissions: { has: () => false } },
-  guild: { id: '789' }
+  guild: { id: '789' },
 };
 
 // Mock Discord interaction object
@@ -406,17 +408,17 @@ const mockInteraction = {
   guild: { id: '789' },
   options: {
     getString: (name) => 'test value',
-    getInteger: (name) => 42
+    getInteger: (name) => 42,
   },
   reply: async (options) => ({}),
-  editReply: async (options) => ({})
+  editReply: async (options) => ({}),
 };
 
 // Use in tests
 test('command handles message', async () => {
   const command = new MyCommand();
   await command.execute(mockMessage, ['arg1']);
-  assert.ok(true);  // Verify it doesn't throw
+  assert.ok(true); // Verify it doesn't throw
 });
 ```
 
@@ -425,7 +427,7 @@ test('command handles message', async () => {
 ```javascript
 // Original function
 function fetchData(url) {
-  return fetch(url).then(r => r.json());
+  return fetch(url).then((r) => r.json());
 }
 
 // Stub for testing
@@ -447,6 +449,7 @@ it('should handle API response', async () => {
 ### What to Test
 
 Essential test areas:
+
 - ✅ Input validation
 - ✅ Happy path (normal operation)
 - ✅ Error cases (invalid input)
@@ -482,7 +485,7 @@ function test(name, fn) {
 
 // After all tests
 console.log(`\n${testsPassed} passed, ${testsFailed} failed`);
-console.log(`Coverage: ${(testsPassed / (testsPassed + testsFailed) * 100).toFixed(1)}%`);
+console.log(`Coverage: ${((testsPassed / (testsPassed + testsFailed)) * 100).toFixed(1)}%`);
 ```
 
 ---
@@ -505,6 +508,7 @@ npm run test  # Runs before git commit
 ### CI/CD Integration
 
 Tests automatically run on:
+
 - Every git push
 - Pull request creation
 - Scheduled daily runs
@@ -518,11 +522,11 @@ Tests automatically run on:
 ```javascript
 it('should process data correctly', () => {
   const input = 'test';
-  console.log('Input:', input);  // Debug output
-  
+  console.log('Input:', input); // Debug output
+
   const result = process(input);
-  console.log('Result:', result);  // See result
-  
+  console.log('Result:', result); // See result
+
   assert.strictEqual(result, 'TEST');
 });
 ```
@@ -555,6 +559,7 @@ it.skip('should not run this test', () => {
 ### Issue: Test passes locally but fails in CI
 
 **Solution:**
+
 - Check test doesn't depend on timing
 - Verify database is clean between tests
 - Use absolute file paths instead of relative
@@ -563,6 +568,7 @@ it.skip('should not run this test', () => {
 ### Issue: Test is flaky (sometimes passes, sometimes fails)
 
 **Solution:**
+
 - Avoid time-dependent tests
 - Clean up test data after each test
 - Use proper async/await handling
@@ -571,6 +577,7 @@ it.skip('should not run this test', () => {
 ### Issue: "Cannot find module" error in test
 
 **Solution:**
+
 - Verify path is correct relative to test file
 - Use `require.resolve()` to debug paths
 - Check Node.js can load the module:
@@ -581,6 +588,7 @@ it.skip('should not run this test', () => {
 ### Issue: Test times out
 
 **Solution:**
+
 - Check for infinite loops
 - Increase timeout: `this.timeout(5000)`
 - Ensure all promises are awaited
@@ -626,14 +634,14 @@ it('should validate email', () => {
 
 ```javascript
 // Good - Clear what's being tested
-it('should reject empty quote text')
-it('should accept quote with valid author')
-it('should delete quote when user is owner')
+it('should reject empty quote text');
+it('should accept quote with valid author');
+it('should delete quote when user is owner');
 
 // Bad - Vague names
-it('should work')
-it('tests quote')
-it('handles input')
+it('should work');
+it('tests quote');
+it('handles input');
 ```
 
 ### 4. Clean Up After Tests
@@ -689,12 +697,12 @@ npm run test:quotes-advanced      # Test advanced quote features
 ### Assert Methods
 
 ```javascript
-assert.ok(value)                          // Truthy
-assert.strictEqual(a, b)                  // Strict equal
-assert.notStrictEqual(a, b)               // Strict not equal
-assert.deepStrictEqual(a, b)              // Deep equal
-assert.throws(fn, Error)                  // Throws error
-assert.doesNotThrow(fn)                   // No error
+assert.ok(value); // Truthy
+assert.strictEqual(a, b); // Strict equal
+assert.notStrictEqual(a, b); // Strict not equal
+assert.deepStrictEqual(a, b); // Deep equal
+assert.throws(fn, Error); // Throws error
+assert.doesNotThrow(fn); // No error
 ```
 
 ### Test Lifecycle
@@ -733,6 +741,7 @@ describe('Feature', () => {
 5. **Verify coverage** - Ensure you're testing the right things
 
 For more help, see:
+
 - [Node.js Assert Documentation](https://nodejs.org/api/assert.html)
 - [TDD Basics](https://en.wikipedia.org/wiki/Test-driven_development)
 - [Testing Best Practices](https://testingjavascript.com/)

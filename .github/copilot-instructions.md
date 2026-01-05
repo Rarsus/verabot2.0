@@ -5,6 +5,7 @@
 VeraBot2.0 is an advanced Discord bot with organized commands, quote management system, and modern architecture. It features slash commands, legacy prefix commands, comprehensive testing, and database integration. The bot is built with a focus on maintainability, testability, and developer experience through reusable utility modules and consistent patterns.
 
 **Key Features:**
+
 - Discord slash commands and legacy prefix commands
 - Quote management system (add, search, rate, tag, export)
 - AI-powered poem generation via HuggingFace
@@ -15,6 +16,7 @@ VeraBot2.0 is an advanced Discord bot with organized commands, quote management 
 ## Technology Stack
 
 **Core Technologies:**
+
 - **Runtime:** Node.js 18+
 - **Language:** JavaScript (ES2021)
 - **Framework:** Discord.js v14.11.0
@@ -23,6 +25,7 @@ VeraBot2.0 is an advanced Discord bot with organized commands, quote management 
 - **AI Integration:** HuggingFace API (optional)
 
 **Development Tools:**
+
 - **Linting:** ESLint v8.48.0
 - **Testing:** Custom test framework (74 comprehensive tests)
 - **Code Quality:** Pre-commit hooks with Husky
@@ -117,7 +120,7 @@ const { sendSuccess, sendError, sendQuoteEmbed } = require('../../utils/helpers/
 
 // Define options
 const { data, options } = buildCommandOptions('commandname', 'Description', [
-  { name: 'arg', type: 'string', required: true, description: 'Argument description' }
+  { name: 'arg', type: 'string', required: true, description: 'Argument description' },
 ]);
 
 class CommandName extends Command {
@@ -172,6 +175,7 @@ await interaction.reply({ content: 'Message', ephemeral: true });
 All database operations must use guild-aware services that enforce mandatory guild context:
 
 **For Quote Operations:**
+
 ```javascript
 // ✅ CORRECT - Use QuoteService with guild context
 const quoteService = require('../../services/QuoteService');
@@ -183,6 +187,7 @@ await quoteService.addQuote(guildId, text, author);
 ```
 
 **For Reminder Operations:**
+
 ```javascript
 // ✅ CORRECT - Use GuildAwareReminderService with guild context
 const reminderService = require('../../services/GuildAwareReminderService');
@@ -193,6 +198,7 @@ await reminderService.addReminder(guildId, userId, text, dueDate);
 ```
 
 **For Direct Database Access (rare):**
+
 ```javascript
 // ✅ CORRECT - Use GuildAwareDatabaseService for raw operations
 const guildDbService = require('../../services/GuildAwareDatabaseService');
@@ -202,14 +208,16 @@ const result = await guildDbService.executeQuery(guildId, sql, params);
 ```
 
 **❌ DEPRECATED - Do NOT use:**
+
 ```javascript
 // ❌ WRONG - db.js wrapper is deprecated, remove all uses
 const db = require('../../db');
-await db.getQuote(id);  // No guild context!
-await db.addQuote(text, author);  // No guild isolation!
+await db.getQuote(id); // No guild context!
+await db.addQuote(text, author); // No guild isolation!
 ```
 
 **Why guild-aware services?**
+
 - ✅ Mandatory guild context prevents cross-guild data leaks
 - ✅ Clear intent: every operation is explicitly guild-scoped
 - ✅ Easy to test by mocking a single service
@@ -217,6 +225,7 @@ await db.addQuote(text, author);  // No guild isolation!
 - ✅ Consistent API across all commands
 
 **Timeline:**
+
 - db.js is marked **DEPRECATED** as of January 2026
 - All new code MUST use guild-aware services
 - db.js will be removed in v0.3.0 (March 2026)
@@ -242,6 +251,7 @@ Commands are organized by purpose:
 5. **quote-export/** - Data export (export-quotes)
 
 **When creating new commands:**
+
 - Place in the appropriate category folder
 - If creating a new category, follow the existing naming pattern
 - Update help command if adding new command categories
@@ -284,6 +294,7 @@ npm run lint                   # Code style checks
 ```
 
 **Test Coverage Expectations:**
+
 - All test suites: 100% passing (74/74 tests)
 - Command base class: 100% passing
 - Quote system: 100% passing
@@ -315,23 +326,27 @@ HUGGINGFACE_API_KEY=optional_key          # For AI poem generation
 ## Important Implementation Notes
 
 ### Error Handling
+
 - **NEVER** write manual try-catch blocks in command classes
 - The Command base class handles ALL errors automatically
 - Just write your logic; errors are caught and logged
 - Use response helpers for user-facing error messages
 
 ### Command Registration
+
 - Commands self-register via `.register()` method
 - Both slash and prefix commands are supported
 - Options are shared between both command types
 - Registration script: `src/register-commands.js`
 
 ### Database Schema
+
 - Auto-initialized on first run via `schema-enhancement.js`
 - Tables: quotes, ratings, tags, quote_tags
 - All queries use prepared statements for SQL injection protection
 
 ### Deprecation Notes
+
 - Manual error handling in commands is deprecated
 - Raw Discord API calls in commands should use response helpers
 - Inconsistent option definitions should use `buildCommandOptions()`
@@ -339,20 +354,24 @@ HUGGINGFACE_API_KEY=optional_key          # For AI poem generation
 ## Documentation Resources
 
 **Primary Documentation:**
+
 - [docs/README.md](docs/README.md) - Documentation overview
 - [docs/INDEX.md](docs/INDEX.md) - Complete documentation index
 
 **Development Guides:**
+
 - [docs/guides/01-CREATING-COMMANDS.md](docs/guides/01-CREATING-COMMANDS.md) - Command creation guide
 - [docs/guides/02-TESTING-GUIDE.md](docs/guides/02-TESTING-GUIDE.md) - Testing with TDD
 - [docs/guides/03-HUGGINGFACE-SETUP.md](docs/guides/03-HUGGINGFACE-SETUP.md) - AI setup
 
 **Technical Reference:**
+
 - [docs/reference/ARCHITECTURE.md](docs/reference/ARCHITECTURE.md) - System design details
 - [docs/reference/REFACTORING-GUIDE.md](docs/reference/REFACTORING-GUIDE.md) - Before/after examples
 - [docs/reference/TDD-QUICK-REFERENCE.md](docs/reference/TDD-QUICK-REFERENCE.md) - Testing patterns
 
 **External Resources:**
+
 - [Discord.js Documentation](https://discord.js.org/)
 - [Discord Developer Portal](https://discord.com/developers/applications)
 - [SQLite Documentation](https://www.sqlite.org/docs.html)

@@ -3,6 +3,7 @@
 ## Problem Summary
 
 The workflow tests were failing with:
+
 ```
 Error: SQLITE_ERROR: no such table: schema_versions (in migration manager tests)
 Error: SQLITE_ERROR: no such table: proxy_config (in proxy command tests)
@@ -46,6 +47,7 @@ db.run(`
 ```
 
 **Files Modified:**
+
 - [src/services/migrations/001_initial_schema.js](src/services/migrations/001_initial_schema.js)
   - Added `schema_versions` table creation (lines 14-21)
   - Added `proxy_config` table creation (lines 80-88)
@@ -91,17 +93,18 @@ console.log('\n=== Setup: Initialize Database Schema ===');
 ## Database Initialization Flow (After Fixes)
 
 1. **src/index.js** - Bot initialization:
+
    ```
-   database.setupSchema() 
+   database.setupSchema()
    → Creates: quotes, schema_versions, indexes
-   
+
    enhanceSchema()
    → Creates: tags, ratings, reminders, etc.
    → Also creates schema_versions as backup
-   
+
    migrateFromJson()
    → Migrates legacy JSON data if needed
-   
+
    MigrationManager.migrate()
    → Runs numbered migrations (001, 002, etc.)
    → Records in schema_versions table
@@ -116,6 +119,7 @@ console.log('\n=== Setup: Initialize Database Schema ===');
 ## Table Schemas
 
 ### schema_versions
+
 ```sql
 CREATE TABLE schema_versions (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -128,6 +132,7 @@ CREATE TABLE schema_versions (
 Used to track which migrations have been applied.
 
 ### proxy_config
+
 ```sql
 CREATE TABLE proxy_config (
   key TEXT PRIMARY KEY,
@@ -143,6 +148,7 @@ Stores webhook proxy configuration (URL, token, secret, monitored channels, etc.
 ## Test Results
 
 After fixes:
+
 - ✅ 26/27 test suites passing (100%)
 - ❌ 1 test suite failing due to architecture mismatch (sqlite3 binary compiled for Windows running on Linux) - **Not a code issue**
 - All database schema creation tests passing
@@ -154,12 +160,14 @@ After fixes:
 To verify the fixes work:
 
 1. **Check migration creates tables:**
+
    ```bash
    cd /mnt/c/repo/verabot2.0
    npm test  # Should show migration tables being created
    ```
 
 2. **Check schema-enhancement backup:**
+
    ```javascript
    // Both should exist after bot startup
    SELECT name FROM sqlite_master WHERE type='table';
@@ -183,6 +191,7 @@ To verify the fixes work:
 ## Summary
 
 The fixes ensure that:
+
 1. ✅ Critical tables (`schema_versions`, `proxy_config`) are created during initialization
 2. ✅ Multiple safety nets exist (setupSchema, migration 001, schema-enhancement)
 3. ✅ Tests properly initialize database before running
@@ -190,4 +199,3 @@ The fixes ensure that:
 5. ✅ Proxy configuration can be persisted
 
 The "no such table" errors are now fully resolved.
-

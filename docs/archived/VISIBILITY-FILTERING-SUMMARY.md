@@ -5,15 +5,18 @@
 You now have **command visibility filtering** in your role-based permission model. This means:
 
 ✅ **Admin commands can be hidden from regular users**
+
 - Users don't see `/whisper`, `/embed-message`, `/manage-roles` in their slash menu
 - Cleaner, more secure user experience
 
 ✅ **Three visibility strategies supported:**
+
 1. **Hidden** - Command completely hidden (recommended for admin tools)
 2. **Visible but disabled** - Command appears but grayed out
 3. **Smart help** - Help command shows only accessible commands
 
 ✅ **Flexible configuration:**
+
 - Set `visible: true/false` per command
 - Override visibility per guild
 - Control visibility separate from execution permissions
@@ -41,12 +44,10 @@ commands: {
 await RolePermissionService.isCommandVisible(userId, guildId, 'whisper');
 
 // Get all visible commands for user
-const visible = await RolePermissionService
-  .getVisibleCommands(userId, guildId, allCommands);
+const visible = await RolePermissionService.getVisibleCommands(userId, guildId, allCommands);
 
 // Get visible command names (for autocomplete)
-const names = await RolePermissionService
-  .getVisibleCommandNames(userId, guildId, commandNames);
+const names = await RolePermissionService.getVisibleCommandNames(userId, guildId, commandNames);
 ```
 
 ---

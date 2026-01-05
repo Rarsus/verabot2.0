@@ -14,12 +14,14 @@
 ### What Was Actually Implemented
 
 Instead of separate database files per guild, we implemented:
+
 - **GuildAwareReminderService** - All reminder operations scoped to guildId
 - **GuildAwareCommunicationService** - User preferences scoped to guildId
 - Updated schema with guildId columns for guild isolation
 - All commands updated to pass guildId context
 
 **Key Benefits Achieved:**
+
 - ✅ Complete per-guild data isolation (via guildId)
 - ✅ Trivial GDPR compliance (delete all records for guildId)
 - ✅ Easy guild offboarding (cascade delete on guildId)
@@ -27,6 +29,7 @@ Instead of separate database files per guild, we implemented:
 - ✅ No cross-guild data contamination possible
 
 **Advantages Over Multi-DB Approach:**
+
 - ✅ Simpler connection management
 - ✅ Single database file to backup/restore
 - ✅ Easier cross-guild queries (not needed, but possible)
@@ -55,12 +58,14 @@ src/services/
 ### Database Schema - Guild Isolation
 
 All tables include `guildId` column for data isolation:
+
 - **reminders** - guildId + id = unique reminder per guild
 - **reminder_assignments** - guildId scoped assignments
 - **reminder_notifications** - guildId scoped notifications
 - **user_communications** - guildId scoped user preferences
 
 Queries always filter by guildId to ensure:
+
 - ✅ No accidental cross-guild data access
 - ✅ GDPR deletion via `DELETE FROM table WHERE guildId = ?`
 - ✅ Guild-independent backups and migrations
@@ -74,6 +79,7 @@ Queries always filter by guildId to ensure:
 **Location:** [src/services/GuildAwareReminderService.js](src/services/GuildAwareReminderService.js)
 
 All reminder operations now scoped to guildId:
+
 - `createReminder(guildId, reminderData)` - Creates guild-specific reminder
 - `deleteReminder(guildId, id, hard)` - Deletes with guild isolation
 - `getReminderById(guildId, id)` - Retrieves only guild's reminders
@@ -89,6 +95,7 @@ All reminder operations now scoped to guildId:
 **Location:** [src/services/GuildAwareCommunicationService.js](src/services/GuildAwareCommunicationService.js)
 
 User communication preferences now scoped to guild:
+
 - `optIn(guildId, userId)` - User opts in for guild notifications
 - `optOut(guildId, userId)` - User opts out for guild notifications
 - `isOptedIn(guildId, userId)` - Check opt-in status per guild
@@ -117,6 +124,7 @@ CREATE INDEX idx_user_communications_guildId ON user_communications(guildId);
 ### Updated Commands (10 files)
 
 **Reminder Management:**
+
 - [src/commands/reminders/create-reminder.js](src/commands/reminders/create-reminder.js) - Passes guildId
 - [src/commands/reminders/delete-reminder.js](src/commands/reminders/delete-reminder.js) - Passes guildId
 - [src/commands/reminders/get-reminder.js](src/commands/reminders/get-reminder.js) - Passes guildId
@@ -125,6 +133,7 @@ CREATE INDEX idx_user_communications_guildId ON user_communications(guildId);
 - [src/commands/reminders/update-reminder.js](src/commands/reminders/update-reminder.js) - Passes guildId
 
 **User Preferences:**
+
 - [src/commands/preferences/opt-in.js](src/commands/preferences/opt-in.js) - Passes guildId
 - [src/commands/preferences/opt-out.js](src/commands/preferences/opt-out.js) - Passes guildId
 - [src/commands/preferences/comm-status.js](src/commands/preferences/comm-status.js) - Passes guildId
@@ -153,14 +162,14 @@ class GuildDatabaseManager {
     this.guildsDir = options.guildsDir || path.join(__dirname, '..', '..', 'data', 'db', 'guilds');
     this.maxConnections = options.maxConnections || 50;
     this.connectionTimeout = options.connectionTimeout || 5 * 60 * 1000; // 5 min
-    
+
     // Connection pool
     this.connections = new Map(); // Map<guildId, Database>
     this.lastAccess = new Map(); // Track last access for cleanup
-    
+
     // Schema
     this.schemaPath = options.schemaPath || path.join(__dirname, '..', '..', 'data', 'db', '_schema', 'schema.sql');
-    
+
     // Ensure directories exist
     this.ensureDirectories();
   }
@@ -196,7 +205,7 @@ class GuildDatabaseManager {
       const db = await this.createGuildDatabase(guildId);
       this.connections.set(guildId, db);
       this.lastAccess.set(guildId, Date.now());
-      
+
       return db;
     } catch (err) {
       logError('GuildDatabaseManager.getGuildDatabase', err, ERROR_LEVELS.CRITICAL);
@@ -211,7 +220,7 @@ class GuildDatabaseManager {
    */
   async createGuildDatabase(guildId) {
     const guildDbDir = path.join(this.guildsDir, guildId);
-    
+
     // Ensure guild directory exists
     if (!fs.existsSync(guildDbDir)) {
       fs.mkdirSync(guildDbDir, { recursive: true });
@@ -230,7 +239,7 @@ class GuildDatabaseManager {
         try {
           // Enable foreign keys
           await this.runAsync(db, 'PRAGMA foreign_keys = ON');
-          
+
           // Initialize schema if new database
           const isNew = !fs.existsSync(dbPath) || fs.statSync(dbPath).size === 0;
           if (isNew) {
@@ -285,7 +294,7 @@ class GuildDatabaseManager {
 
     return new Promise((resolve, reject) => {
       const db = this.connections.get(guildId);
-      
+
       db.close((err) => {
         if (err) {
           logError('GuildDatabaseManager.closeGuildDatabase', err, ERROR_LEVELS.MEDIUM);
@@ -311,7 +320,7 @@ class GuildDatabaseManager {
 
     // Delete directory
     const guildDbDir = path.join(this.guildsDir, guildId);
-    
+
     if (fs.existsSync(guildDbDir)) {
       fs.rmSync(guildDbDir, { recursive: true, force: true });
       console.log(`✅ Deleted database for guild ${guildId} (GDPR compliance)`);
@@ -353,7 +362,7 @@ class GuildDatabaseManager {
    */
   runAsync(db, sql, params = []) {
     return new Promise((resolve, reject) => {
-      db.run(sql, params, function(err) {
+      db.run(sql, params, function (err) {
         if (err) reject(err);
         else resolve({ lastID: this.lastID, changes: this.changes });
       });
@@ -369,8 +378,7 @@ class GuildDatabaseManager {
       return [];
     }
 
-    return fs.readdirSync(this.guildsDir)
-      .filter(file => fs.statSync(path.join(this.guildsDir, file)).isDirectory());
+    return fs.readdirSync(this.guildsDir).filter((file) => fs.statSync(path.join(this.guildsDir, file)).isDirectory());
   }
 
   /**
@@ -399,9 +407,9 @@ class GuildDatabaseManager {
    */
   async shutdown() {
     console.log('🔌 Shutting down all guild database connections...');
-    
+
     const guildIds = Array.from(this.connections.keys());
-    
+
     for (const guildId of guildIds) {
       await this.closeGuildDatabase(guildId);
     }
@@ -447,7 +455,7 @@ class GuildAwareDatabaseService {
       db.run(
         'INSERT INTO quotes (text, author, addedAt) VALUES (?, ?, ?)',
         [text, author, new Date().toISOString()],
-        function(err) {
+        function (err) {
           if (err) {
             reject(err);
           } else {
@@ -467,16 +475,13 @@ class GuildAwareDatabaseService {
     const db = await this.manager.getGuildDatabase(guildId);
 
     return new Promise((resolve, reject) => {
-      db.all(
-        'SELECT * FROM quotes ORDER BY id DESC',
-        (err, rows) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(rows || []);
-          }
+      db.all('SELECT * FROM quotes ORDER BY id DESC', (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows || []);
         }
-      );
+      });
     });
   }
 
@@ -490,17 +495,13 @@ class GuildAwareDatabaseService {
     const db = await this.manager.getGuildDatabase(guildId);
 
     return new Promise((resolve, reject) => {
-      db.get(
-        'SELECT * FROM quotes WHERE id = ?',
-        [id],
-        (err, row) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(row || null);
-          }
+      db.get('SELECT * FROM quotes WHERE id = ?', [id], (err, row) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(row || null);
         }
-      );
+      });
     });
   }
 
@@ -604,6 +605,7 @@ CREATE TABLE IF NOT EXISTS schema_versions (
 ### Example: Update Quote Command
 
 **Before:**
+
 ```javascript
 class AddQuoteCommand extends Command {
   async executeInteraction(interaction) {
@@ -612,13 +614,14 @@ class AddQuoteCommand extends Command {
 
     // No guild isolation
     const id = await db.addQuote(text, author);
-    
+
     await sendSuccess(interaction, `Quote #${id} added!`);
   }
 }
 ```
 
 **After:**
+
 ```javascript
 class AddQuoteCommand extends Command {
   async executeInteraction(interaction) {
@@ -627,7 +630,7 @@ class AddQuoteCommand extends Command {
 
     // Pass guildId for guild-specific database
     const id = await db.addQuote(interaction.guildId, text, author);
-    
+
     await sendSuccess(interaction, `Quote #${id} added!`);
   }
 }
@@ -680,7 +683,7 @@ async function migrateToPerGuildDatabases() {
   console.log('🚀 Starting migration from single to per-guild databases...\n');
 
   const oldDbPath = path.join(__dirname, '..', '..', 'data', 'db', 'quotes.db');
-  
+
   if (!fs.existsSync(oldDbPath)) {
     console.log('⚠️  No existing database found. Starting fresh with per-guild DBs.');
     return;
@@ -692,7 +695,7 @@ async function migrateToPerGuildDatabases() {
 
   // Get list of guilds from bot (you'd need to pass this in)
   // For now, we'll create a default guild database
-  
+
   // TODO: Get actual guilds from Discord client
   const guildIds = process.env.GUILD_IDS ? process.env.GUILD_IDS.split(',') : ['default'];
 
@@ -716,19 +719,17 @@ async function migrateToPerGuildDatabases() {
           // Insert into new database
           if (rows.length > 0) {
             const columns = Object.keys(rows[0]).join(',');
-            const placeholders = Object.keys(rows[0]).map(() => '?').join(',');
+            const placeholders = Object.keys(rows[0])
+              .map(() => '?')
+              .join(',');
 
             for (const row of rows) {
               const values = Object.values(row);
               await new Promise((resolveInsert, rejectInsert) => {
-                newDb.run(
-                  `INSERT INTO ${table} (${columns}) VALUES (${placeholders})`,
-                  values,
-                  (insertErr) => {
-                    if (insertErr) rejectInsert(insertErr);
-                    else resolveInsert();
-                  }
-                );
+                newDb.run(`INSERT INTO ${table} (${columns}) VALUES (${placeholders})`, values, (insertErr) => {
+                  if (insertErr) rejectInsert(insertErr);
+                  else resolveInsert();
+                });
               });
             }
 
@@ -750,7 +751,7 @@ async function migrateToPerGuildDatabases() {
   });
 }
 
-migrateToPerGuildDatabases().catch(err => {
+migrateToPerGuildDatabases().catch((err) => {
   console.error('❌ Migration failed:', err);
   process.exit(1);
 });
@@ -760,16 +761,16 @@ migrateToPerGuildDatabases().catch(err => {
 
 ## Implementation Timeline
 
-| Phase | Duration | Tasks |
-|-------|----------|-------|
-| **Phase 1** | 2-3 days | GuildDatabaseManager service |
-| **Phase 2** | 1-2 days | Update DatabaseService wrapper |
-| **Phase 3** | 0.5 day | Create schema template |
-| **Phase 4** | 2-3 days | Update all command handlers |
-| **Phase 5** | 1 day | Handle shared data (if needed) |
-| **Migration** | 1 day | Run migration script, test |
-| **Testing** | 2-3 days | Full multi-guild testing |
-| **Total** | **10-12 days** | Full implementation |
+| Phase         | Duration       | Tasks                          |
+| ------------- | -------------- | ------------------------------ |
+| **Phase 1**   | 2-3 days       | GuildDatabaseManager service   |
+| **Phase 2**   | 1-2 days       | Update DatabaseService wrapper |
+| **Phase 3**   | 0.5 day        | Create schema template         |
+| **Phase 4**   | 2-3 days       | Update all command handlers    |
+| **Phase 5**   | 1 day          | Handle shared data (if needed) |
+| **Migration** | 1 day          | Run migration script, test     |
+| **Testing**   | 2-3 days       | Full multi-guild testing       |
+| **Total**     | **10-12 days** | Full implementation            |
 
 ---
 
@@ -778,7 +779,7 @@ migrateToPerGuildDatabases().catch(err => {
 With per-guild databases, GDPR compliance becomes trivial:
 
 - [x] **Right to Deletion:** Delete guild directory = all data gone
-- [x] **Data Isolation:** Complete per-guild isolation  
+- [x] **Data Isolation:** Complete per-guild isolation
 - [x] **Data Portability:** Export single guild's .db file
 - [x] **Audit Trail:** Each guild has complete history
 - [x] **Backup/Restore:** Single guild independent
@@ -804,9 +805,7 @@ try {
 } catch (err) {
   if (err instanceof DatabaseError) {
     // Handle guild-specific errors
-    await sendError(interaction, 
-      `Failed to add quote for your server. Please try again.`, 
-      true);
+    await sendError(interaction, `Failed to add quote for your server. Please try again.`, true);
   }
 }
 ```
@@ -823,7 +822,7 @@ const CLEANUP_INTERVAL = 10 * 60 * 1000; // 10 minutes
 
 constructor(options = {}) {
   // ... other init ...
-  
+
   // Periodic cleanup of old connections
   setInterval(() => {
     this.cleanupOldConnections();
@@ -840,7 +839,7 @@ class DatabaseHealthCheck {
   async checkGuildDatabase(guildId) {
     try {
       const db = await this.manager.getGuildDatabase(guildId);
-      
+
       // Simple query to verify database is working
       await new Promise((resolve, reject) => {
         db.get('SELECT 1', (err) => {
@@ -851,10 +850,10 @@ class DatabaseHealthCheck {
 
       return { status: 'healthy', guildId };
     } catch (err) {
-      return { 
-        status: 'error', 
-        guildId, 
-        error: err.message 
+      return {
+        status: 'error',
+        guildId,
+        error: err.message,
       };
     }
   }
@@ -923,9 +922,7 @@ describe('Multi-Guild Operations', () => {
     const promises = [];
 
     for (let i = 0; i < 10; i++) {
-      promises.push(
-        db.addQuote(`GUILD_${i}`, `Quote ${i}`, `Author ${i}`)
-      );
+      promises.push(db.addQuote(`GUILD_${i}`, `Quote ${i}`, `Author ${i}`));
     }
 
     const ids = await Promise.all(promises);
@@ -963,7 +960,7 @@ async function getGuildDatabaseSize(guildId) {
     return {
       guildId,
       sizeBytes: stats.size,
-      sizeMB: (stats.size / 1024 / 1024).toFixed(2)
+      sizeMB: (stats.size / 1024 / 1024).toFixed(2),
     };
   }
 
@@ -1001,7 +998,7 @@ process.on('SIGTERM', async () => {
 ✅ **Simple Operations:** Single database backup/restore  
 ✅ **Audit Trail:** All data in one queryable location  
 ✅ **Future-Proof:** Can scale to multi-database if needed  
-✅ **Developer-Friendly:** Standard SQL patterns, no special routing  
+✅ **Developer-Friendly:** Standard SQL patterns, no special routing
 
 ---
 
@@ -1010,19 +1007,23 @@ process.on('SIGTERM', async () => {
 ### Phase 3.5 Deliverables
 
 **Services Created:**
+
 1. GuildAwareReminderService - All reminder operations scoped to guildId
 2. GuildAwareCommunicationService - User preferences scoped to guildId
 
 **Schema Updated:**
+
 - Added guildId to reminders, reminder_assignments, reminder_notifications, user_communications
 - Proper indexes for guild filtering
 - Migration for existing data (marked as 'legacy')
 
 **Commands Updated (10 files):**
+
 - Reminder management: create, delete, get, list, search, update
 - User preferences: opt-in, opt-out, comm-status
 
 **Results:**
+
 - ✅ Complete guild isolation
 - ✅ GDPR compliance achieved
 - ✅ 100% test passing (74/74 tests)
@@ -1031,21 +1032,25 @@ process.on('SIGTERM', async () => {
 ### Why Guild-Aware Services Are Better Than Multi-Database
 
 **Simpler Architecture:**
+
 - Single database connection vs connection pool
 - Standard SQL patterns vs custom routing logic
 - Easier to debug and monitor
 
 **Better Operations:**
+
 - Single database file to backup/restore
 - No multi-file I/O overhead
 - Database optimizer handles all queries
 
 **Same GDPR Benefits:**
+
 - DELETE WHERE guildId = 'X' removes all data
 - Service layer enforces guild isolation
 - No accidental cross-guild access possible
 
 **Future Scalability:**
+
 - Can still split to multi-database architecture if needed
 - Schema already supports guild partitioning
 - Service layer abstraction allows easy migration
@@ -1073,4 +1078,3 @@ But for current scale and requirements, **guild-aware single-database approach i
 - [SQLite Documentation](https://www.sqlite.org/docs.html)
 - [GDPR Compliance Guide](https://gdpr-info.eu/)
 - [Discord.js Guild Documentation](https://discord.js.org/#/docs/main/stable/class/Guild)
-

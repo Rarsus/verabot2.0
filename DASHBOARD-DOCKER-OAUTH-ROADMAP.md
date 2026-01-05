@@ -3,6 +3,7 @@
 ## Overview
 
 Transform the React dashboard from a standalone frontend into a complete full-stack application with:
+
 - Express.js backend for OAuth handling
 - Discord OAuth 2.0 integration
 - Docker containerization with bot and dashboard
@@ -11,9 +12,11 @@ Transform the React dashboard from a standalone frontend into a complete full-st
 ## Implementation Phases
 
 ### Phase 1: Backend OAuth Service (Express.js)
+
 **Effort:** 4-6 hours | **Priority:** CRITICAL
 
 #### 1.1 Setup Express Backend
+
 - Create `/dashboard/server/` directory structure
 - Initialize Node.js Express server on port 5000 (internal)
 - Install dependencies:
@@ -30,6 +33,7 @@ Transform the React dashboard from a standalone frontend into a complete full-st
   ```
 
 #### 1.2 Discord OAuth Implementation
+
 - Create `/dashboard/server/routes/auth.js`
   - `GET /api/auth/login` - Redirects to Discord OAuth
   - `GET /api/auth/callback` - OAuth callback handler
@@ -44,6 +48,7 @@ Transform the React dashboard from a standalone frontend into a complete full-st
   - Validate token with bot backend
 
 #### 1.3 Environment Variables
+
 ```env
 # Discord OAuth
 DISCORD_CLIENT_ID=your_client_id_here
@@ -69,15 +74,18 @@ PORT=5000
 ---
 
 ### Phase 2: Bot Backend Integration
+
 **Effort:** 3-4 hours | **Priority:** HIGH
 
 #### 2.1 Create Dashboard API Endpoints in Bot
+
 - Create `/src/routes/dashboard.js` (if not exists)
   - Verify JWT from dashboard
   - Validate user has admin permissions
   - Serve protected endpoints
 
 #### 2.2 Add Authentication Middleware
+
 - Create `/src/middleware/dashboard-auth.js`
   - Verify JWT signature
   - Check user guild membership
@@ -85,6 +93,7 @@ PORT=5000
   - Log access attempts
 
 #### 2.3 Update Bot Main Entry (`src/index.js`)
+
 ```javascript
 // Add dashboard API server
 if (features.dashboard?.enabled) {
@@ -100,21 +109,25 @@ if (features.dashboard?.enabled) {
 ---
 
 ### Phase 3: React Frontend OAuth Integration
+
 **Effort:** 2-3 hours | **Priority:** HIGH
 
 #### 3.1 Update AuthContext
+
 - Replace token input with OAuth flow
 - Store `accessToken` and `user` info from Discord
 - Add `handleDiscordLogin()` method
 - Auto-refresh tokens
 
 #### 3.2 Create OAuth Login Page
+
 - Replace simple token input with Discord OAuth button
 - Show user profile after login
 - Logout functionality
 - Remember user preferences
 
 #### 3.3 Update API Client
+
 - Point to backend at `http://localhost:5000`
 - Include JWT in Authorization header
 - Handle 401 responses (auto-redirect to login)
@@ -122,10 +135,13 @@ if (features.dashboard?.enabled) {
 ---
 
 ### Phase 4: Docker Containerization
+
 **Effort:** 2-3 hours | **Priority:** HIGH
 
 #### 4.1 Multi-Stage Dockerfile for Dashboard
+
 Create `/dashboard/Dockerfile`:
+
 ```dockerfile
 # Stage 1: Build frontend
 FROM node:18-alpine AS frontend-build
@@ -148,6 +164,7 @@ CMD ["node", "server.js"]
 ```
 
 #### 4.2 Update Docker-Compose
+
 ```yaml
 services:
   verabot2:
@@ -157,7 +174,7 @@ services:
     volumes:
       - verabot_data:/app/data
     ports:
-      - "3000:3000"  # Internal API
+      - '3000:3000' # Internal API
     networks:
       - verabot-network
 
@@ -166,13 +183,12 @@ services:
     env_file: .env
     restart: unless-stopped
     ports:
-      - "5000:5000"
+      - '5000:5000'
     depends_on:
       - verabot2
     networks:
       - verabot-network
-    environment:
-      BOT_API_URL=http://verabot2:3000
+    environment: BOT_API_URL=http://verabot2:3000
 
 networks:
   verabot-network:
@@ -183,6 +199,7 @@ volumes:
 ```
 
 #### 4.3 Update Main Dockerfile
+
 ```dockerfile
 # Expose internal API port
 EXPOSE 3000
@@ -195,10 +212,13 @@ RUN echo 'dashboard: { enabled: true }' >> config/features.js
 ---
 
 ### Phase 5: Production Setup
+
 **Effort:** 2-3 hours | **Priority:** MEDIUM
 
 #### 5.1 Nginx Reverse Proxy
+
 Create `/docker/nginx.conf`:
+
 ```nginx
 upstream bot-api {
     server verabot2:3000;
@@ -228,13 +248,16 @@ server {
 ```
 
 #### 5.2 Environment Configuration
+
 - Production `.env` with real Discord OAuth credentials
 - SSL certificates setup
 - Database persistence configuration
 - Rate limiting for OAuth endpoints
 
 #### 5.3 Startup Script
+
 Create `/scripts/deploy.sh`:
+
 ```bash
 #!/bin/bash
 set -e
@@ -263,6 +286,7 @@ echo "✅ Dashboard deployed successfully"
 ## Implementation Steps
 
 ### Step 1: Discord OAuth Setup
+
 1. Go to Discord Developer Portal
 2. Create new application
 3. Copy Client ID and Secret
@@ -270,6 +294,7 @@ echo "✅ Dashboard deployed successfully"
 5. Save credentials to `.env`
 
 ### Step 2: Create Backend Structure
+
 ```
 dashboard/
 ├── server/
@@ -290,24 +315,28 @@ dashboard/
 ```
 
 ### Step 3: Implement OAuth Flow
+
 - Update login page with Discord button
 - Create callback handler
 - Store JWT in secure cookie
 - Implement token refresh
 
 ### Step 4: Update API Routes
+
 - Create protected endpoints in bot
 - Verify JWT on each request
 - Log dashboard access
 - Return user-specific data
 
 ### Step 5: Docker Setup
+
 - Build dashboard image
 - Update docker-compose
 - Test multi-container setup
 - Add health checks
 
 ### Step 6: Production Deployment
+
 - Setup Nginx reverse proxy
 - Configure SSL/TLS
 - Add rate limiting
@@ -318,6 +347,7 @@ dashboard/
 ## File Changes Summary
 
 ### New Files to Create
+
 - `dashboard/server/server.js` (100 lines)
 - `dashboard/server/routes/auth.js` (200 lines)
 - `dashboard/server/routes/api.js` (150 lines)
@@ -329,6 +359,7 @@ dashboard/
 - `scripts/deploy.sh` (30 lines)
 
 ### Files to Modify
+
 - `src/index.js` - Add dashboard API server
 - `src/middleware/` - Add dashboard auth middleware
 - `docker-compose.yml` - Add dashboard service, nginx
@@ -338,6 +369,7 @@ dashboard/
 - `dashboard/vite.config.js` - Proxy configuration
 
 ### Total Effort: 13-19 hours
+
 - Phase 1: 4-6 hours
 - Phase 2: 3-4 hours
 - Phase 3: 2-3 hours
@@ -349,24 +381,28 @@ dashboard/
 ## Security Considerations
 
 ### 1. OAuth Token Handling
+
 - ✅ Store access tokens in HTTP-only cookies
 - ✅ Implement token refresh logic
 - ✅ Validate state parameter
 - ✅ Use PKCE for additional security
 
 ### 2. API Security
+
 - ✅ JWT verification on all protected routes
 - ✅ Rate limiting on OAuth endpoints
 - ✅ CORS configuration
 - ✅ Audit logging for admin actions
 
 ### 3. Environment Security
+
 - ✅ Never commit `.env` file
 - ✅ Use Docker secrets for production
 - ✅ Rotate OAuth credentials regularly
 - ✅ Use HTTPS in production
 
 ### 4. User Permissions
+
 - ✅ Verify user is in guild
 - ✅ Check admin role or bot owner status
 - ✅ Log all dashboard access

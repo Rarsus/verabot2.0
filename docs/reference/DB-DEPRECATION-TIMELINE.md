@@ -11,27 +11,32 @@ The legacy `src/db.js` wrapper module is being deprecated in favor of guild-awar
 ## Timeline
 
 ### Phase 1: Deprecation Notice (NOW - January 2026)
+
 - ✅ **COMPLETED**: Add deprecation warning to src/db.js header
 - ✅ **COMPLETED**: Update .github/copilot-instructions.md
 - ✅ **COMPLETED**: Update documentation with migration guide
 - ⏳ **IN PROGRESS**: Communicate deprecation to team
 
 **Actions:**
+
 - All new code must use guild-aware services
 - Existing code using db.js continues to work (backward compatible)
 - Clear migration instructions provided
 
 ### Phase 2: Warning Period (February 2026)
+
 - Monitor usage of db.js across codebase
 - Support team members migrating to new services
 - Update any remaining documentation
 
 **If you find db.js usage:**
+
 1. Replace with appropriate guild-aware service
 2. Add guildId parameter to all method calls
 3. Test guild isolation (A != B in different guilds)
 
 ### Phase 3: Removal (March 2026 - v0.3.0)
+
 - Remove src/db.js entirely
 - Remove all references from documentation
 - Update package version to v0.3.0
@@ -41,6 +46,7 @@ The legacy `src/db.js` wrapper module is being deprecated in favor of guild-awar
 ### Problems with db.js
 
 1. **Missing Guild Context Enforcement**
+
    ```javascript
    // ❌ This works but is DANGEROUS
    const quotes = await db.getAllQuotes();
@@ -53,9 +59,11 @@ The legacy `src/db.js` wrapper module is being deprecated in favor of guild-awar
    - Guild context becomes optional
 
 3. **Extra Indirection Layer**
+
    ```
    Command → db.js → DatabaseService → SQLite
    ```
+
    - Makes testing harder (must mock multiple layers)
    - Makes refactoring harder (hidden complexity)
 
@@ -67,6 +75,7 @@ The legacy `src/db.js` wrapper module is being deprecated in favor of guild-awar
 ### Benefits of Guild-Aware Services
 
 1. **Mandatory Guild Context**
+
    ```javascript
    // ✅ Guild context is REQUIRED
    const quotes = await quoteService.getAllQuotes(guildId);
@@ -74,14 +83,17 @@ The legacy `src/db.js` wrapper module is being deprecated in favor of guild-awar
    ```
 
 2. **Direct Service Imports**
+
    ```
    Command → QuoteService → GuildAwareDatabaseService → SQLite
    ```
+
    - Simpler layer structure
    - Easier to test (fewer layers)
    - Easier to refactor (direct dependency)
 
 3. **Type-Safe Guild Isolation**
+
    ```javascript
    // Guild context is first parameter, always required
    // TypeScript would catch missing guildId
@@ -99,12 +111,13 @@ The legacy `src/db.js` wrapper module is being deprecated in favor of guild-awar
 ## Migration Guide
 
 ### Before (db.js)
+
 ```javascript
 const { addQuote, getAllQuotes, searchQuotes } = require('../../db');
 
 async function executeInteraction(interaction) {
   const guildId = interaction.guildId;
-  
+
   // Guild context is optional - must pass it explicitly
   const quoteId = await addQuote(guildId, text, author);
   const quotes = await getAllQuotes(guildId);
@@ -113,12 +126,13 @@ async function executeInteraction(interaction) {
 ```
 
 ### After (Guild-Aware Service)
+
 ```javascript
 const quoteService = require('../../services/QuoteService');
 
 async function executeInteraction(interaction) {
   const guildId = interaction.guildId;
-  
+
   // Guild context is required - enforced by service
   const quoteId = await quoteService.addQuote(guildId, text, author);
   const quotes = await quoteService.getAllQuotes(guildId);
@@ -127,6 +141,7 @@ async function executeInteraction(interaction) {
 ```
 
 **Changes:**
+
 - Import: `require('../../db')` → `require('../../services/QuoteService')`
 - Usage: `addQuote(...)` → `quoteService.addQuote(...)`
 - Pattern: Same method signatures, just moved to guild-aware service
@@ -134,6 +149,7 @@ async function executeInteraction(interaction) {
 ### Service Mapping
 
 #### Quote Operations → QuoteService
+
 ```javascript
 const quoteService = require('../../services/QuoteService');
 
@@ -155,6 +171,7 @@ await quoteService.exportAsCSV(guildId, quotes);
 ```
 
 #### Reminder Operations → GuildAwareReminderService
+
 ```javascript
 const reminderService = require('../../services/GuildAwareReminderService');
 
@@ -168,6 +185,7 @@ await reminderService.deleteReminder(guildId, id);
 ```
 
 #### Direct Database → GuildAwareDatabaseService
+
 ```javascript
 const guildDbService = require('../../services/GuildAwareDatabaseService');
 
@@ -200,16 +218,19 @@ const result = await guildDbService.executeQuery(guildId, sql, params);
 ## Status of Migration
 
 ### Completed ✅
+
 - All 11 quote commands migrated to QuoteService
 - Reminder commands already using GuildAwareReminderService
 - No remaining code depends on db.js wrapper
 
 ### In Progress ⏳
+
 - Deprecation notice added to db.js
 - Documentation updated
 - Copilot instructions updated
 
 ### Upcoming (February 2026)
+
 - Monitor for any emergency db.js usage
 - Support team migration if needed
 - Finalize removal in v0.3.0
@@ -217,13 +238,17 @@ const result = await guildDbService.executeQuery(guildId, sql, params);
 ## FAQ
 
 ### Q: Can I still use db.js?
+
 **A:** Yes, it still works for backward compatibility, but don't add new code using it. All new feature development must use guild-aware services.
 
 ### Q: What if I find db.js being used somewhere?
+
 **A:** Please migrate it immediately using the migration guide above. Report findings to the team so we can track progress.
 
 ### Q: Why not just keep db.js around?
+
 **A:** Maintaining two parallel patterns creates:
+
 - Confusion about which to use
 - Maintenance burden (two implementations)
 - Risk of guild isolation bugs
@@ -232,12 +257,15 @@ const result = await guildDbService.executeQuery(guildId, sql, params);
 Removing it in v0.3.0 forces consistency and prevents technical debt.
 
 ### Q: What about backward compatibility?
+
 **A:** This is a library used internally. The deprecation notice gives 2 months for migration. External users would need to update their code, but we're the only consumer.
 
 ### Q: Which service should I use?
+
 **A:**
+
 - **Quote operations** → `QuoteService`
-- **Reminder operations** → `GuildAwareReminderService`  
+- **Reminder operations** → `GuildAwareReminderService`
 - **Custom database operations** → `GuildAwareDatabaseService`
 - **Need help?** See COMMAND-DATABASE-PATTERNS-ANALYSIS.md
 

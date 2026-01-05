@@ -5,19 +5,21 @@ Automated workflows for testing, quality checks, Docker builds, and deployments.
 ## 📋 Workflows Overview
 
 ### 1. **CI Pipeline** (`ci.yml`)
+
 Runs on every push and PR to ensure code quality.
 
 **Triggers:**
+
 - Push to `main`
 - Pull requests to `main`
 
 **Jobs:**
+
 - **test-and-lint** (Matrix: Node 18, 20, 24)
   - Installs dependencies
   - Runs ESLint
   - Runs full test suite
   - Uploads test artifacts
-  
 - **security-audit**
   - Runs npm security audit
   - Checks for vulnerabilities
@@ -32,6 +34,7 @@ Runs on every push and PR to ensure code quality.
 
 **Status Badge:**
 Add to README:
+
 ```markdown
 ![CI Tests](https://github.com/Rarsus/verabot2.0/actions/workflows/ci.yml/badge.svg)
 ```
@@ -39,13 +42,16 @@ Add to README:
 ---
 
 ### 2. **Deployment Pipeline** (`deploy.yml`)
+
 Automatically builds and pushes Docker image to GitHub Container Registry.
 
 **Triggers:**
+
 - Push to `main` (when source files change)
 - Manual trigger (`workflow_dispatch`)
 
 **Jobs:**
+
 - **build-and-push**
   - Builds multi-stage Docker image
   - Pushes to GitHub Container Registry
@@ -57,10 +63,12 @@ Automatically builds and pushes Docker image to GitHub Container Registry.
   - Provides image references
 
 **Requirements:**
+
 - GitHub Container Registry access (automatic)
 - `GITHUB_TOKEN` (automatic)
 
 **Docker Images Published:**
+
 ```
 ghcr.io/rarsus/verabot2.0:latest
 ghcr.io/rarsus/verabot2.0:main-<sha>
@@ -69,13 +77,16 @@ ghcr.io/rarsus/verabot2.0:main-<sha>
 ---
 
 ### 3. **Docker Release Publishing** (`docker-publish.yml`)
+
 Builds and publishes versioned Docker images to GitHub Container Registry on release.
 
 **Triggers:**
+
 - GitHub Release published
 - Manual trigger (`workflow_dispatch` with version input)
 
 **Jobs:**
+
 - **build-and-push-release**
   - Builds multi-platform Docker image (amd64, arm64)
   - Extracts version from release tag or manual input
@@ -89,10 +100,12 @@ Builds and publishes versioned Docker images to GitHub Container Registry on rel
   - Ensures image is accessible
 
 **Requirements:**
+
 - GitHub Container Registry access (automatic)
 - `GITHUB_TOKEN` (automatic)
 
 **Docker Images Published (for version 3.0.0):**
+
 ```
 ghcr.io/rarsus/verabot2.0:3.0.0      # Full version
 ghcr.io/rarsus/verabot2.0:3.0        # Major.minor
@@ -101,18 +114,21 @@ ghcr.io/rarsus/verabot2.0:latest     # Latest release
 ```
 
 **Usage - Creating a Release:**
+
 1. Tag your commit: `git tag v3.0.0`
 2. Push the tag: `git push origin v3.0.0`
 3. Create GitHub release from tag
 4. Workflow automatically builds and publishes Docker images
 
 **Usage - Manual Trigger:**
+
 1. Go to Actions → Docker Release Publishing
 2. Click "Run workflow"
 3. Enter version number (e.g., "3.0.0")
 4. Wait for build to complete
 
 **Pulling Published Images:**
+
 ```bash
 # Pull specific version
 docker pull ghcr.io/rarsus/verabot2.0:3.0.0
@@ -127,12 +143,15 @@ docker run -d --env-file .env ghcr.io/rarsus/verabot2.0:latest
 ---
 
 ### 4. **PR Validation** (`pr-validation.yml`)
+
 Enhanced validation for pull requests with automated comments.
 
 **Triggers:**
+
 - Pull request opened, synchronized, or reopened
 
 **Jobs:**
+
 - **validate-pr**
   - Full lint check
   - Complete test suite
@@ -149,13 +168,16 @@ Enhanced validation for pull requests with automated comments.
 ---
 
 ### 5. **Scheduled Checks** (`scheduled-checks.yml`)
+
 Weekly health checks and dependency monitoring.
 
 **Triggers:**
+
 - Every Monday at 9 AM UTC
 - Manual trigger (`workflow_dispatch`)
 
 **Jobs:**
+
 - **check-dependencies**
   - Checks for outdated packages
   - Runs security audit
@@ -175,9 +197,11 @@ Weekly health checks and dependency monitoring.
 ## 🚀 How to Use
 
 ### Running Workflows Manually
+
 Go to **Actions** tab → Select workflow → **Run workflow**
 
 ### Checking Workflow Status
+
 - **GitHub Web UI:** Settings → Actions → All workflows
 - **Command line:**
   ```bash
@@ -186,6 +210,7 @@ Go to **Actions** tab → Select workflow → **Run workflow**
   ```
 
 ### Viewing Artifacts
+
 1. Go to Actions tab
 2. Select a workflow run
 3. Download artifacts section at bottom
@@ -195,17 +220,21 @@ Go to **Actions** tab → Select workflow → **Run workflow**
 ## 🔧 Configuration
 
 ### Environment Variables
+
 All workflows use standard GitHub environment variables:
+
 - `GITHUB_TOKEN` - Automatic authentication
 - `GITHUB_REPOSITORY` - Owner/repo
 - `GITHUB_SHA` - Current commit SHA
 - `GITHUB_REF` - Current branch
 
 ### Secrets (Optional for Future Deployment)
+
 If adding deployment to external services, add secrets in:
 **Settings → Secrets and Variables → Actions**
 
 Examples:
+
 - `DOCKER_USERNAME` - For Docker Hub
 - `DEPLOY_KEY` - For server deployments
 - `SLACK_WEBHOOK` - For notifications
@@ -215,16 +244,19 @@ Examples:
 ## 📊 Workflow Performance
 
 ### CI Pipeline
+
 - **Duration:** ~5-8 minutes
 - **Nodes tested:** 3 (18.x, 20.x, 24.x)
 - **Cache:** NPM dependencies cached
 
 ### Deployment Pipeline
+
 - **Duration:** ~10-15 minutes (first run), ~3-5 minutes (cached)
 - **Docker build:** Multi-stage, optimized for size
 - **Registry:** GitHub Container Registry (GHCR)
 
 ### Scheduled Checks
+
 - **Duration:** ~5-10 minutes
 - **Frequency:** Weekly (Monday 9 AM UTC)
 - **Reports:** Stored for 30-90 days
@@ -234,6 +266,7 @@ Examples:
 ## ✅ Monitoring Dashboard
 
 ### Quick Status Checks
+
 ```bash
 # Latest CI status
 gh run list --repo Rarsus/verabot2.0 -w ci.yml -L 1
@@ -246,6 +279,7 @@ gh workflow list --repo Rarsus/verabot2.0
 ```
 
 ### GitHub Web Dashboard
+
 1. **Repository main page** → Actions tab
 2. See all workflows and their latest runs
 3. Click any run for detailed logs
@@ -255,12 +289,14 @@ gh workflow list --repo Rarsus/verabot2.0
 ## 🔐 Security Features
 
 ### Code Quality Gates
+
 ✅ ESLint - Code style enforcement
 ✅ Tests - Functional correctness
 ✅ Security Audit - Vulnerability scanning
 ✅ CodeQL - Advanced code analysis
 
 ### PR Protection Rules
+
 ✅ Title format validation
 ✅ Size warnings (prevent massive PRs)
 ✅ Auto-comments with results
@@ -270,6 +306,7 @@ gh workflow list --repo Rarsus/verabot2.0
 ## 📝 Next Steps
 
 ### To Enable Auto-Deployment
+
 1. Choose a hosting platform:
    - Railway.app (easy, free tier)
    - DigitalOcean (scalable)
@@ -281,6 +318,7 @@ gh workflow list --repo Rarsus/verabot2.0
 3. Store secrets in GitHub
 
 ### Example: Railway Deployment
+
 ```yaml
 - name: Deploy to Railway
   run: |
@@ -290,6 +328,7 @@ gh workflow list --repo Rarsus/verabot2.0
 ```
 
 ### Example: Discord Notifications
+
 ```yaml
 - name: Notify on Slack/Discord
   run: |
@@ -303,14 +342,17 @@ gh workflow list --repo Rarsus/verabot2.0
 ## 🚨 Troubleshooting
 
 ### "Tests failed in CI but pass locally"
+
 - **Cause:** Different Node version or missing environment variable
 - **Solution:** Check `.env.example` and set `GUILD_ID` if needed
 
 ### "Docker build is slow"
+
 - **Cause:** Cache not working
 - **Solution:** Cache is automatic, wait for second run
 
 ### "PR comments not showing"
+
 - **Cause:** Insufficient permissions
 - **Solution:** Check repository settings → Actions permissions
 
@@ -322,4 +364,3 @@ gh workflow list --repo Rarsus/verabot2.0
 - [Docker build action](https://github.com/docker/build-push-action)
 - [Node.js setup](https://github.com/actions/setup-node)
 - [GHCR Documentation](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
-

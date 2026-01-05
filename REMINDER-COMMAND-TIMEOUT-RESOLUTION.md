@@ -29,6 +29,7 @@ The reminder management commands were performing time-consuming operations witho
 4. **Service Layer Calls** - Multiple async operations in ReminderService
 
 Example flow for `/create-reminder`:
+
 ```
 User executes /create-reminder
 ↓ (0ms) No response sent
@@ -47,11 +48,13 @@ User executes /create-reminder
 Added `await interaction.deferReply()` at the start of all database/service-heavy commands.
 
 This gives the command 15 minutes instead of 3 seconds by:
+
 1. Immediately telling Discord "I got your command"
 2. Showing "Bot is thinking..." message to the user
 3. Allowing up to 15 minutes for response with `editReply()`
 
 Example after fix:
+
 ```
 User executes /create-reminder
 ↓ (0ms) interaction.deferReply() - Discord gets response
@@ -69,30 +72,34 @@ User executes /create-reminder
 ### Commands Modified (10 total)
 
 #### Reminder Management (6)
-| Command | Change | Status |
-|---------|--------|--------|
-| `create-reminder.js` | Added `deferReply()` | ✅ Fixed |
-| `delete-reminder.js` | Added `deferReply()` | ✅ Fixed |
-| `get-reminder.js` | Added `deferReply()` | ✅ Fixed |
-| `list-reminders.js` | Added `deferReply()` | ✅ Fixed |
+
+| Command               | Change               | Status   |
+| --------------------- | -------------------- | -------- |
+| `create-reminder.js`  | Added `deferReply()` | ✅ Fixed |
+| `delete-reminder.js`  | Added `deferReply()` | ✅ Fixed |
+| `get-reminder.js`     | Added `deferReply()` | ✅ Fixed |
+| `list-reminders.js`   | Added `deferReply()` | ✅ Fixed |
 | `search-reminders.js` | Added `deferReply()` | ✅ Fixed |
-| `update-reminder.js` | Added `deferReply()` | ✅ Fixed |
+| `update-reminder.js`  | Added `deferReply()` | ✅ Fixed |
 
 #### Quote Management (1)
-| Command | Change | Status |
-|---------|--------|--------|
+
+| Command          | Change               | Status   |
+| ---------------- | -------------------- | -------- |
 | `list-quotes.js` | Added `deferReply()` | ✅ Fixed |
 
 #### User Preferences (3)
-| Command | Change | Status |
-|---------|--------|--------|
-| `opt-in.js` | Added `deferReply()` | ✅ Fixed |
-| `opt-out.js` | Added `deferReply()` | ✅ Fixed |
+
+| Command          | Change               | Status   |
+| ---------------- | -------------------- | -------- |
+| `opt-in.js`      | Added `deferReply()` | ✅ Fixed |
+| `opt-out.js`     | Added `deferReply()` | ✅ Fixed |
 | `comm-status.js` | Added `deferReply()` | ✅ Fixed |
 
 ### Code Changes
 
 **Before (Timeout)**
+
 ```javascript
 async executeInteraction(interaction) {
   const subject = interaction.options.getString('subject');
@@ -105,11 +112,12 @@ async executeInteraction(interaction) {
 ```
 
 **After (Fixed)**
+
 ```javascript
 async executeInteraction(interaction) {
   // Defer the interaction immediately to avoid timeout (3 second Discord limit)
   await interaction.deferReply();
-  
+
   const subject = interaction.options.getString('subject');
   const category = interaction.options.getString('category');
   const when = interaction.options.getString('when');
@@ -139,6 +147,7 @@ This means **no changes were needed to response helpers** - they already support
 ## Testing & Verification
 
 ### Docker Build Status
+
 ```
 ✅ Docker image rebuilt successfully
 ✅ Container started and healthy
@@ -148,6 +157,7 @@ This means **no changes were needed to response helpers** - they already support
 ```
 
 ### Lint Check
+
 ```
 ✅ 0 new errors introduced
 ✅ All syntax valid
@@ -155,6 +165,7 @@ This means **no changes were needed to response helpers** - they already support
 ```
 
 ### Deployment Steps Completed
+
 1. ✅ Modified 10 commands to defer interactions
 2. ✅ Verified response helpers support deferred calls
 3. ✅ Rebuilt Docker container
@@ -166,11 +177,13 @@ This means **no changes were needed to response helpers** - they already support
 ## How to Test After Deployment
 
 ### Step 1: Register Commands
+
 ```bash
 docker-compose exec verabot2 npm run register-commands
 ```
 
 Expected output:
+
 ```
 Registering commands...
 ✓ Successfully registered 32 commands
@@ -179,6 +192,7 @@ Registering commands...
 ### Step 2: Test in Discord
 
 #### Test Reminder Commands
+
 1. Type `/create-reminder subject:"Test" category:"urgent" when:"tomorrow" who:@yourname`
    - ✅ Should show "Bot is thinking..." immediately
    - ✅ Should resolve with reminder creation response
@@ -192,6 +206,7 @@ Registering commands...
    - ✅ Should respond with search results
 
 #### Test User Preference Commands
+
 1. Type `/opt-in`
    - ✅ Should show "Bot is thinking..." immediately
    - ✅ Should confirm opt-in status
@@ -205,6 +220,7 @@ Registering commands...
    - ✅ Should display communication status
 
 #### Expected Behavior
+
 - All commands should show loading animation
 - No "did not respond" timeouts
 - Responses complete within a reasonable time (< 5 seconds)
@@ -214,13 +230,16 @@ Registering commands...
 ## Technical Notes
 
 ### Discord.js API
+
 - `deferReply()` - Acknowledges the interaction (tells Discord "I'm working on this")
 - `deferReply({ ephemeral: true })` - Defers with private message (for list-quotes)
 - `editReply()` - Sends the actual response after deferring
 - Window: 3 seconds to respond, then 15 minutes to edit
 
 ### Why Other Commands Weren't Modified
+
 Commands that don't do heavy processing naturally respond within 3 seconds:
+
 - `ping.js` - No database calls
 - `help.js` - Text only, no async operations
 - `hi.js` - No database calls
@@ -231,6 +250,7 @@ These remain unchanged since they don't need the extra time.
 ---
 
 ## Files Changed
+
 ```
 Modified: src/commands/reminder-management/create-reminder.js
 Modified: src/commands/reminder-management/delete-reminder.js
@@ -251,17 +271,20 @@ Created: REMINDER-COMMAND-TIMEOUT-RESOLUTION.md
 ## Impact Assessment
 
 ### Users
+
 - ✅ No more "application did not respond" timeouts
 - ✅ Better UX with "Bot is thinking..." loading state
 - ✅ Can use reminder system without errors
 
 ### Developers
+
 - ✅ Clear pattern for future commands
 - ✅ No changes to business logic
 - ✅ No database schema changes
 - ✅ Backward compatible
 
 ### Operations
+
 - ✅ No configuration changes needed
 - ✅ One-time fix deployment
 - ✅ No ongoing maintenance impact
@@ -270,6 +293,7 @@ Created: REMINDER-COMMAND-TIMEOUT-RESOLUTION.md
 ---
 
 ## Breaking Changes
+
 **None** - This is a pure internal implementation fix that maintains full backward compatibility.
 
 ---

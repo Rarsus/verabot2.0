@@ -9,7 +9,7 @@
                    |                   |                   |
               PUBLIC (24)         ADMIN-ONLY (8)       SPECIAL PERMS (Opt-in)
               No restrictions     Requires Admin       /whisper, /opt-in-request
-              
+
               ├─ Quotes (10)      ├─ Broadcast         └─ Respects user
               ├─ Reminders (6)    ├─ Say                  opt-in status
               ├─ Preferences (3)  ├─ Whisper
@@ -41,6 +41,7 @@ All require: Administrator permission
 ```
 
 **Permission Check:**
+
 ```
 User has Administrator? → YES → Execute
                       ↓ NO
@@ -159,6 +160,7 @@ Special: Respects opt-in for DM delivery
 ```
 
 **Affected Commands (8):**
+
 - `/broadcast`, `/say`, `/whisper`, `/embed`
 - `/proxy-config`, `/proxy-enable`, `/proxy-status`
 - `/update-quote`, `/delete-quote`
@@ -181,6 +183,7 @@ Special: Respects opt-in for DM delivery
 ```
 
 **Protected Commands (3):**
+
 - `/whisper` - Admin sending DMs respects opt-in
 - `/opt-in-request` - Respects opt-in before sending
 - Reminder notifications - DMs only if opted in
@@ -231,6 +234,7 @@ TIER 3 - Optional (Feature-dependent)
 ### Scenario: Different Admin Models
 
 #### Model A: Discord Administrator (Default)
+
 ```
 ┌─────────────────────────────────┐
 │ ADMIN_ROLE_IDS = (empty)        │
@@ -242,6 +246,7 @@ TIER 3 - Optional (Feature-dependent)
 ```
 
 #### Model B: Custom Admin Role
+
 ```
 ┌─────────────────────────────────┐
 │ ADMIN_ROLE_IDS = 123456789...   │
@@ -253,6 +258,7 @@ TIER 3 - Optional (Feature-dependent)
 ```
 
 #### Model C: Super Admin Users
+
 ```
 ┌─────────────────────────────────┐
 │ PRIVILEGED_USER_IDS = 111...,22│
@@ -319,26 +325,26 @@ REMINDER_NOTIFICATION_CHANNEL=111222333444555
 
 ### Permission Symbols
 
-| Symbol | Meaning | Count |
-|--------|---------|-------|
-| 🔴 | Admin Only | 8 |
-| 🟢 | Public | 24 |
-| ✅ | Enabled | 32 |
-| ❌ | Disabled/Restricted | Varies |
-| ⚠️ | Optional/Conditional | 3 |
+| Symbol | Meaning              | Count  |
+| ------ | -------------------- | ------ |
+| 🔴     | Admin Only           | 8      |
+| 🟢     | Public               | 24     |
+| ✅     | Enabled              | 32     |
+| ❌     | Disabled/Restricted  | Varies |
+| ⚠️     | Optional/Conditional | 3      |
 
 ### Permission Flags
 
-| Flag | Full Name | Used By |
-|------|-----------|---------|
-| SEND_MESSAGES | Send Messages in Channel | All 32 commands |
-| EMBED_LINKS | Embed Links | 15 commands |
-| READ_MESSAGE_HISTORY | Read Message History | System |
-| ADD_REACTIONS | Add Reactions | Pagination (opt) |
-| MANAGE_MESSAGES | Manage Messages | Pagination (opt) |
-| ATTACH_FILES | Attach Files | 1 command (export) |
-| MANAGE_WEBHOOKS | Manage Webhooks | Proxy (optional) |
-| USE_APP_COMMANDS | Use Application Commands | All slash commands |
+| Flag                 | Full Name                | Used By            |
+| -------------------- | ------------------------ | ------------------ |
+| SEND_MESSAGES        | Send Messages in Channel | All 32 commands    |
+| EMBED_LINKS          | Embed Links              | 15 commands        |
+| READ_MESSAGE_HISTORY | Read Message History     | System             |
+| ADD_REACTIONS        | Add Reactions            | Pagination (opt)   |
+| MANAGE_MESSAGES      | Manage Messages          | Pagination (opt)   |
+| ATTACH_FILES         | Attach Files             | 1 command (export) |
+| MANAGE_WEBHOOKS      | Manage Webhooks          | Proxy (optional)   |
+| USE_APP_COMMANDS     | Use Application Commands | All slash commands |
 
 ---
 

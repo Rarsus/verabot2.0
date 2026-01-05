@@ -70,19 +70,19 @@ CREATE TABLE IF NOT EXISTS reminders (
 
 #### Columns
 
-| Column Name | Data Type | Constraints | Description |
-|-------------|-----------|-------------|-------------|
-| `id` | INTEGER | PRIMARY KEY, AUTOINCREMENT | Unique identifier for the reminder |
-| `subject` | TEXT | NOT NULL | Reminder title/subject (3-200 characters) |
-| `category` | TEXT | NOT NULL | Category for organization (max 50 characters) |
-| `when_datetime` | TEXT | NOT NULL | ISO 8601 datetime of the reminder event |
-| `content` | TEXT | NULL | Optional detailed description (max 2000 characters) |
-| `link` | TEXT | NULL | Optional associated URL (max 500 characters) |
-| `image` | TEXT | NULL | Optional image URL (max 500 characters) |
-| `notificationTime` | TEXT | NOT NULL | ISO 8601 datetime when notification should be sent |
-| `status` | TEXT | NOT NULL, DEFAULT 'active' | Reminder status: 'active', 'completed', or 'cancelled' |
-| `createdAt` | DATETIME | DEFAULT CURRENT_TIMESTAMP | Creation timestamp |
-| `updatedAt` | DATETIME | DEFAULT CURRENT_TIMESTAMP | Last modification timestamp |
+| Column Name        | Data Type | Constraints                | Description                                            |
+| ------------------ | --------- | -------------------------- | ------------------------------------------------------ |
+| `id`               | INTEGER   | PRIMARY KEY, AUTOINCREMENT | Unique identifier for the reminder                     |
+| `subject`          | TEXT      | NOT NULL                   | Reminder title/subject (3-200 characters)              |
+| `category`         | TEXT      | NOT NULL                   | Category for organization (max 50 characters)          |
+| `when_datetime`    | TEXT      | NOT NULL                   | ISO 8601 datetime of the reminder event                |
+| `content`          | TEXT      | NULL                       | Optional detailed description (max 2000 characters)    |
+| `link`             | TEXT      | NULL                       | Optional associated URL (max 500 characters)           |
+| `image`            | TEXT      | NULL                       | Optional image URL (max 500 characters)                |
+| `notificationTime` | TEXT      | NOT NULL                   | ISO 8601 datetime when notification should be sent     |
+| `status`           | TEXT      | NOT NULL, DEFAULT 'active' | Reminder status: 'active', 'completed', or 'cancelled' |
+| `createdAt`        | DATETIME  | DEFAULT CURRENT_TIMESTAMP  | Creation timestamp                                     |
+| `updatedAt`        | DATETIME  | DEFAULT CURRENT_TIMESTAMP  | Last modification timestamp                            |
 
 #### Indexes
 
@@ -125,13 +125,13 @@ CREATE TABLE IF NOT EXISTS reminder_assignments (
 
 #### Columns
 
-| Column Name | Data Type | Constraints | Description |
-|-------------|-----------|-------------|-------------|
-| `id` | INTEGER | PRIMARY KEY, AUTOINCREMENT | Unique identifier for the assignment |
-| `reminderId` | INTEGER | NOT NULL, FOREIGN KEY | Reference to reminders table |
-| `assigneeType` | TEXT | NOT NULL, CHECK | Type of assignee: 'user' or 'role' |
-| `assigneeId` | TEXT | NOT NULL | Discord User ID or Role ID |
-| `createdAt` | DATETIME | DEFAULT CURRENT_TIMESTAMP | Creation timestamp |
+| Column Name    | Data Type | Constraints                | Description                          |
+| -------------- | --------- | -------------------------- | ------------------------------------ |
+| `id`           | INTEGER   | PRIMARY KEY, AUTOINCREMENT | Unique identifier for the assignment |
+| `reminderId`   | INTEGER   | NOT NULL, FOREIGN KEY      | Reference to reminders table         |
+| `assigneeType` | TEXT      | NOT NULL, CHECK            | Type of assignee: 'user' or 'role'   |
+| `assigneeId`   | TEXT      | NOT NULL                   | Discord User ID or Role ID           |
+| `createdAt`    | DATETIME  | DEFAULT CURRENT_TIMESTAMP  | Creation timestamp                   |
 
 #### Indexes
 
@@ -169,13 +169,13 @@ CREATE TABLE IF NOT EXISTS reminder_notifications (
 
 #### Columns
 
-| Column Name | Data Type | Constraints | Description |
-|-------------|-----------|-------------|-------------|
-| `id` | INTEGER | PRIMARY KEY, AUTOINCREMENT | Unique identifier for the notification record |
-| `reminderId` | INTEGER | NOT NULL, FOREIGN KEY | Reference to reminders table |
-| `sentAt` | DATETIME | DEFAULT CURRENT_TIMESTAMP | Timestamp of notification attempt |
-| `success` | INTEGER | DEFAULT 1 | 1 if successful, 0 if failed |
-| `errorMessage` | TEXT | NULL | Error details if notification failed |
+| Column Name    | Data Type | Constraints                | Description                                   |
+| -------------- | --------- | -------------------------- | --------------------------------------------- |
+| `id`           | INTEGER   | PRIMARY KEY, AUTOINCREMENT | Unique identifier for the notification record |
+| `reminderId`   | INTEGER   | NOT NULL, FOREIGN KEY      | Reference to reminders table                  |
+| `sentAt`       | DATETIME  | DEFAULT CURRENT_TIMESTAMP  | Timestamp of notification attempt             |
+| `success`      | INTEGER   | DEFAULT 1                  | 1 if successful, 0 if failed                  |
+| `errorMessage` | TEXT      | NULL                       | Error details if notification failed          |
 
 #### Indexes
 
@@ -221,7 +221,7 @@ CREATE INDEX IF NOT EXISTS idx_reminder_notifications_reminderId ON reminder_not
 
 ```sql
 INSERT INTO reminders (
-  subject, category, when_datetime, content, link, image, 
+  subject, category, when_datetime, content, link, image,
   notificationTime, status
 ) VALUES (?, ?, ?, ?, ?, ?, ?, 'active');
 ```
@@ -237,7 +237,7 @@ INSERT INTO reminder_assignments (
 ### Get Reminder with Assignments
 
 ```sql
-SELECT 
+SELECT
   r.*,
   GROUP_CONCAT(ra.assigneeType || ':' || ra.assigneeId) as assignees
 FROM reminders r
@@ -249,15 +249,15 @@ GROUP BY r.id;
 ### List Active Reminders
 
 ```sql
-SELECT * FROM reminders 
-WHERE status = 'active' 
+SELECT * FROM reminders
+WHERE status = 'active'
 ORDER BY when_datetime ASC;
 ```
 
 ### Search Reminders
 
 ```sql
-SELECT * FROM reminders 
+SELECT * FROM reminders
 WHERE (subject LIKE ? OR category LIKE ? OR content LIKE ?)
 AND status = 'active'
 ORDER BY when_datetime ASC;
@@ -266,7 +266,7 @@ ORDER BY when_datetime ASC;
 ### Get Due Reminders for Notification
 
 ```sql
-SELECT 
+SELECT
   r.*,
   GROUP_CONCAT(ra.assigneeType || ':' || ra.assigneeId) as assignees
 FROM reminders r
@@ -283,7 +283,7 @@ ORDER BY r.notificationTime ASC;
 ### Update Reminder
 
 ```sql
-UPDATE reminders 
+UPDATE reminders
 SET subject = ?, category = ?, updatedAt = CURRENT_TIMESTAMP
 WHERE id = ?;
 ```
@@ -291,7 +291,7 @@ WHERE id = ?;
 ### Soft Delete (Cancel)
 
 ```sql
-UPDATE reminders 
+UPDATE reminders
 SET status = 'cancelled', updatedAt = CURRENT_TIMESTAMP
 WHERE id = ?;
 ```
@@ -374,6 +374,7 @@ ALTER TABLE reminders ADD COLUMN new_column_name TEXT DEFAULT NULL;
 ### Backward Compatibility
 
 All schema changes use `IF NOT EXISTS` to ensure idempotency:
+
 - Tables can be created multiple times without errors
 - Indexes won't be duplicated
 - Safe to run schema enhancement on existing databases
@@ -384,7 +385,7 @@ All schema changes use `IF NOT EXISTS` to ensure idempotency:
 
 ```sql
 INSERT INTO reminders (
-  subject, category, when_datetime, content, link, 
+  subject, category, when_datetime, content, link,
   notificationTime, status
 ) VALUES (
   'Team Standup Meeting',
@@ -428,15 +429,15 @@ INSERT INTO reminder_notifications (
 
 ```sql
 -- Delete reminders completed more than 30 days ago
-DELETE FROM reminders 
-WHERE status = 'completed' 
+DELETE FROM reminders
+WHERE status = 'completed'
 AND updatedAt < datetime('now', '-30 days');
 ```
 
 ### View Notification Statistics
 
 ```sql
-SELECT 
+SELECT
   COUNT(*) as total_notifications,
   SUM(success) as successful,
   COUNT(*) - SUM(success) as failed

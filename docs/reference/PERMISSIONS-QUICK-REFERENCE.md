@@ -5,6 +5,7 @@
 ### All Commands by Permission Level
 
 #### 🔴 Administrator Required
+
 ```
 /broadcast       - Send to multiple channels
 /say            - Bot sends in channel
@@ -18,6 +19,7 @@
 ```
 
 #### 🟢 No Permissions Required
+
 ```
 /add-quote               - Create new quote
 /quote                   - Get quote by ID
@@ -49,38 +51,46 @@
 ## 📋 Command Stack Permissions
 
 ### Admin Stack (7 commands)
+
 - **All require:** `Administrator` permission
 - **Bot needs:** `SEND_MESSAGES`, `EMBED_LINKS`, `ATTACH_FILES`
 - **Special:** `/whisper` respects user opt-in status
 
 ### Quote Management Stack (5 commands)
+
 - `/add-quote`, `/quote`, `/list-quotes` - No permissions
 - `/update-quote`, `/delete-quote` - Require `Administrator`
 - **Bot needs:** `SEND_MESSAGES`, `EMBED_LINKS`
 
 ### Quote Discovery Stack (3 commands)
+
 - **All require:** Nothing
 - **Bot needs:** `SEND_MESSAGES`, `EMBED_LINKS`
 
 ### Quote Social Stack (2 commands)
+
 - **All require:** Nothing
 - **Bot needs:** `SEND_MESSAGES`, `EMBED_LINKS`
 
 ### Quote Export Stack (1 command)
+
 - `/export-quotes` - No permissions required
 - **Bot needs:** `SEND_MESSAGES`, `ATTACH_FILES`
 
 ### Reminder Management Stack (6 commands)
+
 - **All require:** Nothing (own reminders only)
 - **Bot needs:** `SEND_MESSAGES`, `EMBED_LINKS`
 - **Special:** Respects user opt-in for DM notifications
 
 ### User Preferences Stack (4 commands)
+
 - `/opt-in`, `/opt-out`, `/comm-status` - Self-managed
 - `/opt-in-request` - Requires `Administrator`
 - **Bot needs:** `SEND_MESSAGES`
 
 ### Miscellaneous Stack (4 commands)
+
 - **All require:** Nothing
 - **Bot needs:** `SEND_MESSAGES`, `EMBED_LINKS` (for `/help`)
 
@@ -89,6 +99,7 @@
 ## 🤖 Bot Permissions Checklist
 
 ### Essential (Always Required)
+
 - ✅ `SEND_MESSAGES` - Reply to commands
 - ✅ `READ_MESSAGE_HISTORY` - View message history
 - ✅ `EMBED_LINKS` - Format command responses
@@ -97,10 +108,12 @@
 - ✅ `MANAGE_MESSAGES` - Clean up reactions
 
 ### Optional
+
 - ⚠️ `MANAGE_WEBHOOKS` - Only if proxy enabled
 - ⚠️ `MENTION_EVERYONE` - Not currently used
 
 ### Invite URL with All Permissions
+
 ```
 https://discord.com/api/oauth2/authorize?
   client_id=YOUR_CLIENT_ID
@@ -113,6 +126,7 @@ https://discord.com/api/oauth2/authorize?
 ## 🔐 Two Tier Permission System
 
 ### Tier 1: Discord Administrator
+
 ```
 Used for: Dangerous server-wide actions
 Check: interaction.member.permissions.has('Administrator')
@@ -122,6 +136,7 @@ Scope: Server-level
 Commands: `/broadcast`, `/say`, `/whisper`, `/embed`, `/proxy-*`, `/update-quote`, `/delete-quote`
 
 ### Tier 2: User Opt-In
+
 ```
 Used for: Controlling DM communications
 Check: CommunicationService.isOptedIn(userId)
@@ -135,12 +150,14 @@ Protected by: `/whisper` (respects opt-in), Reminder DMs, `/list-quotes`
 ## ⚙️ Configuration
 
 ### Required Environment Variables
+
 ```env
 DISCORD_TOKEN=your_bot_token
 CLIENT_ID=your_client_id
 ```
 
 ### Optional Permission Configuration
+
 ```env
 # Override Administrator check with specific roles
 ADMIN_ROLE_IDS=role_id_1,role_id_2
@@ -164,6 +181,7 @@ REMINDER_NOTIFICATION_CHANNEL=channel_id
 6. Copy generated URL and share with server
 
 **Or use direct URL:**
+
 ```
 https://discord.com/api/oauth2/authorize?
   client_id=YOUR_CLIENT_ID
@@ -187,27 +205,35 @@ https://discord.com/api/oauth2/authorize?
 ## 🔍 Debugging Permissions
 
 ### Command fails with "not admin"
+
 - User doesn't have `Administrator` role
 - Or set `ADMIN_ROLE_IDS` to specific role and user doesn't have that role
 
 ### Bot can't send messages
+
 - Bot missing `SEND_MESSAGES` permission in channel
 - Channel permissions deny bot access
 - Use `/say` to test bot sending ability
 
 ### DMs fail to send
+
 - User has DMs disabled in privacy settings
 - User opted out with `/opt-out`
 - Bot blocked/missing permissions
 - User left server (for `/whisper`)
 
 ### Permission checking code patterns
+
 ```javascript
 // Admin check
-if (!checkAdminPermission(interaction)) { /* error */ }
+if (!checkAdminPermission(interaction)) {
+  /* error */
+}
 
 // Bot permission check
-if (!channel.permissionsFor(bot.user).has('SendMessages')) { /* error */ }
+if (!channel.permissionsFor(bot.user).has('SendMessages')) {
+  /* error */
+}
 
 // Opt-in check
 const optedIn = await CommunicationService.isOptedIn(userId);

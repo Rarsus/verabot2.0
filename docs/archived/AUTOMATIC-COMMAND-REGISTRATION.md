@@ -9,26 +9,29 @@ Your bot now automatically registers slash commands when it's added to a new Dis
 ### 1. **New Utility: `src/utils/auto-register-commands.js`**
 
 A reusable function that handles all command registration logic:
+
 - Extracts commands from all files in `src/commands/` directory
 - Respects feature flags (ENABLE_REMINDERS, ENABLE_ADMIN_COMMANDS, etc.)
 - Can register globally or to a specific guild
 - Returns success/failure status
 
 **Usage:**
+
 ```javascript
 const { autoRegisterCommands } = require('./utils/auto-register-commands');
 
 const result = await autoRegisterCommands({
   token: process.env.DISCORD_TOKEN,
   clientId: process.env.CLIENT_ID,
-  guildId: 'optional-guild-id',  // Register to specific guild
-  verbose: true  // Log output
+  guildId: 'optional-guild-id', // Register to specific guild
+  verbose: true, // Log output
 });
 ```
 
 ### 2. **Refactored `src/register-commands.js`**
 
 Now uses the new utility function, making it cleaner and more maintainable:
+
 - Still works with `npm run register-commands`
 - Simplified from ~130 lines to ~33 lines
 - Shares logic with automatic registration
@@ -36,6 +39,7 @@ Now uses the new utility function, making it cleaner and more maintainable:
 ### 3. **Added `guildCreate` Event Handler in `src/index.js`**
 
 When the bot joins a new server:
+
 1. **Auto-registers all slash commands** to that guild (respects feature flags)
 2. **Logs the action** with command count
 3. **Notifies the server owner** with a helpful welcome embed
@@ -44,11 +48,13 @@ When the bot joins a new server:
 ## How It Works
 
 ### Manual Registration (Old Way - Still Works)
+
 ```bash
 npm run register-commands  # Registers globally or to GUILD_ID if set
 ```
 
 ### Automatic Registration (New)
+
 1. Add bot to new server
 2. Discord fires `guildCreate` event
 3. Bot automatically discovers and registers all enabled commands
@@ -82,13 +88,14 @@ If failed:
 
 Automatic registration respects the same feature flags as runtime:
 
-| Flag | Environment Variable | Effect |
-|------|----------------------|--------|
-| Admin | ENABLE_ADMIN_COMMANDS=true/false | Skip admin/* commands if false |
-| Reminders | ENABLE_REMINDERS=true/false | Skip reminder-management/* commands if false |
-| Proxy | ENABLE_PROXY_FEATURES=true/false | (Currently not filtered at registration) |
+| Flag      | Environment Variable             | Effect                                        |
+| --------- | -------------------------------- | --------------------------------------------- |
+| Admin     | ENABLE_ADMIN_COMMANDS=true/false | Skip admin/\* commands if false               |
+| Reminders | ENABLE_REMINDERS=true/false      | Skip reminder-management/\* commands if false |
+| Proxy     | ENABLE_PROXY_FEATURES=true/false | (Currently not filtered at registration)      |
 
 **Example:**
+
 ```bash
 # Only register non-admin commands when bot joins new server
 ENABLE_ADMIN_COMMANDS=false docker-compose up -d
@@ -107,6 +114,7 @@ The implementation has been tested and verified:
 ## User Experience
 
 ### Before (Manual Registration)
+
 1. Add bot to server
 2. Bot joins but has no commands
 3. Admin must run `npm run register-commands`
@@ -114,6 +122,7 @@ The implementation has been tested and verified:
 5. Users can now use commands
 
 ### After (Automatic Registration)
+
 1. Add bot to server
 2. Bot immediately registers commands
 3. Bot sends owner a confirmation with next steps
@@ -123,10 +132,12 @@ The implementation has been tested and verified:
 ## Technical Details
 
 ### Files Modified
+
 - `src/index.js` - Added `guildCreate` event handler
 - `src/register-commands.js` - Refactored to use utility
 
 ### Files Created
+
 - `src/utils/auto-register-commands.js` - Shared registration utility
 
 ### Why This Approach?
@@ -140,6 +151,7 @@ The implementation has been tested and verified:
 ## Backward Compatibility
 
 ✅ **Fully backward compatible**
+
 - Manual registration still works identically
 - Existing commands work the same way
 - Feature flags work the same way
@@ -148,6 +160,7 @@ The implementation has been tested and verified:
 ## Error Handling
 
 If automatic registration fails:
+
 - ❌ Error is logged to console
 - ✅ Bot continues running normally
 - ✅ Users can still use prefix commands
@@ -158,12 +171,14 @@ If automatic registration fails:
 If you want to customize the welcome message to server owners, you can edit the `guildCreate` event handler in `src/index.js` around line 332.
 
 Currently it shows:
+
 - Confirmation that commands were registered
 - Count of registered commands
 - How to get started (type `/`)
 - Link to `/help` command
 
 You could add:
+
 - Server rules or guidelines
 - Links to documentation
 - Custom branding

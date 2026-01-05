@@ -3,6 +3,7 @@
 ## 🎯 One Picture is Worth 1000 Words
 
 ### The Problem
+
 ```
 After docker-compose up -d --build:
 
@@ -15,6 +16,7 @@ User in Discord:              Bot in Docker:
 ```
 
 ### The Solution
+
 ```
 Run: docker-compose exec verabot2 npm run register-commands
 
@@ -37,6 +39,7 @@ User in Discord:              Bot in Docker:
 ## 📊 Timeline: What Happens
 
 ### Incorrect Setup (Commands Missing)
+
 ```
 [Time]  [Docker]                    [Discord]
 0:00    docker-compose up -d --build
@@ -49,6 +52,7 @@ User in Discord:              Bot in Docker:
 ```
 
 ### Correct Setup (Commands Working)
+
 ```
 [Time]  [Docker]                    [Discord]
 0:00    docker-compose up -d --build
@@ -103,13 +107,13 @@ START: Bot just rebuilt and started
 
 ### Registration Commands
 
-| Command | What It Does | When to Use |
-|---------|-------------|------------|
+| Command                                                  | What It Does                   | When to Use                          |
+| -------------------------------------------------------- | ------------------------------ | ------------------------------------ |
 | `docker-compose exec verabot2 npm run register-commands` | Register commands with Discord | After rebuild, after adding commands |
-| `docker-compose logs` | View what bot is doing | Debugging issues |
-| `docker-compose ps` | Check if bot is running | Verify status |
-| `docker-compose restart` | Restart bot | Fix stuck state |
-| `docker-compose up -d --build` | Rebuild and start | Code changes |
+| `docker-compose logs`                                    | View what bot is doing         | Debugging issues                     |
+| `docker-compose ps`                                      | Check if bot is running        | Verify status                        |
+| `docker-compose restart`                                 | Restart bot                    | Fix stuck state                      |
+| `docker-compose up -d --build`                           | Rebuild and start              | Code changes                         |
 
 ### What Each Line Does
 
@@ -153,6 +157,7 @@ Do you see "/" in Discord?
 ## 📱 What You'll See
 
 ### Before Registration (❌ Commands Missing)
+
 ```
 User types "/" in Discord:
 
@@ -165,6 +170,7 @@ Status: Command palette open but no commands available
 ```
 
 ### After Registration (✅ Commands Available)
+
 ```
 User types "/" in Discord:
 
@@ -210,14 +216,14 @@ Check with: docker-compose exec verabot2 env | grep DISCORD_TOKEN
 
 ## ⏱️ Time Expectations
 
-| Task | Time | Notes |
-|------|------|-------|
-| Build image | 30-60 sec | One-time, cached after |
-| Start bot | 5-10 sec | Depends on deps |
-| Connect to Discord | 2-3 sec | Network |
-| Register commands | 5-15 sec | Depends on # of commands |
-| Discord refreshes | Instant-5 min | Usually under 1 min |
-| Global registration propagates | 1-2 hours | Only if no GUILD_ID |
+| Task                           | Time          | Notes                    |
+| ------------------------------ | ------------- | ------------------------ |
+| Build image                    | 30-60 sec     | One-time, cached after   |
+| Start bot                      | 5-10 sec      | Depends on deps          |
+| Connect to Discord             | 2-3 sec       | Network                  |
+| Register commands              | 5-15 sec      | Depends on # of commands |
+| Discord refreshes              | Instant-5 min | Usually under 1 min      |
+| Global registration propagates | 1-2 hours     | Only if no GUILD_ID      |
 
 **Total time to working commands: 1-2 minutes** (usually less)
 

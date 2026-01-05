@@ -7,9 +7,11 @@ Your bot now has **AI-powered poem generation** using the **Hugging Face Inferen
 ### What Was Done
 
 #### 1. **Dependencies Added**
+
 - ✅ `node-fetch@2.7.0` - For making HTTP requests to Hugging Face API
 
 #### 2. **Core Implementation** (`src/commands/poem.js`)
+
 - ✅ `generateAIPoem()` async function that:
   - Calls Hugging Face GPT-2 model
   - Generates poems based on style (haiku/sonnet/free-form)
@@ -17,10 +19,12 @@ Your bot now has **AI-powered poem generation** using the **Hugging Face Inferen
   - Falls back to built-in generators if API fails
 
 #### 3. **Environment Configuration**
+
 - ✅ Updated `.env.example` with `HUGGINGFACE_API_KEY`
 - ✅ No changes needed to existing bot code
 
 #### 4. **Documentation**
+
 - ✅ Created `docs/HUGGINGFACE_SETUP.md` with:
   - Step-by-step setup instructions
   - Troubleshooting guide
@@ -31,6 +35,7 @@ Your bot now has **AI-powered poem generation** using the **Hugging Face Inferen
 ### How to Use
 
 #### 1. Get a Free API Key
+
 ```bash
 # Visit https://huggingface.co/settings/tokens
 # Click "New token"
@@ -38,6 +43,7 @@ Your bot now has **AI-powered poem generation** using the **Hugging Face Inferen
 ```
 
 #### 2. Configure Your Bot
+
 ```bash
 # Copy .env.example to .env
 cp .env.example .env
@@ -47,12 +53,14 @@ HUGGINGFACE_API_KEY=hf_your_token_here
 ```
 
 #### 3. Restart the Bot
+
 ```bash
 npm install  # Already done
 npm start
 ```
 
 #### 4. Use the Command
+
 ```
 /poem type:sonnet subject:love
 /poem type:haiku subject:forest
@@ -61,15 +69,15 @@ npm start
 
 ### Features
 
-| Feature | Details |
-|---------|---------|
-| **Cost** | FREE (100 requests/hour) |
-| **No Credit Card** | ✅ Required |
-| **Fallback** | ✅ Uses built-in generators if API fails |
-| **Models** | GPT-2 (default), changeable to GPT-Neo, Llama, etc. |
-| **Styles** | Haiku, Sonnet, Free-form |
-| **Rate Limit** | 100 req/hour (free tier) |
-| **Response Time** | 1-5 seconds |
+| Feature            | Details                                             |
+| ------------------ | --------------------------------------------------- |
+| **Cost**           | FREE (100 requests/hour)                            |
+| **No Credit Card** | ✅ Required                                         |
+| **Fallback**       | ✅ Uses built-in generators if API fails            |
+| **Models**         | GPT-2 (default), changeable to GPT-Neo, Llama, etc. |
+| **Styles**         | Haiku, Sonnet, Free-form                            |
+| **Rate Limit**     | 100 req/hour (free tier)                            |
+| **Response Time**  | 1-5 seconds                                         |
 
 ### How It Works
 
@@ -89,6 +97,7 @@ Bot flow:
 ### Error Handling
 
 The implementation is **production-ready** with:
+
 - ✅ Timeout handling
 - ✅ Graceful API failures
 - ✅ Automatic fallback to local generators
@@ -98,6 +107,7 @@ The implementation is **production-ready** with:
 ### Testing
 
 All tests pass:
+
 ```bash
 npm run lint   # ✅ No errors
 npm test       # ✅ All checks passed
@@ -111,8 +121,9 @@ npm test       # ✅ All checks passed
 ### Next Steps (Optional)
 
 1. **Try different models** - Edit line 30 in `src/commands/poem.js`:
+
    ```javascript
-   'https://api-inference.huggingface.co/models/EleutherAI/gpt-neo-125M'
+   'https://api-inference.huggingface.co/models/EleutherAI/gpt-neo-125M';
    ```
 
 2. **Upgrade for more requests** - Hugging Face Pro ($9/month) for unlimited API calls

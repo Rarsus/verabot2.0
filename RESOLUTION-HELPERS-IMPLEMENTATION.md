@@ -2,19 +2,21 @@
 
 ## What Was Added
 
-### 1. **Resolution Helpers Module** 
+### 1. **Resolution Helpers Module**
+
 📁 **File:** `src/utils/helpers/resolution-helpers.js`
 
 Provides automatic name/ID/mention resolution for:
 
 - **`resolveChannel(input, guild)`** - Resolve channel by name, ID, or mention
-- **`resolveUser(input, client)`** - Resolve user by name, ID, or mention  
+- **`resolveUser(input, client)`** - Resolve user by name, ID, or mention
 - **`resolveRole(input, guild)`** - Resolve role by name, ID, or mention
 - **`resolveChannels(inputs, guild)`** - Batch resolve multiple channels
 - **`resolveUsers(inputs, client)`** - Batch resolve multiple users
 - **`resolveRoles(inputs, guild)`** - Batch resolve multiple roles
 
 **Features:**
+
 - Fast ID-first lookup (no search if exact ID provided)
 - Mention format support (#channel, @user, @role)
 - Fuzzy matching (partial names work if exactly 1 match)
@@ -22,48 +24,58 @@ Provides automatic name/ID/mention resolution for:
 - Error handling for non-existent identifiers
 
 ### 2. **Updated `/broadcast` Command**
+
 📁 **File:** `src/commands/admin/broadcast.js`
 
 **Before:**
+
 ```
 /broadcast channels: "123,456,789"
 ```
 
 **After:**
+
 ```
 /broadcast channels: "writing-corner, #announcements, general"
 ```
 
 **Changes:**
+
 - Now accepts channel names, IDs, or mentions
 - Better error messages when channels not found
 - Displays channel names in success message instead of IDs
 - Uses `resolveChannel()` helper
 
 ### 3. **Updated `/embed` Command**
+
 📁 **File:** `src/commands/admin/embed-message.js`
 
 **Before:**
+
 ```
 /embed channel: "1234567890123456789" ...
 ```
 
 **After:**
+
 ```
 /embed channel: "writing-corner" ...
 /embed channel: "#announcements" ...
 ```
 
 **Changes:**
+
 - Now accepts channel names, IDs, or mentions
 - Better error messages when channels not found
 - Uses `resolveChannel()` helper
 - More user-friendly experience
 
 ### 4. **Documentation Guide**
+
 📁 **File:** `docs/guides/RESOLUTION-HELPERS-GUIDE.md`
 
 Complete guide covering:
+
 - How to use the helpers
 - Supported input formats
 - Examples for all command types
@@ -129,6 +141,7 @@ if (!channel) {
 4. **Fuzzy Match** - Partial name that uniquely identifies exactly 1 item
 
 This order ensures:
+
 - Fast performance for IDs (no database search)
 - Mention compatibility (like Discord's native behavior)
 - Intuitive name-based lookup for humans
@@ -151,30 +164,30 @@ This order ensures:
 
 ### ✅ Channel Resolution
 
-| Input Type | Example | Status |
-|-----------|---------|--------|
-| Name | `writing-corner` | ✅ Works |
-| Mention | `#announcements` | ✅ Works |
-| ID | `1234567890` | ✅ Works |
-| Partial | `writing` | ✅ Works (if unique) |
+| Input Type | Example          | Status               |
+| ---------- | ---------------- | -------------------- |
+| Name       | `writing-corner` | ✅ Works             |
+| Mention    | `#announcements` | ✅ Works             |
+| ID         | `1234567890`     | ✅ Works             |
+| Partial    | `writing`        | ✅ Works (if unique) |
 
 ### ✅ User Resolution (Ready for future use)
 
-| Input Type | Example | Status |
-|-----------|---------|--------|
-| Username | `john` | ✅ Works |
-| Mention | `@john` | ✅ Works |
-| ID | `1234567890` | ✅ Works |
-| Partial | `jo` | ✅ Works (if unique) |
+| Input Type | Example      | Status               |
+| ---------- | ------------ | -------------------- |
+| Username   | `john`       | ✅ Works             |
+| Mention    | `@john`      | ✅ Works             |
+| ID         | `1234567890` | ✅ Works             |
+| Partial    | `jo`         | ✅ Works (if unique) |
 
 ### ✅ Role Resolution (Ready for future use)
 
-| Input Type | Example | Status |
-|-----------|---------|--------|
-| Name | `admin` | ✅ Works |
-| Mention | `@admin` | ✅ Works |
-| ID | `1234567890` | ✅ Works |
-| Partial | `adm` | ✅ Works (if unique) |
+| Input Type | Example      | Status               |
+| ---------- | ------------ | -------------------- |
+| Name       | `admin`      | ✅ Works             |
+| Mention    | `@admin`     | ✅ Works             |
+| ID         | `1234567890` | ✅ Works             |
+| Partial    | `adm`        | ✅ Works (if unique) |
 
 ## Future Extensions
 
@@ -189,12 +202,12 @@ The architecture is in place to scale to all commands that need resolution.
 
 ## Files Modified
 
-| File | Changes |
-|------|---------|
-| `src/commands/admin/broadcast.js` | Updated to use `resolveChannel()` |
-| `src/commands/admin/embed-message.js` | Updated to use `resolveChannel()` |
-| `src/utils/helpers/resolution-helpers.js` | ✨ NEW - Core helper module |
-| `docs/guides/RESOLUTION-HELPERS-GUIDE.md` | ✨ NEW - User/dev guide |
+| File                                      | Changes                           |
+| ----------------------------------------- | --------------------------------- |
+| `src/commands/admin/broadcast.js`         | Updated to use `resolveChannel()` |
+| `src/commands/admin/embed-message.js`     | Updated to use `resolveChannel()` |
+| `src/utils/helpers/resolution-helpers.js` | ✨ NEW - Core helper module       |
+| `docs/guides/RESOLUTION-HELPERS-GUIDE.md` | ✨ NEW - User/dev guide           |
 
 ## Performance Impact
 
@@ -206,11 +219,13 @@ The architecture is in place to scale to all commands that need resolution.
 ## Migration Notes
 
 ### Existing Users:
+
 - Old ID-based commands still work! ✅
 - New name-based commands also work! ✅
 - No breaking changes
 
 ### For New Development:
+
 - Import helpers from `src/utils/helpers/resolution-helpers.js`
 - Use in any command that needs name/ID/mention resolution
 - Consistent across all commands
@@ -224,6 +239,6 @@ You now have a **robust, reusable name resolution system** that:
 ✅ Is ready to extend to more commands  
 ✅ Follows existing code patterns  
 ✅ Has zero breaking changes  
-✅ Is fully documented  
+✅ Is fully documented
 
 **Your bot just got a lot easier to use!** 🎉

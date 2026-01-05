@@ -9,6 +9,7 @@ Phase 3 updates all command handlers to extract `guildId` from Discord interacti
 All commands follow this pattern:
 
 ### BEFORE (Current)
+
 ```javascript
 // Old code - uses shared database
 const quote = await db.addQuote(text, author);
@@ -17,6 +18,7 @@ const quote = await db.getQuoteById(id);
 ```
 
 ### AFTER (Phase 3)
+
 ```javascript
 // New code - guild-aware
 const guildId = interaction.guildId;
@@ -35,63 +37,57 @@ That's it! The compatibility layer handles everything else.
 ## Files to Update
 
 ### Quote Management Commands (~5 files)
+
 1. `src/commands/quote-management/add-quote.js`
    - Pass `interaction.guildId` to `db.addQuote()`
-   
 2. `src/commands/quote-management/delete-quote.js`
    - Pass `interaction.guildId` to `db.deleteQuote()`
-   
 3. `src/commands/quote-management/update-quote.js`
    - Pass `interaction.guildId` to `db.updateQuote()`
-   
 4. `src/commands/quote-management/list-quotes.js`
    - Pass `interaction.guildId` to `db.getAllQuotes()`
-   
 5. `src/commands/quote-management/quote.js`
    - Pass `interaction.guildId` to `db.getQuoteById()`
 
 ### Quote Discovery Commands (~4 files)
+
 6. `src/commands/quote-discovery/random-quote.js`
    - Pass `interaction.guildId` to `db.getAllQuotes()`
-   
 7. `src/commands/quote-discovery/search-quotes.js`
    - Pass `interaction.guildId` to `db.searchQuotes()`
-   
 8. `src/commands/quote-discovery/quote-stats.js`
    - Pass `interaction.guildId` to `db.getGuildStatistics()` (NEW)
-   
 9. `src/commands/quote-discovery/similar-quotes.js`
    - Pass `interaction.guildId` to `db.searchQuotes()`
 
 ### Quote Social Commands (~3 files)
+
 10. `src/commands/quote-social/rate-quote.js`
     - Pass `interaction.guildId` to `db.rateQuote()`
     - Pass `interaction.guildId` to `db.getQuoteRating()` (if showing current)
-    
 11. `src/commands/quote-social/tag-quote.js`
     - Pass `interaction.guildId` to `db.tagQuote()`
-    
 12. `src/commands/quote-social/get-quotes-by-tag.js`
     - Pass `interaction.guildId` to `db.getQuotesByTag()`
 
 ### Quote Export Commands (~2 files)
+
 13. `src/commands/quote-export/export-quotes.js`
     - Pass `interaction.guildId` to `db.exportGuildData()` (NEW)
-    
 14. `src/commands/quote-export/export-to-csv.js`
     - Pass `interaction.guildId` when appropriate
 
 ### Misc Commands (~3 files)
+
 15. `src/commands/misc/poem.js`
     - May not need guild awareness (API-based)
-    
 16. `src/commands/misc/help.js`
     - No database calls
-    
 17. `src/commands/misc/hi.js`
     - No database calls
 
 ### Admin Commands (~2 files)
+
 18. `src/commands/admin/...` (if any use database)
     - Apply same pattern
 
@@ -102,26 +98,28 @@ That's it! The compatibility layer handles everything else.
 ### For Each Command File:
 
 #### 1. Extract Guild ID
+
 Add at the start of `executeInteraction()`:
 
 ```javascript
 async executeInteraction(interaction) {
   // Get guild ID - REQUIRED for phase 3
   const guildId = interaction.guildId;
-  
+
   if (!guildId) {
-    await interaction.reply({ 
+    await interaction.reply({
       content: '❌ This command only works in servers.',
-      ephemeral: true 
+      ephemeral: true
     });
     return;
   }
-  
+
   // Rest of command logic...
 }
 ```
 
 #### 2. Update Database Calls
+
 Change all `db.*()` calls to include `guildId` as first parameter:
 
 ```javascript
@@ -133,30 +131,31 @@ const quote = await db.getQuoteById(guildId, quoteId);
 ```
 
 #### 3. Update All Methods
+
 These methods need updating (remember guildId is FIRST param):
 
 ```javascript
 // Quote Operations
-db.addQuote(guildId, text, author)
-db.getAllQuotes(guildId)
-db.getQuoteById(guildId, id)
-db.searchQuotes(guildId, keyword)
-db.updateQuote(guildId, id, text, author)
-db.deleteQuote(guildId, id)
-db.getQuoteCount(guildId)
+db.addQuote(guildId, text, author);
+db.getAllQuotes(guildId);
+db.getQuoteById(guildId, id);
+db.searchQuotes(guildId, keyword);
+db.updateQuote(guildId, id, text, author);
+db.deleteQuote(guildId, id);
+db.getQuoteCount(guildId);
 
 // Ratings
-db.rateQuote(guildId, quoteId, userId, rating)
-db.getQuoteRating(guildId, quoteId, userId)
+db.rateQuote(guildId, quoteId, userId, rating);
+db.getQuoteRating(guildId, quoteId, userId);
 
 // Tags
-db.tagQuote(guildId, quoteId, tagName)
-db.getQuotesByTag(guildId, tagName)
+db.tagQuote(guildId, quoteId, tagName);
+db.getQuotesByTag(guildId, tagName);
 
 // NEW - Guild-specific
-db.getGuildStatistics(guildId)
-db.exportGuildData(guildId)
-db.deleteGuildData(guildId)  // GDPR
+db.getGuildStatistics(guildId);
+db.exportGuildData(guildId);
+db.deleteGuildData(guildId); // GDPR
 ```
 
 ---
@@ -164,6 +163,7 @@ db.deleteGuildData(guildId)  // GDPR
 ## Example: Complete Command Update
 
 ### Before (add-quote.js)
+
 ```javascript
 class AddQuote extends Command {
   async executeInteraction(interaction) {
@@ -181,15 +181,16 @@ class AddQuote extends Command {
 ```
 
 ### After (add-quote.js) - Phase 3
+
 ```javascript
 class AddQuote extends Command {
   async executeInteraction(interaction) {
     // Get guild ID
     const guildId = interaction.guildId;
     if (!guildId) {
-      await interaction.reply({ 
+      await interaction.reply({
         content: '❌ This command only works in servers.',
-        ephemeral: true 
+        ephemeral: true,
       });
       return;
     }
@@ -243,6 +244,7 @@ For each updated command:
 ## Expected Behavior After Phase 3
 
 ### User Perspective
+
 ```
 Guild A adds quote "Hello"
 Guild B adds quote "World"
@@ -257,6 +259,7 @@ No cross-contamination! ✅
 ```
 
 ### Database Perspective
+
 ```
 Before: data/db/quotes.db (all guilds share)
 After:
@@ -282,11 +285,13 @@ Estimate: **2-3 days**
 ✅ **Important:** Old code without `guildId` still works!
 
 If you forget to add `guildId` to a command, it will:
+
 1. Default to shared database (old behavior)
 2. Lose guild isolation for that command
 3. Continue working without errors
 
 This means you can:
+
 - Update commands gradually
 - Deploy without all changes complete
 - Test incrementally
@@ -296,10 +301,13 @@ This means you can:
 ## Troubleshooting
 
 ### "Command still uses shared database"
+
 **Solution:** Check that you added `guildId` as FIRST parameter to all `db.*()` calls
 
 ### "Error: Guild ID is required"
+
 **Solution:** Command is called in DM. Add guild check:
+
 ```javascript
 if (!interaction.guildId) {
   await interaction.reply('This command only works in servers.');
@@ -308,6 +316,7 @@ if (!interaction.guildId) {
 ```
 
 ### "Quote appears in multiple guilds"
+
 **Solution:** Forgot to add `guildId` to one of the `db.*()` calls
 
 ---

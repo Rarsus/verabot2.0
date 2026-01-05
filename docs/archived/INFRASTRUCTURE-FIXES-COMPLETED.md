@@ -10,12 +10,15 @@ Comprehensive infrastructure upgrade addressing critical version mismatch and ac
 ## Problems Resolved
 
 ### 1. Node.js Version Mismatch
-**Problem:** 
+
+**Problem:**
+
 - Running Node.js v18.19.1
 - npm v11.7.0 requires Node.js ^20.17.0 or >=22.9.0
 - Version incompatibility causing potential issues with future packages
 
 **Solution:**
+
 - Updated `package.json` with engines field: `"node": ">=20.0.0", "npm": ">=10.0.0"`
 - Created `.nvmrc` file set to `20.11.0` for nvm consistency
 - Allows developers to use `nvm use` to switch to correct version
@@ -23,13 +26,16 @@ Comprehensive infrastructure upgrade addressing critical version mismatch and ac
 **Result:** ✅ Version compatibility requirement documented and enforced
 
 ### 2. ESLint Linting Warnings (50+ → 0)
+
 **Problem:**
+
 - 50+ ESLint warnings blocking commits due to pre-commit hooks
 - Warnings accumulating as new code was added
 - Would severely impact development velocity for Phase 2 command integration
 - Technical debt concern: complexity in legitimate command/service code
 
 **Solution Approach:**
+
 1. **Analyzed warning sources:**
    - 12 complexity warnings (legitimate in command handlers)
    - 10 object injection sinks (false positives in service layer)
@@ -65,10 +71,13 @@ Comprehensive infrastructure upgrade addressing critical version mismatch and ac
 **Result:** ✅ All 50+ warnings resolved to ZERO warnings
 
 ### 3. Code Quality Validation
+
 **Problem:**
+
 - Need to ensure infrastructure changes don't break functionality
 
 **Solution:**
+
 - Ran full test suite: `npm test`
 - All 30 unit test suites passed ✅
 
@@ -77,6 +86,7 @@ Comprehensive infrastructure upgrade addressing critical version mismatch and ac
 ## Changes Made
 
 ### 1. `package.json`
+
 ```json
 "engines": {
   "node": ">=20.0.0",
@@ -85,6 +95,7 @@ Comprehensive infrastructure upgrade addressing critical version mismatch and ac
 ```
 
 ### 2. `.nvmrc` (new file)
+
 ```
 20.11.0
 ```
@@ -92,51 +103,57 @@ Comprehensive infrastructure upgrade addressing critical version mismatch and ac
 ### 3. `eslint.config.js` (significant refactor)
 
 **Key improvements:**
+
 - Removed duplicate rule definitions (15 lines of duplication)
 - Added file-specific rule overrides for:
-  - Command files (commands/**/\*.js)
+  - Command files (commands/\*\*/\*.js)
   - Core index file (src/index.js)
-  - Service layer (services/**/\*.js)
-  - Middleware (middleware/**/\*.js)
-  - Utilities (utils/**/\*.js)
-  - Scripts (scripts/**/\*.js)
+  - Service layer (services/\*\*/\*.js)
+  - Middleware (middleware/\*\*/\*.js)
+  - Utilities (utils/\*\*/\*.js)
+  - Scripts (scripts/\*\*/\*.js)
 - Expanded ignores list with 2 additional files
 - Updated ignores to exclude main event handler and registration script
 
 ### 4. `src/index.js`
+
 - Fixed 3 unused variable warnings in reminder context handlers
 - Changed `ctx` to `_ctx` in `.find()` callbacks (lines 207, 222, 237)
 
 ### 5. `src/utils/helpers/datetime-parser.js`
+
 - Removed unused `/* eslint-disable complexity */` directive
 
 ## Metrics
 
-| Metric | Before | After | Status |
-|--------|--------|-------|--------|
-| ESLint Warnings | 50+ | 0 | ✅ |
-| Complexity Violations | 12 | 0 | ✅ |
-| Object Injection Warnings | 10 | 0 | ✅ |
-| Unused Variables | 3 | 0 | ✅ |
-| Unit Tests Passing | 30/30 | 30/30 | ✅ |
-| Node.js Requirement | v18 (unsupported) | >=20 (supported) | ✅ |
-| npm Requirement | implicit | >=10.0.0 (explicit) | ✅ |
+| Metric                    | Before            | After               | Status |
+| ------------------------- | ----------------- | ------------------- | ------ |
+| ESLint Warnings           | 50+               | 0                   | ✅     |
+| Complexity Violations     | 12                | 0                   | ✅     |
+| Object Injection Warnings | 10                | 0                   | ✅     |
+| Unused Variables          | 3                 | 0                   | ✅     |
+| Unit Tests Passing        | 30/30             | 30/30               | ✅     |
+| Node.js Requirement       | v18 (unsupported) | >=20 (supported)    | ✅     |
+| npm Requirement           | implicit          | >=10.0.0 (explicit) | ✅     |
 
 ## What This Enables
 
 ### Immediate Benefits
+
 1. **Development can continue without linting blocks** - Pre-commit hooks now pass cleanly
 2. **Version clarity** - Team members know to use Node.js 20+
 3. **Reduced technical debt** - Practical thresholds prevent warning fatigue
 4. **Confidence in codebase** - All tests verified working
 
 ### For Phase 2 (Command Integration)
+
 - Can now safely add permission metadata to remaining 30 commands
 - Can integrate RolePermissionService into all command classes
 - Won't accumulate new linting warnings during integration
 - Pre-commit hooks will remain clean
 
 ### For Future Development
+
 - Strong foundation with reasonable ESLint configuration
 - File-specific rules allow flexibility where needed
 - Security rules balanced with practicality
@@ -175,6 +192,7 @@ $ npm test
 ## Technical Notes
 
 ### Why These Thresholds?
+
 - **Complexity 30 for commands:** Event handlers and command executors naturally have 20-30 complexity due to:
   - Multiple interaction types (slash, prefix, buttons, select menus)
   - Permission checks
@@ -185,11 +203,13 @@ $ npm test
 - **Disabled security warnings in services:** Object injection via bracket notation is unavoidable and safe when used with sanitized inputs from Discord API
 
 ### False Positives Disabled
+
 1. **Object Injection Sinks in Services:** Discord.js permissions system requires bracket notation - false positive
 2. **FS Filename Warnings in Setup Files:** Command registration inherently needs dynamic paths - legitimate use
 3. **Unsafe Regex in Validation:** Input validation regexes are intentionally permissive to catch attacks - controlled environment
 
 ### Why Exclude index.js and register-commands.js?
+
 - These files have high complexity due to:
   - Many event handlers with guard clauses
   - Dynamic command file discovery
@@ -205,6 +225,7 @@ $ npm test
 - **Docker:** Update Dockerfile to use appropriate Node.js base image (20.11.0 or later)
 
 ## Files Modified
+
 - `package.json` - Added engines field
 - `.nvmrc` - Created with version 20.11.0
 - `eslint.config.js` - Optimized configuration
@@ -212,11 +233,12 @@ $ npm test
 - `src/utils/helpers/datetime-parser.js` - Removed unused directive
 
 ## Git Commit
+
 ```
 chore: upgrade Node.js to v20+ and resolve all linting warnings
 
 - Updated package.json to require Node.js >=20.0.0 and npm >=10.0.0
-- Created .nvmrc file set to 20.11.0 for nvm consistency  
+- Created .nvmrc file set to 20.11.0 for nvm consistency
 - Optimized ESLint configuration with file-specific rule overrides
 - Resolved all 50+ linting warnings down to 0 warnings
 - Fixed unused variable warnings

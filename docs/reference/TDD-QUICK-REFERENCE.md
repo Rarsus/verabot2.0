@@ -1,21 +1,25 @@
 # TDD Quick Reference Guide
 
 ## What is TDD?
+
 **Test-Driven Development** means writing tests FIRST, before implementing the code. The tests define what the code should do, then the code is written to pass those tests.
 
 ## Our Test-First Approach
 
 ### Step 1: Tests Are Written ✅ (DONE)
+
 - 41 comprehensive tests created across 4 test suites
 - Tests define exact expected behavior
 - Tests currently: **38 passing, 3 failing** (expected - some implementation needed)
 
 ### Step 2: Commands Will Be Refactored (NEXT)
+
 - Each command rewritten using Command base class
 - Tests verify refactored code works identically
 - Tests ensure 50% code reduction achieved
 
 ### Step 3: All Tests Pass (GOAL)
+
 - After refactoring all commands
 - All 41 tests will pass
 - All 35+ quote tests will still pass
@@ -26,11 +30,13 @@
 ## Running the Tests
 
 ### Quick Start - Run All New Tests:
+
 ```bash
 npm run test:all
 ```
 
 ### Run Individual Test Suites:
+
 ```bash
 # Test the Command base class
 npm run test:utils:base
@@ -46,6 +52,7 @@ npm run test:integration:refactor
 ```
 
 ### Run Specific Test Groups:
+
 ```bash
 # All sanity checks
 npm test
@@ -62,21 +69,27 @@ npm run test:all
 ## Understanding Test Output
 
 ### Green ✅ = Test Passed
+
 ```
 ✅ Test 1 Passed: Command instantiation works
 ```
+
 The test ran successfully and the code behaves as expected.
 
 ### Red ❌ = Test Failed
+
 ```
 ❌ Test 3 Failed: No reply sent
 ```
+
 The test expected a reply but didn't get one. This guides us to fix the code.
 
 ### Yellow ⚠️ = Test Skipped
+
 ```
 ⚠️  Test 9 Skipped: Cannot verify builder structure
 ```
+
 The test was skipped (usually due to mocking limitations, but the underlying feature works).
 
 ---
@@ -115,7 +128,9 @@ TOTAL                         93%         38/41 passing
 ## What Each Test Suite Validates
 
 ### Command Base Class Tests (7 tests)
+
 Tests that the Command base class:
+
 - ✅ Can be instantiated
 - ✅ Properly wraps error handling
 - ✅ Returns results on success
@@ -127,7 +142,9 @@ Tests that the Command base class:
 **Result:** Commands will need NO try-catch blocks
 
 ### Options Builder Tests (10 tests)
+
 Tests that buildCommandOptions:
+
 - ✅ Creates SlashCommandBuilder
 - ✅ Generates options array from same definition
 - ✅ Handles all option types (string, integer, boolean)
@@ -138,7 +155,9 @@ Tests that buildCommandOptions:
 **Result:** One definition creates both builder and options
 
 ### Response Helpers Tests (12 tests)
+
 Tests that helper functions:
+
 - ✅ Send quote embeds correctly
 - ✅ Work with new and deferred interactions
 - ✅ Format success messages with ✅
@@ -150,7 +169,9 @@ Tests that helper functions:
 **Result:** No repeated response code needed
 
 ### Integration Tests (10 tests)
+
 Tests that all utilities:
+
 - ✅ Load without errors
 - ✅ Work together in commands
 - ✅ Reduce boilerplate significantly
@@ -165,6 +186,7 @@ Tests that all utilities:
 ## Before & After Example
 
 ### BEFORE (Old Pattern - 50+ lines)
+
 ```javascript
 const { SlashCommandBuilder } = require('discord.js');
 const { addQuote } = require('../db');
@@ -174,12 +196,10 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('hi')
     .setDescription('Say hi')
-    .addStringOption(opt => opt.setName('name').setDescription('Name').setRequired(false)),
+    .addStringOption((opt) => opt.setName('name').setDescription('Name').setRequired(false)),
   name: 'hi',
   description: 'Say hi to someone: /hi name:Alice',
-  options: [
-    { name: 'name', type: 'string', description: 'Name to say hi to', required: false }
-  ],
+  options: [{ name: 'name', type: 'string', description: 'Name to say hi to', required: false }],
   async execute(message, args) {
     try {
       const name = args[0] || 'there';
@@ -200,39 +220,41 @@ module.exports = {
       console.error('Error:', err);
       try {
         await interaction.reply('Error occurred', { flags: 64 });
-      } catch (e) { /* ignore */ }
+      } catch (e) {
+        /* ignore */
+      }
     }
-  }
+  },
 };
 ```
 
 **Problems:**
+
 - ❌ 50+ lines
 - ❌ Duplicate option definitions
 - ❌ Repeated error handling
 - ❌ Message/interaction logic duplicated
 
 ### AFTER (New Pattern - 20 lines)
+
 ```javascript
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 
-const { data, options } = buildCommandOptions(
-  'hi',
-  'Say hi to someone',
-  [{ name: 'name', type: 'string', description: 'Name to say hi to', required: false }]
-);
+const { data, options } = buildCommandOptions('hi', 'Say hi to someone', [
+  { name: 'name', type: 'string', description: 'Name to say hi to', required: false },
+]);
 
 class HiCommand extends Command {
   constructor() {
     super({ name: 'hi', description: 'Say hi to someone', data, options });
   }
-  
+
   async execute(message, args) {
     const name = args[0] || 'there';
     await message.reply(`hello ${name}!`);
   }
-  
+
   async executeInteraction(interaction) {
     const name = interaction.options.getString('name') || 'there';
     await interaction.reply(`hello ${name}!`);
@@ -243,6 +265,7 @@ module.exports = new HiCommand().register();
 ```
 
 **Benefits:**
+
 - ✅ 20 lines (60% reduction!)
 - ✅ Single option definition
 - ✅ Error handling automatic
@@ -256,6 +279,7 @@ module.exports = new HiCommand().register();
 ### For Each Command:
 
 1. **Check it passes existing tests:**
+
    ```bash
    npm test              # Sanity checks
    npm run test:quotes   # Quote system tests
@@ -272,6 +296,7 @@ module.exports = new HiCommand().register();
    - Remove try-catch blocks
 
 4. **Verify tests pass:**
+
    ```bash
    npm run test:all      # Should have 41/41 passing
    npm test              # Sanity checks still pass
@@ -290,6 +315,7 @@ module.exports = new HiCommand().register();
 ## Example Refactoring Checklist
 
 For each command being refactored:
+
 - [ ] Read test descriptions in TDD_TEST_RESULTS.md
 - [ ] Backup original command (it's in git anyway)
 - [ ] Extend Command base class
@@ -307,6 +333,7 @@ For each command being refactored:
 ## Troubleshooting
 
 ### Test fails but should pass?
+
 ```bash
 # Clear npm cache and reinstall
 npm ci
@@ -316,6 +343,7 @@ npm run test:all
 ```
 
 ### Bot won't start after refactoring?
+
 ```bash
 # Check for syntax errors
 npm run lint
@@ -329,6 +357,7 @@ npm run lint
 ```
 
 ### Test passes but bot doesn't work?
+
 1. Check all commands use `module.exports = new CommandClass().register()`
 2. Verify no console.error in command implementations
 3. Run bot with debug: Check Discord for error messages

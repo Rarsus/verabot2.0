@@ -16,17 +16,21 @@ The **role-based permission system for VeraBot2.0** has been successfully implem
 ## What This Means
 
 ### For Users
+
 When they execute a command:
+
 - ✅ **If allowed:** Command executes, they get the result
 - ❌ **If denied:** Message appears: "You need [Tier] to use this. Your tier: [Tier]"
 
 ### For Developers
+
 - ✅ **Automatic:** No manual permission checks needed in command code
 - ✅ **Consistent:** All 32 commands enforce the same way
 - ✅ **Easy to modify:** Change a command's tier in one line
 - ✅ **Easy to add:** New commands automatically get enforcement
 
 ### For Operators
+
 - ✅ **Auditable:** All access attempts logged
 - ✅ **Configurable:** Tiers defined in roles.js
 - ✅ **Testable:** 30/30 tests passing
@@ -67,22 +71,26 @@ When they execute a command:
 ## The 4 Phases Explained
 
 ### Phase 0: Infrastructure 🔧
+
 **Problem:** Can't continue development  
 **Solution:** Fix Node.js and ESLint issues  
 **Result:** Clean foundation ready for development
 
 **What was done:**
+
 - Upgraded Node.js from v18.19.1 to v20.x
 - Fixed 50+ ESLint linting warnings → 0 warnings
 - Optimized ESLint configuration
 - Created .nvmrc for consistency
 
 ### Phase 1: Architecture 🏗️
+
 **Problem:** No permission system exists  
 **Solution:** Design and implement core components  
 **Result:** Complete permission engine ready to use
 
 **What was done:**
+
 - Created `roles.js` (284 lines, 5-tier hierarchy)
 - Created `RolePermissionService` (370+ lines)
 - Enhanced `CommandBase` with permission methods
@@ -91,11 +99,13 @@ When they execute a command:
 **Key insight:** Permission system designed as independent, reusable service layer
 
 ### Phase 2: Integration 🔗
+
 **Problem:** Commands don't declare permissions  
 **Solution:** Add permission metadata to all commands  
 **Result:** All 32 commands know their tier requirements
 
 **What was done:**
+
 - Added `permissions` object to each command constructor
 - Set appropriate `minTier` for each of 32 commands
 - Set `visible` flag for help command filtering
@@ -104,11 +114,13 @@ When they execute a command:
 **Key insight:** Commands now declare requirements, but enforcement not yet active
 
 ### Phase 3: Enforcement ⚔️
+
 **Problem:** Permission declarations not enforced  
 **Solution:** Implement checks in CommandBase  
 **Result:** All commands automatically enforced
 
 **What was done:**
+
 - Enhanced `CommandBase.wrapError()` with permission checks
 - Added `isInteractionHandler` parameter to distinguish command types
 - Integrated `RolePermissionService.canExecuteCommand()` calls
@@ -153,12 +165,14 @@ TIER 0: Guest 👤
 ## How to Use (For Developers)
 
 ### Check the System is Working
+
 ```bash
 npm run lint          # Should pass: 0 warnings
 npm test              # Should pass: 30/30 tests
 ```
 
 ### Review the Implementation
+
 ```bash
 cat src/config/roles.js              # See all command tiers
 cat src/services/RolePermissionService.js  # See permission logic
@@ -166,6 +180,7 @@ cat src/core/CommandBase.js          # See enforcement code
 ```
 
 ### Modify a Command's Tier
+
 ```javascript
 // In src/commands/quote-management/add-quote.js
 
@@ -176,6 +191,7 @@ permissions: {
 ```
 
 ### Add a New Command
+
 ```javascript
 class MyNewCommand extends CommandBase {
   constructor() {
@@ -183,9 +199,9 @@ class MyNewCommand extends CommandBase {
       name: 'my-command',
       description: 'What it does',
       permissions: {
-        minTier: 0,    // Set appropriate tier
-        visible: true  // Show in help?
-      }
+        minTier: 0, // Set appropriate tier
+        visible: true, // Show in help?
+      },
     });
   }
 
@@ -201,6 +217,7 @@ class MyNewCommand extends CommandBase {
 ## Example Scenarios
 
 ### Scenario 1: Public Command ✅
+
 ```
 User: Guest (tier 0)
 Command: /ping (minTier: 0)
@@ -208,6 +225,7 @@ Result: Pong! ✅
 ```
 
 ### Scenario 2: Member Command - User Has Permission ✅
+
 ```
 User: Member (has @member role, tier 1)
 Command: /add-quote "wisdom" (minTier: 1)
@@ -215,6 +233,7 @@ Result: Quote added! ✅
 ```
 
 ### Scenario 3: Member Command - User No Permission ❌
+
 ```
 User: Guest (no roles, tier 0)
 Command: /add-quote "wisdom" (minTier: 1)
@@ -222,6 +241,7 @@ Result: ❌ You need Member to use this command. Your tier: Guest
 ```
 
 ### Scenario 4: Admin Command ✅
+
 ```
 User: Administrator (has @admin role, tier 3)
 Command: /broadcast "Hello all" (minTier: 3)
@@ -232,11 +252,11 @@ Result: Broadcast sent! ✅
 
 ## Files Modified Summary
 
-| File | Changes | Impact |
-|------|---------|--------|
+| File                      | Changes                                | Impact                            |
+| ------------------------- | -------------------------------------- | --------------------------------- |
 | `src/core/CommandBase.js` | Added permission checks in wrapError() | Enforcement happens automatically |
-| `eslint.config.js` | Increased complexity threshold | Accommodates enforcement logic |
-| `docs/` | Added 3 new documentation files | Complete system documentation |
+| `eslint.config.js`        | Increased complexity threshold         | Accommodates enforcement logic    |
+| `docs/`                   | Added 3 new documentation files        | Complete system documentation     |
 
 **No breaking changes.** Existing code works exactly as before, but now with automatic permission enforcement.
 
@@ -253,7 +273,7 @@ Success Rate:     100% ✅
 Linting:
   Errors:          0
   Warnings:        0 ✅
-  
+
 Code Quality:     Excellent
 ```
 
@@ -262,17 +282,20 @@ Code Quality:     Excellent
 ## What Happens Now?
 
 ### Immediately Available
+
 - ✅ All 32 commands protected by permission system
 - ✅ Users see clear error messages when denied
 - ✅ Enforcement is automatic (no action needed)
 - ✅ Can be deployed to production
 
 ### Next Phase (Phase 4)
+
 - Create admin commands to manage role assignments
 - `/assign-role @user Moderator`
 - `/remove-role @user Member`
 
 ### Future Phases
+
 - Help command filtering by tier
 - Permission management dashboard
 - Audit log viewer
@@ -321,16 +344,19 @@ Result:
 ### Check These Files
 
 **For overview:**
+
 - `docs/ROLE-BASED-PERMISSIONS-COMPLETE.md` - Full system overview
 - `PHASE-3-COMPLETION-REPORT.md` - Quick reference
 
 **For implementation details:**
+
 - `docs/PHASE-3-PERMISSION-ENFORCEMENT.md` - Complete guide with code examples
 - `src/config/roles.js` - Command tier configuration
 - `src/services/RolePermissionService.js` - Permission logic
 - `src/core/CommandBase.js` - Enforcement implementation
 
 **For testing:**
+
 - Run `npm test` to verify all 30 test suites pass
 - Run `npm run lint` to verify 0 linting warnings
 - See test files in `tests/` directory for examples
@@ -345,7 +371,7 @@ The role-based permission system is:
 ✅ **Tested** - 30/30 tests passing  
 ✅ **Clean** - 0 linting warnings  
 ✅ **Documented** - 3 comprehensive guides  
-✅ **Production Ready** - Deploy anytime  
+✅ **Production Ready** - Deploy anytime
 
 All 32 commands now have automatic permission enforcement.
 Users get clear error messages when they lack permission.

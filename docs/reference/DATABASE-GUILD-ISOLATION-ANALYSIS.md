@@ -55,14 +55,14 @@ The bot currently uses a **single SQLite database** (`data/db/quotes.db`) shared
 
 ### Current Issues
 
-| Issue | Impact | Severity |
-|-------|--------|----------|
-| **Data Leakage** | Guild A can see Guild B's quotes | 🔴 High |
-| **No Isolation** | All reminders visible to all guilds | 🔴 High |
-| **Difficult Compliance** | GDPR/privacy per-guild not possible | 🟡 Medium |
-| **Scalability** | Growing dataset affects all guilds | 🟡 Medium |
-| **Security** | Potential cross-guild exploits | 🟡 Medium |
-| **Management** | Hard to backup/restore single guild data | 🟡 Medium |
+| Issue                    | Impact                                   | Severity  |
+| ------------------------ | ---------------------------------------- | --------- |
+| **Data Leakage**         | Guild A can see Guild B's quotes         | 🔴 High   |
+| **No Isolation**         | All reminders visible to all guilds      | 🔴 High   |
+| **Difficult Compliance** | GDPR/privacy per-guild not possible      | 🟡 Medium |
+| **Scalability**          | Growing dataset affects all guilds       | 🟡 Medium |
+| **Security**             | Potential cross-guild exploits           | 🟡 Medium |
+| **Management**           | Hard to backup/restore single guild data | 🟡 Medium |
 
 ---
 
@@ -73,6 +73,7 @@ The bot currently uses a **single SQLite database** (`data/db/quotes.db`) shared
 **Approach:** Add `guild_id` to all data tables, modify queries to filter by guild
 
 **Pros:**
+
 - ✅ Single database (simpler ops)
 - ✅ Moderate code changes
 - ✅ Good performance with proper indexes
@@ -80,6 +81,7 @@ The bot currently uses a **single SQLite database** (`data/db/quotes.db`) shared
 - ✅ Backward compatible with migration
 
 **Cons:**
+
 - ⚠️ Need to add column to existing tables
 - ⚠️ Need to migrate all queries to filter by guild
 - ⚠️ Still shares DB (harder disaster recovery)
@@ -95,6 +97,7 @@ The bot currently uses a **single SQLite database** (`data/db/quotes.db`) shared
 **Approach:** Create separate database file for each guild: `quotes_GUILD_ID.db`
 
 **Pros:**
+
 - ✅ Complete data isolation
 - ✅ Per-guild backup/restore easy
 - ✅ Better compliance (GDPR deletion simple)
@@ -102,6 +105,7 @@ The bot currently uses a **single SQLite database** (`data/db/quotes.db`) shared
 - ✅ Easy to off-board guilds
 
 **Cons:**
+
 - ⚠️ More complex connection management
 - ⚠️ Database overhead (many small DBs vs one large)
 - ⚠️ Harder to query across guilds (if needed)
@@ -119,12 +123,14 @@ The bot currently uses a **single SQLite database** (`data/db/quotes.db`) shared
 **Approach:** Use PostgreSQL with one schema per guild in same DB cluster
 
 **Pros:**
+
 - ✅ Complete isolation without multiple DBs
 - ✅ Better scalability than SQLite
 - ✅ Query across schemas if needed
 - ✅ Professional approach
 
 **Cons:**
+
 - ⚠️ Requires PostgreSQL (different tech stack)
 - ⚠️ Operational complexity increases
 - ⚠️ Higher deployment costs
@@ -143,15 +149,18 @@ The bot currently uses a **single SQLite database** (`data/db/quotes.db`) shared
 You've prioritized **GDPR Compliance and Complete Data Isolation**, making Option 2 the right choice:
 
 ✅ **GDPR Compliance is Trivial**
+
 - Delete single guild = delete `guilds/GUILD_ID/` folder
 - Complete audit trail per guild
 - Easy data portability (export .db file)
 
 ✅ **Zero Data Contamination**
+
 - Guild A cannot access Guild B data
 - Complete filesystem-level isolation
 
 ✅ **Easy Guild Offboarding**
+
 - Remove directory = all guild data gone
 - No orphaned data cleanup needed
 
@@ -253,13 +262,14 @@ CREATE INDEX idx_reminders_guild_userId ON reminders(guild_id, user_id);
 ### DatabaseService Changes Example
 
 **Before:**
+
 ```javascript
 async function addQuote(text, author) {
   return new Promise((resolve, reject) => {
     db.run(
       'INSERT INTO quotes (text, author, addedAt) VALUES (?, ?, ?)',
       [text, author, new Date().toISOString()],
-      function(err) {
+      function (err) {
         if (err) reject(err);
         else resolve(this.lastID);
       }
@@ -278,13 +288,14 @@ async function getAllQuotes() {
 ```
 
 **After:**
+
 ```javascript
 async function addQuote(text, author, guildId) {
   return new Promise((resolve, reject) => {
     db.run(
       'INSERT INTO quotes (text, author, addedAt, guild_id) VALUES (?, ?, ?, ?)',
       [text, author, new Date().toISOString(), guildId],
-      function(err) {
+      function (err) {
         if (err) reject(err);
         else resolve(this.lastID);
       }
@@ -294,14 +305,10 @@ async function addQuote(text, author, guildId) {
 
 async function getAllQuotes(guildId) {
   return new Promise((resolve, reject) => {
-    db.all(
-      'SELECT * FROM quotes WHERE guild_id = ? ORDER BY id DESC',
-      [guildId],
-      (err, rows) => {
-        if (err) reject(err);
-        else resolve(rows || []);
-      }
-    );
+    db.all('SELECT * FROM quotes WHERE guild_id = ? ORDER BY id DESC', [guildId], (err, rows) => {
+      if (err) reject(err);
+      else resolve(rows || []);
+    });
   });
 }
 ```
@@ -309,11 +316,13 @@ async function getAllQuotes(guildId) {
 ### Command Handler Changes
 
 **Before:**
+
 ```javascript
 const quote = await db.getQuoteByNumber(number);
 ```
 
 **After:**
+
 ```javascript
 const quote = await db.getQuoteByNumber(number, interaction.guildId);
 ```
@@ -323,12 +332,14 @@ const quote = await db.getQuoteByNumber(number, interaction.guildId);
 ## Security & Privacy Benefits
 
 ### Before (Current)
+
 - ❌ Any guild can access any other guild's data
 - ❌ Hard to implement per-guild GDPR deletion
 - ❌ No audit trail per guild
 - ❌ Potential data contamination
 
 ### After (With Guild ID)
+
 - ✅ Strict data isolation per guild
 - ✅ Easy GDPR compliance per guild
 - ✅ Can track modifications per guild
@@ -339,13 +350,13 @@ const quote = await db.getQuoteByNumber(number, interaction.guildId);
 
 ## Implementation Timeline
 
-| Phase | Duration | Tasks |
-|-------|----------|-------|
-| **Phase 1** | 1 day | Migrations, schema updates, helpers |
-| **Phase 2** | 2-3 days | Update DatabaseService, services, commands |
-| **Phase 3** | 1 day | Edge cases, special handling |
-| **Phase 4** | 1 day | Testing, validation, production migration |
-| **Total** | **5-6 days** | Full implementation |
+| Phase       | Duration     | Tasks                                      |
+| ----------- | ------------ | ------------------------------------------ |
+| **Phase 1** | 1 day        | Migrations, schema updates, helpers        |
+| **Phase 2** | 2-3 days     | Update DatabaseService, services, commands |
+| **Phase 3** | 1 day        | Edge cases, special handling               |
+| **Phase 4** | 1 day        | Testing, validation, production migration  |
+| **Total**   | **5-6 days** | Full implementation                        |
 
 ---
 
@@ -372,6 +383,7 @@ const quote = await db.getQuoteByNumber(number, interaction.guildId);
 ## Testing Strategy
 
 ### Unit Tests
+
 ```javascript
 describe('Guild Isolation', () => {
   it('should only return quotes for specific guild', async () => {
@@ -389,6 +401,7 @@ describe('Guild Isolation', () => {
 ```
 
 ### Integration Tests
+
 - Test quote operations across multiple guilds
 - Test reminder isolation per guild
 - Test rating isolation per guild
@@ -433,4 +446,3 @@ If issues occur:
 - Quote operations: `src/services/QuoteService.js`
 - Reminder operations: `src/services/ReminderService.js`
 - Migrations: `src/services/MigrationManager.js`
-

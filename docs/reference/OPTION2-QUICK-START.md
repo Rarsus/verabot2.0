@@ -2,13 +2,14 @@
 
 **Start Date:** January 3, 2026  
 **Architecture:** Per-Guild SQLite Databases  
-**Priority:** GDPR Compliance  
+**Priority:** GDPR Compliance
 
 ---
 
 ## Quick Overview
 
 Instead of one shared database, you'll have:
+
 - **One database per guild** (e.g., `data/db/guilds/123456789/quotes.db`)
 - **Complete isolation** - Guild A cannot see Guild B's data
 - **GDPR trivial** - Delete folder = all data gone
@@ -20,6 +21,7 @@ Instead of one shared database, you'll have:
 ### Create `src/services/GuildDatabaseManager.js`
 
 This is the heart of the system. It:
+
 - Opens/closes database connections per guild
 - Caches connections to avoid file handle issues
 - Initializes schemas for new guilds
@@ -42,6 +44,7 @@ Contains standard schema (quotes, reminders, ratings, tags, etc.)
 ### Replace `src/services/DatabaseService.js`
 
 Key changes:
+
 1. Add `guildId` parameter to ALL methods
 2. Use `manager.getGuildDatabase(guildId)` instead of global db
 3. Add `deleteGuildAllData(guildId)` for GDPR
@@ -72,7 +75,7 @@ Every command needs to pass guild ID:
 ```javascript
 // In quote command
 const id = await db.addQuote(
-  interaction.guildId,  // <-- ADD THIS
+  interaction.guildId, // <-- ADD THIS
   text,
   author
 );
@@ -81,6 +84,7 @@ const id = await db.addQuote(
 Search for all `db.` calls and add `guildId` as first parameter.
 
 **Files to update:**
+
 - `src/commands/quote-management/*.js`
 - `src/commands/quote-discovery/*.js`
 - `src/commands/quote-social/*.js`
@@ -152,7 +156,7 @@ describe('Guild Isolation', () => {
 ✅ Guild A cannot access Guild B's data  
 ✅ GDPR compliance is one-line: `manager.deleteGuildDatabase(guildId)`  
 ✅ Easy backup/restore per guild  
-✅ Easy guild offboarding  
+✅ Easy guild offboarding
 
 ---
 
@@ -194,7 +198,7 @@ Guild B's database never touched
 ❌ **Don't use global db connection** - Use manager for each guild  
 ❌ **Don't forget schema initialization** - New guilds need tables  
 ❌ **Don't handle connection cleanup** - Manager handles it  
-❌ **Don't forget GDPR deletion** - Test deleteGuildAllData()  
+❌ **Don't forget GDPR deletion** - Test deleteGuildAllData()
 
 ---
 
@@ -227,6 +231,7 @@ npm run test:performance
 See: `docs/reference/OPTION2-MULTI-DATABASE-IMPLEMENTATION.md`
 
 Contains:
+
 - Complete service code
 - Schema template
 - Migration script

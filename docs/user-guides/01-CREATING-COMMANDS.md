@@ -27,6 +27,7 @@ npm start
 ```
 
 You should see:
+
 ```
 ✓ Bot logged in as VeraBot#1234
 ✓ Registered X commands
@@ -56,23 +57,23 @@ const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers
 
 // Define command options
 const { data, options } = buildCommandOptions('mycommand', 'Does something cool', [
-  { name: 'text', type: 'string', required: true, description: 'Input text' }
+  { name: 'text', type: 'string', required: true, description: 'Input text' },
 ]);
 
 class MyCommand extends Command {
   constructor() {
-    super({ 
+    super({
       name: 'mycommand',
       description: 'Does something cool',
-      data,  // For slash commands
-      options  // For prefix commands
+      data, // For slash commands
+      options, // For prefix commands
     });
   }
 
   async execute(message, args) {
     // Prefix command handler (legacy)
     const text = args.join(' ');
-    
+
     if (!text) {
       await sendError(message.channel, 'Please provide text');
       return;
@@ -86,10 +87,10 @@ class MyCommand extends Command {
   async executeInteraction(interaction) {
     // Slash command handler
     const text = interaction.options.getString('text');
-    
+
     // Your logic here (same as above)
     const result = text.toUpperCase();
-    await sendSuccess(interaction, `Result: ${result}`, true);  // ephemeral: true
+    await sendSuccess(interaction, `Result: ${result}`, true); // ephemeral: true
   }
 }
 
@@ -116,6 +117,7 @@ npm start
 ```
 
 In Discord:
+
 - Type `/mycommand text:hello`
 - Or: `!mycommand hello world`
 
@@ -136,7 +138,7 @@ const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers
 // 2. OPTIONS DEFINITION - What the command takes as input
 const { data, options } = buildCommandOptions('name', 'description', [
   { name: 'arg1', type: 'string', required: true },
-  { name: 'arg2', type: 'integer', required: false }
+  { name: 'arg2', type: 'integer', required: false },
 ]);
 
 // 3. CLASS DEFINITION - The command logic
@@ -145,8 +147,12 @@ class MyCommand extends Command {
     super({ name, description, data, options });
   }
 
-  async execute(message, args) { /* ... */ }
-  async executeInteraction(interaction) { /* ... */ }
+  async execute(message, args) {
+    /* ... */
+  }
+  async executeInteraction(interaction) {
+    /* ... */
+  }
 }
 
 module.exports = new MyCommand().register();
@@ -155,13 +161,14 @@ module.exports = new MyCommand().register();
 ### Command Parameters
 
 #### Message (Prefix Commands)
+
 ```javascript
 async execute(message, args) {
   // message: Discord.js Message object
   // message.author: User who sent the command
   // message.channel: Channel where command was sent
   // message.guild: Server where command was sent
-  
+
   // args: Array of arguments after command name
   // !mycommand arg1 arg2 arg3
   // args = ['arg1', 'arg2', 'arg3']
@@ -169,13 +176,14 @@ async execute(message, args) {
 ```
 
 #### Interaction (Slash Commands)
+
 ```javascript
 async executeInteraction(interaction) {
   // interaction: Discord.js Interaction object
   // interaction.user: User who used the command
   // interaction.channel: Channel where command was used
   // interaction.guild: Server where command was used
-  
+
   // Get options by name
   const text = interaction.options.getString('text');
   const number = interaction.options.getInteger('number');
@@ -192,41 +200,42 @@ async executeInteraction(interaction) {
 ```javascript
 class SearchCommand extends Command {
   constructor() {
-    super({ 
+    super({
       name: 'search',
       description: 'Search for something',
-      data, options
+      data,
+      options,
     });
   }
 
   async execute(message, args) {
     const query = args.join(' ');
-    
+
     // Query database or API
     const results = await db.all('SELECT * FROM items WHERE name LIKE ?', [`%${query}%`]);
-    
+
     if (results.length === 0) {
       await sendError(message.channel, 'No results found');
       return;
     }
-    
+
     // Format and send results
-    const formatted = results.map(r => `• ${r.name}`).join('\n');
+    const formatted = results.map((r) => `• ${r.name}`).join('\n');
     await sendSuccess(message.channel, formatted);
   }
 
   async executeInteraction(interaction) {
     const query = interaction.options.getString('query');
     await deferReply(interaction, true);
-    
+
     const results = await db.all('SELECT * FROM items WHERE name LIKE ?', [`%${query}%`]);
-    
+
     if (results.length === 0) {
       await sendError(interaction, 'No results found');
       return;
     }
-    
-    const formatted = results.map(r => `• ${r.name}`).join('\n');
+
+    const formatted = results.map((r) => `• ${r.name}`).join('\n');
     await sendSuccess(interaction, formatted, true);
   }
 }
@@ -240,7 +249,8 @@ class AddCommand extends Command {
     super({
       name: 'add',
       description: 'Add a new item',
-      data, options
+      data,
+      options,
     });
   }
 
@@ -251,7 +261,7 @@ class AddCommand extends Command {
     }
 
     const [name, value] = args;
-    
+
     // Validation
     if (name.length > 100) {
       await sendError(message.channel, 'Name too long (max 100 chars)');
@@ -260,16 +270,13 @@ class AddCommand extends Command {
 
     // Database operation
     try {
-      await db.run(
-        'INSERT INTO items (name, value) VALUES (?, ?)',
-        [name, value]
-      );
+      await db.run('INSERT INTO items (name, value) VALUES (?, ?)', [name, value]);
       await sendSuccess(message.channel, `Added "${name}"`);
     } catch (error) {
       if (error.message.includes('UNIQUE')) {
         await sendError(message.channel, 'Item already exists');
       } else {
-        throw error;  // Let base class handle
+        throw error; // Let base class handle
       }
     }
   }
@@ -277,7 +284,7 @@ class AddCommand extends Command {
   async executeInteraction(interaction) {
     const name = interaction.options.getString('name');
     const value = interaction.options.getString('value');
-    
+
     await deferReply(interaction, true);
 
     // Validation and operation (same as above)
@@ -335,7 +342,7 @@ class AdminCommand extends Command {
 const { data, options } = buildCommandOptions('rate', 'Rate something', [
   { name: 'id', type: 'integer', required: true },
   { name: 'rating', type: 'integer', required: true },
-  { name: 'comment', type: 'string', required: false }
+  { name: 'comment', type: 'string', required: false },
 ]);
 
 class RateCommand extends Command {
@@ -351,10 +358,12 @@ class RateCommand extends Command {
     }
 
     // Process rating
-    await db.run(
-      'INSERT INTO ratings (item_id, user_id, rating, comment) VALUES (?, ?, ?, ?)',
-      [id, interaction.user.id, rating, comment]
-    );
+    await db.run('INSERT INTO ratings (item_id, user_id, rating, comment) VALUES (?, ?, ?, ?)', [
+      id,
+      interaction.user.id,
+      rating,
+      comment,
+    ]);
 
     await sendSuccess(interaction, `Rated ${rating}/5`, true);
   }
@@ -369,39 +378,22 @@ class RateCommand extends Command {
 
 ```javascript
 // SELECT - Get single row
-const item = await db.get(
-  'SELECT * FROM items WHERE id = ?',
-  [id]
-);
+const item = await db.get('SELECT * FROM items WHERE id = ?', [id]);
 
 // SELECT - Get multiple rows
-const items = await db.all(
-  'SELECT * FROM items WHERE category = ?',
-  [category]
-);
+const items = await db.all('SELECT * FROM items WHERE category = ?', [category]);
 
 // COUNT
-const count = await db.get(
-  'SELECT COUNT(*) as count FROM items'
-);
+const count = await db.get('SELECT COUNT(*) as count FROM items');
 
 // INSERT
-await db.run(
-  'INSERT INTO items (name, value) VALUES (?, ?)',
-  [name, value]
-);
+await db.run('INSERT INTO items (name, value) VALUES (?, ?)', [name, value]);
 
 // UPDATE
-await db.run(
-  'UPDATE items SET value = ? WHERE id = ?',
-  [newValue, id]
-);
+await db.run('UPDATE items SET value = ? WHERE id = ?', [newValue, id]);
 
 // DELETE
-await db.run(
-  'DELETE FROM items WHERE id = ?',
-  [id]
-);
+await db.run('DELETE FROM items WHERE id = ?', [id]);
 
 // TRANSACTION
 await db.run('BEGIN TRANSACTION');
@@ -436,7 +428,7 @@ await interaction.channel.send('Hello!');
 
 ```javascript
 // Get user
-const user = interaction.user;  // User object
+const user = interaction.user; // User object
 const userId = user.id;
 const username = user.username;
 const discriminator = user.discriminator;
@@ -493,10 +485,10 @@ function testCommandCreation() {
 function testCommandExecution() {
   // Mock objects
   const message = {
-    channel: { send: async () => {} }
+    channel: { send: async () => {} },
   };
   const args = ['test'];
-  
+
   // Test execution doesn't throw
   try {
     command.execute(message, args);
@@ -520,6 +512,7 @@ Run test: `node scripts/test-mycommand.js`
 ### Issue: Command not showing up in Discord
 
 **Solution:**
+
 1. Verify command file is in correct directory
 2. Run `npm run register-commands`
 3. Restart bot: `npm start`
@@ -529,6 +522,7 @@ Run test: `node scripts/test-mycommand.js`
 ### Issue: "Cannot find module" error
 
 **Solution:**
+
 - Check file path is correct
 - Verify relative paths match directory structure
 - Try: `node src/commands/misc/mycommand.js` to test directly
@@ -536,6 +530,7 @@ Run test: `node scripts/test-mycommand.js`
 ### Issue: Slash command works but prefix command doesn't
 
 **Solution:**
+
 - Check `buildCommandOptions` is being used
 - Verify command is registered in `src/index.js`
 - Check prefix is set correctly in `.env`
@@ -543,6 +538,7 @@ Run test: `node scripts/test-mycommand.js`
 ### Issue: Database error when adding command
 
 **Solution:**
+
 - Ensure database is initialized: `npm start` creates it
 - Check SQL syntax is correct
 - Verify table exists: `SELECT name FROM sqlite_master WHERE type='table'`
@@ -550,6 +546,7 @@ Run test: `node scripts/test-mycommand.js`
 ### Issue: Command runs but doesn't send response
 
 **Solution:**
+
 - Add `await` before Discord API calls
 - Check ephemeral responses with `true` parameter
 - Verify `sendSuccess`, `sendError` are imported correctly
@@ -570,12 +567,12 @@ try {
   if (error.code === 'SPECIFIC_ERROR') {
     await sendError(interaction, 'User-friendly message');
   } else {
-    throw error;  // Let base class handle
+    throw error; // Let base class handle
   }
 }
 
 // Bad
-const result = await someOperation();  // No error handling
+const result = await someOperation(); // No error handling
 await sendSuccess(interaction, `Done: ${result}`);
 ```
 
@@ -600,12 +597,12 @@ const rating = interaction.options.getInteger('rating');
 // Good - Organized sections
 class MyCommand extends Command {
   constructor() { /* ... */ }
-  
+
   async validateInput() { /* ... */ }
   async getRequiredData() { /* ... */ }
   async processData() { /* ... */ }
   async sendResponse() { /* ... */ }
-  
+
   async execute(message, args) {
     if (!this.validateInput(args)) return;
     const data = await this.getRequiredData();
@@ -648,10 +645,7 @@ class ImportantCommand extends Command {
    * @returns {Promise<Array>} Array of quotes, sorted by rating
    */
   async getTopQuotes(limit) {
-    return db.all(
-      'SELECT * FROM quotes ORDER BY rating DESC LIMIT ?',
-      [limit]
-    );
+    return db.all('SELECT * FROM quotes ORDER BY rating DESC LIMIT ?', [limit]);
   }
 }
 ```

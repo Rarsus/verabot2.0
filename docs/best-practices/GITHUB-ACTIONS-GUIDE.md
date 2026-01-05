@@ -15,30 +15,30 @@ A comprehensive guide to understanding and working with GitHub Actions workflows
 ### Basic Workflow Anatomy
 
 ```yaml
-name: Workflow Name                # Display name in Actions tab
+name: Workflow Name # Display name in Actions tab
 
-on:                                # Trigger events
+on: # Trigger events
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
-permissions:                       # Required permissions
+permissions: # Required permissions
   contents: read
   pull-requests: write
 
-jobs:                             # Job definitions
+jobs: # Job definitions
   job-name:
-    runs-on: ubuntu-latest        # Runner environment
-    
-    steps:                        # Sequential steps
+    runs-on: ubuntu-latest # Runner environment
+
+    steps: # Sequential steps
       - name: Step name
-        uses: action@version      # Use external action
-        with:                     # Action parameters
+        uses: action@version # Use external action
+        with: # Action parameters
           param: value
-      
+
       - name: Run command
-        run: npm test            # Run shell command
+        run: npm test # Run shell command
 ```
 
 ### Key Components
@@ -92,13 +92,14 @@ on:
 
 ```yaml
 permissions:
-  contents: read                  # Read repository contents
-  pull-requests: write           # Comment on PRs
-  security-events: write         # Write security events (CodeQL)
-  actions: read                  # Read workflow runs
+  contents: read # Read repository contents
+  pull-requests: write # Comment on PRs
+  security-events: write # Write security events (CodeQL)
+  actions: read # Read workflow runs
 ```
 
 **Common permission levels:**
+
 - `read` - Read-only access
 - `write` - Read and write access
 - `none` - No access
@@ -110,16 +111,16 @@ permissions:
 ```yaml
 jobs:
   build:
-    name: Build and Test          # Display name
-    runs-on: ubuntu-latest        # Runner OS
-    timeout-minutes: 30           # Maximum runtime
-    
+    name: Build and Test # Display name
+    runs-on: ubuntu-latest # Runner OS
+    timeout-minutes: 30 # Maximum runtime
+
     # Run only if condition is true
     if: github.event_name == 'push'
-    
+
     # Depend on other jobs
     needs: [lint, test]
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -135,14 +136,14 @@ jobs:
       - run: npm test
 
   deploy:
-    needs: test                   # Wait for test to complete
+    needs: test # Wait for test to complete
     runs-on: ubuntu-latest
     steps:
       - run: npm run deploy
 
   notify:
-    needs: [test, deploy]         # Wait for multiple jobs
-    if: always()                  # Run even if others fail
+    needs: [test, deploy] # Wait for multiple jobs
+    if: always() # Run even if others fail
     runs-on: ubuntu-latest
     steps:
       - run: echo "Jobs complete"
@@ -208,17 +209,18 @@ steps:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production         # Use production environment
+    environment: production # Use production environment
     steps:
       - name: Deploy
         env:
-          API_KEY: ${{ secrets.API_KEY }}  # Environment-specific secret
+          API_KEY: ${{ secrets.API_KEY }} # Environment-specific secret
         run: npm run deploy
 ```
 
 ### Security Best Practices
 
 **DO:**
+
 - ✅ Use secrets for sensitive data
 - ✅ Rotate secrets regularly
 - ✅ Use environment-specific secrets
@@ -226,6 +228,7 @@ jobs:
 - ✅ Use GITHUB_TOKEN for GitHub API
 
 **DON'T:**
+
 - ❌ Echo secrets in logs
 - ❌ Pass secrets as command arguments
 - ❌ Commit secrets to repository
@@ -260,7 +263,7 @@ steps:
       path: |
         coverage/
         coverage/lcov-report/
-      retention-days: 30            # Keep for 30 days
+      retention-days: 30 # Keep for 30 days
 ```
 
 **Download artifacts:**
@@ -275,6 +278,7 @@ steps:
 ```
 
 **Use cases:**
+
 - Test reports and coverage
 - Build artifacts
 - Logs and debug info
@@ -290,7 +294,7 @@ steps:
     uses: actions/setup-node@v4
     with:
       node-version: '20.x'
-      cache: 'npm'                  # Automatic npm caching
+      cache: 'npm' # Automatic npm caching
 ```
 
 **Custom cache:**
@@ -309,6 +313,7 @@ steps:
 ```
 
 **Cache strategies:**
+
 - Use unique keys based on file hashes
 - Include OS in cache key
 - Provide restore-keys as fallback
@@ -327,12 +332,12 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
-    
+
     steps:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      
+
       - run: npm test
 ```
 
@@ -355,13 +360,13 @@ strategy:
   matrix:
     os: [ubuntu-latest, windows-latest]
     node-version: [18.x, 20.x]
-    
+
     # Add specific configuration
     include:
       - os: ubuntu-latest
         node-version: 22.x
         experimental: true
-    
+
     # Exclude specific combination
     exclude:
       - os: windows-latest
@@ -392,7 +397,7 @@ steps:
 
 ```yaml
 strategy:
-  fail-fast: false              # Don't cancel other jobs on failure
+  fail-fast: false # Don't cancel other jobs on failure
   matrix:
     node-version: [18.x, 20.x, 22.x]
 ```
@@ -622,6 +627,7 @@ jobs:
 **Enable debug logging:**
 
 Add repository secrets:
+
 - `ACTIONS_STEP_DEBUG=true`
 - `ACTIONS_RUNNER_DEBUG=true`
 

@@ -16,16 +16,19 @@ npm run test:workflows
 ## What It Tests
 
 ### Documentation Validation Scripts
+
 - `docs:links` - Check internal and external documentation links
 - `docs:version` - Verify version consistency across files
 - `docs:badges` - Update status badges in README
 - `docs:lint` - Lint markdown files (placeholder)
 
 ### Security Tests
+
 - `test:security` - Run security validation tests (20 tests)
 - `test:integration` - Run security integration tests (15 tests)
 
 ### Other Workflow Commands
+
 - `lint` - Run ESLint with warnings tolerance
 - `security:audit` - Run npm audit
 - `test:all` - Run all unit tests
@@ -39,8 +42,9 @@ npm run test:workflows
 ## CI Integration
 
 These tests ensure that:
+
 1. All npm commands referenced in `.github/workflows/` files exist
-2. Scripts execute successfully 
+2. Scripts execute successfully
 3. No missing dependencies or configuration issues
 4. Workflows won't fail due to command not found errors
 

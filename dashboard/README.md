@@ -5,12 +5,14 @@ A comprehensive React-based admin dashboard for managing VeraBot Discord bot con
 ## Features
 
 ### 🤖 Bot Management
+
 - Real-time bot status and uptime monitoring
 - Memory and latency metrics
 - Guild, user, and message statistics
 - Bot information and version tracking
 
 ### ⚡ WebSocket Configuration
+
 - Manage external service integrations
 - Configure webhooks and allowed actions
 - Test service connections
@@ -18,6 +20,7 @@ A comprehensive React-based admin dashboard for managing VeraBot Discord bot con
 - Enable/disable services on the fly
 
 ### 📚 Quote Management
+
 - Add, edit, and delete quotes
 - View quote statistics (total, ratings, tags)
 - Paginated quote browser
@@ -25,6 +28,7 @@ A comprehensive React-based admin dashboard for managing VeraBot Discord bot con
 - Author attribution tracking
 
 ### 🔐 Security
+
 - Token-based authentication
 - Secure session management
 - Protected routes and admin access
@@ -33,6 +37,7 @@ A comprehensive React-based admin dashboard for managing VeraBot Discord bot con
 ## Quick Start
 
 ### Prerequisites
+
 - Node.js 18+
 - VeraBot backend running with API endpoints
 
@@ -106,10 +111,12 @@ dashboard/
 The dashboard requires the following API endpoints from the bot backend:
 
 ### Authentication
+
 - `POST /api/auth/verify` - Verify admin token
 - `POST /api/auth/login` - Login with token
 
 ### WebSocket Services
+
 - `GET /api/websocket/services` - List services
 - `GET /api/websocket/services/:name` - Get service details
 - `PUT /api/websocket/services/:name` - Update service config
@@ -119,6 +126,7 @@ The dashboard requires the following API endpoints from the bot backend:
 - `PATCH /api/websocket/services/:name/toggle` - Enable/disable
 
 ### Quote Management
+
 - `GET /api/quotes` - List quotes with pagination
 - `GET /api/quotes/:id` - Get quote details
 - `POST /api/quotes` - Create new quote
@@ -128,6 +136,7 @@ The dashboard requires the following API endpoints from the bot backend:
 - `GET /api/quotes/stats` - Get statistics
 
 ### Bot Information
+
 - `GET /api/bot/status` - Bot online status and metrics
 - `GET /api/bot/info` - Bot information
 - `GET /api/bot/stats` - Bot statistics
@@ -138,6 +147,7 @@ The dashboard requires the following API endpoints from the bot backend:
 ## Styling
 
 Uses **Tailwind CSS** for modern, responsive design:
+
 - Dark sidebar navigation
 - Gradient stat cards
 - Responsive grid layouts
@@ -146,8 +156,8 @@ Uses **Tailwind CSS** for modern, responsive design:
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
+| Variable       | Description      | Default                     |
+| -------------- | ---------------- | --------------------------- |
 | `VITE_API_URL` | Bot API base URL | `http://localhost:3000/api` |
 
 ## Deployment
@@ -176,14 +186,14 @@ CMD ["serve", "-s", "dist", "-l", "5173"]
 server {
   listen 80;
   server_name dashboard.example.com;
-  
+
   root /path/to/dashboard/dist;
   index index.html;
-  
+
   location / {
     try_files $uri $uri/ /index.html;
   }
-  
+
   location /api {
     proxy_pass http://bot-api:3000;
   }
@@ -200,14 +210,17 @@ server {
 ## Troubleshooting
 
 ### CORS Errors
+
 Ensure bot API has CORS enabled for your dashboard domain.
 
 ### Authentication Failures
+
 - Verify bot token is correct
 - Ensure bot API server is running
 - Check `VITE_API_URL` in `.env`
 
 ### API Connection Issues
+
 - Verify bot API is accessible at `VITE_API_URL`
 - Check network connectivity
 - Review browser console for detailed error messages
@@ -228,6 +241,7 @@ Ensure bot API has CORS enabled for your dashboard domain.
 ## Contributing
 
 When adding new features:
+
 1. Create components in `src/components/`
 2. Add new pages in `src/pages/`
 3. Add API methods to `src/services/api.js`

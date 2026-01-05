@@ -31,8 +31,8 @@ const CacheManager = require('./src/services/CacheManager');
 
 // Create cache with custom options
 const cache = new CacheManager({
-  maxSize: 100,      // Maximum number of cached items
-  defaultTTL: 300000 // 5 minutes in milliseconds
+  maxSize: 100, // Maximum number of cached items
+  defaultTTL: 300000, // 5 minutes in milliseconds
 });
 
 // Store and retrieve values
@@ -41,8 +41,8 @@ const value = cache.get('key');
 
 // Invalidate cache entries
 cache.invalidate('specific-key');
-cache.invalidatePattern('user:*');  // Clear all user-related cache
-cache.clear();  // Clear entire cache
+cache.invalidatePattern('user:*'); // Clear all user-related cache
+cache.clear(); // Clear entire cache
 
 // Get statistics
 const stats = cache.getStats();
@@ -78,7 +78,7 @@ const pool = new DatabasePool({
   dbPath: './data/db/quotes.db',
   poolSize: 5,
   queueTimeout: 5000,
-  idleTimeout: 60000
+  idleTimeout: 60000,
 });
 
 // Execute queries with automatic connection management
@@ -242,12 +242,12 @@ monitor.recordQuery(sql, Date.now() - start, cached);
 
 ## Performance Targets
 
-| Metric | Before | Target | Achieved |
-|--------|--------|--------|----------|
-| Query Time | ~100ms | ~20ms | ✅ 40-60% reduction with caching |
-| Cache Hit Rate | 0% | >80% | ✅ Achievable with proper usage |
-| Connection Latency | ~50ms | ~10ms | ✅ 20-30% reduction with pooling |
-| Concurrent Users | 10 | 100+ | ✅ Supported with pooling |
+| Metric             | Before | Target | Achieved                         |
+| ------------------ | ------ | ------ | -------------------------------- |
+| Query Time         | ~100ms | ~20ms  | ✅ 40-60% reduction with caching |
+| Cache Hit Rate     | 0%     | >80%   | ✅ Achievable with proper usage  |
+| Connection Latency | ~50ms  | ~10ms  | ✅ 20-30% reduction with pooling |
+| Concurrent Users   | 10     | 100+   | ✅ Supported with pooling        |
 
 ## Troubleshooting
 

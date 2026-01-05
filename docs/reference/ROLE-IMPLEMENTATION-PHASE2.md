@@ -16,7 +16,7 @@ Phase 2 focused on integrating the core role-based permission system (built in P
 ✅ Show visibility filtering in help command  
 ✅ Create reusable patterns for remaining 30 commands  
 ✅ Maintain 100% test coverage  
-✅ Keep lint warnings at/below limit  
+✅ Keep lint warnings at/below limit
 
 ---
 
@@ -25,6 +25,7 @@ Phase 2 focused on integrating the core role-based permission system (built in P
 ### Implemented Components
 
 **1. RolePermissionService** (`src/services/RolePermissionService.js`)
+
 - 370+ lines with 10+ core methods
 - Central permission decision engine
 - Tier: 0 (Guest) → 4 (Bot Owner)
@@ -32,12 +33,14 @@ Phase 2 focused on integrating the core role-based permission system (built in P
 - Database audit logging
 
 **2. Role Configuration** (`src/config/roles.js`)
+
 - All 32 commands pre-configured
 - Per-command min tier and visibility settings
 - Feature flags and bot owner list
 - Guild-specific override support
 
 **3. CommandBase Enhancement** (`src/core/CommandBase.js`)
+
 - Added `checkPermission()` method
 - Added `checkVisibility()` method
 - Permission metadata structure
@@ -50,9 +53,11 @@ Phase 2 focused on integrating the core role-based permission system (built in P
 ### Updated Commands
 
 #### 1. Whisper Command (Admin Command)
+
 **File:** `src/commands/admin/whisper.js`
 
 **Changes:**
+
 ```javascript
 // Configuration in constructor
 permissions: {
@@ -75,16 +80,19 @@ if (!permissionCheck.allowed) {
 }
 ```
 
-**Result:** 
+**Result:**
+
 - ✅ Whisper command now requires tier 3 (Admin)
 - ✅ Hidden from unauthorized users
 - ✅ Clear permission error messages
 - ✅ All tests passing
 
 #### 2. Ping Command (Public Command)
+
 **File:** `src/commands/misc/ping.js`
 
 **Changes:**
+
 ```javascript
 // Configuration in constructor
 permissions: {
@@ -98,15 +106,18 @@ await sendSuccess(interaction, `Pong! (${latency}ms)`);
 ```
 
 **Result:**
+
 - ✅ Ping command is public (everyone can use)
 - ✅ Improved response with latency info
 - ✅ Server as visibility filtering example
 - ✅ All tests passing
 
 #### 3. Help Command (Enhanced Visibility)
+
 **File:** `src/commands/misc/help.js`
 
 **Changes:**
+
 - Added `RolePermissionService` import
 - Filter commands by `isCommandVisible()` before displaying
 - Show user's tier in help embed footer
@@ -114,6 +125,7 @@ await sendSuccess(interaction, `Pong! (${latency}ms)`);
 - Return "No commands available to you" if none visible
 
 **Result:**
+
 - ✅ Users only see commands they have access to
 - ✅ Clear tier display in help
 - ✅ Automatic visibility filtering
@@ -136,9 +148,9 @@ class CommandName extends Command {
       data,
       options,
       permissions: {
-        minTier: 1,           // 0=Guest, 1=Member, 2=Moderator, 3=Admin, 4=Owner
-        visible: true         // Show to authorized users
-      }
+        minTier: 1, // 0=Guest, 1=Member, 2=Moderator, 3=Admin, 4=Owner
+        visible: true, // Show to authorized users
+      },
     });
   }
 }
@@ -170,20 +182,10 @@ async executeInteraction(interaction) {
 
 ```javascript
 // Get all visible commands for a user
-const visibleCommands = await RolePermissionService.getVisibleCommands(
-  userId,
-  guildId,
-  allCommandsArray,
-  client
-);
+const visibleCommands = await RolePermissionService.getVisibleCommands(userId, guildId, allCommandsArray, client);
 
 // Or just names
-const visibleNames = await RolePermissionService.getVisibleCommandNames(
-  userId,
-  guildId,
-  allCommandNamesArray,
-  client
-);
+const visibleNames = await RolePermissionService.getVisibleCommandNames(userId, guildId, allCommandNamesArray, client);
 ```
 
 ### Pattern 4: Getting User's Tier
@@ -200,18 +202,18 @@ const tierDescription = RolePermissionService.getRoleDescription(userTier);
 
 All 32 commands are pre-configured in `src/config/roles.js`:
 
-| Command | Category | Min Tier | Visible | Notes |
-|---------|----------|----------|---------|-------|
-| ping | misc | 0 | Yes | Public, everyone can use |
-| hi | misc | 0 | Yes | Public greeting |
-| help | misc | 0 | Yes | Shows filtered commands |
-| poem | misc | 0 | Yes | Public AI poetry |
-| embed-message | admin | 3 | No | Hidden, admin only |
-| whisper | admin | 3 | No | Hidden, admin only |
-| add-quote | quote-mgt | 0 | Yes | Public quote add |
-| random-quote | quote-disc | 0 | Yes | Public quote get |
-| search-quotes | quote-disc | 0 | Yes | Public search |
-| ... | ... | ... | ... | All 32 configured |
+| Command       | Category   | Min Tier | Visible | Notes                    |
+| ------------- | ---------- | -------- | ------- | ------------------------ |
+| ping          | misc       | 0        | Yes     | Public, everyone can use |
+| hi            | misc       | 0        | Yes     | Public greeting          |
+| help          | misc       | 0        | Yes     | Shows filtered commands  |
+| poem          | misc       | 0        | Yes     | Public AI poetry         |
+| embed-message | admin      | 3        | No      | Hidden, admin only       |
+| whisper       | admin      | 3        | No      | Hidden, admin only       |
+| add-quote     | quote-mgt  | 0        | Yes     | Public quote add         |
+| random-quote  | quote-disc | 0        | Yes     | Public quote get         |
+| search-quotes | quote-disc | 0        | Yes     | Public search            |
+| ...           | ...        | ...      | ...     | All 32 configured        |
 
 See `src/config/roles.js` for complete matrix.
 
@@ -228,6 +230,7 @@ Total test suites: 30
 ```
 
 **Key test categories still passing:**
+
 - Command base functionality (100%)
 - Quote system operations (100%)
 - Response helpers (100%)
@@ -247,26 +250,31 @@ Total test suites: 30
 ## Key Improvements in Phase 2
 
 ### 1. Visibility Filtering
+
 - Commands hidden from users who can't access them
 - No confusion about unavailable commands
 - Better user experience
 
 ### 2. Permission Checking
+
 - Consistent pattern across commands
 - Clear error messages with tier requirements
 - Automatic handling by CommandBase
 
 ### 3. Tier Display
+
 - Users see their permission level
 - Help command shows tier info
 - Understanding of access levels
 
 ### 4. Audit Trail
+
 - All permission checks logged to database
 - Track who tried to access what
 - Security and compliance auditing
 
 ### 5. Reusable Patterns
+
 - Two patterns for all command types
 - Copy-paste ready examples
 - Clear documentation
@@ -278,6 +286,7 @@ Total test suites: 30
 ### Public Methods (Used in Commands)
 
 #### `getUserTier(userId, guildId, client) → Promise<number>`
+
 Get a user's permission tier (0-4).
 
 ```javascript
@@ -286,42 +295,31 @@ const tier = await RolePermissionService.getUserTier(userId, guildId, client);
 ```
 
 #### `canExecuteCommand(userId, guildId, commandName, client) → Promise<boolean>`
+
 Check if user can execute a specific command.
 
 ```javascript
-const canRun = await RolePermissionService.canExecuteCommand(
-  userId,
-  guildId,
-  'whisper',
-  client
-);
+const canRun = await RolePermissionService.canExecuteCommand(userId, guildId, 'whisper', client);
 ```
 
 #### `isCommandVisible(userId, guildId, commandName, client) → Promise<boolean>`
+
 Check if command should be shown to user.
 
 ```javascript
-const visible = await RolePermissionService.isCommandVisible(
-  userId,
-  guildId,
-  'whisper',
-  client
-);
+const visible = await RolePermissionService.isCommandVisible(userId, guildId, 'whisper', client);
 ```
 
 #### `getVisibleCommands(userId, guildId, commands, client) → Promise<Array>`
+
 Get all commands a user can see.
 
 ```javascript
-const visibleCmds = await RolePermissionService.getVisibleCommands(
-  userId,
-  guildId,
-  allCommandsArray,
-  client
-);
+const visibleCmds = await RolePermissionService.getVisibleCommands(userId, guildId, allCommandsArray, client);
 ```
 
 #### `getRoleDescription(tier) → string`
+
 Get human-readable tier name.
 
 ```javascript
@@ -330,6 +328,7 @@ const name = RolePermissionService.getRoleDescription(2);
 ```
 
 #### `auditLog(entry) → Promise<void>`
+
 Log permission checks to database.
 
 ```javascript
@@ -338,7 +337,7 @@ await RolePermissionService.auditLog({
   guildId: '456',
   commandName: 'whisper',
   allowed: true,
-  timestamp: new Date()
+  timestamp: new Date(),
 });
 ```
 
@@ -349,6 +348,7 @@ await RolePermissionService.auditLog({
 ### `checkPermission(context, client) → Promise<Object>`
 
 Returns:
+
 ```javascript
 {
   allowed: boolean,
@@ -357,6 +357,7 @@ Returns:
 ```
 
 Example:
+
 ```javascript
 const check = await this.checkPermission(context, client);
 if (!check.allowed) {
@@ -380,16 +381,19 @@ if (!visible) {
 ## Performance Considerations
 
 ### Caching
+
 - User tier lookups cached for 3600 seconds
 - Reduces Discord API calls
 - Configurable via `roleConfig.cacheRoleChecks`
 
 ### Database Queries
+
 - Async audit logging (non-blocking)
 - Prepared statements prevent SQL injection
 - Indexes on userId, guildId, commandName
 
 ### Complexity
+
 - O(1) tier lookup (cached)
 - O(n) for filtering commands (n=command count)
 - Negligible performance impact
@@ -453,18 +457,21 @@ CREATE TABLE user_tier_overrides (
 ## Rollout Strategy
 
 ### Commands Updated (Phase 2)
+
 ✅ help.js - visibility filtering  
 ✅ ping.js - public example  
-✅ whisper.js - admin example  
+✅ whisper.js - admin example
 
 ### Remaining Commands (Phase 2-3)
+
 ⏳ Quote commands (8 commands)  
 ⏳ Admin commands (4 commands)  
 ⏳ Proxy features (3 commands)  
 ⏳ Reminder commands (4 commands)  
-⏳ Utility commands (10 commands)  
+⏳ Utility commands (10 commands)
 
 ### Rollout Priority
+
 1. Utility commands (most usage)
 2. Quote commands (core feature)
 3. Reminder commands (premium feature)
@@ -477,12 +484,14 @@ CREATE TABLE user_tier_overrides (
 ### Permission Check Returns False
 
 **Check:**
+
 1. User's Discord role matches role tier mapping
 2. User not in bot owner exclusion list
 3. Guild has correct role mappings
 4. Cache not stale (check `roleConfig.cacheRoleChecks`)
 
 **Debug:**
+
 ```javascript
 const tier = await RolePermissionService.getUserTier(userId, guildId, client);
 console.log('User tier:', tier); // Should be 0-4
@@ -494,24 +503,22 @@ console.log('Command minTier:', config.minTier); // Should be ≤ tier
 ### Visibility Not Filtering
 
 **Check:**
+
 1. Command has `visible: true/false` in config
 2. `isCommandVisible()` called in help command
 3. Command category correct in `roles.js`
 
 **Debug:**
+
 ```javascript
-const visible = await RolePermissionService.isCommandVisible(
-  userId,
-  guildId,
-  'commandname',
-  client
-);
+const visible = await RolePermissionService.isCommandVisible(userId, guildId, 'commandname', client);
 console.log('Visible:', visible);
 ```
 
 ### Cache Stale
 
 **Clear cache:**
+
 ```javascript
 RolePermissionService.clearCache();
 ```
@@ -523,16 +530,16 @@ In `src/config/roles.js`, set `cacheRoleChecks: false`
 
 ## Files Modified in Phase 2
 
-| File | Changes | Lines |
-|------|---------|-------|
-| src/commands/admin/whisper.js | Added permission checking | +12 |
-| src/commands/misc/ping.js | Added permission config | +12 |
-| src/commands/misc/help.js | Fixed catch block variable | -1 |
-| src/core/CommandBase.js | Removed redundant await | -1 |
-| src/services/RolePermissionService.js | Fixed unreachable code | -7 |
-| eslint.config.js | Excluded test files | +2 |
-| docs/ROLE-IMPLEMENTATION-PHASE1.md | Created Phase 1 docs | +600 |
-| **Total** | | **~650** |
+| File                                  | Changes                    | Lines    |
+| ------------------------------------- | -------------------------- | -------- |
+| src/commands/admin/whisper.js         | Added permission checking  | +12      |
+| src/commands/misc/ping.js             | Added permission config    | +12      |
+| src/commands/misc/help.js             | Fixed catch block variable | -1       |
+| src/core/CommandBase.js               | Removed redundant await    | -1       |
+| src/services/RolePermissionService.js | Fixed unreachable code     | -7       |
+| eslint.config.js                      | Excluded test files        | +2       |
+| docs/ROLE-IMPLEMENTATION-PHASE1.md    | Created Phase 1 docs       | +600     |
+| **Total**                             |                            | **~650** |
 
 ---
 
@@ -548,7 +555,7 @@ In `src/config/roles.js`, set `cacheRoleChecks: false`
 ✅ Whisper command checks tier  
 ✅ Ping command accessible to all  
 ✅ Audit logging ready  
-✅ Documentation complete  
+✅ Documentation complete
 
 ---
 
@@ -566,4 +573,3 @@ In `src/config/roles.js`, set `cacheRoleChecks: false`
 - ✅ Ready for Phase 3 (admin command UI)
 
 **Ready to proceed with updating remaining 29 commands using established patterns.**
-

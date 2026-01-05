@@ -2,7 +2,7 @@
 
 **Date:** January 3, 2026  
 **Status:** ✅ IMPLEMENTED  
-**Version:** 2.9.0  
+**Version:** 2.9.0
 
 ## Overview
 
@@ -11,7 +11,7 @@ VeraBot now supports a **per-guild multi-database architecture** where each Disc
 ✅ **Complete Guild Isolation** - No cross-guild data contamination possible  
 ✅ **GDPR Compliance** - Delete entire guild with one command  
 ✅ **Scalability** - Easy to distribute guilds across systems  
-✅ **Simplicity** - Standard SQLite operations per guild  
+✅ **Simplicity** - Standard SQLite operations per guild
 
 ## Architecture
 
@@ -43,6 +43,7 @@ data/db/
 #### 1. GuildDatabaseManager ([src/services/GuildDatabaseManager.js](src/services/GuildDatabaseManager.js))
 
 Manages per-guild database connections with:
+
 - **Connection Pooling:** Max 50 active connections (configurable)
 - **Schema Initialization:** Automatically creates schema for new guilds
 - **Idle Timeout:** Auto-closes unused connections after 15 minutes
@@ -62,9 +63,10 @@ db.run('INSERT INTO quotes (text, author, addedAt) VALUES (?, ?, ?)', [text, aut
 await manager.deleteGuildDatabase('123456789');
 ```
 
-#### 2. Schema Template ([data/db/_schema/schema.sql](data/db/_schema/schema.sql))
+#### 2. Schema Template ([data/db/\_schema/schema.sql](data/db/_schema/schema.sql))
 
 Standard schema replicated for each guild database:
+
 - `quotes` - Core quotes table
 - `tags` - Category tags
 - `quote_tags` - Many-to-many relationships
@@ -87,6 +89,7 @@ node scripts/db/migration-single-to-multi.js 123456789
 ```
 
 **Process:**
+
 1. Backup original database
 2. Read all data from single database
 3. Create guild-specific databases
@@ -104,10 +107,7 @@ const manager = require('./src/services/GuildDatabaseManager');
 const db = await manager.getGuildDatabase('123456789');
 
 // Insert quote
-db.run(
-  'INSERT INTO quotes (text, author, addedAt) VALUES (?, ?, ?)',
-  [text, author, new Date().toISOString()]
-);
+db.run('INSERT INTO quotes (text, author, addedAt) VALUES (?, ?, ?)', [text, author, new Date().toISOString()]);
 
 // Query quotes
 db.all('SELECT * FROM quotes WHERE author LIKE ?', [authorPattern], (err, rows) => {
@@ -125,16 +125,13 @@ const guild2_db = await manager.getGuildDatabase('guild-2');
 guild1_db.run('INSERT INTO quotes (text, author, addedAt) VALUES (?, ?, ?)', [
   'Guild 1 Quote',
   'Author 1',
-  new Date().toISOString()
+  new Date().toISOString(),
 ]);
 
 // Guild 2 cannot see guild 1's data
-guild2_db.get(
-  "SELECT * FROM quotes WHERE text = 'Guild 1 Quote'",
-  (err, row) => {
-    console.log(row); // undefined - proper isolation
-  }
-);
+guild2_db.get("SELECT * FROM quotes WHERE text = 'Guild 1 Quote'", (err, row) => {
+  console.log(row); // undefined - proper isolation
+});
 ```
 
 ### GDPR Compliance
@@ -201,10 +198,7 @@ db.run(
 const guildId = interaction.guildId;
 const db = await manager.getGuildDatabase(guildId);
 
-db.run(
-  'INSERT INTO quotes (text, author, addedAt) VALUES (?, ?, ?)',
-  [text, author, new Date().toISOString()]
-);
+db.run('INSERT INTO quotes (text, author, addedAt) VALUES (?, ?, ?)', [text, author, new Date().toISOString()]);
 ```
 
 ### Preference Commands
@@ -214,10 +208,11 @@ db.run(
 const guildId = interaction.guildId;
 const db = await manager.getGuildDatabase(guildId);
 
-db.run(
-  'INSERT OR REPLACE INTO user_communications (userId, optedIn, optInTimestamp) VALUES (?, ?, ?)',
-  [userId, 1, new Date().toISOString()]
-);
+db.run('INSERT OR REPLACE INTO user_communications (userId, optedIn, optInTimestamp) VALUES (?, ?, ?)', [
+  userId,
+  1,
+  new Date().toISOString(),
+]);
 ```
 
 ## Configuration
@@ -226,10 +221,10 @@ db.run(
 
 ```javascript
 const manager = new GuildDatabaseManager({
-  guildsDir: './data/db/guilds',        // Where guild databases stored
-  maxConnections: 50,                   // Max pooled connections
-  connectionTimeout: 5 * 60 * 1000,     // Auto-close idle connections
-  schemaPath: './data/db/_schema/schema.sql'  // Schema template
+  guildsDir: './data/db/guilds', // Where guild databases stored
+  maxConnections: 50, // Max pooled connections
+  connectionTimeout: 5 * 60 * 1000, // Auto-close idle connections
+  schemaPath: './data/db/_schema/schema.sql', // Schema template
 });
 ```
 
@@ -266,6 +261,7 @@ node scripts/db/migration-single-to-multi.js
 ```
 
 **Steps:**
+
 1. Original database backed up to `data/db/backups/quotes_*.db.backup`
 2. Guild databases created in `data/db/guilds/{GUILD_ID}/`
 3. Data distributed to appropriate guild databases
@@ -274,6 +270,7 @@ node scripts/db/migration-single-to-multi.js
 ### Post-Migration
 
 Once verified in Discord:
+
 ```bash
 # Safe to remove original database
 rm data/db/quotes.db
@@ -314,6 +311,7 @@ db.run('DELETE FROM quote_ratings WHERE userId = ?', [userId]);
 ### Audit Trail
 
 All operations maintain timestamps:
+
 - `quotes.createdAt`, `quotes.updatedAt`
 - `reminders.createdAt`, `reminders.updatedAt`
 - `user_communications.createdAt`, `user_communications.updatedAt`
@@ -330,7 +328,7 @@ Error: Connection pool limit reached. Too many active guilds.
 
 ```javascript
 const manager = new GuildDatabaseManager({
-  maxConnections: 100  // Increase from default 50
+  maxConnections: 100, // Increase from default 50
 });
 ```
 
@@ -386,6 +384,7 @@ console.log(`Active guilds: ${guilds.length}`);
 ### Still Single-Database Compatible
 
 The old guild-aware single-database approach (Phase 3.5) is still available:
+
 - All data uses `guildId` column for isolation
 - Service layer enforces guild context
 - Can coexist with multi-database approach
@@ -395,7 +394,7 @@ The old guild-aware single-database approach (Phase 3.5) is still available:
 - **Documentation:** [docs/reference/OPTION2-MULTI-DATABASE-IMPLEMENTATION.md](docs/reference/OPTION2-MULTI-DATABASE-IMPLEMENTATION.md)
 - **Migration Script:** [scripts/db/migration-single-to-multi.js](scripts/db/migration-single-to-multi.js)
 - **Manager Service:** [src/services/GuildDatabaseManager.js](src/services/GuildDatabaseManager.js)
-- **Schema:** [data/db/_schema/schema.sql](data/db/_schema/schema.sql)
+- **Schema:** [data/db/\_schema/schema.sql](data/db/_schema/schema.sql)
 
 ---
 

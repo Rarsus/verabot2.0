@@ -5,14 +5,17 @@ Fast setup guide for external WebSocket services (XToys, etc.)
 ## 5-Minute Setup
 
 ### 1. Get Webhook ID
+
 For XToys: App → Webhooks → Create private webhook → Copy ID
 
 ### 2. Add to .env
+
 ```env
 XTOYS_WEBHOOK_URL=wss://webhook.xtoys.app/YOUR_WEBHOOK_ID_HERE
 ```
 
 ### 3. Configure Service
+
 Edit `src/config/external-actions.js`:
 
 ```javascript
@@ -22,12 +25,13 @@ module.exports = {
     webhookUrl: process.env.XTOYS_WEBHOOK_URL,
     allowedActions: ['discord_message', 'notification', 'ping'],
     description: 'XToys notifications',
-    contactEmail: 'admin@example.com'
-  }
+    contactEmail: 'admin@example.com',
+  },
 };
 ```
 
 ### 4. Initialize in Bot
+
 In `src/index.js`, add to client.on('ready') event:
 
 ```javascript
@@ -37,19 +41,15 @@ const externalActionsConfig = require('./config/external-actions');
 
 for (const [serviceName, config] of Object.entries(externalActionsConfig)) {
   if (!config.enabled) continue;
-  
-  await WebSocketService.connect(
-    serviceName,
-    config.webhookUrl,
-    config.allowedActions,
-    (action, payload) => {
-      ExternalActionHandler.executeAction(client, action, payload).catch(console.error);
-    }
-  );
+
+  await WebSocketService.connect(serviceName, config.webhookUrl, config.allowedActions, (action, payload) => {
+    ExternalActionHandler.executeAction(client, action, payload).catch(console.error);
+  });
 }
 ```
 
 ### 5. Test It
+
 ```
 /external-action-status                 # Should show xtoys connected
 /external-action-send service:xtoys action:ping  # Should work
@@ -60,33 +60,43 @@ Done! ✅
 ## Built-in Actions Quick Reference
 
 ### discord_message
+
 Send message to channel
+
 ```json
-{"action":"discord_message","channelId":"123","message":"Hello!"}
+{ "action": "discord_message", "channelId": "123", "message": "Hello!" }
 ```
 
 ### discord_dm
+
 Send DM to user
+
 ```json
-{"action":"discord_dm","userId":"456","message":"Hi!"}
+{ "action": "discord_dm", "userId": "456", "message": "Hi!" }
 ```
 
 ### discord_role
+
 Add/remove role
+
 ```json
-{"action":"discord_role","guildId":"111","userId":"222","roleId":"333","action":"add"}
+{ "action": "discord_role", "guildId": "111", "userId": "222", "roleId": "333", "action": "add" }
 ```
 
 ### notification
+
 Log notification
+
 ```json
-{"action":"notification","message":"Something happened","level":"info"}
+{ "action": "notification", "message": "Something happened", "level": "info" }
 ```
 
 ### ping
+
 Health check
+
 ```json
-{"action":"ping"}
+{ "action": "ping" }
 ```
 
 ## Commands
@@ -112,6 +122,7 @@ See: `docs/guides/06-EXTERNAL-WEBSOCKET-SETUP.md`
 ---
 
 **Files Created:**
+
 - `src/services/WebSocketService.js` - Core WebSocket
 - `src/services/ExternalActionHandler.js` - Action execution
 - `src/config/external-actions.js` - Configuration

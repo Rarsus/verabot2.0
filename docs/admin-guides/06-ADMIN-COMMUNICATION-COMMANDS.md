@@ -27,19 +27,21 @@ Send the same message to multiple channels at once.
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `message` | String | Yes | Message content to broadcast (max 2000 chars) |
-| `channels` | String | Yes | Comma-separated channel IDs |
+| Parameter  | Type   | Required | Description                                   |
+| ---------- | ------ | -------- | --------------------------------------------- |
+| `message`  | String | Yes      | Message content to broadcast (max 2000 chars) |
+| `channels` | String | Yes      | Comma-separated channel IDs                   |
 
 ### Examples
 
 **Example 1: Broadcast to announcement channels**
+
 ```
 /broadcast message: "Maintenance window tonight from 10 PM to midnight EST" channels: "123456789,987654321"
 ```
 
 **Example 2: Broadcast with line breaks**
+
 ```
 /broadcast message: "🎉 New feature released!\n\n✨ Quote tagging system\n🔍 Advanced search filters\n📊 Statistics display" channels: "111111111,222222222,333333333"
 ```
@@ -47,11 +49,13 @@ Send the same message to multiple channels at once.
 ### Response
 
 The bot will respond with a summary:
+
 ```
 ✅ Broadcast sent to 3 channel(s)
 ```
 
 If some channels fail:
+
 ```
 ✅ Broadcast sent to 2 channel(s)
 ❌ Failed to send to 1 channel(s):
@@ -84,24 +88,27 @@ Make the bot send a message in a specific channel.
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `channel` | String | Yes | Channel ID where the bot should send the message |
-| `message` | String | Yes | Message content (max 2000 chars) |
+| Parameter | Type   | Required | Description                                      |
+| --------- | ------ | -------- | ------------------------------------------------ |
+| `channel` | String | Yes      | Channel ID where the bot should send the message |
+| `message` | String | Yes      | Message content (max 2000 chars)                 |
 
 ### Examples
 
 **Example 1: Send announcement**
+
 ```
 /say channel: "123456789" message: "Welcome to our Discord server! Read the rules in #rules before posting."
 ```
 
 **Example 2: Send formatted message**
+
 ```
 /say channel: "987654321" message: "📋 **Daily Standup**\n• Feature: Quote tagging\n• Status: In progress\n• ETA: 2 days"
 ```
 
 **Example 3: Send update with emoji**
+
 ```
 /say channel: "555555555" message: "✅ All systems operational\n⚡ 99.9% uptime\n🚀 Performance: Excellent"
 ```
@@ -140,10 +147,10 @@ Send direct messages from the bot to specific users or all members of a role.
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `targets` | String | Yes | User IDs or Role IDs (prefix roles with "role:", comma-separated) |
-| `message` | String | Yes | Message content (max 2000 chars) |
+| Parameter | Type   | Required | Description                                                       |
+| --------- | ------ | -------- | ----------------------------------------------------------------- |
+| `targets` | String | Yes      | User IDs or Role IDs (prefix roles with "role:", comma-separated) |
+| `message` | String | Yes      | Message content (max 2000 chars)                                  |
 
 ### Syntax
 
@@ -154,21 +161,25 @@ Send direct messages from the bot to specific users or all members of a role.
 ### Examples
 
 **Example 1: Send DM to single user**
+
 ```
 /whisper targets: "987654321" message: "Hey! Check out the new quote search feature."
 ```
 
 **Example 2: Send DM to all moderators**
+
 ```
 /whisper targets: "role:123456789" message: "New moderation guidelines have been updated. Please review."
 ```
 
 **Example 3: Send to multiple users and roles**
+
 ```
 /whisper targets: "user1,user2,role:mods,role:admins" message: "Important security update. Please change your password."
 ```
 
 **Example 4: Send welcome DM to new members**
+
 ```
 /whisper targets: "role:members" message: "Welcome! 👋 Please take a moment to introduce yourself in #introductions."
 ```
@@ -180,6 +191,7 @@ Send direct messages from the bot to specific users or all members of a role.
 ```
 
 If some targets fail:
+
 ```
 ✅ Message sent to 10 recipient(s)
 ⚠️ Failed for 2 target(s):
@@ -215,19 +227,20 @@ Send beautifully formatted embed messages with titles, descriptions, colors, ima
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `channel` | String | Yes | Channel ID where the embed should be sent |
-| `title` | String | Yes | Embed title (max 256 chars) |
-| `description` | String | Yes | Embed description (max 2048 chars) |
-| `color` | String | No | Hex color code (e.g., `#FF5733` or `FF5733`) |
-| `footer` | String | No | Footer text (max 2048 chars) |
-| `thumbnail` | String | No | Thumbnail image URL |
-| `image` | String | No | Large image URL |
+| Parameter     | Type   | Required | Description                                  |
+| ------------- | ------ | -------- | -------------------------------------------- |
+| `channel`     | String | Yes      | Channel ID where the embed should be sent    |
+| `title`       | String | Yes      | Embed title (max 256 chars)                  |
+| `description` | String | Yes      | Embed description (max 2048 chars)           |
+| `color`       | String | No       | Hex color code (e.g., `#FF5733` or `FF5733`) |
+| `footer`      | String | No       | Footer text (max 2048 chars)                 |
+| `thumbnail`   | String | No       | Thumbnail image URL                          |
+| `image`       | String | No       | Large image URL                              |
 
 ### Color Codes
 
 **Common Colors:**
+
 - `#FF5733` - Red/Orange
 - `#3498DB` - Blue
 - `#2ECC71` - Green
@@ -237,6 +250,7 @@ Send beautifully formatted embed messages with titles, descriptions, colors, ima
 - `#1ABC9C` - Teal
 
 **Color Syntax:**
+
 - With hash: `#FF5733`
 - Without hash: `FF5733`
 - Short form: `F0F` (expands to FF00FF)
@@ -244,26 +258,31 @@ Send beautifully formatted embed messages with titles, descriptions, colors, ima
 ### Examples
 
 **Example 1: Simple announcement embed**
+
 ```
 /embed channel: "123456789" title: "📢 New Features Released" description: "Version 2.2.0 is now live! Check out the new quote tagging system and advanced search filters."
 ```
 
 **Example 2: Embed with color and footer**
+
 ```
 /embed channel: "987654321" title: "✅ System Status" description: "All systems operational and running smoothly." color: "#2ECC71" footer: "Last updated: 2025-12-30"
 ```
 
 **Example 3: Embed with images**
+
 ```
 /embed channel: "555555555" title: "🎨 New Design Preview" description: "Here's a preview of our upcoming interface redesign." thumbnail: "https://example.com/thumb.png" image: "https://example.com/full-image.png"
 ```
 
 **Example 4: Event announcement with full details**
+
 ```
 /embed channel: "111111111" title: "🎉 Community Event Tonight!" description: "Join us for our weekly voice chat!\n\n⏰ Time: 8:00 PM EST\n🎤 Location: General Voice Channel\n👥 Expected: 50+ members" color: "#9B59B6" footer: "Looking forward to seeing you there!"
 ```
 
 **Example 5: Warning/Alert embed**
+
 ```
 /embed channel: "222222222" title: "⚠️ Scheduled Maintenance" description: "Database maintenance scheduled for tomorrow 2-4 AM EST.\n\nServices may be unavailable during this time." color: "#F39C12"
 ```
@@ -305,6 +324,7 @@ ADMINISTRATOR permission in the Discord server
 ```
 
 Non-admin users will receive:
+
 ```
 ❌ You need admin permissions to use this command
 ```
@@ -314,19 +334,23 @@ Non-admin users will receive:
 ### Common Errors
 
 **"Could not find channel with ID: ..."**
+
 - Channel ID is incorrect
 - Channel has been deleted
 - Bot doesn't have access to the channel
 
 **"I don't have permission to send messages in that channel"**
+
 - Bot is missing "Send Messages" permission
 - Bot is missing "Embed Links" permission (for embeds)
 
 **"User not found"**
+
 - User ID is incorrect
 - User is not in the server (for whisper)
 
 **"User has DMs disabled"**
+
 - User has blocked bot or disabled DMs
 - Message was not sent to that user
 - Other recipients still received the message
@@ -360,6 +384,7 @@ Non-admin users will receive:
 ## Changelog
 
 ### Version 2.2.0 (Current)
+
 - ✅ Broadcast command (send to multiple channels)
 - ✅ Say command (bot sends in channel)
 - ✅ Whisper command (send DMs to users/roles)

@@ -29,10 +29,10 @@ The website uses CSS variables (custom properties) for easy theming. Edit these 
 
 ```css
 :root {
-    --color-primary: #5865F2;
-    --color-bg-primary: #FFFFFF;
-    --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
-    /* ... and many more */
+  --color-primary: #5865f2;
+  --color-bg-primary: #ffffff;
+  --font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+  /* ... and many more */
 }
 ```
 
@@ -52,10 +52,11 @@ The website includes the following pages:
 To test the website locally:
 
 1. Start a local web server in the repository root:
+
    ```bash
    # Using Python 3
    python3 -m http.server 8000
-   
+
    # Or using Node.js
    npx http-server
    ```
@@ -89,9 +90,9 @@ The website is configured to work as a sub-site under `/Verabot`. The base path 
 
 ```javascript
 const CONFIG = {
-    basePath: '/Verabot',  // GitHub Pages sub-path
-    docsPath: '../docs',    // Relative path to docs folder
-    defaultPage: 'home'
+  basePath: '/Verabot', // GitHub Pages sub-path
+  docsPath: '../docs', // Relative path to docs folder
+  defaultPage: 'home',
 };
 ```
 
@@ -120,16 +121,19 @@ No build process required! All dependencies are loaded via CDN.
 ## 🛠️ Troubleshooting
 
 ### Pages not loading
+
 - Check browser console for errors
 - Verify paths in `app.js` are correct
 - Ensure markdown files exist in `docs/` folder
 
 ### Styles not applying
+
 - Clear browser cache
 - Check CSS file is loading (Network tab)
 - Verify CSS variable values
 
 ### Code highlighting not working
+
 - Check highlight.js is loading from CDN
 - Verify internet connection
 - Use browser console to check for errors
@@ -151,6 +155,7 @@ All design tokens are defined as CSS variables for consistency.
 To add a new page:
 
 1. Add entry to `PAGE_CONTENT` object in `app.js`:
+
    ```javascript
    mypage: {
        title: 'My Page',
@@ -160,9 +165,10 @@ To add a new page:
    ```
 
 2. Create content generator function:
+
    ```javascript
    function generateMyPageContent() {
-       return `<h1>My Page</h1><p>Content here</p>`;
+     return `<h1>My Page</h1><p>Content here</p>`;
    }
    ```
 

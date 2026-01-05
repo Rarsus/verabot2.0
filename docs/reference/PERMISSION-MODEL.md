@@ -52,10 +52,10 @@ async executeInteraction(interaction) {
 
 ### Admin Commands Available
 
-| Command | Location | Purpose |
-|---------|----------|---------|
+| Command        | Location                                                                 | Purpose                          |
+| -------------- | ------------------------------------------------------------------------ | -------------------------------- |
 | `proxy-config` | [src/commands/admin/proxy-config.js](src/commands/admin/proxy-config.js) | Configure webhook proxy settings |
-| `proxy-enable` | [src/commands/admin/proxy-enable.js](src/commands/admin/proxy-enable.js) | Enable/disable message proxy |
+| `proxy-enable` | [src/commands/admin/proxy-enable.js](src/commands/admin/proxy-enable.js) | Enable/disable message proxy     |
 | `proxy-status` | [src/commands/admin/proxy-status.js](src/commands/admin/proxy-status.js) | Check proxy configuration status |
 
 ---
@@ -118,7 +118,7 @@ async function addReminderAssignment(reminderId, assigneeType, assigneeId) {
     db.run(
       'INSERT INTO reminder_assignments (reminderId, assigneeType, assigneeId) VALUES (?, ?, ?)',
       [reminderId, assigneeType, assigneeId],
-      function(err) {
+      function (err) {
         if (err) {
           reject(err);
         } else {
@@ -137,6 +137,7 @@ When a reminder is triggered, notifications are sent based on assignment type:
 **File:** [src/services/ReminderNotificationService.js](src/services/ReminderNotificationService.js#L154)
 
 #### User Notifications (via DM)
+
 ```javascript
 if (type === 'user') {
   await sendUserNotification(id, embed);
@@ -156,6 +157,7 @@ async function sendUserNotification(userId, embed) {
 ```
 
 #### Role Notifications (in designated channel)
+
 ```javascript
 else if (type === 'role') {
   await sendRoleNotification(id, embed);
@@ -178,8 +180,8 @@ async function sendRoleNotification(roleId, embed) {
     }
 
     await channel.send({
-      content: `<@&${roleId}>`,  // Ping the role
-      embeds: [embed]
+      content: `<@&${roleId}>`, // Ping the role
+      embeds: [embed],
     });
   } catch (err) {
     throw new Error(`Failed to send role notification: ${err.message}`);
@@ -194,15 +196,16 @@ async function sendRoleNotification(roleId, embed) {
 ### Permission-Related Tables
 
 #### reminder_assignments
+
 Stores user and role assignments for reminders.
 
-| Column | Type | Description |
-|--------|------|-------------|
-| `id` | INTEGER PRIMARY KEY | Assignment ID |
-| `reminderId` | INTEGER NOT NULL | Foreign key to reminders table |
-| `assigneeType` | TEXT NOT NULL | 'user' or 'role' |
-| `assigneeId` | TEXT NOT NULL | Discord User ID or Role ID |
-| `createdAt` | TIMESTAMP DEFAULT CURRENT_TIMESTAMP | Creation timestamp |
+| Column         | Type                                | Description                    |
+| -------------- | ----------------------------------- | ------------------------------ |
+| `id`           | INTEGER PRIMARY KEY                 | Assignment ID                  |
+| `reminderId`   | INTEGER NOT NULL                    | Foreign key to reminders table |
+| `assigneeType` | TEXT NOT NULL                       | 'user' or 'role'               |
+| `assigneeId`   | TEXT NOT NULL                       | Discord User ID or Role ID     |
+| `createdAt`    | TIMESTAMP DEFAULT CURRENT_TIMESTAMP | Creation timestamp             |
 
 **File:** [src/services/ReminderService.js](src/services/ReminderService.js)
 
@@ -244,11 +247,7 @@ class MyAdminCommand extends Command {
   async executeInteraction(interaction) {
     // Step 1: Check admin permission
     if (!checkAdminPermission(interaction)) {
-      await sendError(
-        interaction,
-        'This command requires Administrator permissions.',
-        true
-      );
+      await sendError(interaction, 'This command requires Administrator permissions.', true);
       return;
     }
 
@@ -265,7 +264,7 @@ class MyAdminCommand extends Command {
 // User runs: /create-reminder subject:"Team Meeting" when:"tomorrow 2pm" who:"@alice"
 const reminderId = await createReminder({
   subject: 'Team Meeting',
-  when: 'tomorrow 2pm'
+  when: 'tomorrow 2pm',
 });
 
 // Assign to user
@@ -280,7 +279,7 @@ await addReminderAssignment(reminderId, 'user', '123456789');
 // User runs: /create-reminder subject:"Daily Standup" when:"tomorrow 9am" who:"role:123456"
 const reminderId = await createReminder({
   subject: 'Daily Standup',
-  when: 'tomorrow 9am'
+  when: 'tomorrow 9am',
 });
 
 // Assign to role
@@ -295,18 +294,21 @@ await addReminderAssignment(reminderId, 'role', '123456789');
 ## 6. Security Considerations
 
 ### Admin Permission Checks
+
 - Always check at the **beginning** of command execution
 - Use Discord's native `PermissionFlagsBits.Administrator`
 - Return immediately with error if check fails
 - Never attempt to proceed with admin operations without validation
 
 ### User/Role Assignment
+
 - Validate snowflake ID format: `/^\d+$/` (must be 17-19 digits)
 - Support both explicit format (`role:123`) and mention format (`<@&123>`)
 - Store as TEXT in database for flexibility
 - Validate assignee type is either 'user' or 'role'
 
 ### Notification Delivery
+
 - User notifications: Requires user to be fetchable and have DMs enabled
 - Role notifications: Requires `REMINDER_NOTIFICATION_CHANNEL` configured
 - Gracefully handle failures (user left server, DMs closed, etc.)
@@ -323,19 +325,11 @@ await addReminderAssignment(reminderId, 'role', '123456789');
 async function testAdminPermissionChecks() {
   // Test 1: Admin user
   const adminInteraction = new MockInteraction(true);
-  assert.strictEqual(
-    checkAdminPermission(adminInteraction),
-    true,
-    'Should allow admin users'
-  );
+  assert.strictEqual(checkAdminPermission(adminInteraction), true, 'Should allow admin users');
 
   // Test 2: Non-admin user
   const nonAdminInteraction = new MockInteraction(false);
-  assert.strictEqual(
-    checkAdminPermission(nonAdminInteraction),
-    false,
-    'Should deny non-admin users'
-  );
+  assert.strictEqual(checkAdminPermission(nonAdminInteraction), false, 'Should deny non-admin users');
 }
 ```
 
@@ -344,6 +338,7 @@ async function testAdminPermissionChecks() {
 ## 8. Common Patterns
 
 ### Check Permission Pattern
+
 ```javascript
 if (!checkAdminPermission(interaction)) {
   await sendError(interaction, 'Admin permissions required', true);
@@ -352,6 +347,7 @@ if (!checkAdminPermission(interaction)) {
 ```
 
 ### Parse User/Role from Input Pattern
+
 ```javascript
 let assigneeType = 'user';
 let assigneeId = input;
@@ -369,6 +365,7 @@ if (mentionMatch) {
 ```
 
 ### Validate Snowflake Format Pattern
+
 ```javascript
 if (!/^\d+$/.test(assigneeId)) {
   throw new Error('Invalid ID format. Must be numeric snowflake ID.');
@@ -406,11 +403,10 @@ Potential improvements to the permission system:
 
 ## Summary
 
-| Feature | Method | Scope |
-|---------|--------|-------|
-| **Admin Commands** | Discord `Administrator` permission | Server-wide, all admins |
-| **Reminder Users** | Direct user ID assignment | Individual users (DM) |
-| **Reminder Roles** | Role ID assignment | All members of role (channel) |
+| Feature            | Method                             | Scope                         |
+| ------------------ | ---------------------------------- | ----------------------------- |
+| **Admin Commands** | Discord `Administrator` permission | Server-wide, all admins       |
+| **Reminder Users** | Direct user ID assignment          | Individual users (DM)         |
+| **Reminder Roles** | Role ID assignment                 | All members of role (channel) |
 
 The permission model is intentionally simple to start, with room for expansion as the bot's features grow.
-

@@ -30,12 +30,14 @@ When you rebuild and start the Docker container:
 ## ✅ The Fix (3 Steps)
 
 ### Step 1: Verify Bot is Running
+
 ```bash
 docker-compose ps
 # Should show: STATUS "Up X seconds"
 ```
 
 ### Step 2: Register Slash Commands
+
 ```bash
 docker-compose exec verabot2 npm run register-commands
 
@@ -44,6 +46,7 @@ docker-compose exec verabot2 npm run register-commands
 ```
 
 ### Step 3: Test in Discord
+
 ```
 1. Open Discord
 2. Type "/" in any server where bot is member
@@ -59,12 +62,12 @@ docker-compose exec verabot2 npm run register-commands
 
 Choose the guide that matches your needs:
 
-| Guide | Purpose | Read Time |
-|-------|---------|-----------|
-| **[SLASH-COMMANDS-QUICK-FIX.md](SLASH-COMMANDS-QUICK-FIX.md)** | Quick diagnosis and fixes | 3 min |
-| **[guides/DOCKER-WORKFLOW.md](guides/DOCKER-WORKFLOW.md)** | Complete Docker workflow | 10 min |
-| **[guides/SLASH-COMMANDS-TROUBLESHOOTING.md](guides/SLASH-COMMANDS-TROUBLESHOOTING.md)** | Detailed troubleshooting | 20 min |
-| **[guides/DOCKER-SETUP.md](guides/DOCKER-SETUP.md)** | Docker concepts & usage | 15 min |
+| Guide                                                                                    | Purpose                   | Read Time |
+| ---------------------------------------------------------------------------------------- | ------------------------- | --------- |
+| **[SLASH-COMMANDS-QUICK-FIX.md](SLASH-COMMANDS-QUICK-FIX.md)**                           | Quick diagnosis and fixes | 3 min     |
+| **[guides/DOCKER-WORKFLOW.md](guides/DOCKER-WORKFLOW.md)**                               | Complete Docker workflow  | 10 min    |
+| **[guides/SLASH-COMMANDS-TROUBLESHOOTING.md](guides/SLASH-COMMANDS-TROUBLESHOOTING.md)** | Detailed troubleshooting  | 20 min    |
+| **[guides/DOCKER-SETUP.md](guides/DOCKER-SETUP.md)**                                     | Docker concepts & usage   | 15 min    |
 
 ---
 

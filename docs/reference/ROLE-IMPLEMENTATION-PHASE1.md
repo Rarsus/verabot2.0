@@ -3,7 +3,9 @@
 ## ✅ What's Been Implemented
 
 ### 1. **RolePermissionService** (`src/services/RolePermissionService.js`)
+
 Complete role-based permission management system with:
+
 - `getUserTier()` - Get user's permission tier (0-4)
 - `canExecuteCommand()` - Check if user can run a command
 - `isCommandVisible()` - Check if command should be visible to user
@@ -14,6 +16,7 @@ Complete role-based permission management system with:
 - `getAuditLogs()` - Retrieve audit logs for user/guild
 
 **Features:**
+
 - 5-tier hierarchy: Guest (0) → Member (1) → Moderator (2) → Administrator (3) → Bot Owner (4)
 - Caching layer (3600s TTL) for performance
 - Discord role integration
@@ -22,7 +25,9 @@ Complete role-based permission management system with:
 - Comprehensive error handling
 
 ### 2. **Role Configuration** (`src/config/roles.js`)
+
 Centralized permission configuration:
+
 - **Tier definitions** - Each tier has name, description, permissions array
 - **Command permissions** - All 32 commands configured with minTier and visibility
 - **Guild overrides** - Per-guild permission customization
@@ -30,6 +35,7 @@ Centralized permission configuration:
 - **Role mappings** - Discord role name → tier mapping system
 
 **32 Commands Configured:**
+
 - 2 General: ping, help
 - 4 Discovery: random-quote, search-quotes, quote-stats, quote
 - 4 Management: add-quote, update-quote, delete-quote, list-quotes
@@ -43,12 +49,15 @@ Centralized permission configuration:
 - 1 Poem: poem
 
 ### 3. **CommandBase Enhancement** (`src/core/CommandBase.js`)
+
 Added permission checking methods:
+
 - `checkPermission()` - Verify user has execute permission
 - `checkVisibility()` - Verify command is visible to user
 - Both methods provide detailed error messages with tier requirements
 
 ### 4. **Services Export** (`src/services/index.js`)
+
 RolePermissionService exported for use throughout codebase
 
 ---
@@ -70,6 +79,7 @@ TIER  NAME              CAN EXECUTE COMMANDS
 ## 🔧 Configuration Examples
 
 ### Set Command Visibility
+
 ```javascript
 commands: {
   'whisper': { minTier: 3, visible: false },  // Hidden from members
@@ -79,6 +89,7 @@ commands: {
 ```
 
 ### Guild-Specific Override
+
 ```javascript
 guildOverrides: {
   'SPECIAL_SERVER_ID': {
@@ -90,6 +101,7 @@ guildOverrides: {
 ```
 
 ### Bot Owners
+
 ```bash
 # In .env
 BOT_OWNERS=123456789,987654321
@@ -111,9 +123,9 @@ class WhisperCommand extends Command {
       name: 'whisper',
       description: 'Send DMs to users',
       permissions: {
-        minTier: 3,           // Admin only
-        visible: false        // Hidden from non-admins
-      }
+        minTier: 3, // Admin only
+        visible: false, // Hidden from non-admins
+      },
     });
   }
 
@@ -130,6 +142,7 @@ class WhisperCommand extends Command {
 ## 📈 Test Status
 
 ✅ **All 30 test suites passing**
+
 - No breaking changes to existing functionality
 - New code follows existing patterns
 - Error handling integrated properly
@@ -139,6 +152,7 @@ class WhisperCommand extends Command {
 ## 🔄 Audit Logging
 
 All permission decisions are logged to `permission_audit_log` table:
+
 ```sql
 CREATE TABLE permission_audit_log (
   id INTEGER PRIMARY KEY,
@@ -153,6 +167,7 @@ CREATE TABLE permission_audit_log (
 ```
 
 Query recent permission denials:
+
 ```javascript
 const logs = await RolePermissionService.getAuditLogs(userId, guildId);
 ```
@@ -162,21 +177,25 @@ const logs = await RolePermissionService.getAuditLogs(userId, guildId);
 ## 🎯 Next Steps (For Full Implementation)
 
 ### Phase 2: Command Integration
+
 - Update all 32 commands with permission metadata
 - Integrate visibility checks into help command
 - Add command autocomplete filtering
 
 ### Phase 3: Admin Commands
+
 - Create `/manage-roles` command for permission configuration
 - Create `/view-permissions` command for admins
 - Create `/audit-log` command for auditing
 
 ### Phase 4: Database Schema
+
 - Create `guild_role_mappings` table for guild-specific mappings
 - Implement migration system
 - Add role management UI commands
 
 ### Phase 5: Testing & Documentation
+
 - Write permission unit tests
 - Document for users and admins
 - Create troubleshooting guide
@@ -219,21 +238,15 @@ const tier = await RolePermissionService.getUserTier(userId, guildId, client);
 console.log(tier); // 0-4
 
 // Check execution permission
-const can = await RolePermissionService.canExecuteCommand(
-  userId, guildId, 'whisper', client
-);
+const can = await RolePermissionService.canExecuteCommand(userId, guildId, 'whisper', client);
 console.log(can); // true/false
 
 // Check visibility
-const visible = await RolePermissionService.isCommandVisible(
-  userId, guildId, 'whisper', client
-);
+const visible = await RolePermissionService.isCommandVisible(userId, guildId, 'whisper', client);
 console.log(visible); // true/false
 
 // Get visible commands
-const cmds = await RolePermissionService.getVisibleCommands(
-  userId, guildId, allCommands, client
-);
+const cmds = await RolePermissionService.getVisibleCommands(userId, guildId, allCommands, client);
 console.log(cmds.length); // Number visible to user
 ```
 
@@ -268,6 +281,7 @@ console.log(cmds.length); // Number visible to user
 ---
 
 **Status: Phase 1 Complete ✅**
+
 - Core service implemented and tested
 - Configuration system in place
 - CommandBase integration ready

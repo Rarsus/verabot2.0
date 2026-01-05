@@ -7,11 +7,13 @@ Complete navigation for all VeraBot2.0 documentation. Choose your path below.
 ## 🚀 Quick Start
 
 **New to VeraBot2.0?**
+
 1. Start: [Getting Started Guide](user-guides/01-CREATING-COMMANDS.md)
 2. Learn: [Architecture Overview](architecture/ARCHITECTURE-OVERVIEW.md)
 3. Build: [Create Your First Command](user-guides/01-CREATING-COMMANDS.md#creating-your-first-command)
 
 **Deploy or Configure?**
+
 1. Docker: [Docker Setup Guide](user-guides/DOCKER-SETUP.md)
 2. Reminders: [Reminder System Guide](user-guides/05-REMINDER-SYSTEM.md)
 3. Proxy: [Proxy Setup Guide](user-guides/04-PROXY-SETUP.md)
@@ -24,18 +26,18 @@ Complete navigation for all VeraBot2.0 documentation. Choose your path below.
 
 Step-by-step guides for common tasks:
 
-| Guide | Topic | Time |
-|-------|-------|------|
-| [01-CREATING-COMMANDS.md](user-guides/01-CREATING-COMMANDS.md) | Create new commands | 15 min |
-| [02-TESTING-GUIDE.md](user-guides/02-TESTING-GUIDE.md) | Write tests (TDD) | 20 min |
-| [03-HUGGINGFACE-SETUP.md](user-guides/03-HUGGINGFACE-SETUP.md) | Enable AI poem generation | 10 min |
-| [04-PROXY-SETUP.md](user-guides/04-PROXY-SETUP.md) | Configure webhook proxy | 15 min |
-| [05-REMINDER-SYSTEM.md](user-guides/05-REMINDER-SYSTEM.md) | Use reminder system | 10 min |
-| [DOCKER-SETUP.md](user-guides/DOCKER-SETUP.md) | Run with Docker | 10 min |
-| [DOCKER-WORKFLOW.md](user-guides/DOCKER-WORKFLOW.md) | Docker development workflow | 10 min |
-| [OPT-IN-SYSTEM.md](user-guides/OPT-IN-SYSTEM.md) | User opt-in communication | 10 min |
-| [RESOLUTION-HELPERS-GUIDE.md](user-guides/RESOLUTION-HELPERS-GUIDE.md) | Use response helpers | 10 min |
-| [SLASH-COMMANDS-TROUBLESHOOTING.md](user-guides/SLASH-COMMANDS-TROUBLESHOOTING.md) | Fix slash command issues | 20 min |
+| Guide                                                                              | Topic                       | Time   |
+| ---------------------------------------------------------------------------------- | --------------------------- | ------ |
+| [01-CREATING-COMMANDS.md](user-guides/01-CREATING-COMMANDS.md)                     | Create new commands         | 15 min |
+| [02-TESTING-GUIDE.md](user-guides/02-TESTING-GUIDE.md)                             | Write tests (TDD)           | 20 min |
+| [03-HUGGINGFACE-SETUP.md](user-guides/03-HUGGINGFACE-SETUP.md)                     | Enable AI poem generation   | 10 min |
+| [04-PROXY-SETUP.md](user-guides/04-PROXY-SETUP.md)                                 | Configure webhook proxy     | 15 min |
+| [05-REMINDER-SYSTEM.md](user-guides/05-REMINDER-SYSTEM.md)                         | Use reminder system         | 10 min |
+| [DOCKER-SETUP.md](user-guides/DOCKER-SETUP.md)                                     | Run with Docker             | 10 min |
+| [DOCKER-WORKFLOW.md](user-guides/DOCKER-WORKFLOW.md)                               | Docker development workflow | 10 min |
+| [OPT-IN-SYSTEM.md](user-guides/OPT-IN-SYSTEM.md)                                   | User opt-in communication   | 10 min |
+| [RESOLUTION-HELPERS-GUIDE.md](user-guides/RESOLUTION-HELPERS-GUIDE.md)             | Use response helpers        | 10 min |
+| [SLASH-COMMANDS-TROUBLESHOOTING.md](user-guides/SLASH-COMMANDS-TROUBLESHOOTING.md) | Fix slash command issues    | 20 min |
 
 ---
 
@@ -43,10 +45,10 @@ Step-by-step guides for common tasks:
 
 For server administrators and bot operators:
 
-| Guide | Topic | Time |
-|-------|-------|------|
-| [06-ADMIN-COMMUNICATION-COMMANDS.md](admin-guides/06-ADMIN-COMMUNICATION-COMMANDS.md) | Admin commands | 15 min |
-| [AUTOMATIC-REGISTRATION-QUICK-START.md](admin-guides/AUTOMATIC-REGISTRATION-QUICK-START.md) | Auto-register commands | 5 min |
+| Guide                                                                                       | Topic                  | Time   |
+| ------------------------------------------------------------------------------------------- | ---------------------- | ------ |
+| [06-ADMIN-COMMUNICATION-COMMANDS.md](admin-guides/06-ADMIN-COMMUNICATION-COMMANDS.md)       | Admin commands         | 15 min |
+| [AUTOMATIC-REGISTRATION-QUICK-START.md](admin-guides/AUTOMATIC-REGISTRATION-QUICK-START.md) | Auto-register commands | 5 min  |
 
 ---
 
@@ -54,9 +56,9 @@ For server administrators and bot operators:
 
 Deep dives into system design:
 
-| Document | Topic |
-|----------|-------|
-| [ARCHITECTURE-OVERVIEW.md](architecture/ARCHITECTURE-OVERVIEW.md) | System design and patterns |
+| Document                                                                  | Topic                       |
+| ------------------------------------------------------------------------- | --------------------------- |
+| [ARCHITECTURE-OVERVIEW.md](architecture/ARCHITECTURE-OVERVIEW.md)         | System design and patterns  |
 | [FOLDER-STRUCTURE-ANALYSIS.md](architecture/FOLDER-STRUCTURE-ANALYSIS.md) | Project folder organization |
 
 ---
@@ -101,21 +103,21 @@ Technical reference and API docs:
 
 Recommended practices and standards:
 
-| Document | Topic |
-|----------|-------|
-| [CI-CD-QUICK-START.md](best-practices/CI-CD-QUICK-START.md) | CI/CD setup quick start |
-| [CI-CD-SETUP.md](best-practices/CI-CD-SETUP.md) | Complete CI/CD setup |
-| [CODE-QUALITY.md](best-practices/CODE-QUALITY.md) | Code quality standards |
-| [COVERAGE-SETUP.md](best-practices/COVERAGE-SETUP.md) | Test coverage setup |
-| [ERROR-HANDLING.md](best-practices/ERROR-HANDLING.md) | Error handling patterns |
-| [GITHUB-ACTIONS-GUIDE.md](best-practices/GITHUB-ACTIONS-GUIDE.md) | GitHub Actions setup |
-| [GITHUB-ACTIONS.md](best-practices/GITHUB-ACTIONS.md) | GitHub Actions reference |
-| [PERFORMANCE-MONITORING.md](best-practices/PERFORMANCE-MONITORING.md) | Performance monitoring |
-| [SECURITY-HARDENING.md](best-practices/SECURITY-HARDENING.md) | Security hardening guide |
+| Document                                                              | Topic                     |
+| --------------------------------------------------------------------- | ------------------------- |
+| [CI-CD-QUICK-START.md](best-practices/CI-CD-QUICK-START.md)           | CI/CD setup quick start   |
+| [CI-CD-SETUP.md](best-practices/CI-CD-SETUP.md)                       | Complete CI/CD setup      |
+| [CODE-QUALITY.md](best-practices/CODE-QUALITY.md)                     | Code quality standards    |
+| [COVERAGE-SETUP.md](best-practices/COVERAGE-SETUP.md)                 | Test coverage setup       |
+| [ERROR-HANDLING.md](best-practices/ERROR-HANDLING.md)                 | Error handling patterns   |
+| [GITHUB-ACTIONS-GUIDE.md](best-practices/GITHUB-ACTIONS-GUIDE.md)     | GitHub Actions setup      |
+| [GITHUB-ACTIONS.md](best-practices/GITHUB-ACTIONS.md)                 | GitHub Actions reference  |
+| [PERFORMANCE-MONITORING.md](best-practices/PERFORMANCE-MONITORING.md) | Performance monitoring    |
+| [SECURITY-HARDENING.md](best-practices/SECURITY-HARDENING.md)         | Security hardening guide  |
 | [SEMANTIC-RELEASE-SETUP.md](best-practices/SEMANTIC-RELEASE-SETUP.md) | Semantic versioning setup |
-| [STABILITY-CHECKLIST.md](best-practices/STABILITY-CHECKLIST.md) | Stability verification |
-| [TEST-COVERAGE-OVERVIEW.md](best-practices/TEST-COVERAGE-OVERVIEW.md) | Test coverage analysis |
-| [TEST-SUMMARY-LATEST.md](best-practices/TEST-SUMMARY-LATEST.md) | Latest test results |
+| [STABILITY-CHECKLIST.md](best-practices/STABILITY-CHECKLIST.md)       | Stability verification    |
+| [TEST-COVERAGE-OVERVIEW.md](best-practices/TEST-COVERAGE-OVERVIEW.md) | Test coverage analysis    |
+| [TEST-SUMMARY-LATEST.md](best-practices/TEST-SUMMARY-LATEST.md)       | Latest test results       |
 
 ---
 
@@ -140,21 +142,25 @@ Currently available in `api/` directory.
 ### By Role
 
 **👨‍💻 Developer**
+
 - Creating commands? → [01-CREATING-COMMANDS.md](user-guides/01-CREATING-COMMANDS.md)
 - Writing tests? → [02-TESTING-GUIDE.md](user-guides/02-TESTING-GUIDE.md)
 - Understanding architecture? → [ARCHITECTURE-OVERVIEW.md](architecture/ARCHITECTURE-OVERVIEW.md)
 
 **🛠️ DevOps/Operator**
+
 - Docker setup? → [DOCKER-SETUP.md](user-guides/DOCKER-SETUP.md)
 - CI/CD? → [CI-CD-SETUP.md](best-practices/CI-CD-SETUP.md)
 - Monitoring? → [PERFORMANCE-MONITORING.md](best-practices/PERFORMANCE-MONITORING.md)
 
 **🔐 Administrator**
+
 - Admin commands? → [06-ADMIN-COMMUNICATION-COMMANDS.md](admin-guides/06-ADMIN-COMMUNICATION-COMMANDS.md)
 - Permissions? → [ROLE-BASED-PERMISSIONS-COMPLETE.md](reference/ROLE-BASED-PERMISSIONS-COMPLETE.md)
 - Security? → [SECURITY-HARDENING.md](best-practices/SECURITY-HARDENING.md)
 
 **📚 New Team Member**
+
 1. Project overview → Project root [README.md](../README.md)
 2. Architecture → [ARCHITECTURE-OVERVIEW.md](architecture/ARCHITECTURE-OVERVIEW.md)
 3. Command creation → [01-CREATING-COMMANDS.md](user-guides/01-CREATING-COMMANDS.md)
@@ -164,23 +170,28 @@ Currently available in `api/` directory.
 ### By Topic
 
 **Permission System**
+
 - Getting started → [ROLE-BASED-PERMISSIONS-COMPLETE.md](reference/ROLE-BASED-PERMISSIONS-COMPLETE.md)
 - Implementation details → [PHASE-3-PERMISSION-ENFORCEMENT.md](reference/PHASE-3-PERMISSION-ENFORCEMENT.md)
 - Quick reference → [PERMISSIONS-QUICK-REFERENCE.md](reference/PERMISSIONS-QUICK-REFERENCE.md)
 
 **Commands & Slash Commands**
+
 - Creating → [01-CREATING-COMMANDS.md](user-guides/01-CREATING-COMMANDS.md)
 - Troubleshooting → [SLASH-COMMANDS-TROUBLESHOOTING.md](user-guides/SLASH-COMMANDS-TROUBLESHOOTING.md)
 
 **Database**
+
 - Migrations → [DATABASE-MIGRATIONS.md](reference/DATABASE-MIGRATIONS.md)
 - Optimization → [DATABASE-OPTIMIZATION.md](reference/DATABASE-OPTIMIZATION.md)
 
 **Deployment**
+
 - Docker → [DOCKER-SETUP.md](user-guides/DOCKER-SETUP.md)
 - CI/CD → [CI-CD-SETUP.md](best-practices/CI-CD-SETUP.md)
 
 **Testing**
+
 - Getting started → [02-TESTING-GUIDE.md](user-guides/02-TESTING-GUIDE.md)
 - Coverage setup → [COVERAGE-SETUP.md](best-practices/COVERAGE-SETUP.md)
 
@@ -248,6 +259,7 @@ docs/
 4. Review the [Troubleshooting Guide](user-guides/SLASH-COMMANDS-TROUBLESHOOTING.md)
 
 **Links not working?**
+
 - All links are relative to the `docs/` directory
 - For links outside docs/, use `../` prefix
 
@@ -265,6 +277,7 @@ docs/
 ## 🤝 Contributing to Docs
 
 Found a typo or outdated information?
+
 1. Check if the file is in `archived/` (if so, it's intentionally archived)
 2. Update the document directly
 3. Verify all links still work

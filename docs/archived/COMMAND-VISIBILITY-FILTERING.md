@@ -9,6 +9,7 @@
 ## Why Visibility Filtering?
 
 ### Current Problem
+
 ```
 Regular User sees in slash menu:
   /ping
@@ -20,6 +21,7 @@ Regular User sees in slash menu:
 ```
 
 ### With Visibility Filtering
+
 ```
 Regular User sees in slash menu:
   /ping
@@ -42,41 +44,50 @@ Admin sees in slash menu:
 ### Three Approaches
 
 #### 1. **Hidden Commands** (Recommended ⭐)
+
 Commands are completely hidden from Discord's slash menu if user lacks permission.
 
 **Pros:**
+
 - Clean user experience
 - Users don't see commands they can't use
 - Most secure approach
 - No confusion about "permission denied" errors
 
 **Cons:**
+
 - Requires filtering at registration time
 - Need to update Discord's command list per user
 
 **Use for:** Admin commands (whisper, embed-message, manage-roles)
 
 #### 2. **Visible but Disabled Commands**
+
 Commands appear in menu but are grayed out/disabled.
 
 **Pros:**
+
 - Users know the command exists
 - Clearer what features are available
 
 **Cons:**
+
 - Discord Slash Command permissions system is complex
 - Users see what they can't access
 
 **Use for:** Premium features, mod commands that members might want
 
 #### 3. **Smart Help Command**
+
 Help command dynamically lists only accessible commands.
 
 **Pros:**
+
 - Users can discover what they can do
 - No registration changes needed
 
 **Cons:**
+
 - Users still see hidden commands if they know the name
 - Less secure
 
@@ -92,41 +103,41 @@ Help command dynamically lists only accessible commands.
 // Command visibility settings
 commands: {
   // Public commands - always visible
-  'ping': { 
-    minTier: 0, 
+  'ping': {
+    minTier: 0,
     visible: true    // Always shown
   },
-  
-  'help': { 
-    minTier: 0, 
+
+  'help': {
+    minTier: 0,
     visible: true    // Always shown
   },
 
   // Member commands - visible to tier 1+
-  'add-quote': { 
-    minTier: 1, 
+  'add-quote': {
+    minTier: 1,
     visible: true    // Visible to members
   },
 
   // Moderator commands - visible to tier 2+
-  'delete-quote': { 
-    minTier: 2, 
+  'delete-quote': {
+    minTier: 2,
     visible: true    // Visible to mods
   },
 
   // Admin commands - completely hidden from non-admins
-  'whisper': { 
-    minTier: 3, 
+  'whisper': {
+    minTier: 3,
     visible: false   // HIDDEN from members
   },
 
-  'embed-message': { 
-    minTier: 3, 
+  'embed-message': {
+    minTier: 3,
     visible: false   // HIDDEN from members
   },
 
-  'manage-roles': { 
-    minTier: 4, 
+  'manage-roles': {
+    minTier: 4,
     visible: false   // HIDDEN from admins (owner only)
   }
 }
@@ -139,7 +150,7 @@ guildOverrides: {
   'TRUSTED_SERVER_ID': {
     commands: {
       // Override visibility in specific guild
-      'whisper': { 
+      'whisper': {
         minTier: 2,   // Allow mods to use it
         visible: true  // Show to everyone in this guild
       }
@@ -160,19 +171,16 @@ await RolePermissionService.isCommandVisible(userId, guildId, 'whisper');
 // Returns: false for regular users, true for admins
 
 // Get all visible commands for user
-const visible = await RolePermissionService.getVisibleCommands(
-  userId, 
-  guildId, 
-  allLoadedCommands
-);
+const visible = await RolePermissionService.getVisibleCommands(userId, guildId, allLoadedCommands);
 // Returns: Array of command objects user can see
 
 // Get visible command names (for autocomplete)
-const names = await RolePermissionService.getVisibleCommandNames(
-  userId, 
-  guildId, 
-  ['ping', 'help', 'whisper', 'embed-message']
-);
+const names = await RolePermissionService.getVisibleCommandNames(userId, guildId, [
+  'ping',
+  'help',
+  'whisper',
+  'embed-message',
+]);
 // Returns: ['ping', 'help'] for regular users
 ```
 
@@ -187,7 +195,7 @@ const rest = new REST({ version: '10' }).setToken(token);
 const allCommands = loadAllCommands();
 
 // For global registration: filter visible commands for bot owner
-const globalCommands = allCommands.filter(cmd => {
+const globalCommands = allCommands.filter((cmd) => {
   const config = features.commands[cmd.name];
   // Include all commands (we'll check visibility per-user at runtime)
   return true;
@@ -195,11 +203,11 @@ const globalCommands = allCommands.filter(cmd => {
 
 // Register to Discord
 await rest.put(Routes.applicationCommands(clientId), {
-  body: globalCommands.map(cmd => ({
+  body: globalCommands.map((cmd) => ({
     name: cmd.name,
     description: cmd.description,
-    options: cmd.options || []
-  }))
+    options: cmd.options || [],
+  })),
 });
 ```
 
@@ -271,7 +279,7 @@ async executeInteraction(interaction) {
 
   // Group by category
   const categories = this.groupCommandsByCategory(visibleCommands);
-  
+
   for (const [category, commands] of Object.entries(categories)) {
     helpEmbed.addFields({
       name: category,
@@ -396,6 +404,7 @@ All visibility checks can be logged:
 ## Testing Visibility Filtering
 
 ### Test Case 1: Regular Member
+
 ```
 GIVEN a user with tier 1
 WHEN they load the slash menu
@@ -404,6 +413,7 @@ THEN they don't see: whisper, embed-message, manage-roles, delete-quote
 ```
 
 ### Test Case 2: Admin
+
 ```
 GIVEN a user with tier 3
 WHEN they load the slash menu
@@ -412,6 +422,7 @@ THEN specifically: whisper, embed-message, delete-quote are visible
 ```
 
 ### Test Case 3: Hidden Command Execution
+
 ```
 GIVEN a regular member
 WHEN they try /whisper (somehow)
@@ -442,6 +453,7 @@ AND permission audit log shows: HIDDEN
 **Problem:** Command shows in slash menu even though `visible: false`
 
 **Solution:**
+
 1. Check cache wasn't stale: Restart bot or wait for cache to expire
 2. Verify config file syntax in `src/config/roles.js`
 3. Check registration script updated correctly
@@ -452,6 +464,7 @@ AND permission audit log shows: HIDDEN
 **Problem:** Command set to `visible: true` but doesn't appear
 
 **Solution:**
+
 1. Check minimum tier meets user's tier
 2. Verify command loaded successfully
 3. Check guild-specific overrides aren't hiding it
@@ -464,4 +477,3 @@ AND permission audit log shows: HIDDEN
 - [ROLE-BASED-PERMISSIONS-PROPOSAL.md](ROLE-BASED-PERMISSIONS-PROPOSAL.md) - Full system design
 - [PERMISSIONS-MATRIX.md](PERMISSIONS-MATRIX.md) - All 32 commands permission table
 - [PERMISSION-MODEL.md](PERMISSION-MODEL.md) - Permission concepts
-

@@ -31,15 +31,17 @@ The documentation website features:
 To work on the documentation website locally:
 
 1. Navigate to the website directory:
+
    ```bash
    cd website/
    ```
 
 2. Start a local web server:
+
    ```bash
    # Using Python 3
    python3 -m http.server 8000
-   
+
    # Or using Node.js
    npx http-server
    ```

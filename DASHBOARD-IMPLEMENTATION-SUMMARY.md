@@ -7,7 +7,7 @@ A production-ready React admin dashboard for comprehensive VeraBot management, i
 **Commit:** `ee5412f`  
 **Build Status:** ✅ Production build successful (293.50 KB, 94.73 KB gzipped)  
 **Framework:** React 18 + Vite + Tailwind CSS  
-**API Client:** Axios with 30+ endpoints  
+**API Client:** Axios with 30+ endpoints
 
 ## What Was Created
 
@@ -16,6 +16,7 @@ A production-ready React admin dashboard for comprehensive VeraBot management, i
 **Location:** `/dashboard/`
 
 A complete Vite-based React application with:
+
 - Modern component architecture
 - Context-based state management
 - Protected routes with authentication
@@ -25,6 +26,7 @@ A complete Vite-based React application with:
 ### 2. Core Components (4 Feature Components + 1 Alert)
 
 **BotStatus.jsx** (166 lines)
+
 - Real-time bot online status indicator
 - Uptime tracking with readable formatting (days/hours/minutes)
 - WebSocket latency/ping display
@@ -34,6 +36,7 @@ A complete Vite-based React application with:
 - Auto-refresh every 5 seconds
 
 **WebSocketConfig.jsx** (283 lines)
+
 - List all configured WebSocket services
 - View connection status (live indicators)
 - Edit webhook URLs and configuration
@@ -43,6 +46,7 @@ A complete Vite-based React application with:
 - Inline editing with save/cancel
 
 **QuoteManagement.jsx** (276 lines)
+
 - Paginated quote browser (10 per page)
 - Add new quotes with author attribution
 - Delete quotes with confirmation dialog
@@ -55,6 +59,7 @@ A complete Vite-based React application with:
 - Search functionality ready
 
 **Alert.jsx** (44 lines)
+
 - Reusable notification component
 - 4 types: success, error, warning, info
 - Auto-dismiss capability
@@ -62,6 +67,7 @@ A complete Vite-based React application with:
 - Smooth animations
 
 **Login.jsx** (91 lines)
+
 - Token-based authentication
 - Form validation
 - Loading states
@@ -69,6 +75,7 @@ A complete Vite-based React application with:
 - Security notes about token handling
 
 **Dashboard.jsx** (128 lines)
+
 - Main admin panel with sidebar navigation
 - Collapsible sidebar (responsive)
 - 4 menu items (status, websocket, quotes, settings)
@@ -79,6 +86,7 @@ A complete Vite-based React application with:
 ### 3. State Management & API
 
 **AuthContext.jsx** (52 lines)
+
 - Authentication state provider
 - Login/logout handlers
 - Loading and error states
@@ -86,6 +94,7 @@ A complete Vite-based React application with:
 - Auth hook for components
 
 **api.js** (134 lines)
+
 - Axios client with base configuration
 - 30+ API endpoints across 4 modules:
   - **websocketAPI**: Services, status, testing (8 methods)
@@ -100,7 +109,7 @@ A complete Vite-based React application with:
 ### 4. Pages
 
 **pages/Login.jsx** - Authentication portal  
-**pages/Dashboard.jsx** - Main admin interface  
+**pages/Dashboard.jsx** - Main admin interface
 
 ### 5. Configuration Files
 
@@ -113,6 +122,7 @@ A complete Vite-based React application with:
 ### 6. Documentation (1,200+ lines)
 
 **docs/guides/07-DASHBOARD-SETUP.md** (600+ lines)
+
 - Architecture overview with diagram
 - Step-by-step installation guide
 - Complete API endpoint examples
@@ -126,6 +136,7 @@ A complete Vite-based React application with:
 - Multi-database support guide
 
 **DASHBOARD-QUICK-START.md** (180 lines)
+
 - 5-minute quick start guide
 - Minimal API setup example
 - Required endpoints checklist
@@ -136,29 +147,31 @@ A complete Vite-based React application with:
 
 ## Technology Stack
 
-| Technology | Purpose | Version |
-|------------|---------|---------|
-| **React** | UI Framework | 18.3.1 |
-| **Vite** | Build Tool | 7.3.0 |
-| **React Router** | Client Navigation | 7.0.0 |
-| **Axios** | HTTP Client | 1.7.7 |
-| **Tailwind CSS** | Styling | 3.4.1 |
-| **Lucide React** | Icons | 0.408.0 |
-| **PostCSS** | CSS Processing | 8.4.32 |
+| Technology       | Purpose           | Version |
+| ---------------- | ----------------- | ------- |
+| **React**        | UI Framework      | 18.3.1  |
+| **Vite**         | Build Tool        | 7.3.0   |
+| **React Router** | Client Navigation | 7.0.0   |
+| **Axios**        | HTTP Client       | 1.7.7   |
+| **Tailwind CSS** | Styling           | 3.4.1   |
+| **Lucide React** | Icons             | 0.408.0 |
+| **PostCSS**      | CSS Processing    | 8.4.32  |
 | **Autoprefixer** | CSS Compatibility | 10.4.17 |
 
 **Total Dependencies:** 203 npm packages  
-**Production Build Size:** 293.50 KB (94.73 KB gzipped)  
+**Production Build Size:** 293.50 KB (94.73 KB gzipped)
 
 ## Key Features
 
 ### ✅ Authentication
+
 - Token-based login system
 - Secure session management
 - Protected routes with auto-redirect
 - Logout with cleanup
 
 ### ✅ Bot Monitoring
+
 - Real-time status indicator
 - Live uptime tracking
 - Performance metrics (latency, memory)
@@ -166,6 +179,7 @@ A complete Vite-based React application with:
 - Command inventory
 
 ### ✅ WebSocket Management
+
 - Service configuration interface
 - Live connection status
 - Enable/disable without restart
@@ -174,6 +188,7 @@ A complete Vite-based React application with:
 - Allowed actions display
 
 ### ✅ Quote Management
+
 - Full CRUD interface
 - Pagination support
 - Statistics dashboard
@@ -182,6 +197,7 @@ A complete Vite-based React application with:
 - Search ready
 
 ### ✅ User Experience
+
 - Responsive design (mobile-friendly)
 - Dark sidebar with light content
 - Smooth animations and transitions
@@ -190,6 +206,7 @@ A complete Vite-based React application with:
 - Collapsible navigation
 
 ### ✅ Developer Experience
+
 - Hot Module Replacement (HMR) in dev
 - Centralized API client
 - Reusable components
@@ -239,6 +256,7 @@ DASHBOARD-QUICK-START.md         (180 lines)
 ## API Endpoints (30+)
 
 ### Authentication (3)
+
 ```
 POST   /api/auth/verify       - Verify admin token
 POST   /api/auth/login        - Login with token
@@ -246,6 +264,7 @@ POST   /api/auth/logout       - Logout (client-side)
 ```
 
 ### WebSocket Services (8)
+
 ```
 GET    /api/websocket/services              - List all services
 GET    /api/websocket/services/:name        - Get service config
@@ -258,6 +277,7 @@ GET    /api/websocket/actions               - Available actions
 ```
 
 ### Quotes (7)
+
 ```
 GET    /api/quotes              - List with pagination
 GET    /api/quotes/:id          - Get single quote
@@ -269,6 +289,7 @@ GET    /api/quotes/stats        - Statistics
 ```
 
 ### Bot Management (6)
+
 ```
 GET    /api/bot/status     - Online status & metrics
 GET    /api/bot/info       - Bot information
@@ -281,48 +302,58 @@ GET    /api/bot/guilds/:id - Guild details
 ## Setup Instructions
 
 ### 1. Install Dependencies
+
 ```bash
 cd dashboard
 npm install
 ```
 
 ### 2. Environment Configuration
+
 Create `.env` file:
+
 ```env
 VITE_API_URL=http://localhost:3000/api
 ```
 
 ### 3. Development Server
+
 ```bash
 npm run dev
 # Access at http://localhost:5173
 ```
 
 ### 4. Production Build
+
 ```bash
 npm run build
 # Output in dist/ directory
 ```
 
 ### 5. Bot API Integration
+
 Implement the 30+ endpoints in your bot server. Complete examples provided in:
+
 - [docs/guides/07-DASHBOARD-SETUP.md](docs/guides/07-DASHBOARD-SETUP.md)
 
 ## Security Features
 
 ✅ **Authentication**
+
 - Token-based verification
 - Session management with localStorage
 - Protected routes
 - Auto-logout on 401
 
 ✅ **Data Protection**
+
 - CORS configuration
 - URL masking for secrets
 - No sensitive data in localStorage beyond token
 - Secure API communication via HTTPS (production)
 
 ✅ **Input Validation**
+
 - Form validation on client
 - API parameter validation ready
 - Error handling with user feedback
@@ -330,11 +361,13 @@ Implement the 30+ endpoints in your bot server. Complete examples provided in:
 ## Performance
 
 **Development:**
+
 - Hot Module Replacement (instant reload)
 - Fast Vite dev server startup
 - Lazy component loading ready
 
 **Production:**
+
 - Build size: 293.50 KB (94.73 KB gzipped)
 - Optimized bundle splitting
 - CSS minification
@@ -342,6 +375,7 @@ Implement the 30+ endpoints in your bot server. Complete examples provided in:
 - Image optimization ready
 
 **Runtime:**
+
 - Efficient re-renders with React hooks
 - Component memoization opportunities
 - API caching ready
@@ -350,21 +384,25 @@ Implement the 30+ endpoints in your bot server. Complete examples provided in:
 ## Customization Options
 
 ### Add New Pages
+
 1. Create component in `src/pages/`
 2. Add route in `App.jsx`
 3. Add menu item in `Dashboard.jsx`
 
 ### Add New Components
+
 1. Create in `src/components/`
 2. Import and use in pages
 3. Use Tailwind CSS classes
 
 ### Modify Styling
+
 1. Edit `tailwind.config.js` for theme
 2. Modify `src/index.css` for globals
 3. Use Tailwind classes in components
 
 ### Add API Endpoints
+
 1. Add to `src/services/api.js`
 2. Use in components with useState/useEffect
 3. Handle errors with Alert component
@@ -372,6 +410,7 @@ Implement the 30+ endpoints in your bot server. Complete examples provided in:
 ## Testing & Quality
 
 The dashboard is:
+
 - ✅ Production build tested
 - ✅ No build errors
 - ✅ Responsive design verified
@@ -381,33 +420,37 @@ The dashboard is:
 
 ## Future Enhancements
 
-| Feature | Status | Effort |
-|---------|--------|--------|
-| Guild settings panel | Planned | Medium |
-| Command execution UI | Planned | High |
-| Activity logs/audit trail | Planned | Medium |
+| Feature                        | Status  | Effort |
+| ------------------------------ | ------- | ------ |
+| Guild settings panel           | Planned | Medium |
+| Command execution UI           | Planned | High   |
+| Activity logs/audit trail      | Planned | Medium |
 | Real-time WebSocket monitoring | Planned | Medium |
-| User preferences & themes | Planned | Low |
-| Dark/light mode toggle | Planned | Low |
-| Config import/export | Planned | Low |
-| Analytics dashboard | Planned | High |
-| Permission management | Planned | Medium |
-| Multi-user support | Planned | High |
+| User preferences & themes      | Planned | Low    |
+| Dark/light mode toggle         | Planned | Low    |
+| Config import/export           | Planned | Low    |
+| Analytics dashboard            | Planned | High   |
+| Permission management          | Planned | Medium |
+| Multi-user support             | Planned | High   |
 
 ## Deployment Options
 
 ### Local Development
+
 ```bash
 npm run dev  # Port 5173
 ```
 
 ### Docker
+
 Complete Dockerfile example in docs/guides/07-DASHBOARD-SETUP.md
 
 ### Nginx Reverse Proxy
+
 Configuration example in docs/guides/07-DASHBOARD-SETUP.md
 
 ### Docker Compose
+
 Full stack example (bot + dashboard) in docs/guides/07-DASHBOARD-SETUP.md
 
 ## Browser Support
@@ -415,15 +458,17 @@ Full stack example (bot + dashboard) in docs/guides/07-DASHBOARD-SETUP.md
 ✅ Chrome (latest)  
 ✅ Firefox (latest)  
 ✅ Safari (latest)  
-✅ Edge (latest)  
+✅ Edge (latest)
 
 ## Documentation
 
 ### For Users
+
 - **DASHBOARD-QUICK-START.md** - Get started in 5 minutes
 - **dashboard/README.md** - Project overview and setup
 
 ### For Developers
+
 - **docs/guides/07-DASHBOARD-SETUP.md** - Complete integration guide
   - API examples (Express & Fastify)
   - All 30+ endpoints implemented
@@ -456,18 +501,18 @@ Full stack example (bot + dashboard) in docs/guides/07-DASHBOARD-SETUP.md
 
 ## Statistics
 
-| Metric | Value |
-|--------|-------|
-| **Files Created** | 20+ |
-| **Lines of React** | 1,400+ |
-| **Lines of Documentation** | 1,200+ |
-| **API Endpoints** | 30+ |
-| **npm Packages** | 203 |
-| **Build Time** | 4.57s |
-| **Bundle Size** | 293.50 KB |
-| **Gzip Size** | 94.73 KB |
-| **Components** | 5 |
-| **Pages** | 2 |
+| Metric                     | Value     |
+| -------------------------- | --------- |
+| **Files Created**          | 20+       |
+| **Lines of React**         | 1,400+    |
+| **Lines of Documentation** | 1,200+    |
+| **API Endpoints**          | 30+       |
+| **npm Packages**           | 203       |
+| **Build Time**             | 4.57s     |
+| **Bundle Size**            | 293.50 KB |
+| **Gzip Size**              | 94.73 KB  |
+| **Components**             | 5         |
+| **Pages**                  | 2         |
 
 ## Summary
 
@@ -482,7 +527,7 @@ The VeraBot Dashboard is a **production-ready admin panel** that provides compre
 ✅ **Responsive Design** - Mobile-friendly interface  
 ✅ **Easy Integration** - Clear API examples and integration guide  
 ✅ **Production Ready** - Tested build, optimized bundle  
-✅ **Extensible** - Easy to add new pages and features  
+✅ **Extensible** - Easy to add new pages and features
 
 ## Getting Started
 

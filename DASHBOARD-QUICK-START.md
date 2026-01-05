@@ -47,7 +47,7 @@ app.get('/api/bot/status', (req, res) => {
     online: client.isReady(),
     uptime: client.uptime,
     latency: client.ws.ping,
-    memory: process.memoryUsage().heapUsed
+    memory: process.memoryUsage().heapUsed,
   });
 });
 
@@ -57,7 +57,7 @@ app.get('/api/bot/info', (req, res) => {
     username: client.user.username,
     userId: client.user.id,
     version: require('../package.json').version,
-    prefix: '!'
+    prefix: '!',
   });
 });
 
@@ -76,12 +76,12 @@ Expected format: Simple string (e.g., `super-secret-token`)
 
 ## Key Components
 
-| Component | Purpose |
-|-----------|---------|
-| **Bot Status** | Real-time uptime, latency, memory |
+| Component            | Purpose                              |
+| -------------------- | ------------------------------------ |
+| **Bot Status**       | Real-time uptime, latency, memory    |
 | **WebSocket Config** | Manage external service integrations |
-| **Quote Manager** | Add/edit/delete quotes with stats |
-| **Navigation** | Sidebar menu with collapsible state |
+| **Quote Manager**    | Add/edit/delete quotes with stats    |
+| **Navigation**       | Sidebar menu with collapsible state  |
 
 ## File Structure
 
@@ -104,29 +104,31 @@ dashboard/
 
 ## Required API Endpoints
 
-| Method | Endpoint | Purpose |
-|--------|----------|---------|
-| POST | `/api/auth/verify` | Check admin token |
-| GET | `/api/bot/status` | Bot metrics |
-| GET | `/api/bot/info` | Bot details |
-| GET | `/api/bot/stats` | Guild/user counts |
-| GET | `/api/websocket/services` | List services |
-| GET | `/api/websocket/status/:name` | Service status |
-| GET | `/api/quotes` | List quotes |
-| POST | `/api/quotes` | Add quote |
-| DELETE | `/api/quotes/:id` | Delete quote |
-| GET | `/api/quotes/stats` | Quote stats |
+| Method | Endpoint                      | Purpose           |
+| ------ | ----------------------------- | ----------------- |
+| POST   | `/api/auth/verify`            | Check admin token |
+| GET    | `/api/bot/status`             | Bot metrics       |
+| GET    | `/api/bot/info`               | Bot details       |
+| GET    | `/api/bot/stats`              | Guild/user counts |
+| GET    | `/api/websocket/services`     | List services     |
+| GET    | `/api/websocket/status/:name` | Service status    |
+| GET    | `/api/quotes`                 | List quotes       |
+| POST   | `/api/quotes`                 | Add quote         |
+| DELETE | `/api/quotes/:id`             | Delete quote      |
+| GET    | `/api/quotes/stats`           | Quote stats       |
 
 See [07-DASHBOARD-SETUP.md](07-DASHBOARD-SETUP.md) for complete endpoint examples.
 
 ## Environment
 
 **.env** (dashboard/)
+
 ```env
 VITE_API_URL=http://localhost:3000/api
 ```
 
 **.env** (project root)
+
 ```env
 ADMIN_TOKEN=your-secure-token-here
 API_PORT=3000
@@ -151,6 +153,7 @@ npm run lint
 ## Styling
 
 Uses **Tailwind CSS**:
+
 - Responsive design
 - Dark/light theme ready
 - Smooth animations
@@ -170,20 +173,24 @@ Uses **Tailwind CSS**:
 ## Common Issues
 
 **"Cannot connect to API"**
+
 - Verify bot API is running: `curl http://localhost:3000/api/bot/status`
 - Check `VITE_API_URL` matches bot API port
 
 **"Invalid token"**
+
 - Ensure token matches `ADMIN_TOKEN` in bot `.env`
 - Tokens are case-sensitive
 
 **CORS error**
+
 - Add bot dashboard origin to CORS config
 - Or change `VITE_API_URL` to match bot API origin
 
 ## Extend the Dashboard
 
 Add new pages in `src/pages/`:
+
 ```javascript
 export default function NewPage() {
   return <div>Your content here</div>;
@@ -191,6 +198,7 @@ export default function NewPage() {
 ```
 
 Add API methods in `src/services/api.js`:
+
 ```javascript
 export const yourAPI = {
   getData: () => api.get('/data'),
@@ -198,10 +206,9 @@ export const yourAPI = {
 ```
 
 Add menu item in `src/pages/Dashboard.jsx`:
+
 ```javascript
-const menuItems = [
-  { id: 'new-page', label: 'New Page', icon: Icon }
-];
+const menuItems = [{ id: 'new-page', label: 'New Page', icon: Icon }];
 ```
 
 ## Next Steps
@@ -215,6 +222,7 @@ const menuItems = [
 ## Full Documentation
 
 See [07-DASHBOARD-SETUP.md](07-DASHBOARD-SETUP.md) for:
+
 - Complete API implementation examples
 - Security best practices
 - Production deployment

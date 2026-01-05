@@ -1,11 +1,13 @@
 # MCP Servers Quick Reference
 
 ## Overview
+
 5 MCP servers are configured for VeraBot2.0 to integrate with GitHub Copilot and other AI tools.
 
 ## Quick Commands
 
 ### Filesystem Server
+
 ```bash
 # Get project structure
 node mcp-servers/filesystem-server.js structure
@@ -24,6 +26,7 @@ node mcp-servers/filesystem-server.js search src/index.js "discord"
 ```
 
 ### Git Server
+
 ```bash
 # Repository status
 node mcp-servers/git-server.js status
@@ -45,6 +48,7 @@ node mcp-servers/git-server.js commit 826af7b
 ```
 
 ### Shell Server
+
 ```bash
 # Run tests
 node mcp-servers/shell-server.js exec "npm test"
@@ -66,6 +70,7 @@ node mcp-servers/shell-server.js getTestScripts
 ```
 
 ### Database Server
+
 ```bash
 # Database summary
 node mcp-servers/database-server.js summary
@@ -87,6 +92,7 @@ node mcp-servers/database-server.js search root "meme"
 ```
 
 ### NPM Server
+
 ```bash
 # Package version
 node mcp-servers/npm-server.js version
@@ -126,6 +132,7 @@ npm run verify:mcp
 ## Using with Copilot
 
 Once configured, ask Copilot:
+
 - "Show me the structure of src/commands"
 - "What were the recent changes to add-quote.js?"
 - "Run the tests and show me the results"
@@ -137,6 +144,7 @@ Once configured, ask Copilot:
 ## Whitelisted Commands
 
 Shell server can execute these npm commands:
+
 - `npm test`
 - `npm run lint`
 - `npm run lint:fix`
@@ -154,6 +162,7 @@ Shell server can execute these npm commands:
 Location: `.mcp/servers.json`
 
 Edit to:
+
 - Add more whitelisted commands
 - Change environment variables
 - Disable specific servers
@@ -168,18 +177,21 @@ Edit to:
 ## Troubleshooting
 
 ### Database Server Fails
+
 ```bash
 # Rebuild sqlite3
 npm rebuild sqlite3
 ```
 
 ### MCP Files Missing
+
 ```bash
 # Verify all files exist
 node scripts/verify-mcp-setup.js
 ```
 
 ### Commands Not Working
+
 ```bash
 # Check git is initialized
 git status

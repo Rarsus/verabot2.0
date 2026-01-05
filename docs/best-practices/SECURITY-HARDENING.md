@@ -42,7 +42,7 @@ const result = validateTextInput(userInput, {
   minLength: 10,
   maxLength: 1000,
   checkSQLInjection: true,
-  fieldName: 'quote'
+  fieldName: 'quote',
 });
 
 if (!result.valid) {
@@ -55,6 +55,7 @@ const safeInput = result.sanitized;
 ```
 
 **Detected Patterns:**
+
 - UNION attacks: `' UNION SELECT * FROM users--`
 - OR conditions: `' OR '1'='1`
 - Comment injection: `'; DROP TABLE users--`
@@ -66,18 +67,18 @@ const safeInput = result.sanitized;
 // In a command handler
 async execute(message, args) {
   const quoteText = args.join(' ');
-  
+
   const validation = validateTextInput(quoteText, {
     minLength: 10,
     maxLength: 1000,
     checkSQLInjection: true,
     fieldName: 'quote text'
   });
-  
+
   if (!validation.valid) {
     return message.reply(`❌ Invalid input: ${validation.errors.join(', ')}`);
   }
-  
+
   // Safe to use validation.sanitized
   await db.addQuote(validation.sanitized, message.author.username);
 }
@@ -96,7 +97,7 @@ const { validateTextInput, detectXSS } = require('../middleware/inputValidator')
 // Validate and sanitize user input
 const result = validateTextInput(userInput, {
   checkXSS: true,
-  fieldName: 'message'
+  fieldName: 'message',
 });
 
 if (!result.valid) {
@@ -107,6 +108,7 @@ if (!result.valid) {
 ```
 
 **Detected Patterns:**
+
 - Script tags: `<script>alert('XSS')</script>`
 - Event handlers: `<img src=x onerror="alert(1)">`
 - IFrames: `<iframe src="http://evil.com"></iframe>`
@@ -119,6 +121,7 @@ if (!result.valid) {
 Validates and sanitizes text input.
 
 **Options:**
+
 ```javascript
 {
   minLength: 1,              // Minimum length
@@ -132,6 +135,7 @@ Validates and sanitizes text input.
 ```
 
 **Returns:**
+
 ```javascript
 {
   valid: boolean,            // Whether input is valid
@@ -145,6 +149,7 @@ Validates and sanitizes text input.
 Validates numeric input.
 
 **Options:**
+
 ```javascript
 {
   min: Number.MIN_SAFE_INTEGER,  // Minimum value
@@ -156,13 +161,14 @@ Validates numeric input.
 ```
 
 **Example:**
+
 ```javascript
 const result = validateNumericInput(args[0], {
   min: 1,
   max: 100,
   integer: true,
   positive: true,
-  fieldName: 'quote ID'
+  fieldName: 'quote ID',
 });
 
 if (!result.valid) {
@@ -177,6 +183,7 @@ const quoteId = result.value;
 Validates Discord snowflake IDs.
 
 **Example:**
+
 ```javascript
 const result = validateDiscordId(message.author.id);
 if (!result.valid) {
@@ -205,6 +212,7 @@ console.log(`User has ${remaining} requests remaining`);
 ```
 
 **Methods:**
+
 - `isAllowed(identifier)` - Check if request is allowed
 - `getRemaining(identifier)` - Get remaining requests
 - `reset(identifier)` - Reset limits for user
@@ -229,6 +237,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
 **Add to `.env`:**
+
 ```env
 ENCRYPTION_KEY=your_64_character_hex_key_here
 SECRET_KEY=your_64_character_hex_key_here
@@ -254,6 +263,7 @@ const decrypted = decrypt(stored);
 ```
 
 **Features:**
+
 - AES-256-GCM algorithm (authenticated encryption)
 - Random IV for each encryption
 - Authentication tags to detect tampering
@@ -310,6 +320,7 @@ if (verifyPassword(inputPassword, storedHash)) {
 ```
 
 **Features:**
+
 - PBKDF2 with 100,000 iterations
 - Random salt per password
 - Timing-safe comparison
@@ -338,6 +349,7 @@ const sessionId = generateSecureString(20, 'alphanumeric');
 See `.env.security` template for all security-related configuration options.
 
 **Key Settings:**
+
 ```env
 # Required in production
 ENCRYPTION_KEY=<64-char-hex>
@@ -375,14 +387,15 @@ npm run security:check
 ### Test Coverage
 
 **Unit Tests (20 tests):**
+
 1. Valid text input accepted
-2-4. SQL injection detection (UNION, OR, comment attacks)
-5-8. XSS detection (scripts, iframes, event handlers, JS protocol)
-9-10. Text length validation
-11-14. Numeric validation
-15-16. Discord ID validation
-17. String sanitization
-18-20. Rate limiting
+   2-4. SQL injection detection (UNION, OR, comment attacks)
+   5-8. XSS detection (scripts, iframes, event handlers, JS protocol)
+   9-10. Text length validation
+   11-14. Numeric validation
+   15-16. Discord ID validation
+2. String sanitization
+   18-20. Rate limiting
 
 **Integration Tests (15 tests):**
 1-4. Encryption/decryption round-trip and validation
@@ -429,7 +442,7 @@ const validation = validateTextInput(args.join(' '), {
   minLength: 10,
   maxLength: 1000,
   checkSQLInjection: true,
-  checkXSS: true
+  checkXSS: true,
 });
 
 if (!validation.valid) {
@@ -482,7 +495,7 @@ const { logError, ERROR_LEVELS } = require('../middleware/errorHandler');
 if (detectSQLInjection(input)) {
   logError('InputValidator', 'SQL injection attempt', ERROR_LEVELS.HIGH, {
     userId: message.author.id,
-    input: input.substring(0, 100)
+    input: input.substring(0, 100),
   });
 }
 ```

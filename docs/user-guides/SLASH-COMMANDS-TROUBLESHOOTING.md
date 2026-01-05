@@ -40,6 +40,7 @@ docker-compose exec verabot2 npm run register-commands
 ```
 
 **Why this happens:**
+
 - Docker container starts bot immediately
 - Commands need to be registered with Discord's API
 - This requires the bot token and proper network access
@@ -163,6 +164,7 @@ docker-compose exec verabot2 npm run register-commands
 **Solution:**
 
 **For Testing (Fast Registration):**
+
 ```bash
 # Set GUILD_ID to test server
 # Edit .env
@@ -176,6 +178,7 @@ docker-compose exec verabot2 npm run register-commands
 ```
 
 **For Production (Global Registration):**
+
 ```bash
 # Remove GUILD_ID from .env
 # Or leave it empty
@@ -252,6 +255,7 @@ docker-compose logs -f
 Follow this exact sequence:
 
 **Step 1: Verify Bot is Running**
+
 ```bash
 docker-compose ps
 # Should show STATUS: "Up X seconds"
@@ -262,6 +266,7 @@ docker-compose logs
 ```
 
 **Step 2: Verify Environment Variables**
+
 ```bash
 docker-compose exec verabot2 env | grep -E "DISCORD_TOKEN|CLIENT_ID"
 # Both should output values (token will be hidden)
@@ -273,6 +278,7 @@ docker-compose up -d
 ```
 
 **Step 3: Register Commands**
+
 ```bash
 docker-compose exec verabot2 npm run register-commands
 
@@ -285,6 +291,7 @@ docker-compose logs --tail=20
 ```
 
 **Step 4: Verify in Discord**
+
 ```
 1. Open Discord
 2. In any server, type "/"
@@ -383,6 +390,7 @@ docker-compose exec verabot2 node -e "
 ## Common Error Messages & Fixes
 
 ### Error: "DISCORD_TOKEN and CLIENT_ID must be set"
+
 ```bash
 # Fix: Add to .env
 echo "DISCORD_TOKEN=your_token_here" >> .env
@@ -391,6 +399,7 @@ docker-compose restart
 ```
 
 ### Error: "Cannot find module 'discord.js'"
+
 ```bash
 # Fix: Rebuild with dependencies
 docker-compose down
@@ -398,6 +407,7 @@ docker-compose up -d --build
 ```
 
 ### Error: "EADDRINUSE: address already in use :::3000"
+
 ```bash
 # Fix: Change proxy port or stop other process
 # Option 1: Kill other process
@@ -410,6 +420,7 @@ docker-compose restart
 ```
 
 ### Error: "Bot not responding to commands"
+
 ```bash
 # 1. Verify bot is online
 #    → Check Discord server member list
@@ -445,13 +456,14 @@ Before declaring success, verify:
 If you've tried everything above:
 
 1. **Collect Debug Information**
+
    ```bash
    # Save full logs
    docker-compose logs > bot-logs.txt
-   
+
    # Check environment
    docker-compose exec verabot2 env > env-vars.txt
-   
+
    # Check file structure
    docker-compose exec verabot2 find src/commands -name "*.js" | head -20 > commands.txt
    ```
@@ -487,16 +499,18 @@ docker-compose down -v                    # Complete reset
 To prevent this issue in future rebuilds:
 
 1. **Automate Registration**
+
    ```bash
    # Add to startup script
    docker-compose exec verabot2 npm run register-commands
    ```
 
 2. **Use Health Checks**
+
    ```yaml
    # In docker-compose.yml
    healthcheck:
-     test: ["CMD", "npm", "run", "register-commands"]
+     test: ['CMD', 'npm', 'run', 'register-commands']
      interval: 300s
    ```
 

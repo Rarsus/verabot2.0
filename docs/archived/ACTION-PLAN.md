@@ -3,6 +3,7 @@
 ## Current Status
 
 ✅ **TDD Infrastructure Complete**
+
 - 41 comprehensive tests created
 - 3 utility modules implemented
 - All documentation written
@@ -13,6 +14,7 @@
 ## Phase 1: Immediate Next Steps (Ready Now)
 
 ### 1.1 Review Test Infrastructure
+
 ```bash
 # View test summary dashboard
 node test-summary.js
@@ -25,6 +27,7 @@ node test-summary.js
 ```
 
 ### 1.2 Verify All Tests Run
+
 ```bash
 # Run all utility tests
 npm run test:all
@@ -34,6 +37,7 @@ npm test && npm run test:quotes && npm run test:all
 ```
 
 ### 1.3 Review Current Test Status
+
 - Command Base: 5/6 passing (minor mock fix needed)
 - Options Builder: 10/10 passing ✅
 - Response Helpers: 12/12 passing ✅
@@ -44,6 +48,7 @@ npm test && npm run test:quotes && npm run test:all
 ## Phase 2: Refactor First Command (hi.js)
 
 ### 2.1 Backup & Plan
+
 ```bash
 # Current file is in git, so it's safe
 # Location: src/commands/misc/hi.js
@@ -53,21 +58,21 @@ npm test && npm run test:quotes && npm run test:all
 ```
 
 ### 2.2 Implement Refactored hi.js
+
 Replace current implementation with:
+
 ```javascript
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 
-const { data, options } = buildCommandOptions(
-  'hi',
-  'Say hi to someone',
-  [{ 
-    name: 'name', 
-    type: 'string', 
-    description: 'Name to say hi to', 
-    required: false 
-  }]
-);
+const { data, options } = buildCommandOptions('hi', 'Say hi to someone', [
+  {
+    name: 'name',
+    type: 'string',
+    description: 'Name to say hi to',
+    required: false,
+  },
+]);
 
 class HiCommand extends Command {
   constructor() {
@@ -89,6 +94,7 @@ module.exports = new HiCommand().register();
 ```
 
 ### 2.3 Validate Refactored Command
+
 ```bash
 # Run all tests (should all pass)
 npm run test:all
@@ -105,6 +111,7 @@ npm start
 ```
 
 ### 2.4 Commit Success
+
 ```bash
 git add -A
 git commit -m "refactor: modernize hi.js using Command base class
@@ -121,18 +128,25 @@ git commit -m "refactor: modernize hi.js using Command base class
 ## Phase 3: Refactor Second Command (ping.js)
 
 ### 3.1 Follow Same Process
+
 - Copy from hi.js refactoring example
 - Make only necessary adjustments for ping-specific logic
 - Run tests after each change
 
 ### 3.2 Expected Result
+
 ```javascript
 // Much simpler than original
 const Command = require('../../core/CommandBase');
 
 class PingCommand extends Command {
   constructor() {
-    super({ name: 'ping', description: 'Ping the bot', data: new SlashCommandBuilder().setName('ping').setDescription('Ping'), options: [] });
+    super({
+      name: 'ping',
+      description: 'Ping the bot',
+      data: new SlashCommandBuilder().setName('ping').setDescription('Ping'),
+      options: [],
+    });
   }
 
   async execute(message) {
@@ -152,7 +166,9 @@ module.exports = new PingCommand().register();
 ## Phase 4: Refactor Quote Commands
 
 ### 4.1 Refactor random-quote.js
+
 Uses response helpers for embed generation:
+
 ```javascript
 const Command = require('../../core/CommandBase');
 const { sendQuoteEmbed, sendError } = require('../../utils/response-helpers');
@@ -160,14 +176,14 @@ const { getAllQuotes } = require('../../db');
 
 class RandomQuoteCommand extends Command {
   // ... setup ...
-  
+
   async executeInteraction(interaction) {
     const quotes = await getAllQuotes();
     if (!quotes?.length) {
       await sendError(interaction, 'No quotes available');
       return;
     }
-    
+
     const quote = quotes[Math.floor(Math.random() * quotes.length)];
     await sendQuoteEmbed(interaction, quote, 'Random Quote');
   }
@@ -175,6 +191,7 @@ class RandomQuoteCommand extends Command {
 ```
 
 ### 4.2 Follow Same Pattern for:
+
 - search-quotes.js
 - quote-stats.js
 - add-quote.js
@@ -186,10 +203,12 @@ class RandomQuoteCommand extends Command {
 ## Phase 5: Refactor Complex Commands
 
 ### 5.1 Commands with Admin Checks
+
 - delete-quote.js
 - update-quote.js
 
 Pattern:
+
 ```javascript
 async executeInteraction(interaction) {
   if (!interaction.member.permissions.has('ADMINISTRATOR')) {
@@ -201,6 +220,7 @@ async executeInteraction(interaction) {
 ```
 
 ### 5.2 Commands with Special Logic
+
 - rate-quote.js (uses rateQuote db function)
 - tag-quote.js (uses addTag db function)
 - export-quotes.js (uses sendSuccess with files)
@@ -210,6 +230,7 @@ async executeInteraction(interaction) {
 ## Phase 6: Final Validation
 
 ### 6.1 Run Complete Test Suite
+
 ```bash
 npm run test:all            # New utility tests (should: 41/41)
 npm run test:quotes         # Basic tests (should: 17/17)
@@ -219,6 +240,7 @@ npm run lint                # No errors (should: 0 issues)
 ```
 
 ### 6.2 Bot Functionality Check
+
 ```bash
 npm start
 # Test in Discord:
@@ -231,6 +253,7 @@ npm start
 ```
 
 ### 6.3 Expected Results
+
 ```
 ✅ 41 new utility tests passing
 ✅ 35+ quote system tests still passing
@@ -247,38 +270,41 @@ npm start
 
 ### Commands Refactored: [ ] / 15
 
-- [ ] hi.js                  [READY]
-- [ ] ping.js                [READY]
-- [ ] random-quote.js        [READY]
-- [ ] search-quotes.js       [READY]
-- [ ] quote-stats.js         [READY]
-- [ ] add-quote.js           [READY]
-- [ ] list-quotes.js         [READY]
-- [ ] quote.js               [READY]
-- [ ] delete-quote.js        [READY - needs admin check]
-- [ ] update-quote.js        [READY - needs admin check]
-- [ ] rate-quote.js          [READY - uses db function]
-- [ ] tag-quote.js           [READY - uses db function]
-- [ ] export-quotes.js       [READY - special export logic]
-- [ ] help.js                [READY - command listing]
-- [ ] poem.js                [READY - uses AI/timeout logic]
+- [ ] hi.js [READY]
+- [ ] ping.js [READY]
+- [ ] random-quote.js [READY]
+- [ ] search-quotes.js [READY]
+- [ ] quote-stats.js [READY]
+- [ ] add-quote.js [READY]
+- [ ] list-quotes.js [READY]
+- [ ] quote.js [READY]
+- [ ] delete-quote.js [READY - needs admin check]
+- [ ] update-quote.js [READY - needs admin check]
+- [ ] rate-quote.js [READY - uses db function]
+- [ ] tag-quote.js [READY - uses db function]
+- [ ] export-quotes.js [READY - special export logic]
+- [ ] help.js [READY - command listing]
+- [ ] poem.js [READY - uses AI/timeout logic]
 
 ---
 
 ## Success Metrics
 
 ### Code Quality Metrics
+
 - [ ] Average lines per command: < 30 (from 50-60)
 - [ ] Boilerplate lines per command: 0 (from 15-20)
 - [ ] Code duplication: 1 copy (from 15 copies)
 - [ ] Try-catch blocks per command: 0 (from 3-4)
 
 ### Test Metrics
+
 - [ ] New tests passing: 41/41 (100%)
 - [ ] Quote tests passing: 35+/35+ (100%)
 - [ ] Linting errors: 0
 
 ### Process Metrics
+
 - [ ] Time per command refactor: 5-10 minutes
 - [ ] Tests run in: < 5 seconds
 - [ ] Bot startup time: < 3 seconds
@@ -288,6 +314,7 @@ npm start
 ## Rollback Plan
 
 If something breaks:
+
 ```bash
 # See what changed
 git diff
@@ -307,6 +334,7 @@ git reset --hard <commit-hash>
 ## Documentation Updates Needed
 
 After all refactoring:
+
 - [ ] Update README.md with new command structure
 - [ ] Add section about Command base class
 - [ ] Add section about creating new commands
@@ -364,6 +392,7 @@ npm run lint                        # Zero errors
 ## Questions During Refactoring?
 
 Refer to these documents:
+
 - **"How do I refactor a command?"** → REFACTORING_GUIDE.md
 - **"What are the tests checking?"** → TDD_TEST_RESULTS.md
 - **"How do I run tests?"** → TDD_QUICK_REFERENCE.md
@@ -381,6 +410,7 @@ Refer to these documents:
 **Next action:** Follow Phase 2 to refactor hi.js
 
 Start with:
+
 ```bash
 npm run test:all                    # Run all tests
 node test-summary.js                # See visual dashboard

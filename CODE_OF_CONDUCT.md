@@ -7,6 +7,7 @@ We as members, contributors, and leaders pledge to make participation in our com
 ## Our Standards
 
 Examples of behavior that contributes to creating a positive environment include:
+
 - Using welcoming and inclusive language
 - Being respectful of differing viewpoints and experiences
 - Giving and gracefully accepting constructive criticism
@@ -14,12 +15,14 @@ Examples of behavior that contributes to creating a positive environment include
 - Showing empathy towards other community members
 
 Examples of unacceptable behavior by participants include:
+
 - Trolling, insulting, or derogatory comments
 - Public or private harassment
 - Publishing others’ private information without explicit permission
 - Other conduct that could reasonably be considered inappropriate in a professional setting.
 
 Additionally, as an 18+ community, participants should note:
+
 - Mature themes or content, including sexual references, are permitted as long as they adhere to laws and are appropriate for this space.
 
 ## Enforcement Responsibilities

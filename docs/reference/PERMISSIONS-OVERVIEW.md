@@ -22,25 +22,25 @@ VeraBot 2.0 implements a tiered permission system combining Discord's native per
 
 The following permissions must be granted to the bot account in the Discord Developer Portal:
 
-| Permission | Discord Flag | Purpose | Required |
-|-----------|--------------|---------|----------|
-| Read Messages/View Channels | `VIEW_CHANNEL` | Access guild channels and messages | ✅ Yes |
-| Send Messages | `SEND_MESSAGES` | Post messages in channels | ✅ Yes |
-| Read Message History | `READ_MESSAGE_HISTORY` | Fetch message history for commands | ✅ Yes |
-| Add Reactions | `ADD_REACTIONS` | React to messages (pagination) | ✅ Yes |
-| Use Slash Commands | `USE_APPLICATION_COMMANDS` | Execute slash commands | ✅ Yes |
-| Embed Links | `EMBED_LINKS` | Send formatted embeds | ✅ Yes |
-| Attach Files | `ATTACH_FILES` | Upload files (export quotes) | ✅ Yes |
-| Manage Messages | `MANAGE_MESSAGES` | Remove reactions (pagination) | ✅ Yes |
+| Permission                  | Discord Flag               | Purpose                            | Required |
+| --------------------------- | -------------------------- | ---------------------------------- | -------- |
+| Read Messages/View Channels | `VIEW_CHANNEL`             | Access guild channels and messages | ✅ Yes   |
+| Send Messages               | `SEND_MESSAGES`            | Post messages in channels          | ✅ Yes   |
+| Read Message History        | `READ_MESSAGE_HISTORY`     | Fetch message history for commands | ✅ Yes   |
+| Add Reactions               | `ADD_REACTIONS`            | React to messages (pagination)     | ✅ Yes   |
+| Use Slash Commands          | `USE_APPLICATION_COMMANDS` | Execute slash commands             | ✅ Yes   |
+| Embed Links                 | `EMBED_LINKS`              | Send formatted embeds              | ✅ Yes   |
+| Attach Files                | `ATTACH_FILES`             | Upload files (export quotes)       | ✅ Yes   |
+| Manage Messages             | `MANAGE_MESSAGES`          | Remove reactions (pagination)      | ✅ Yes   |
 
 ### Optional Bot Permissions
 
 These permissions are only needed if specific features are enabled:
 
-| Permission | Purpose | Feature | Default |
-|-----------|---------|---------|---------|
-| Manage Webhooks | `MANAGE_WEBHOOKS` | Message proxy forwarding | ❌ Only if proxy enabled |
-| Mention @everyone/@here | `MENTION_EVERYONE` | Broadcast to all users | ❌ Not used currently |
+| Permission              | Purpose            | Feature                  | Default                  |
+| ----------------------- | ------------------ | ------------------------ | ------------------------ |
+| Manage Webhooks         | `MANAGE_WEBHOOKS`  | Message proxy forwarding | ❌ Only if proxy enabled |
+| Mention @everyone/@here | `MENTION_EVERYONE` | Broadcast to all users   | ❌ Not used currently    |
 
 ### OAuth2 Scopes Required
 
@@ -73,21 +73,22 @@ https://discord.com/api/oauth2/authorize?
 **User Permission Required:** Discord `Administrator` flag
 
 All admin commands enforce administrator-only access. Non-admin users receive:
+
 ```
 ❌ You need admin permissions to use this command
 ```
 
 #### Commands in This Stack:
 
-| Command | File | Purpose | Bot Permissions |
-|---------|------|---------|-----------------|
-| `/broadcast` | `broadcast.js` | Send message to multiple channels | `SEND_MESSAGES` per channel |
-| `/say` | `say.js` | Have bot send message in a channel | `SEND_MESSAGES` in target channel |
-| `/whisper` | `whisper.js` | Send DMs to users/roles | `SEND_MESSAGES` (DM) + user opt-in |
-| `/embed` | `embed-message.js` | Send formatted embed in channel | `SEND_MESSAGES`, `EMBED_LINKS` |
-| `/proxy-config` | `proxy-config.js` | Configure webhook proxy | Database write |
-| `/proxy-enable` | `proxy-enable.js` | Enable/disable proxy | Database write |
-| `/proxy-status` | `proxy-status.js` | View proxy configuration | Database read |
+| Command         | File               | Purpose                            | Bot Permissions                    |
+| --------------- | ------------------ | ---------------------------------- | ---------------------------------- |
+| `/broadcast`    | `broadcast.js`     | Send message to multiple channels  | `SEND_MESSAGES` per channel        |
+| `/say`          | `say.js`           | Have bot send message in a channel | `SEND_MESSAGES` in target channel  |
+| `/whisper`      | `whisper.js`       | Send DMs to users/roles            | `SEND_MESSAGES` (DM) + user opt-in |
+| `/embed`        | `embed-message.js` | Send formatted embed in channel    | `SEND_MESSAGES`, `EMBED_LINKS`     |
+| `/proxy-config` | `proxy-config.js`  | Configure webhook proxy            | Database write                     |
+| `/proxy-enable` | `proxy-enable.js`  | Enable/disable proxy               | Database write                     |
+| `/proxy-status` | `proxy-status.js`  | View proxy configuration           | Database read                      |
 
 #### Permission Checks:
 
@@ -99,7 +100,7 @@ if (!checkAdminPermission(interaction)) {
 
 // Plus per-command bot permission checks:
 if (!channel.permissionsFor(interaction.client.user).has('SendMessages')) {
-  return sendError(interaction, 'I don\'t have permission to send messages in that channel', true);
+  return sendError(interaction, "I don't have permission to send messages in that channel", true);
 }
 ```
 
@@ -113,12 +114,12 @@ if (!channel.permissionsFor(interaction.client.user).has('SendMessages')) {
 
 #### Commands in This Stack:
 
-| Command | File | Permissions | Purpose |
-|---------|------|-------------|---------|
-| `/add-quote` | `add-quote.js` | None | Add new quote to database |
-| `/quote` | `quote.js` | None | Get specific quote by ID |
-| `/list-quotes` | `list-quotes.js` | None | Get all quotes (via DM) |
-| `/update-quote` | `update-quote.js` | `Administrator` | Modify existing quote |
+| Command         | File              | Permissions     | Purpose                    |
+| --------------- | ----------------- | --------------- | -------------------------- |
+| `/add-quote`    | `add-quote.js`    | None            | Add new quote to database  |
+| `/quote`        | `quote.js`        | None            | Get specific quote by ID   |
+| `/list-quotes`  | `list-quotes.js`  | None            | Get all quotes (via DM)    |
+| `/update-quote` | `update-quote.js` | `Administrator` | Modify existing quote      |
 | `/delete-quote` | `delete-quote.js` | `Administrator` | Remove quote from database |
 
 #### Permission Details:
@@ -134,6 +135,7 @@ if (!interaction.member.permissions.has('ADMINISTRATOR')) {
 ```
 
 #### Bot Permissions Needed:
+
 - `SEND_MESSAGES` - Send quote embeds
 - `EMBED_LINKS` - Format quote displays
 - `ADD_REACTIONS` - Pagination controls (not used by default)
@@ -148,11 +150,11 @@ if (!interaction.member.permissions.has('ADMINISTRATOR')) {
 
 #### Commands in This Stack:
 
-| Command | File | Purpose |
-|---------|------|---------|
-| `/random-quote` | `random-quote.js` | Get random quote from database |
-| `/search-quotes` | `search-quotes.js` | Search quotes by text/author |
-| `/quote-stats` | `quote-stats.js` | View quote database statistics |
+| Command          | File               | Purpose                        |
+| ---------------- | ------------------ | ------------------------------ |
+| `/random-quote`  | `random-quote.js`  | Get random quote from database |
+| `/search-quotes` | `search-quotes.js` | Search quotes by text/author   |
+| `/quote-stats`   | `quote-stats.js`   | View quote database statistics |
 
 #### Permission Model:
 
@@ -162,6 +164,7 @@ No special bot permissions beyond basic SEND_MESSAGES
 ```
 
 #### Bot Permissions Needed:
+
 - `SEND_MESSAGES` - Reply with quotes
 - `EMBED_LINKS` - Format displays
 
@@ -175,10 +178,10 @@ No special bot permissions beyond basic SEND_MESSAGES
 
 #### Commands in This Stack:
 
-| Command | File | Purpose |
-|---------|------|---------|
-| `/rate-quote` | `rate-quote.js` | Rate quotes 1-5 stars |
-| `/tag-quote` | `tag-quote.js` | Add tags to organize quotes |
+| Command       | File            | Purpose                     |
+| ------------- | --------------- | --------------------------- |
+| `/rate-quote` | `rate-quote.js` | Rate quotes 1-5 stars       |
+| `/tag-quote`  | `tag-quote.js`  | Add tags to organize quotes |
 
 #### Permission Model:
 
@@ -188,6 +191,7 @@ Any user can rate/tag any quote
 ```
 
 #### Bot Permissions Needed:
+
 - `SEND_MESSAGES` - Confirmation messages
 - `EMBED_LINKS` - Display rating/tag results
 
@@ -201,8 +205,8 @@ Any user can rate/tag any quote
 
 #### Commands in This Stack:
 
-| Command | File | Purpose |
-|---------|------|---------|
+| Command          | File               | Purpose                       |
+| ---------------- | ------------------ | ----------------------------- |
 | `/export-quotes` | `export-quotes.js` | Export all quotes as JSON/CSV |
 
 #### Permission Model:
@@ -213,6 +217,7 @@ Any user can export quotes
 ```
 
 #### Bot Permissions Needed:
+
 - `SEND_MESSAGES` - Send file
 - `ATTACH_FILES` - Upload JSON/CSV file
 
@@ -226,14 +231,14 @@ Any user can export quotes
 
 #### Commands in This Stack:
 
-| Command | File | Purpose |
-|---------|------|---------|
-| `/create-reminder` | `create-reminder.js` | Schedule reminder notification |
-| `/get-reminder` | `get-reminder.js` | View specific reminder |
-| `/list-reminders` | `list-reminders.js` | View all user reminders |
-| `/search-reminders` | `search-reminders.js` | Search reminders by filters |
-| `/update-reminder` | `update-reminder.js` | Modify reminder settings |
-| `/delete-reminder` | `delete-reminder.js` | Cancel reminder |
+| Command             | File                  | Purpose                        |
+| ------------------- | --------------------- | ------------------------------ |
+| `/create-reminder`  | `create-reminder.js`  | Schedule reminder notification |
+| `/get-reminder`     | `get-reminder.js`     | View specific reminder         |
+| `/list-reminders`   | `list-reminders.js`   | View all user reminders        |
+| `/search-reminders` | `search-reminders.js` | Search reminders by filters    |
+| `/update-reminder`  | `update-reminder.js`  | Modify reminder settings       |
+| `/delete-reminder`  | `delete-reminder.js`  | Cancel reminder                |
 
 #### Permission Model:
 
@@ -243,6 +248,7 @@ Users can only manage their own reminders
 ```
 
 #### Bot Permissions Needed:
+
 - `SEND_MESSAGES` - Send reminder notifications
 - `EMBED_LINKS` - Format reminder displays
 - `READ_MESSAGE_HISTORY` - Track notification status
@@ -250,6 +256,7 @@ Users can only manage their own reminders
 #### Note on Notification Delivery:
 
 Reminders can notify users via:
+
 1. **Direct Message (DM)** - If user has opted in to communications
 2. **Channel Message** - In configured notification channel (if role-based)
 
@@ -265,12 +272,12 @@ The `REMINDER_NOTIFICATION_CHANNEL` environment variable specifies where role-ba
 
 #### Commands in This Stack:
 
-| Command | File | Purpose | Enforces |
-|---------|------|---------|----------|
-| `/opt-in` | `opt-in.js` | Enable DM notifications | User opt-in system |
-| `/opt-out` | `opt-out.js` | Disable DM notifications | User opt-in system |
-| `/comm-status` | `comm-status.js` | View communication preferences | User opt-in system |
-| `/opt-in-request` | `opt-in-request.js` | Request user opt-in (admin) | User opt-in system |
+| Command           | File                | Purpose                        | Enforces           |
+| ----------------- | ------------------- | ------------------------------ | ------------------ |
+| `/opt-in`         | `opt-in.js`         | Enable DM notifications        | User opt-in system |
+| `/opt-out`        | `opt-out.js`        | Disable DM notifications       | User opt-in system |
+| `/comm-status`    | `comm-status.js`    | View communication preferences | User opt-in system |
+| `/opt-in-request` | `opt-in-request.js` | Request user opt-in (admin)    | User opt-in system |
 
 #### Permission Model:
 
@@ -299,11 +306,11 @@ The opt-in system prevents unsolicited DMs to users. When a user opts out:
 
 #### Commands in This Stack:
 
-| Command | File | Purpose |
-|---------|------|---------|
-| `/ping` | `ping.js` | Check bot latency |
-| `/hi` | `hi.js` | Friendly greeting |
-| `/help` | `help.js` | Show available commands |
+| Command | File      | Purpose                          |
+| ------- | --------- | -------------------------------- |
+| `/ping` | `ping.js` | Check bot latency                |
+| `/hi`   | `hi.js`   | Friendly greeting                |
+| `/help` | `help.js` | Show available commands          |
 | `/poem` | `poem.js` | Generate AI poem via HuggingFace |
 
 #### Permission Model:
@@ -314,6 +321,7 @@ No permission checks at all
 ```
 
 #### Bot Permissions Needed:
+
 - `SEND_MESSAGES` - Reply to commands
 - `EMBED_LINKS` - Format help display (pagination)
 
@@ -437,6 +445,7 @@ For role-based reminder notifications:
 In Discord Server Settings → Roles → Bot Role:
 
 ✅ **Enable:**
+
 - View Channels
 - Send Messages
 - Read Message History
@@ -446,6 +455,7 @@ In Discord Server Settings → Roles → Bot Role:
 - Manage Messages
 
 ❌ **Disable:**
+
 - Administrator (not needed)
 - Manage Server (not needed)
 - Manage Webhooks (only if proxy not used)
@@ -471,7 +481,7 @@ async executeInteraction(interaction) {
 
   // 2. Perform admin action
   // ... command logic ...
-  
+
   await sendSuccess(interaction, 'Action completed');
 }
 ```
@@ -485,8 +495,8 @@ async executeInteraction(interaction) {
   // Check if bot can send messages in that channel
   if (channel.guild && !channel.permissionsFor(interaction.client.user).has('SendMessages')) {
     return sendError(
-      interaction, 
-      'I don\'t have permission to send messages in that channel', 
+      interaction,
+      'I don\'t have permission to send messages in that channel',
       true
     );
   }
@@ -528,7 +538,7 @@ async executeInteraction(interaction) {
   // Only allow users to view their own reminders
   const userId = interaction.user.id;
   const reminders = await ReminderService.getRemindersForUser(userId);
-  
+
   // Send result
   await sendSuccess(interaction, `Found ${reminders.length} reminders`);
 }
@@ -540,17 +550,17 @@ async executeInteraction(interaction) {
 
 ### Permission Requirements by Module
 
-| Module | Command Count | Admin Required | Bot Permissions | Opt-In Check |
-|--------|---------------|---|---|---|
-| Admin | 7 | ✅ Yes | Varies | No |
-| Quote Management | 5 | 2/5 (delete, update) | `SEND_MESSAGES`, `EMBED_LINKS` | No |
-| Quote Discovery | 3 | ❌ No | `SEND_MESSAGES`, `EMBED_LINKS` | No |
-| Quote Social | 2 | ❌ No | `SEND_MESSAGES`, `EMBED_LINKS` | No |
-| Quote Export | 1 | ❌ No | `SEND_MESSAGES`, `ATTACH_FILES` | No |
-| Reminder | 6 | ❌ No | `SEND_MESSAGES` (DM/channel) | ✅ Yes (for DM) |
-| User Preferences | 4 | 1/4 (opt-in-request) | `SEND_MESSAGES` | N/A |
-| Misc | 4 | ❌ No | `SEND_MESSAGES`, `EMBED_LINKS` | No |
-| **TOTAL** | **32** | **8 commands** | **Required: 5 core** | **4 commands** |
+| Module           | Command Count | Admin Required       | Bot Permissions                 | Opt-In Check    |
+| ---------------- | ------------- | -------------------- | ------------------------------- | --------------- |
+| Admin            | 7             | ✅ Yes               | Varies                          | No              |
+| Quote Management | 5             | 2/5 (delete, update) | `SEND_MESSAGES`, `EMBED_LINKS`  | No              |
+| Quote Discovery  | 3             | ❌ No                | `SEND_MESSAGES`, `EMBED_LINKS`  | No              |
+| Quote Social     | 2             | ❌ No                | `SEND_MESSAGES`, `EMBED_LINKS`  | No              |
+| Quote Export     | 1             | ❌ No                | `SEND_MESSAGES`, `ATTACH_FILES` | No              |
+| Reminder         | 6             | ❌ No                | `SEND_MESSAGES` (DM/channel)    | ✅ Yes (for DM) |
+| User Preferences | 4             | 1/4 (opt-in-request) | `SEND_MESSAGES`                 | N/A             |
+| Misc             | 4             | ❌ No                | `SEND_MESSAGES`, `EMBED_LINKS`  | No              |
+| **TOTAL**        | **32**        | **8 commands**       | **Required: 5 core**            | **4 commands**  |
 
 ---
 
@@ -587,6 +597,7 @@ https://discord.com/api/oauth2/authorize?client_id=YOUR_ID&scope=bot%20applicati
 ### Q: Can admins force users to opt-in?
 
 **A:** No. Only the user can opt-in. Admins can:
+
 - Request opt-in: `/opt-in-request`
 - Send whisper only to opted-in users
 - Fall back to channel notifications for reminders
@@ -613,4 +624,3 @@ See the table in each command stack section above.
 - [SECURITY.md](SECURITY.md) - Security best practices
 - [guides/06-ADMIN-COMMUNICATION-COMMANDS.md](guides/06-ADMIN-COMMUNICATION-COMMANDS.md) - Admin command usage
 - [guides/04-REMINDER-SYSTEM.md](guides/04-REMINDER-SYSTEM.md) - Reminder system (with opt-in)
-

@@ -92,22 +92,23 @@ verabot2.0/
 
 ### ⚠️ Issues Identified
 
-| Issue | Severity | Impact | Location |
-|-------|----------|--------|----------|
-| ~~**Duplicate database files**~~ | ~~Medium~~ | ✅ RESOLVED Dec 30 | `src/services/DatabaseService.js` + `src/db.js` wrapper |
-| **Root-level clutter** | Medium | Discoverability, professionalism | 14 files at root level |
-| **Loose config files** | Medium | Organization, ignored by version control | `.env`, `.env.example` at root |
-| **Test files mixed with scripts** | Low | Slightly cluttered scripts/ folder | `scripts/test-*.js` + `scripts/run-tests.js` |
-| **Data backups untracked** | Medium | Version control, recovery concerns | `data/*.backup` |
-| **Documentation scattered** | Low | Some at root, some in docs/ | Multiple markdown files at root |
-| **No clear app structure** | Low | Harder for new contributors | No clear config/middleware/services separation |
-| **Single utils file** | Low | May grow too large | `command-base.js` is 300+ lines |
+| Issue                             | Severity   | Impact                                   | Location                                                |
+| --------------------------------- | ---------- | ---------------------------------------- | ------------------------------------------------------- |
+| ~~**Duplicate database files**~~  | ~~Medium~~ | ✅ RESOLVED Dec 30                       | `src/services/DatabaseService.js` + `src/db.js` wrapper |
+| **Root-level clutter**            | Medium     | Discoverability, professionalism         | 14 files at root level                                  |
+| **Loose config files**            | Medium     | Organization, ignored by version control | `.env`, `.env.example` at root                          |
+| **Test files mixed with scripts** | Low        | Slightly cluttered scripts/ folder       | `scripts/test-*.js` + `scripts/run-tests.js`            |
+| **Data backups untracked**        | Medium     | Version control, recovery concerns       | `data/*.backup`                                         |
+| **Documentation scattered**       | Low        | Some at root, some in docs/              | Multiple markdown files at root                         |
+| **No clear app structure**        | Low        | Harder for new contributors              | No clear config/middleware/services separation          |
+| **Single utils file**             | Low        | May grow too large                       | `command-base.js` is 300+ lines                         |
 
 ---
 
 ## 🚀 Proposed Improved Structure
 
 ### Option A: Lightweight Improvement (Minimal Changes)
+
 ```
 verabot2.0/
 ├── .github/
@@ -178,6 +179,7 @@ verabot2.0/
 ```
 
 **Changes Summary:**
+
 - ✅ Minimal disruption
 - ✅ Clear organization
 - ✅ Easier to scale
@@ -186,6 +188,7 @@ verabot2.0/
 ---
 
 ### Option B: Comprehensive Refactor (Best Practices)
+
 ```
 verabot2.0/
 ├── .github/
@@ -293,6 +296,7 @@ verabot2.0/
 ```
 
 **Changes Summary:**
+
 - ✅ Enterprise-level organization
 - ✅ Clear service/domain separation
 - ✅ Scalable for growth
@@ -302,33 +306,36 @@ verabot2.0/
 
 ## 📋 Comparison Matrix
 
-| Aspect | Current | Option A | Option B |
-|--------|---------|----------|----------|
-| Root Clutter | 14 files | 4 files | 4 files |
-| Source Organization | Good | Better | Excellent |
-| Service Separation | Partial | Good | Excellent |
-| Type Safety | None | None | JSDoc defined |
-| Test Organization | Mixed | Clear | Clear + Fixtures |
-| Scaling Ease | Medium | Good | Excellent |
-| Learning Curve | Medium | Low | Medium |
-| Implementation Time | — | 30-40 min | 2-3 hours |
-| Best For | Current size | Gradual growth | Large team/long-term |
+| Aspect              | Current      | Option A       | Option B             |
+| ------------------- | ------------ | -------------- | -------------------- |
+| Root Clutter        | 14 files     | 4 files        | 4 files              |
+| Source Organization | Good         | Better         | Excellent            |
+| Service Separation  | Partial      | Good           | Excellent            |
+| Type Safety         | None         | None           | JSDoc defined        |
+| Test Organization   | Mixed        | Clear          | Clear + Fixtures     |
+| Scaling Ease        | Medium       | Good           | Excellent            |
+| Learning Curve      | Medium       | Low            | Medium               |
+| Implementation Time | —            | 30-40 min      | 2-3 hours            |
+| Best For            | Current size | Gradual growth | Large team/long-term |
 
 ---
 
 ## 🔧 Completed Quick-Wins ✅
 
 ### 1. **Deduplicate Database Files** ✅ COMPLETED (Dec 30)
+
 ```bash
 # Status: DONE
 # Consolidated src/database.js into src/services/DatabaseService.js
 # src/db.js now acts as a clean wrapper for quote-specific operations
 # All commands use DatabaseService through db.js wrapper
 ```
+
 **Impact:** Eliminated code duplication, single source of truth
 **Status:** ✅ COMPLETE
 
 ### 2. **Move Config Files**
+
 ```bash
 mkdir -p config
 mv .env config/.env
@@ -336,36 +343,43 @@ mv .env.example config/.env.example
 mv .eslintrc.json config/.eslintrc.json
 # Update paths in package.json and .husky/pre-commit
 ```
+
 **Impact:** Cleaner root directory
 **Time:** 10 minutes
 
 ### 3. **Organize Tests**
+
 ```bash
 mkdir -p scripts/tests
 mv scripts/test-*.js scripts/tests/
 mv scripts/run-tests.js scripts/tests/run-all.js
 # Update package.json scripts
 ```
+
 **Impact:** Better scripts organization
 **Time:** 10 minutes
 
 ### 4. **Move Root Documentation**
+
 ```bash
 mv CI-CD-QUICK-START.md docs/
 mv STABILITY-CHECKLIST.md docs/
 mv COMPLETION_SUMMARY.txt docs/project/
 mv DOCUMENTATION_STRUCTURE.md docs/reference/
 ```
+
 **Impact:** Cleaner root, better documentation hierarchy
 **Time:** 5 minutes
 
 ### 5. **Create Proper .gitignore**
+
 ```bash
 # Ensure these are in .gitignore:
 data/quotes.json.backup
 logs/
 .env (already should be)
 ```
+
 **Impact:** Cleaner version control
 **Time:** 5 minutes
 
@@ -374,12 +388,14 @@ logs/
 ## 📊 Recommendation
 
 ### For Immediate Action: **Option A (Lightweight)**
+
 - **Why:** Minimal disruption, maximum benefit
 - **What:** Reorganize files, update paths, update package.json
 - **Effort:** ~1 hour total
 - **Tools:** `git mv` (preserves history), update imports
 
 ### For Future Growth: **Option B (Comprehensive)**
+
 - **When:** After next 5-10 features added
 - **Why:** Professional structure for scaling
 - **What:** Full refactor with service layer
@@ -390,27 +406,32 @@ logs/
 ## 🎯 Implementation Plan (Option A)
 
 ### Phase 1: Preparation (5 min)
+
 1. Create new directories
 2. Commit current state
 
 ### Phase 2: File Migration (20 min)
+
 1. Move config files → `config/`
 2. Move tests → `scripts/tests/`
 3. Move root docs → `docs/`
 4. Delete duplicate `src/db.js`
 
 ### Phase 3: Update Paths (20 min)
+
 1. Update `package.json` scripts
 2. Update `.husky/pre-commit` hook paths
 3. Update imports in source files
 4. Update `.gitignore`
 
 ### Phase 4: Verification (10 min)
+
 1. Run tests to verify imports
 2. Test linting
 3. Verify all commands register
 
 ### Phase 5: Commit (5 min)
+
 1. Commit with message: `refactor: restructure project folders for better organization`
 2. Push to feature branch
 
@@ -418,14 +439,14 @@ logs/
 
 ## 📝 Priority Ranking
 
-| Task | Priority | Impact | Effort | Recommendation |
-|------|----------|--------|--------|-----------------|
-| Delete duplicate db.js | 🔴 High | High | 5 min | **Do Now** |
-| Move config files | 🟡 Medium | High | 10 min | **Do Now** |
-| Organize tests | 🟡 Medium | Medium | 10 min | **Do Now** |
-| Move docs | 🟢 Low | Low | 5 min | **Do Now** |
-| Add services layer | 🟡 Medium | High | 1+ hour | **Schedule** |
-| Add type definitions | 🟢 Low | Medium | 30 min | **Future** |
+| Task                   | Priority  | Impact | Effort  | Recommendation |
+| ---------------------- | --------- | ------ | ------- | -------------- |
+| Delete duplicate db.js | 🔴 High   | High   | 5 min   | **Do Now**     |
+| Move config files      | 🟡 Medium | High   | 10 min  | **Do Now**     |
+| Organize tests         | 🟡 Medium | Medium | 10 min  | **Do Now**     |
+| Move docs              | 🟢 Low    | Low    | 5 min   | **Do Now**     |
+| Add services layer     | 🟡 Medium | High   | 1+ hour | **Schedule**   |
+| Add type definitions   | 🟢 Low    | Medium | 30 min  | **Future**     |
 
 ---
 

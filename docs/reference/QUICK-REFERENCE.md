@@ -3,13 +3,15 @@
 ## Where Things Are Now
 
 ### Configuration
+
 ```
 .env                      → config/.env
-.env.example              → config/.env.example  
+.env.example              → config/.env.example
 .eslintrc.json            → config/.eslintrc.json
 ```
 
 ### Source Code
+
 ```
 Database logic            → src/services/DatabaseService.js
 Quote business logic      → src/services/QuoteService.js
@@ -34,6 +36,7 @@ Type definitions          → src/types/index.js
 ```
 
 ### Tests
+
 ```
 Unit tests (test-*.js)    → tests/unit/
 Test data/mocks           → tests/fixtures/
@@ -43,6 +46,7 @@ Test runner               → tests/unit/run-tests.js
 ```
 
 ### Scripts
+
 ```
 Test documentation gen    → scripts/build/generate-test-docs.js
 Development scripts       → scripts/dev/
@@ -50,6 +54,7 @@ CI/CD scripts            → scripts/ci/
 ```
 
 ### Data
+
 ```
 SQLite database           → data/db/quotes.db
 Backup JSON               → data/quotes.json
@@ -58,6 +63,7 @@ Test databases            → data/db/test_*.db
 ```
 
 ### Documentation
+
 ```
 API docs                  → docs/api/
 Architecture guides       → docs/architecture/
@@ -70,6 +76,7 @@ Stability procedures     → docs/STABILITY-CHECKLIST.md
 ```
 
 ### Logs
+
 ```
 Application logs         → logs/
 ```
@@ -79,6 +86,7 @@ Application logs         → logs/
 ## Common Commands
 
 ### Development
+
 ```bash
 # Start bot
 npm start
@@ -103,6 +111,7 @@ npm run test:docs
 ```
 
 ### File Organization
+
 ```bash
 # View config
 ls config/
@@ -124,6 +133,7 @@ ls docs/
 ### Old Way → New Way
 
 #### Database Operations
+
 ```javascript
 // For quote operations - use the wrapper
 const db = require('./db'); // Exports from DatabaseService
@@ -134,6 +144,7 @@ const { logError } = require('./middleware/errorHandler');
 ```
 
 #### Command Base
+
 ```javascript
 // OLD (v0.1.x)
 const Command = require('../../utils/command-base');
@@ -145,6 +156,7 @@ const buildCommandOptions = require('../../core/CommandOptions');
 ```
 
 #### Response Helpers
+
 ```javascript
 // OLD (v0.1.x)
 const { sendSuccess } = require('../../utils/response-helpers');
@@ -154,6 +166,7 @@ const { sendSuccess } = require('../../utils/helpers/response-helpers');
 ```
 
 #### Services
+
 ```javascript
 // NEW (pattern for all services)
 const { QuoteService, ValidationService } = require('../../services');
@@ -164,12 +177,14 @@ const ValidationService = require('../../services/ValidationService');
 ```
 
 #### Constants
+
 ```javascript
 // NEW
 const { EMBED_COLORS, MESSAGE_FLAGS, LIMITS } = require('../../utils/constants');
 ```
 
 #### Type Definitions
+
 ```javascript
 // NEW (JSDoc)
 const types = require('../../types');
@@ -227,6 +242,7 @@ const types = require('../../types');
 ## Service Layer API Reference
 
 ### DatabaseService
+
 ```javascript
 const db = require('../services/DatabaseService');
 
@@ -241,6 +257,7 @@ await db.setupSchema(conn);
 ```
 
 ### QuoteService
+
 ```javascript
 const { getAllQuotes, getRandomQuote, searchQuotes } = require('../services/QuoteService');
 
@@ -255,6 +272,7 @@ const results = await searchQuotes('love');
 ```
 
 ### ValidationService
+
 ```javascript
 const { validateQuoteText, validateAuthor, validateQuoteNumber } = require('../services/ValidationService');
 
@@ -270,6 +288,7 @@ const numResult = validateQuoteNumber(5);
 ```
 
 ### DiscordService
+
 ```javascript
 const { sendEmbed, sendEphemeral } = require('../services/DiscordService');
 
@@ -285,6 +304,7 @@ await sendEphemeral(interaction, 'Hidden message');
 ## Middleware API Reference
 
 ### errorHandler
+
 ```javascript
 const { logError, ERROR_LEVELS } = require('../middleware/errorHandler');
 
@@ -292,6 +312,7 @@ logError('context', error, ERROR_LEVELS.MEDIUM, { metadata });
 ```
 
 ### commandValidator
+
 ```javascript
 const { validateCommand } = require('../middleware/commandValidator');
 
@@ -301,6 +322,7 @@ if (!validateCommand(interaction)) {
 ```
 
 ### logger
+
 ```javascript
 const { log, LOG_LEVELS } = require('../middleware/logger');
 
@@ -351,6 +373,7 @@ Available JSDoc types in `src/types/index.js`:
 ## Test Execution
 
 ### Run specific test suites
+
 ```bash
 npm run test:quotes              # Quote database tests
 npm run test:quotes-advanced     # Advanced quote tests
@@ -361,6 +384,7 @@ npm run test:integration:refactor # Integration tests
 ```
 
 ### Run all tests
+
 ```bash
 npm run test:all                 # All tests + documentation
 npm run test                     # Core tests + documentation
@@ -372,6 +396,7 @@ npm run test:docs                # Generate documentation only
 ## Git Workflow
 
 ### Commit the restructuring
+
 ```bash
 git add -A
 git commit -m "refactor: reorganize to Option B structure"
@@ -379,6 +404,7 @@ git push origin main
 ```
 
 ### Create feature branches
+
 ```bash
 git checkout -b feature/new-service
 # Make changes
@@ -391,30 +417,38 @@ git push origin feature/new-service
 ## Troubleshooting Import Errors
 
 ### Error: Cannot find module '../utils/...'
+
 **Fix:** Update import to new path
+
 ```javascript
 // OLD: require('../utils/command-base')
 // NEW:
-require('../core/CommandBase')
+require('../core/CommandBase');
 ```
 
 ### Error: Cannot find module './database'
+
 **Fix:** Update to DatabaseService
+
 ```javascript
 // OLD: require('./database')
 // NEW:
-require('./services/DatabaseService')
+require('./services/DatabaseService');
 ```
 
 ### Error: Script not found in tests/
+
 **Fix:** Test files moved to tests/unit/
+
 ```bash
 # OLD: scripts/test-quotes.js
 # NEW: tests/unit/test-quotes.js
 ```
 
 ### ESLint error about old paths
+
 **Fix:** Run with updated paths
+
 ```bash
 npm run lint  # Now checks src/, tests/, scripts/ all correctly
 ```
@@ -423,18 +457,18 @@ npm run lint  # Now checks src/, tests/, scripts/ all correctly
 
 ## Summary of Major Changes
 
-| Aspect | Before | After |
-|--------|--------|-------|
-| **Database** | `src/database.js` + `src/db.js` (duplicate) | `src/services/DatabaseService.js` + `src/db.js` (wrapper) |
-| **Commands** | `src/utils/command-base.js` | `src/core/CommandBase.js` |
-| **Errors** | `src/utils/error-handler.js` | `src/middleware/errorHandler.js` |
-| **Tests** | `scripts/test-*.js` | `tests/unit/test-*.js` |
-| **Config** | Root level | `config/` |
-| **Structure** | Flat | Layered/Enterprise |
-| **Services** | None | 4 core services |
-| **Middleware** | None | 3 middleware |
-| **Type Safety** | None | JSDoc types |
-| **Scalability** | 10 commands max | 100+ commands |
+| Aspect          | Before                                      | After                                                     |
+| --------------- | ------------------------------------------- | --------------------------------------------------------- |
+| **Database**    | `src/database.js` + `src/db.js` (duplicate) | `src/services/DatabaseService.js` + `src/db.js` (wrapper) |
+| **Commands**    | `src/utils/command-base.js`                 | `src/core/CommandBase.js`                                 |
+| **Errors**      | `src/utils/error-handler.js`                | `src/middleware/errorHandler.js`                          |
+| **Tests**       | `scripts/test-*.js`                         | `tests/unit/test-*.js`                                    |
+| **Config**      | Root level                                  | `config/`                                                 |
+| **Structure**   | Flat                                        | Layered/Enterprise                                        |
+| **Services**    | None                                        | 4 core services                                           |
+| **Middleware**  | None                                        | 3 middleware                                              |
+| **Type Safety** | None                                        | JSDoc types                                               |
+| **Scalability** | 10 commands max                             | 100+ commands                                             |
 
 ---
 

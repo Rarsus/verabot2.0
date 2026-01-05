@@ -47,6 +47,7 @@ Queries:
 ```
 
 **Interpretation:**
+
 - **Total**: Number of queries executed
 - **Cache Hit Rate**: Percentage of queries served from cache (target: >80%)
 - **Avg Duration**: Average query execution time (target: <20ms with cache)
@@ -63,6 +64,7 @@ Cache:
 ```
 
 **Interpretation:**
+
 - **Hit Rate**: Should be >80% for optimal performance
 - **Size**: Current cache utilization (should be < maxSize)
 
@@ -77,6 +79,7 @@ Connection Pool:
 ```
 
 **Interpretation:**
+
 - **Utilization**: Percentage of pool in use
 - High utilization (>80%) may indicate need for larger pool
 - Low utilization (<20%) may indicate over-provisioning
@@ -91,6 +94,7 @@ Memory:
 ```
 
 **Interpretation:**
+
 - Monitor for memory leaks (continuously growing heap used)
 - Compare against available system memory
 
@@ -113,7 +117,7 @@ cache.set('key', value, 600000); // 10 minutes
 const slowQueries = monitor.getSlowQueries(100);
 
 // Analyze and optimize
-slowQueries.forEach(q => {
+slowQueries.forEach((q) => {
   console.log(`Slow: ${q.sql} - ${q.duration}ms`);
 });
 ```
@@ -180,11 +184,13 @@ fs.appendFileSync('metrics.log', JSON.stringify(metrics) + '\n');
 ### Issue: Low Cache Hit Rate
 
 **Causes:**
+
 - TTL too short
 - Cache size too small
 - Aggressive invalidation
 
 **Solutions:**
+
 - Increase cache size
 - Extend TTL for stable data
 - Review invalidation patterns
@@ -192,11 +198,13 @@ fs.appendFileSync('metrics.log', JSON.stringify(metrics) + '\n');
 ### Issue: High Query Times
 
 **Causes:**
+
 - Missing indexes
 - Complex queries
 - Database locks
 
 **Solutions:**
+
 - Add indexes for frequently queried columns
 - Use query builder for optimization
 - Check for N+1 query problems
@@ -204,11 +212,13 @@ fs.appendFileSync('metrics.log', JSON.stringify(metrics) + '\n');
 ### Issue: Pool Exhaustion
 
 **Causes:**
+
 - Too many concurrent requests
 - Connection leaks
 - Slow queries blocking pool
 
 **Solutions:**
+
 - Increase pool size
 - Fix connection leaks
 - Optimize slow queries

@@ -21,6 +21,7 @@ VeraBot2.0 uses GitHub Actions for continuous integration and continuous deploym
 **Triggers:** Push to `main`, Pull requests to `main`
 
 **What it does:**
+
 - Runs on Node.js 18.x, 20.x, and 22.x (matrix testing)
 - Executes ESLint with strict enforcement (max 100 warnings)
 - Runs all tests with coverage collection
@@ -31,12 +32,14 @@ VeraBot2.0 uses GitHub Actions for continuous integration and continuous deploym
 - Builds Docker image (main branch only)
 
 **Key Features:**
+
 - Parallel testing across multiple Node versions
 - Automatic coverage reporting with c8
 - Integration with Codecov for coverage tracking
 - Caches npm dependencies for faster builds
 
 **Success Criteria:**
+
 - All tests pass on all Node versions
 - No ESLint errors (warnings allowed up to 100)
 - Coverage meets minimum thresholds (70%)
@@ -46,6 +49,7 @@ VeraBot2.0 uses GitHub Actions for continuous integration and continuous deploym
 **Triggers:** Push to `main`, Pull requests to `main`
 
 **What it does:**
+
 - Runs comprehensive test suite with coverage
 - Checks coverage thresholds (70% minimum)
 - Generates detailed HTML coverage reports
@@ -54,16 +58,19 @@ VeraBot2.0 uses GitHub Actions for continuous integration and continuous deploym
 - Uploads results to Codecov
 
 **Coverage Thresholds:**
+
 - Statements: 70%
 - Branches: 65%
 - Functions: 70%
 - Lines: 70%
 
 **Artifacts Generated:**
+
 - `coverage-report` - Full HTML coverage report
 - Coverage summary JSON
 
 **PR Comment Example:**
+
 ```
 ## 📊 Code Coverage Report
 
@@ -80,6 +87,7 @@ VeraBot2.0 uses GitHub Actions for continuous integration and continuous deploym
 **Triggers:** Push to `main`, Pull requests to `main`, Weekly schedule (Sunday midnight)
 
 **What it does:**
+
 - **Dependency Scan:** Runs `npm audit` to check for vulnerabilities
 - **ESLint Security:** Scans code with security-focused ESLint rules
 - **Security Tests:** Runs security validation and integration tests
@@ -87,14 +95,17 @@ VeraBot2.0 uses GitHub Actions for continuous integration and continuous deploym
 - Posts security summary as PR comment
 
 **Security Tests:**
+
 - 20 input validation tests (SQL injection, XSS prevention)
 - 15 integration tests (encryption, HMAC, hashing)
 
 **Artifacts Generated:**
+
 - `npm-audit-report` - Dependency vulnerability report
 - `eslint-security-report` - Security-focused lint results
 
 **PR Comment Example:**
+
 ```
 ## 🔐 Security Scan Summary
 
@@ -111,6 +122,7 @@ VeraBot2.0 uses GitHub Actions for continuous integration and continuous deploym
 **Triggers:** Push to `main`, Pull requests to `main`
 
 **What it does:**
+
 - Runs ESLint for code quality checks
 - Analyzes cyclomatic complexity
 - Generates code metrics and statistics
@@ -118,16 +130,19 @@ VeraBot2.0 uses GitHub Actions for continuous integration and continuous deploym
 - Posts quality summary as PR comment
 
 **Quality Metrics:**
+
 - Complexity warnings for functions >15 complexity
 - Long function warnings (>150 lines)
 - Code statistics (file count, line count)
 
 **Quality Score Calculation:**
+
 ```
 Score = 100 - (errors × 5) - (warnings × 0.5)
 ```
 
 **Grade Scale:**
+
 - A+ (95-100): Excellent
 - A (90-94): Very Good
 - B (80-89): Good
@@ -136,6 +151,7 @@ Score = 100 - (errors × 5) - (warnings × 0.5)
 - F (<65): Poor
 
 **Artifacts Generated:**
+
 - `eslint-quality-report` - JSON and HTML lint reports
 - `complexity-report` - Complexity analysis
 - `code-metrics-report` - Code statistics
@@ -145,6 +161,7 @@ Score = 100 - (errors × 5) - (warnings × 0.5)
 **Triggers:** Pull request opened, synchronized, or reopened
 
 **What it does:**
+
 - Validates PR title format (must start with: feat:, fix:, docs:, etc.)
 - Runs linter (strict, no errors allowed)
 - Executes all tests
@@ -155,6 +172,7 @@ Score = 100 - (errors × 5) - (warnings × 0.5)
 
 **PR Title Format:**
 Must start with one of:
+
 - `feat:` - New feature
 - `fix:` - Bug fix
 - `docs:` - Documentation changes
@@ -231,6 +249,7 @@ npm run security:check
 ### Simulating CI Environment
 
 Install act (GitHub Actions local runner):
+
 ```bash
 # Install act (https://github.com/nektos/act)
 brew install act  # macOS
@@ -256,6 +275,7 @@ act -s GITHUB_TOKEN=<token>
 **Cause:** Different Node version or environment variables
 
 **Solution:**
+
 ```bash
 # Check Node version matches CI
 node --version  # Should be 18.x, 20.x, or 22.x
@@ -271,6 +291,7 @@ npm test
 **Cause:** Code coverage below 70%
 
 **Solution:**
+
 ```bash
 # Check coverage locally
 npm run test:coverage
@@ -286,6 +307,7 @@ open coverage/lcov-report/index.html
 **Cause:** ESLint errors in code
 
 **Solution:**
+
 ```bash
 # See specific errors
 npm run lint
@@ -302,6 +324,7 @@ npm run lint
 **Cause:** Security vulnerabilities or test failures
 
 **Solution:**
+
 ```bash
 # Run security tests locally
 npm run test:security
@@ -319,6 +342,7 @@ npm audit fix
 **Cause:** Invalid YAML syntax in workflow file
 
 **Solution:**
+
 ```bash
 # Validate workflow file
 act -W .github/workflows/ci.yml --dryrun
@@ -332,6 +356,7 @@ act -W .github/workflows/ci.yml --dryrun
 #### Enable Debug Logging
 
 Add these secrets to your repository:
+
 - `ACTIONS_STEP_DEBUG=true` - Enable step debug logging
 - `ACTIONS_RUNNER_DEBUG=true` - Enable runner debug logging
 
@@ -345,6 +370,7 @@ Add these secrets to your repository:
 #### Download Artifacts
 
 Artifacts are available for 30 days after workflow completion:
+
 1. Go to workflow run summary
 2. Scroll to "Artifacts" section
 3. Download the artifact you need
@@ -354,6 +380,7 @@ Artifacts are available for 30 days after workflow completion:
 #### Slow Workflow Runs
 
 **Solutions:**
+
 1. Use npm cache (`cache: 'npm'` in setup-node action)
 2. Run jobs in parallel where possible
 3. Use `continue-on-error: true` for non-critical steps
@@ -362,6 +389,7 @@ Artifacts are available for 30 days after workflow completion:
 #### High Resource Usage
 
 **Solutions:**
+
 1. Split large jobs into smaller ones
 2. Use conditional job execution (`if` statements)
 3. Skip unnecessary steps for specific branches
@@ -385,9 +413,9 @@ name: My Custom Workflow
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
@@ -396,7 +424,7 @@ permissions:
 jobs:
   my-job:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -446,6 +474,7 @@ jobs:
 ## Support
 
 If you encounter issues with workflows:
+
 1. Check this guide first
 2. Review workflow logs in GitHub Actions
 3. Test locally with provided commands

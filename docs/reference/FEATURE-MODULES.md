@@ -14,20 +14,20 @@ VeraBot2.0 now has a modular feature system that allows you to enable/disable op
 
 These features are essential and cannot be disabled:
 
-| Feature | Purpose | Commands |
-|---------|---------|----------|
+| Feature    | Purpose                 | Commands                                                                                                                                                        |
+| ---------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Quotes** | Quote management system | `add-quote`, `search-quotes`, `random-quote`, `quote`, `rate-quote`, `tag-quote`, `export-quotes`, `delete-quote`, `update-quote`, `list-quotes`, `quote-stats` |
-| **Misc** | Miscellaneous utilities | `ping`, `help`, `hi`, `poem` |
+| **Misc**   | Miscellaneous utilities | `ping`, `help`, `hi`, `poem`                                                                                                                                    |
 
 ### Optional Features
 
 These can be enabled/disabled via environment variables:
 
-| Feature | Default | Required Command | Enable With |
-|---------|---------|------------------|------------|
-| **Reminders** | ✓ Enabled | `create-reminder`, `delete-reminder`, `list-reminders` | `ENABLE_REMINDERS=true` |
-| **Proxy** | ✗ Disabled | `proxy-config`, `proxy-enable`, `proxy-status` | `ENABLE_PROXY_FEATURES=true` |
-| **Admin** | ✗ Disabled | Proxy configuration | `ENABLE_ADMIN_COMMANDS=true` |
+| Feature       | Default    | Required Command                                       | Enable With                  |
+| ------------- | ---------- | ------------------------------------------------------ | ---------------------------- |
+| **Reminders** | ✓ Enabled  | `create-reminder`, `delete-reminder`, `list-reminders` | `ENABLE_REMINDERS=true`      |
+| **Proxy**     | ✗ Disabled | `proxy-config`, `proxy-enable`, `proxy-status`         | `ENABLE_PROXY_FEATURES=true` |
+| **Admin**     | ✗ Disabled | Proxy configuration                                    | `ENABLE_ADMIN_COMMANDS=true` |
 
 ## Configuration
 
@@ -54,6 +54,7 @@ PROXY_WEBHOOK_PORT=3001
 ### Quick Setups
 
 **Minimal Bot** (Just quotes, no extras)
+
 ```env
 ENABLE_REMINDERS=false
 ENABLE_PROXY_FEATURES=false
@@ -61,6 +62,7 @@ ENABLE_ADMIN_COMMANDS=false
 ```
 
 **Standard Bot** (Quotes + reminders)
+
 ```env
 ENABLE_REMINDERS=true
 ENABLE_PROXY_FEATURES=false
@@ -68,6 +70,7 @@ ENABLE_ADMIN_COMMANDS=false
 ```
 
 **Full Featured** (Everything)
+
 ```env
 ENABLE_REMINDERS=true
 ENABLE_PROXY_FEATURES=true
@@ -176,9 +179,9 @@ ENABLE_ADMIN_COMMANDS=false
 services:
   verabot:
     environment:
-      ENABLE_REMINDERS: "true"
-      ENABLE_PROXY_FEATURES: "false"
-      ENABLE_ADMIN_COMMANDS: "false"
+      ENABLE_REMINDERS: 'true'
+      ENABLE_PROXY_FEATURES: 'false'
+      ENABLE_ADMIN_COMMANDS: 'false'
 ```
 
 ### Full Featured Setup
@@ -187,10 +190,10 @@ services:
 services:
   verabot:
     environment:
-      ENABLE_REMINDERS: "true"
-      ENABLE_PROXY_FEATURES: "true"
-      ENABLE_ADMIN_COMMANDS: "true"
-      PROXY_WEBHOOK_PORT: "3001"
+      ENABLE_REMINDERS: 'true'
+      ENABLE_PROXY_FEATURES: 'true'
+      ENABLE_ADMIN_COMMANDS: 'true'
+      PROXY_WEBHOOK_PORT: '3001'
 ```
 
 ### Minimal Setup
@@ -199,9 +202,9 @@ services:
 services:
   verabot:
     environment:
-      ENABLE_REMINDERS: "false"
-      ENABLE_PROXY_FEATURES: "false"
-      ENABLE_ADMIN_COMMANDS: "false"
+      ENABLE_REMINDERS: 'false'
+      ENABLE_PROXY_FEATURES: 'false'
+      ENABLE_ADMIN_COMMANDS: 'false'
 ```
 
 ## Security Considerations
@@ -253,6 +256,7 @@ docker-compose exec verabot npm start
 To add a new optional feature in the future:
 
 1. **Add to `src/config/features.js`**
+
    ```javascript
    myfeature: {
      enabled: process.env.ENABLE_MY_FEATURE !== 'false',
@@ -261,11 +265,13 @@ To add a new optional feature in the future:
    ```
 
 2. **Update `.env.example`**
+
    ```env
    ENABLE_MY_FEATURE=true
    ```
 
 3. **Check in `src/index.js`**
+
    ```javascript
    if (features.myfeature.enabled) {
      // Load my feature
@@ -292,12 +298,14 @@ Feature modules have minimal overhead:
 ### Commands Not Showing Up
 
 Check the logs at startup:
+
 ```
 ℹ️  Skipping admin commands (ENABLE_ADMIN_COMMANDS=false)
 ℹ️  Skipping reminder commands (ENABLE_REMINDERS=false)
 ```
 
 If a command is missing, ensure it's enabled:
+
 ```bash
 # Enable feature
 ENABLE_FEATURE_NAME=true npm start
@@ -306,6 +314,7 @@ ENABLE_FEATURE_NAME=true npm start
 ### Port Already in Use
 
 If proxy is enabled but port fails:
+
 ```env
 PROXY_WEBHOOK_PORT=3002  # Use different port
 ```
@@ -313,6 +322,7 @@ PROXY_WEBHOOK_PORT=3002  # Use different port
 ### Services Won't Initialize
 
 Check environment variables are set correctly:
+
 ```bash
 # View all feature-related variables
 env | grep ENABLE

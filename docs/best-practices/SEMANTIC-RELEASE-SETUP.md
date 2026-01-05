@@ -30,17 +30,17 @@ Semantic Release uses the **Angular Commit Message Convention** to determine ver
 
 ### Supported Types
 
-| Type | Version Impact | Description |
-|------|---|---|
-| `feat` | MINOR | New feature |
-| `fix` | PATCH | Bug fix |
-| `docs` | None | Documentation only |
-| `style` | None | Code style (no logic change) |
-| `refactor` | None | Code refactor (no logic change) |
-| `perf` | PATCH | Performance improvement |
-| `test` | None | Test additions/changes |
-| `chore` | None | Build, dependencies, tooling |
-| `ci` | None | CI/CD configuration |
+| Type       | Version Impact | Description                     |
+| ---------- | -------------- | ------------------------------- |
+| `feat`     | MINOR          | New feature                     |
+| `fix`      | PATCH          | Bug fix                         |
+| `docs`     | None           | Documentation only              |
+| `style`    | None           | Code style (no logic change)    |
+| `refactor` | None           | Code refactor (no logic change) |
+| `perf`     | PATCH          | Performance improvement         |
+| `test`     | None           | Test additions/changes          |
+| `chore`    | None           | Build, dependencies, tooling    |
+| `ci`       | None           | CI/CD configuration             |
 
 ### Breaking Changes
 
@@ -55,16 +55,19 @@ BREAKING CHANGE: /api/quotes endpoint now returns paginated results
 ### Examples
 
 **Patch Release (1.0.0 → 1.0.1)**
+
 ```
 fix: resolve quote export encoding issue
 ```
 
 **Minor Release (1.0.1 → 1.1.0)**
+
 ```
 feat: add search filters to quote discovery
 ```
 
 **Major Release (1.1.0 → 2.0.0)**
+
 ```
 feat: restructure database schema
 
@@ -82,12 +85,14 @@ npm run release:dry
 ```
 
 This will:
+
 - Analyze commits since the last release
 - Determine the new version number
 - **NOT** make any actual changes
 - Show what would happen
 
 Output will show:
+
 - ✅ Plugins loaded successfully
 - Analyzed commits
 - Would-be version bump (PATCH/MINOR/MAJOR)
@@ -109,6 +114,7 @@ npm run release
 ```
 
 This will:
+
 1. Analyze commits since last tag
 2. Determine version bump
 3. Update `package.json` version
@@ -140,11 +146,12 @@ The `.github/workflows/release.yml` workflow automatically runs semantic-release
 ### GitHub Permissions Required
 
 The workflow file already includes proper permissions:
+
 ```yaml
 permissions:
-  contents: write        # Write to repository (commits, tags)
-  pull-requests: write   # Write to PRs (comments)
-  packages: write        # Publish to npm (disabled in config)
+  contents: write # Write to repository (commits, tags)
+  pull-requests: write # Write to PRs (comments)
+  packages: write # Publish to npm (disabled in config)
 ```
 
 GITHUB_TOKEN is automatically provided by GitHub Actions.
@@ -154,11 +161,13 @@ GITHUB_TOKEN is automatically provided by GitHub Actions.
 ### .releaserc.json
 
 Main Semantic Release configuration:
+
 - **branches**: main (production) and develop (beta)
 - **plugins**: changelog, npm, git, github
 - **preset**: Angular (conventional commits)
 
 Updates these files on release:
+
 - `package.json` - version field
 - `package-lock.json` - lockfile
 - `CHANGELOG.md` - release notes
@@ -167,6 +176,7 @@ Updates these files on release:
 ### .github/workflows/release.yml
 
 GitHub Actions workflow that:
+
 - Triggers on push to main or develop
 - Installs dependencies
 - Sets up Git credentials
@@ -202,6 +212,7 @@ Edit `.releaserc.json` `branches` array:
 ### Disable npm Publishing
 
 Already configured in `.releaserc.json` for non-npm projects:
+
 ```json
 ["@semantic-release/npm", { "npmPublish": false }]
 ```
@@ -213,6 +224,7 @@ Already configured in `.releaserc.json` for non-npm projects:
 **Problem**: Push to main but no release created
 
 **Solutions**:
+
 1. Verify commit message follows Angular convention (`feat:`, `fix:`, etc.)
 2. Check GitHub Actions tab for workflow run status
 3. Ensure branch is `main` or `develop`
@@ -223,6 +235,7 @@ Already configured in `.releaserc.json` for non-npm projects:
 **Problem**: Release bumped wrong version number
 
 **Solutions**:
+
 1. Check commit messages - they determine version bump
 2. Run `npm run release:dry` locally to test
 3. See "Commit Message Format" section above
@@ -232,7 +245,8 @@ Already configured in `.releaserc.json` for non-npm projects:
 
 **Problem**: Workflow fails with token error
 
-**Solution**: 
+**Solution**:
+
 - Verify `GITHUB_TOKEN` is in workflow (automatic in GitHub Actions)
 - Check repository has `contents:write` and `pull-requests:write` permissions
 - Personal token needed for local releases (see Local Testing section)
@@ -249,6 +263,7 @@ Already configured in `.releaserc.json` for non-npm projects:
 ## Release Notes Generation
 
 Changelog is automatically generated from:
+
 - `feat` commits → Features section
 - `fix` commits → Bug Fixes section
 - `BREAKING CHANGE` footer → Breaking Changes section
@@ -288,11 +303,10 @@ git push origin main
 
 ## Quick Reference
 
-| Command | Purpose |
-|---------|---------|
-| `npm run release:dry` | Test what would be released (dry-run) |
-| `npm run release` | Perform actual release (local) |
-| `npm run release:check` | Verify version consistency |
-| `npm run lint` | Check code quality |
-| `npm test` | Run all tests |
-
+| Command                 | Purpose                               |
+| ----------------------- | ------------------------------------- |
+| `npm run release:dry`   | Test what would be released (dry-run) |
+| `npm run release`       | Perform actual release (local)        |
+| `npm run release:check` | Verify version consistency            |
+| `npm run lint`          | Check code quality                    |
+| `npm test`              | Run all tests                         |

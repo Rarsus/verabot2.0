@@ -5,6 +5,7 @@ Comprehensive automated tests for the VeraBot Dashboard OAuth implementation.
 ## Test Coverage
 
 ### 1. OAuth Service Tests (`test-oauth-service.js`)
+
 - OAuth service initialization
 - Authorization URL generation
 - JWT token generation
@@ -15,6 +16,7 @@ Comprehensive automated tests for the VeraBot Dashboard OAuth implementation.
 **Run:** `npm run test:dashboard:oauth`
 
 ### 2. Bot Service Tests (`test-bot-service.js`)
+
 - Bot service initialization
 - Required methods verification
 - Bot API URL configuration
@@ -23,6 +25,7 @@ Comprehensive automated tests for the VeraBot Dashboard OAuth implementation.
 **Run:** `npm run test:dashboard:bot`
 
 ### 3. Auth Middleware Tests (`test-auth-middleware.js`)
+
 - Middleware function existence
 - Request rejection without token
 - Valid token acceptance
@@ -33,6 +36,7 @@ Comprehensive automated tests for the VeraBot Dashboard OAuth implementation.
 **Run:** `npm run test:dashboard:auth`
 
 ### 4. Error Handler Tests (`test-error-handler.js`)
+
 - Error handler functions existence
 - 404 not found handling
 - Generic error handling (500)
@@ -43,6 +47,7 @@ Comprehensive automated tests for the VeraBot Dashboard OAuth implementation.
 **Run:** `npm run test:dashboard:errors` (if added)
 
 ### 5. Bot Dashboard Auth Tests (`test-bot-dashboard-auth.js`)
+
 - Middleware object existence
 - Required methods verification
 - Token rejection without authentication
@@ -53,6 +58,7 @@ Comprehensive automated tests for the VeraBot Dashboard OAuth implementation.
 **Run:** Individual file execution
 
 ### 6. Integration Tests (`test-integration.js`)
+
 - OAuth service + middleware integration
 - Bot service configuration
 - Error handler integration
@@ -66,11 +72,13 @@ Comprehensive automated tests for the VeraBot Dashboard OAuth implementation.
 ## Running Tests
 
 ### Run All Dashboard Tests
+
 ```bash
 npm run test:dashboard
 ```
 
 ### Run Individual Test Suites
+
 ```bash
 # OAuth service only
 npm run test:dashboard:oauth
@@ -86,6 +94,7 @@ npm run test:dashboard:integration
 ```
 
 ### Run Individual Test Files
+
 ```bash
 node tests/dashboard/test-oauth-service.js
 node tests/dashboard/test-bot-service.js
@@ -154,18 +163,21 @@ Test Results by File:
 ## Test Coverage Areas
 
 ### Backend OAuth Service
+
 - ✅ Discord OAuth 2.0 flow
 - ✅ JWT token generation/verification
 - ✅ Token expiration handling
 - ✅ Authorization URL generation
 
 ### Authentication & Authorization
+
 - ✅ JWT middleware verification
 - ✅ Cookie-based authentication
 - ✅ Optional authentication
 - ✅ Admin permission checks
 
 ### Error Handling
+
 - ✅ 404 not found responses
 - ✅ 401 unauthorized responses
 - ✅ 400 validation errors
@@ -173,6 +185,7 @@ Test Results by File:
 - ✅ Custom error status codes
 
 ### Integration
+
 - ✅ OAuth + Middleware integration
 - ✅ Bot service configuration
 - ✅ Complete JWT flow
@@ -189,6 +202,7 @@ To add new test files:
 5. Run test runner to verify
 
 Example:
+
 ```bash
 # Create new test
 touch tests/dashboard/test-new-feature.js
@@ -210,17 +224,22 @@ These tests can be integrated into CI/CD pipelines:
 ## Troubleshooting
 
 ### Tests Fail with Module Not Found
+
 Ensure you're running from the project root:
+
 ```bash
 cd /path/to/verabot2.0
 npm run test:dashboard
 ```
 
 ### JWT Verification Fails
+
 Check that SESSION_SECRET is consistent across dashboard server and bot.
 
 ### Integration Tests Fail
+
 Ensure all dependencies are installed:
+
 ```bash
 npm install
 cd dashboard/server && npm install
@@ -248,6 +267,7 @@ Potential additions to the test suite:
 ## Documentation
 
 For more information on the dashboard implementation:
+
 - `DASHBOARD-OAUTH-SETUP.md` - Setup guide
 - `DASHBOARD-IMPLEMENTATION-COMPLETE.md` - Implementation summary
 - `DASHBOARD-DOCKER-OAUTH-ROADMAP.md` - Original roadmap

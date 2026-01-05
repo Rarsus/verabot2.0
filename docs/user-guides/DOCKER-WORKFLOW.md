@@ -209,21 +209,21 @@ docker-compose exec verabot2 npm run register-commands
 
 ## 📊 Docker Compose Cheatsheet
 
-| Task | Command |
-|------|---------|
-| **Start** | `docker-compose up -d` |
-| **Stop** | `docker-compose down` |
-| **View logs** | `docker-compose logs -f` |
-| **View logs (tail)** | `docker-compose logs --tail=50` |
-| **Check status** | `docker-compose ps` |
-| **Rebuild** | `docker-compose up -d --build` |
-| **Restart** | `docker-compose restart` |
-| **Execute command** | `docker-compose exec verabot2 <command>` |
-| **Interactive shell** | `docker-compose exec verabot2 /bin/sh` |
-| **View config** | `docker-compose config` |
-| **Full reset** | `docker-compose down -v` |
-| **View running processes** | `docker-compose top` |
-| **View environment** | `docker-compose exec verabot2 env` |
+| Task                       | Command                                  |
+| -------------------------- | ---------------------------------------- |
+| **Start**                  | `docker-compose up -d`                   |
+| **Stop**                   | `docker-compose down`                    |
+| **View logs**              | `docker-compose logs -f`                 |
+| **View logs (tail)**       | `docker-compose logs --tail=50`          |
+| **Check status**           | `docker-compose ps`                      |
+| **Rebuild**                | `docker-compose up -d --build`           |
+| **Restart**                | `docker-compose restart`                 |
+| **Execute command**        | `docker-compose exec verabot2 <command>` |
+| **Interactive shell**      | `docker-compose exec verabot2 /bin/sh`   |
+| **View config**            | `docker-compose config`                  |
+| **Full reset**             | `docker-compose down -v`                 |
+| **View running processes** | `docker-compose top`                     |
+| **View environment**       | `docker-compose exec verabot2 env`       |
 
 ---
 
@@ -285,6 +285,7 @@ sudo systemctl enable docker
 ## 🔐 Security Notes for Docker
 
 **DO:**
+
 - ✅ Keep `.env` out of git (check `.gitignore`)
 - ✅ Use strong DISCORD_TOKEN
 - ✅ Use unique ENCRYPTION_KEY
@@ -292,6 +293,7 @@ sudo systemctl enable docker
 - ✅ Use `.dockerignore` to exclude unnecessary files
 
 **DON'T:**
+
 - ❌ Commit `.env` to repository
 - ❌ Share `.env` file with others
 - ❌ Use test tokens in production
@@ -332,13 +334,13 @@ If all ✓, you're done! Your bot is running perfectly.
 
 ### Why Docker?
 
-| Benefit | Explanation |
-|---------|-------------|
-| **Isolation** | Bot runs in isolated container, no system conflicts |
-| **Consistency** | Same setup everywhere (laptop, server, CI/CD) |
-| **Easy Deploy** | One command instead of 10 setup steps |
-| **Persistence** | Data survives container restarts |
-| **Scalability** | Run multiple containers easily |
+| Benefit         | Explanation                                         |
+| --------------- | --------------------------------------------------- |
+| **Isolation**   | Bot runs in isolated container, no system conflicts |
+| **Consistency** | Same setup everywhere (laptop, server, CI/CD)       |
+| **Easy Deploy** | One command instead of 10 setup steps               |
+| **Persistence** | Data survives container restarts                    |
+| **Scalability** | Run multiple containers easily                      |
 
 ### How Docker Compose Works
 

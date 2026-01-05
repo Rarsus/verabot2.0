@@ -35,11 +35,13 @@ The Reminder Management System is a comprehensive feature for VeraBot 2.0 that e
 Create a new reminder with all required and optional fields.
 
 **Usage:**
+
 ```
 /create-reminder subject:<text> category:<text> when:<datetime> who:<user_or_role> [content:<text>] [link:<url>] [image:<url>]
 ```
 
 **Parameters:**
+
 - `subject` (required) - Reminder title (3-200 characters)
 - `category` (required) - Category for organization (e.g., Meeting, Task, Event)
 - `when` (required) - Event date/time (ISO format or natural language)
@@ -49,17 +51,19 @@ Create a new reminder with all required and optional fields.
 - `image` (optional) - Image URL for visualization
 
 **Example:**
+
 ```
-/create-reminder 
-  subject:Team Standup 
-  category:Meeting 
-  when:2024-12-31T10:00:00Z 
+/create-reminder
+  subject:Team Standup
+  category:Meeting
+  when:2024-12-31T10:00:00Z
   who:123456789
   content:Daily team standup meeting
   link:https://meet.example.com/standup
 ```
 
 **Response:**
+
 ```
 ✅ Reminder #42 created successfully! It will be sent at the specified time.
 ```
@@ -69,20 +73,24 @@ Create a new reminder with all required and optional fields.
 Retrieve and display details of a specific reminder.
 
 **Usage:**
+
 ```
 /get-reminder id:<number>
 ```
 
 **Parameters:**
+
 - `id` (required) - Reminder ID
 
 **Example:**
+
 ```
 /get-reminder id:42
 ```
 
 **Response:**
 An embed displaying:
+
 - Subject and category
 - Status (active, completed, cancelled)
 - Event time and notification time
@@ -94,20 +102,24 @@ An embed displaying:
 Update one or more fields of an existing reminder.
 
 **Usage:**
+
 ```
 /update-reminder id:<number> [subject:<text>] [category:<text>] [when:<datetime>] [content:<text>] [link:<url>] [image:<url>] [status:<status>]
 ```
 
 **Parameters:**
+
 - `id` (required) - Reminder ID
 - All other parameters are optional; provide only what you want to update
 
 **Example:**
+
 ```
 /update-reminder id:42 subject:Updated Meeting Title status:completed
 ```
 
 **Response:**
+
 ```
 ✅ Reminder #42 updated successfully!
 ```
@@ -117,20 +129,24 @@ Update one or more fields of an existing reminder.
 Delete a reminder (soft delete by default).
 
 **Usage:**
+
 ```
 /delete-reminder id:<number> [hard:<boolean>]
 ```
 
 **Parameters:**
+
 - `id` (required) - Reminder ID
 - `hard` (optional) - If true, permanently deletes; if false (default), cancels
 
 **Example:**
+
 ```
 /delete-reminder id:42 hard:false
 ```
 
 **Response:**
+
 ```
 ✅ Reminder #42 cancelled successfully!
 ```
@@ -140,23 +156,27 @@ Delete a reminder (soft delete by default).
 List reminders with optional filters and pagination.
 
 **Usage:**
+
 ```
 /list-reminders [status:<status>] [category:<category>] [assignee:<user_id>] [page:<number>]
 ```
 
 **Parameters:**
+
 - `status` (optional) - Filter by status (active, completed, cancelled)
 - `category` (optional) - Filter by category
 - `assignee` (optional) - Filter by assigned user ID
 - `page` (optional) - Page number for pagination (10 per page)
 
 **Example:**
+
 ```
 /list-reminders status:active category:Meeting
 ```
 
 **Response:**
 An embed listing up to 10 reminders per page with:
+
 - Reminder ID and subject
 - Category and relative time
 - Status indicator (🟢 active, ✅ completed, ⚫ cancelled)
@@ -166,15 +186,18 @@ An embed listing up to 10 reminders per page with:
 Search reminders by keyword across subject, category, and content.
 
 **Usage:**
+
 ```
 /search-reminders keyword:<text> [page:<number>]
 ```
 
 **Parameters:**
+
 - `keyword` (required) - Search term (min 2 characters)
 - `page` (optional) - Page number for pagination
 
 **Example:**
+
 ```
 /search-reminders keyword:standup page:1
 ```
@@ -186,39 +209,39 @@ An embed showing matching reminders with keyword context highlighted.
 
 ### reminders Table
 
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER | Primary key |
-| subject | TEXT | Reminder title (required) |
-| category | TEXT | Category for organization (required) |
-| when_datetime | TEXT | Event date/time ISO format (required) |
-| content | TEXT | Detailed description (optional) |
-| link | TEXT | Associated URL (optional) |
-| image | TEXT | Image URL (optional) |
-| notificationTime | TEXT | When notification should be sent (required) |
-| status | TEXT | active, completed, or cancelled (default: active) |
-| createdAt | DATETIME | Creation timestamp |
-| updatedAt | DATETIME | Last update timestamp |
+| Column           | Type     | Description                                       |
+| ---------------- | -------- | ------------------------------------------------- |
+| id               | INTEGER  | Primary key                                       |
+| subject          | TEXT     | Reminder title (required)                         |
+| category         | TEXT     | Category for organization (required)              |
+| when_datetime    | TEXT     | Event date/time ISO format (required)             |
+| content          | TEXT     | Detailed description (optional)                   |
+| link             | TEXT     | Associated URL (optional)                         |
+| image            | TEXT     | Image URL (optional)                              |
+| notificationTime | TEXT     | When notification should be sent (required)       |
+| status           | TEXT     | active, completed, or cancelled (default: active) |
+| createdAt        | DATETIME | Creation timestamp                                |
+| updatedAt        | DATETIME | Last update timestamp                             |
 
 ### reminder_assignments Table
 
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER | Primary key |
-| reminderId | INTEGER | Foreign key to reminders |
-| assigneeType | TEXT | 'user' or 'role' |
-| assigneeId | TEXT | User ID or Role ID |
-| createdAt | DATETIME | Creation timestamp |
+| Column       | Type     | Description              |
+| ------------ | -------- | ------------------------ |
+| id           | INTEGER  | Primary key              |
+| reminderId   | INTEGER  | Foreign key to reminders |
+| assigneeType | TEXT     | 'user' or 'role'         |
+| assigneeId   | TEXT     | User ID or Role ID       |
+| createdAt    | DATETIME | Creation timestamp       |
 
 ### reminder_notifications Table
 
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER | Primary key |
-| reminderId | INTEGER | Foreign key to reminders |
-| sentAt | DATETIME | When notification was sent |
-| success | INTEGER | 1 if successful, 0 if failed |
-| errorMessage | TEXT | Error details if failed |
+| Column       | Type     | Description                  |
+| ------------ | -------- | ---------------------------- |
+| id           | INTEGER  | Primary key                  |
+| reminderId   | INTEGER  | Foreign key to reminders     |
+| sentAt       | DATETIME | When notification was sent   |
+| success      | INTEGER  | 1 if successful, 0 if failed |
+| errorMessage | TEXT     | Error details if failed      |
 
 ## Configuration
 
@@ -289,12 +312,14 @@ The notification service is automatically initialized when the bot starts. It ch
 ### Service Layer
 
 **ReminderService.js**
+
 - Core CRUD operations
 - Input validation and sanitization
 - Database abstraction
 - Assignment management
 
 **ReminderNotificationService.js**
+
 - Scheduled notification checking
 - Embed generation
 - User/role notification routing
@@ -303,6 +328,7 @@ The notification service is automatically initialized when the bot starts. It ch
 ### Command Layer
 
 All commands extend from `CommandBase` and follow the established patterns:
+
 - Automatic error handling
 - Consistent response formatting
 - Both slash and prefix command support
@@ -346,6 +372,7 @@ All commands extend from `CommandBase` and follow the established patterns:
 **Problem:** Reminders created but notifications not delivered
 
 **Solutions:**
+
 1. Check `REMINDER_NOTIFICATION_CHANNEL` is set for role notifications
 2. Verify bot has permission to DM users
 3. Check bot has permission to post in notification channel
@@ -356,6 +383,7 @@ All commands extend from `CommandBase` and follow the established patterns:
 **Problem:** Error when creating reminder
 
 **Solutions:**
+
 1. Verify all required fields are provided
 2. Check datetime format (use ISO 8601)
 3. Ensure subject meets length requirements (3-200 chars)
@@ -366,6 +394,7 @@ All commands extend from `CommandBase` and follow the established patterns:
 **Problem:** List or search returns no results
 
 **Solutions:**
+
 1. Check filter values match actual data
 2. Try broader search terms
 3. Verify reminders exist with correct status
@@ -384,7 +413,7 @@ const {
   updateReminder,
   deleteReminder,
   listReminders,
-  searchReminders
+  searchReminders,
 } = require('./src/services/ReminderService');
 
 // Create a reminder
@@ -392,16 +421,16 @@ const reminderId = await createReminder({
   subject: 'Test Reminder',
   category: 'Task',
   when: '2024-12-31T10:00:00Z',
-  content: 'Testing programmatic access'
+  content: 'Testing programmatic access',
 });
 
 // Get reminder
 const reminder = await getReminderById(reminderId);
 
 // List with filters
-const activeReminders = await listReminders({ 
+const activeReminders = await listReminders({
   status: 'active',
-  limit: 20 
+  limit: 20,
 });
 ```
 

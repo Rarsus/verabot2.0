@@ -23,13 +23,15 @@
 **Consolidate into single comprehensive `.env.example` file**
 
 ### What This Achieves
+
 ✅ Single source of truth  
 ✅ Clear required vs optional marking  
 ✅ Comprehensive inline documentation  
 ✅ Easy 5-minute setup  
-✅ Improved security awareness  
+✅ Improved security awareness
 
 ### Implementation Time
+
 - **Phase 1 (Immediate):** 2-3 hours
 - **Phase 2 (Optional):** 1-2 days
 - **Phase 3 (Future):** 1 week
@@ -37,23 +39,26 @@
 ## Quick Start
 
 ### Review Analysis
+
 📄 [docs/CONFIGURATION-ANALYSIS.md](CONFIGURATION-ANALYSIS.md) - Full 30-page analysis
 
 ### Implement Changes
+
 📋 [docs/CONFIG-CONSOLIDATION-GUIDE.md](CONFIG-CONSOLIDATION-GUIDE.md) - Step-by-step guide
 
 ### Preview New Template
+
 📝 [.env.example.unified](.env.example.unified) - New unified template (200+ lines)
 
 ## Key Changes
 
-| What | Current | Proposed |
-|------|---------|----------|
-| **Main Template** | `.env.example` (33 lines) | `.env.example` (200+ lines) |
-| **Duplicate** | `config/.env.example` | Removed |
-| **Security File** | `.env.security` (122 lines) | Content merged + docs |
-| **Documentation** | Scattered | Centralized |
-| **Setup Time** | 15-30 minutes | 5 minutes |
+| What              | Current                     | Proposed                    |
+| ----------------- | --------------------------- | --------------------------- |
+| **Main Template** | `.env.example` (33 lines)   | `.env.example` (200+ lines) |
+| **Duplicate**     | `config/.env.example`       | Removed                     |
+| **Security File** | `.env.security` (122 lines) | Content merged + docs       |
+| **Documentation** | Scattered                   | Centralized                 |
+| **Setup Time**    | 15-30 minutes               | 5 minutes                   |
 
 ## Variables Breakdown
 
@@ -66,12 +71,14 @@
 ## Migration Impact
 
 ### Users
+
 - ✅ Existing `.env` files continue to work
 - ✅ No code changes required
 - ✅ No variable name changes
 - ⚠️ New users get better experience
 
 ### Maintainers
+
 - ✅ Single file to maintain
 - ✅ Clear documentation
 - ✅ Easier to add new variables
@@ -88,17 +95,20 @@
 Choose one:
 
 ### ✅ Option A: Implement Recommended Solution
+
 - Full consolidation with comprehensive template
 - Best long-term solution
 - Minimal risk, high reward
 - **Recommended**
 
 ### ⚠️ Option B: Minimal Changes
+
 - Just remove duplicates, keep separate files
 - Quick fix but doesn't solve root cause
 - Technical debt remains
 
 ### ⚠️ Option C: Do Nothing
+
 - Problems persist
 - User confusion continues
 - Not recommended

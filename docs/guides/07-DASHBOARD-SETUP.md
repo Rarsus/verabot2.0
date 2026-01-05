@@ -5,6 +5,7 @@ Complete guide for setting up and integrating the VeraBot React Dashboard with y
 ## Overview
 
 The VeraBot Dashboard is a full-featured admin panel for managing:
+
 - Bot status and statistics
 - WebSocket service configurations
 - Quote management system
@@ -74,10 +75,12 @@ const router = require('./routes');
 
 const app = express();
 
-app.use(cors({
-  origin: process.env.DASHBOARD_URL || 'http://localhost:5173',
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: process.env.DASHBOARD_URL || 'http://localhost:5173',
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use('/api', router);
@@ -102,7 +105,7 @@ const app = fastify({ logger: true });
 
 app.register(cors, {
   origin: process.env.DASHBOARD_URL || 'http://localhost:5173',
-  credentials: true
+  credentials: true,
 });
 
 app.register(router, { prefix: '/api' });
@@ -130,11 +133,11 @@ The dashboard requires the following endpoints to be implemented:
 app.post('/api/auth/verify', (req, res) => {
   const { token } = req.body;
   const adminToken = process.env.ADMIN_TOKEN;
-  
+
   if (token === adminToken) {
     res.json({
       success: true,
-      user: { id: 'admin', name: 'Admin User' }
+      user: { id: 'admin', name: 'Admin User' },
     });
   } else {
     res.status(401).json({ error: 'Invalid token' });
@@ -152,7 +155,7 @@ app.get('/api/bot/status', (req, res) => {
     online: client.isReady(),
     uptime: client.uptime,
     latency: client.ws.ping,
-    memory: process.memoryUsage().heapUsed
+    memory: process.memoryUsage().heapUsed,
   });
 });
 
@@ -163,7 +166,7 @@ app.get('/api/bot/info', (req, res) => {
     username: client.user.username,
     userId: client.user.id,
     version: process.env.npm_package_version,
-    prefix: process.env.PREFIX
+    prefix: process.env.PREFIX,
   });
 });
 
@@ -174,7 +177,7 @@ app.get('/api/bot/stats', (req, res) => {
     guildCount: client.guilds.cache.size,
     userCount: client.users.cache.size,
     commandCount: client.application?.commands?.cache?.size || 0,
-    messageCount: 0 // Track this separately
+    messageCount: 0, // Track this separately
   });
 });
 ```
@@ -186,16 +189,16 @@ app.get('/api/bot/stats', (req, res) => {
 app.get('/api/websocket/services', (req, res) => {
   const webSocketService = req.app.locals.webSocketService;
   const config = require('../config/external-actions');
-  
+
   const services = Array.from(config.entries()).map(([name, cfg]) => ({
     name,
     enabled: cfg.enabled,
     description: cfg.description,
     webhookUrl: cfg.webhookUrl ? cfg.webhookUrl.substring(0, 20) + '...' : '',
     allowedActions: cfg.allowedActions,
-    isConnected: webSocketService.isConnected(name)
+    isConnected: webSocketService.isConnected(name),
   }));
-  
+
   res.json(services);
 });
 
@@ -204,16 +207,16 @@ app.put('/api/websocket/services/:name', (req, res) => {
   const { name } = req.params;
   const { enabled, webhookUrl, allowedActions } = req.body;
   const config = require('../config/external-actions');
-  
+
   const service = config.get(name);
   if (!service) {
     return res.status(404).json({ error: 'Service not found' });
   }
-  
+
   service.enabled = enabled;
   service.webhookUrl = webhookUrl;
   service.allowedActions = allowedActions;
-  
+
   res.json({ success: true, service });
 });
 
@@ -221,7 +224,7 @@ app.put('/api/websocket/services/:name', (req, res) => {
 app.get('/api/websocket/status/:name', (req, res) => {
   const { name } = req.params;
   const webSocketService = req.app.locals.webSocketService;
-  
+
   const status = webSocketService.getStatus(name);
   res.json(status || { error: 'Service not found' });
 });
@@ -230,7 +233,7 @@ app.get('/api/websocket/status/:name', (req, res) => {
 app.post('/api/websocket/test/:name', async (req, res) => {
   const { name } = req.params;
   const webSocketService = req.app.locals.webSocketService;
-  
+
   try {
     const result = await webSocketService.testConnection(name);
     res.json(result);
@@ -247,10 +250,10 @@ app.post('/api/websocket/test/:name', async (req, res) => {
 app.get('/api/quotes', async (req, res) => {
   const { page = 1, limit = 20 } = req.query;
   const quoteService = req.app.locals.quoteService;
-  
+
   const quotes = await quoteService.getAll(page, limit);
   const total = await quoteService.count();
-  
+
   res.json({ quotes, total });
 });
 
@@ -258,7 +261,7 @@ app.get('/api/quotes', async (req, res) => {
 app.post('/api/quotes', async (req, res) => {
   const { text, author } = req.body;
   const quoteService = req.app.locals.quoteService;
-  
+
   const quote = await quoteService.add(text, author);
   res.json(quote);
 });
@@ -267,7 +270,7 @@ app.post('/api/quotes', async (req, res) => {
 app.delete('/api/quotes/:id', async (req, res) => {
   const { id } = req.params;
   const quoteService = req.app.locals.quoteService;
-  
+
   await quoteService.delete(id);
   res.json({ success: true });
 });
@@ -275,7 +278,7 @@ app.delete('/api/quotes/:id', async (req, res) => {
 // GET /api/quotes/stats
 app.get('/api/quotes/stats', async (req, res) => {
   const quoteService = req.app.locals.quoteService;
-  
+
   const stats = await quoteService.getStats();
   res.json(stats);
 });
@@ -293,7 +296,7 @@ const apiServer = require('./api/server');
 
 client.once('ready', () => {
   console.log(`✓ Bot ready as ${client.user.tag}`);
-  
+
   // Mount API endpoints
   apiServer.locals = {
     discordClient: client,
@@ -337,6 +340,7 @@ npm install fastify @fastify/cors
 ### Bot Status Panel
 
 Displays:
+
 - Online/offline status with real-time indicator
 - Uptime in readable format (days, hours, minutes)
 - WebSocket ping latency in milliseconds
@@ -349,6 +353,7 @@ Displays:
 ### WebSocket Configuration Panel
 
 Allows:
+
 - View all configured external services
 - Enable/disable services without restart
 - Edit webhook URLs securely
@@ -360,6 +365,7 @@ Allows:
 ### Quote Management Panel
 
 Features:
+
 - Paginated quote browser (10 per page)
 - Add new quotes with author attribution
 - Delete quotes with confirmation
@@ -374,17 +380,20 @@ Features:
 ## Security Considerations
 
 ### Authentication
+
 - Use strong admin tokens (generate with: `crypto.randomBytes(32).toString('hex')`)
 - Store tokens in `.env` file, never commit to git
 - Verify token on every protected endpoint
 
 ### API Protection
+
 - Enable CORS only for dashboard domain
 - Use HTTPS in production
 - Implement rate limiting
 - Add request validation
 
 ### Data Sensitivity
+
 - Never expose full webhook URLs to frontend (truncate)
 - Mask sensitive configuration values
 - Log all admin actions
@@ -461,7 +470,7 @@ services:
       DISCORD_TOKEN: ${DISCORD_TOKEN}
       API_PORT: 3000
     ports:
-      - "3000:3000"
+      - '3000:3000'
     networks:
       - verabot
 
@@ -470,7 +479,7 @@ services:
     environment:
       VITE_API_URL: http://bot:3000/api
     ports:
-      - "5173:5173"
+      - '5173:5173'
     depends_on:
       - bot
     networks:
@@ -522,6 +531,7 @@ server {
 ## Support
 
 For issues or questions:
+
 1. Check browser console for errors
 2. Review bot logs
 3. Verify API endpoints are implemented

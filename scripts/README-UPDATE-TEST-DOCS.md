@@ -18,13 +18,17 @@ The `update-test-docs.js` script automatically generates comprehensive test docu
 ## Generated Documentation
 
 ### 1. `docs/TEST-SUMMARY-LATEST.md`
+
 A concise summary of the latest test run including:
+
 - Test file results (passed/failed)
 - Overall statistics (total tests, pass rate, duration)
 - Status indicators (✅/❌)
 
 ### 2. `docs/TEST-COVERAGE-OVERVIEW.md`
+
 A comprehensive overview including:
+
 - Executive summary with key metrics
 - Table of all test files with counts and status
 - Detailed breakdown of each test file
@@ -59,6 +63,7 @@ The script runs automatically in CI/CD pipelines:
 ## How It Works
 
 ### 1. Test Discovery
+
 ```javascript
 // Scans tests/unit/ for all test-*.js files
 // Excludes: test-all.js, run-tests.js
@@ -66,6 +71,7 @@ const testFiles = getAllTestFiles();
 ```
 
 ### 2. Test Counting
+
 ```javascript
 // Looks for pattern: // Test N: Description
 const testMatches = content.match(/^\/\/ Test \d+:/gm);
@@ -73,6 +79,7 @@ const count = testMatches ? testMatches.length : 0;
 ```
 
 ### 3. Test Execution
+
 ```javascript
 // Runs each test file and captures output
 const output = execSync(`node "${filePath}"`);
@@ -80,6 +87,7 @@ const output = execSync(`node "${filePath}"`);
 ```
 
 ### 4. Documentation Generation
+
 ```javascript
 // Generates markdown documentation with:
 // - Timestamps
@@ -118,6 +126,7 @@ console.log('Total: N');
 The script recognizes multiple output formats:
 
 1. **Explicit Summary** (preferred):
+
    ```
    === Test Summary ===
    ✅ Passed: 10
@@ -126,6 +135,7 @@ The script recognizes multiple output formats:
    ```
 
 2. **Individual Pass/Fail Lines**:
+
    ```
    ✅ Test 1 Passed: ...
    ❌ Test 2 Failed: ...
@@ -166,6 +176,7 @@ Note: Test failures do NOT cause the script to exit with code 1. Documentation s
 The script is integrated into:
 
 **ci.yml**:
+
 ```yaml
 - name: 📝 Update test documentation
   if: always()
@@ -174,6 +185,7 @@ The script is integrated into:
 ```
 
 **test-coverage.yml**:
+
 ```yaml
 - name: 📝 Update test documentation
   if: always()
@@ -184,6 +196,7 @@ The script is integrated into:
 ### Artifacts
 
 Documentation is uploaded as artifacts:
+
 - `docs/TEST-SUMMARY-LATEST.md`
 - `docs/TEST-COVERAGE-OVERVIEW.md`
 - Retention: 30 days
@@ -191,15 +204,19 @@ Documentation is uploaded as artifacts:
 ## Troubleshooting
 
 ### Issue: Script times out
+
 **Solution**: Increase timeout in `execSync` options or investigate slow tests
 
 ### Issue: Inaccurate test counts
+
 **Solution**: Ensure test files follow the `// Test N:` comment pattern
 
 ### Issue: Missing test descriptions
+
 **Solution**: Add test descriptions after `// Test N:` in test files
 
 ### Issue: Test execution fails
+
 **Solution**: Check test dependencies and ensure tests can run independently
 
 ## Future Enhancements
@@ -219,6 +236,7 @@ Potential improvements for future versions:
 ### Adding New Test Files
 
 New test files are automatically detected if they:
+
 1. Are located in `tests/unit/`
 2. Follow the naming pattern `test-*.js`
 3. Are not `test-all.js` or `run-tests.js`
@@ -226,6 +244,7 @@ New test files are automatically detected if they:
 ### Updating Documentation Format
 
 To change the documentation format, modify these functions:
+
 - `generateTestSummary()` - for TEST-SUMMARY-LATEST.md
 - `generateCoverageOverview()` - for TEST-COVERAGE-OVERVIEW.md
 
@@ -240,6 +259,7 @@ To change the documentation format, modify these functions:
 ## Support
 
 For issues or questions:
+
 1. Check test file patterns and output formats
 2. Review script logs for error messages
 3. Verify test files can run independently

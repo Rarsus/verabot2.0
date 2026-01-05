@@ -17,17 +17,20 @@ You already have a production-ready Docker setup:
 Your Dockerfile uses a smart two-stage approach:
 
 #### Stage 1: Dependencies
+
 ```dockerfile
 FROM node:18-alpine AS dependencies
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci --only=production
 ```
+
 - Builds dependency layer once
 - Only installs production dependencies (no dev tools)
 - Creates reusable layer
 
 #### Stage 2: Runtime
+
 ```dockerfile
 FROM node:18-alpine
 WORKDIR /app
@@ -41,6 +44,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
 CMD ["node", "src/index.js"]
 ```
+
 - Copies pre-built dependencies from stage 1
 - Smaller final image (no build tools)
 - Sets up data directory for SQLite
@@ -49,14 +53,14 @@ CMD ["node", "src/index.js"]
 
 ### Why This Design is Good
 
-| Feature | Benefit |
-|---------|---------|
-| **Multi-stage** | Smaller image (~150MB vs ~400MB) |
-| **Alpine** | Tiny base image (5MB) |
-| **npm ci** | Faster, more reliable than npm install |
-| **Health check** | Docker monitors bot health |
-| **Data directory** | Persistent SQLite database |
-| **Production env** | Optimized for performance |
+| Feature            | Benefit                                |
+| ------------------ | -------------------------------------- |
+| **Multi-stage**    | Smaller image (~150MB vs ~400MB)       |
+| **Alpine**         | Tiny base image (5MB)                  |
+| **npm ci**         | Faster, more reliable than npm install |
+| **Health check**   | Docker monitors bot health             |
+| **Data directory** | Persistent SQLite database             |
+| **Production env** | Optimized for performance              |
 
 ---
 
@@ -136,12 +140,14 @@ nano .env
 ```
 
 **Required values:**
+
 ```env
 DISCORD_TOKEN=your_bot_token_here
 CLIENT_ID=your_client_id_here
 ```
 
 **Optional values:**
+
 ```env
 GUILD_ID=your_guild_id
 PROXY_PORT=3000
@@ -188,11 +194,11 @@ services:
     env_file:
       - .env
     volumes:
-      - verabot-data:/app/data  # Persistent volume
+      - verabot-data:/app/data # Persistent volume
     restart: unless-stopped
 
 volumes:
-  verabot-data:  # Named volume definition
+  verabot-data: # Named volume definition
 ```
 
 The volume `verabot-data` persists between container restarts.
@@ -232,10 +238,10 @@ docker volume prune
 ```yaml
 services:
   verabot2:
-    build: .                    # Build from Dockerfile
+    build: . # Build from Dockerfile
     env_file:
-      - .env                    # Load environment from .env
-    restart: unless-stopped     # Auto-restart if crashes
+      - .env # Load environment from .env
+    restart: unless-stopped # Auto-restart if crashes
 ```
 
 ### Enhanced Version (Optional)
@@ -250,27 +256,27 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    
+
     container_name: verabot2
-    
+
     environment:
       NODE_ENV: production
-    
+
     env_file:
       - .env
-    
+
     volumes:
       - verabot-data:/app/data
       - ./logs:/app/logs
-    
+
     ports:
-      - "3000:3000"  # For webhook proxy feature
-    
+      - '3000:3000' # For webhook proxy feature
+
     restart: unless-stopped
-    
+
     # Health check configuration
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000')"]
+      test: ['CMD', 'node', '-e', "require('http').get('http://localhost:3000')"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -479,12 +485,14 @@ docker run -d \
 ### Security
 
 ✅ **DO:**
+
 - Store secrets in `.env` file (not in image)
 - Use specific base image versions (not `latest`)
 - Run as non-root user (optional, for extra security)
 - Scan images for vulnerabilities
 
 ❌ **DON'T:**
+
 - Hardcode secrets in Dockerfile
 - Use `COPY .env .` in Dockerfile
 - Run as root in container
@@ -493,12 +501,14 @@ docker run -d \
 ### Performance
 
 ✅ **DO:**
+
 - Use Alpine Linux (small & fast)
 - Use multi-stage builds
 - Order Dockerfile layers by change frequency
 - Cache dependencies layer
 
 ❌ **DON'T:**
+
 - Copy everything at once
 - Use latest base image
 - Install dev tools in production
@@ -507,12 +517,14 @@ docker run -d \
 ### Maintenance
 
 ✅ **DO:**
+
 - Use `.dockerignore` to exclude files
 - Keep Dockerfile simple and documented
 - Use consistent naming (tags, containers)
 - Monitor logs and health
 
 ❌ **DON'T:**
+
 - Commit `.env` to git
 - Use hardcoded paths
 - Ignore health checks

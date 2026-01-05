@@ -14,38 +14,38 @@ VeraBot2.0 has **503 tests** across **30 test files** with a **100.0% pass rate*
 
 ## Test Files Overview
 
-| Test File | Tests | Passed | Status | Description |
-|-----------|-------|--------|--------|-------------|
-| test-admin-communication.js | 1 | 1 | ✅ | Test Suite: Admin Communication Commands |
-| test-cache-manager.js | 38 | 38 | ✅ | Cache Manager Unit Tests |
-| test-command-base.js | 7 | 7 | ✅ | Test Suite: Command Base Class |
-| test-command-options.js | 10 | 10 | ✅ | Test Suite: Command Options Builder |
-| test-communication-service.js | 10 | 10 | ✅ | Test Suite: Communication Service |
-| test-database-pool.js | 32 | 32 | ✅ | Database Pool Unit Tests |
-| test-datetime-parser.js | 30 | 30 | ✅ | Test Suite: Datetime Parser |
-| test-integration-refactor.js | 10 | 10 | ✅ | Integration Test: Refactored Commands |
-| test-middleware-errorhandler.js | 11 | 11 | ✅ | Test Suite: Error Handler Middleware |
-| test-middleware-logger.js | 11 | 11 | ✅ | Test Suite: Logger Middleware |
-| test-middleware-validator.js | 11 | 11 | ✅ | Test Suite: Command Validator Middleware |
-| test-migration-manager.js | 32 | 32 | ✅ | Migration Manager Integration Tests |
-| test-misc-commands.js | 13 | 13 | ✅ | Test Suite: Misc Commands (hi, ping, help, poem) |
-| test-performance-monitor.js | 36 | 36 | ✅ | Performance Monitor Integration Tests |
-| test-proxy-commands.js | 5 | 5 | ✅ | Tests for Proxy Admin Commands |
-| test-proxy-config.js | 4 | 4 | ✅ | Tests for Proxy Configuration Service |
-| test-query-builder.js | 27 | 27 | ✅ | Query Builder Unit Tests |
-| test-quotes-advanced.js | 18 | 18 | ✅ | Advanced Quote System Tests |
-| test-quotes.js | 17 | 17 | ✅ | Quote System Unit Tests |
-| test-reminder-commands.js | 15 | 15 | ✅ | Test Suite: Reminder Commands |
-| test-reminder-database.js | 10 | 10 | ✅ | Test Suite: Reminder Database Schema and Operations |
-| test-reminder-notifications.js | 12 | 12 | ✅ | Test Suite: Reminder Notification Service |
-| test-reminder-service.js | 25 | 25 | ✅ | Test Suite: Reminder Service |
-| test-response-helpers.js | 18 | 18 | ✅ | Test Suite: Response Helpers |
-| test-security-utils.js | 30 | 30 | ✅ | Security Utils Tests |
-| test-security-validation.js | 21 | 21 | ✅ | Security Validation Tests |
-| test-services-database.js | 19 | 19 | ✅ | Services Database |
-| test-services-quote.js | 13 | 13 | ✅ | Test Suite: QuoteService |
-| test-services-validation.js | 13 | 13 | ✅ | Test Suite: ValidationService |
-| test-webhook-proxy.js | 4 | 4 | ✅ | Tests for Webhook Proxy Service |
+| Test File                       | Tests | Passed | Status | Description                                         |
+| ------------------------------- | ----- | ------ | ------ | --------------------------------------------------- |
+| test-admin-communication.js     | 1     | 1      | ✅     | Test Suite: Admin Communication Commands            |
+| test-cache-manager.js           | 38    | 38     | ✅     | Cache Manager Unit Tests                            |
+| test-command-base.js            | 7     | 7      | ✅     | Test Suite: Command Base Class                      |
+| test-command-options.js         | 10    | 10     | ✅     | Test Suite: Command Options Builder                 |
+| test-communication-service.js   | 10    | 10     | ✅     | Test Suite: Communication Service                   |
+| test-database-pool.js           | 32    | 32     | ✅     | Database Pool Unit Tests                            |
+| test-datetime-parser.js         | 30    | 30     | ✅     | Test Suite: Datetime Parser                         |
+| test-integration-refactor.js    | 10    | 10     | ✅     | Integration Test: Refactored Commands               |
+| test-middleware-errorhandler.js | 11    | 11     | ✅     | Test Suite: Error Handler Middleware                |
+| test-middleware-logger.js       | 11    | 11     | ✅     | Test Suite: Logger Middleware                       |
+| test-middleware-validator.js    | 11    | 11     | ✅     | Test Suite: Command Validator Middleware            |
+| test-migration-manager.js       | 32    | 32     | ✅     | Migration Manager Integration Tests                 |
+| test-misc-commands.js           | 13    | 13     | ✅     | Test Suite: Misc Commands (hi, ping, help, poem)    |
+| test-performance-monitor.js     | 36    | 36     | ✅     | Performance Monitor Integration Tests               |
+| test-proxy-commands.js          | 5     | 5      | ✅     | Tests for Proxy Admin Commands                      |
+| test-proxy-config.js            | 4     | 4      | ✅     | Tests for Proxy Configuration Service               |
+| test-query-builder.js           | 27    | 27     | ✅     | Query Builder Unit Tests                            |
+| test-quotes-advanced.js         | 18    | 18     | ✅     | Advanced Quote System Tests                         |
+| test-quotes.js                  | 17    | 17     | ✅     | Quote System Unit Tests                             |
+| test-reminder-commands.js       | 15    | 15     | ✅     | Test Suite: Reminder Commands                       |
+| test-reminder-database.js       | 10    | 10     | ✅     | Test Suite: Reminder Database Schema and Operations |
+| test-reminder-notifications.js  | 12    | 12     | ✅     | Test Suite: Reminder Notification Service           |
+| test-reminder-service.js        | 25    | 25     | ✅     | Test Suite: Reminder Service                        |
+| test-response-helpers.js        | 18    | 18     | ✅     | Test Suite: Response Helpers                        |
+| test-security-utils.js          | 30    | 30     | ✅     | Security Utils Tests                                |
+| test-security-validation.js     | 21    | 21     | ✅     | Security Validation Tests                           |
+| test-services-database.js       | 19    | 19     | ✅     | Services Database                                   |
+| test-services-quote.js          | 13    | 13     | ✅     | Test Suite: QuoteService                            |
+| test-services-validation.js     | 13    | 13     | ✅     | Test Suite: ValidationService                       |
+| test-webhook-proxy.js           | 4     | 4      | ✅     | Tests for Webhook Proxy Service                     |
 
 ## Detailed Test Breakdown
 
@@ -617,4 +617,4 @@ Test documentation is automatically updated on every CI run. The documentation r
 
 ---
 
-*This document is automatically generated by `scripts/update-test-docs.js`. Do not edit manually - changes will be overwritten.*
+_This document is automatically generated by `scripts/update-test-docs.js`. Do not edit manually - changes will be overwritten._

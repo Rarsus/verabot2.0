@@ -17,13 +17,14 @@ If any check fails, the commit is aborted.
 ### JavaScript Standards
 
 #### Indentation & Spacing
+
 ```javascript
 // ✅ Use 2-space indentation
 const obj = {
   property: 'value',
   nested: {
-    key: 'nested value'
-  }
+    key: 'nested value',
+  },
 };
 
 // ✅ Space around operators
@@ -33,13 +34,16 @@ const arr = [1, 2, 3];
 
 // ❌ No spaces inside brackets/braces
 const bad1 = { key: 'value' };
-const bad2 = [ 1, 2, 3 ];
+const bad2 = [1, 2, 3];
 ```
 
 #### Variable Declaration
+
 ```javascript
 // ✅ Use const by default
-const config = { /* ... */ };
+const config = {
+  /* ... */
+};
 
 // ✅ Use let for mutable variables
 let counter = 0;
@@ -50,6 +54,7 @@ var oldStyle = true;
 ```
 
 #### Quotes
+
 ```javascript
 // ✅ Use single quotes
 const message = 'Hello, world!';
@@ -58,10 +63,11 @@ const message = 'Hello, world!';
 const quote = "Use 'single' for nested quotes";
 
 // ❌ Use double quotes only when necessary
-const bad = "Unnecessary";
+const bad = 'Unnecessary';
 ```
 
 #### Functions
+
 ```javascript
 // ✅ Named functions
 async function executeCommand(interaction) {
@@ -82,19 +88,21 @@ functionname() {
 ```
 
 #### Semicolons
+
 ```javascript
 // ✅ Always use semicolons
 const x = 5;
 const fn = () => x;
 
 // ❌ Never omit semicolons
-const x = 5
-const fn = () => x
+const x = 5;
+const fn = () => x;
 ```
 
 ### File Organization
 
 #### Single Responsibility
+
 Each file should have one primary responsibility:
 
 ```
@@ -109,6 +117,7 @@ src/
 ```
 
 #### Imports at Top
+
 ```javascript
 // ✅ Group imports by type
 const { Command } = require('../core/CommandBase');
@@ -122,14 +131,14 @@ const { Command } = require('../core/CommandBase');
 ```
 
 #### Max Line Length
+
 - Target: 80-100 characters
 - Hard limit: 120 characters
 - Break long lines logically
 
 ```javascript
 // ✅ Readable long line break
-const message = interaction.options.getString('quote')
-  || 'No quote provided';
+const message = interaction.options.getString('quote') || 'No quote provided';
 
 // ❌ Too long
 const message = interaction.options.getString('quote') || 'No quote provided';
@@ -138,16 +147,17 @@ const message = interaction.options.getString('quote') || 'No quote provided';
 ## Testing Standards
 
 ### Test Structure
+
 ```javascript
 // ✅ Clear test organization
 console.log('\n=== Test 1: Feature Description ===');
 try {
   // Test setup
   const cmd = new Command({...});
-  
+
   // Test execution
   const result = await cmd.execute();
-  
+
   // Assertion
   if (result.success) {
     console.log('✅ Test 1 Passed: Clear description');
@@ -160,12 +170,14 @@ try {
 ```
 
 ### Coverage Requirements
+
 - All public methods must have tests
 - Error cases must be tested
 - Edge cases must be covered
 - Minimum target: 80% coverage
 
 ### Running Tests
+
 ```bash
 # Run basic tests
 npm test
@@ -183,6 +195,7 @@ npm run test:docs
 ## Documentation Standards
 
 ### Code Comments
+
 ```javascript
 // ✅ Explain WHY, not WHAT
 // Use optional chaining for safe property access
@@ -208,6 +221,7 @@ const value = getValue();
 ```
 
 ### JSDoc for Public APIs
+
 ```javascript
 /**
  * Wraps an async function with automatic error handling
@@ -222,11 +236,12 @@ wrapError(fn, context) {
 ```
 
 ### File Headers
+
 ```javascript
 /**
  * Quote Management Command
  * Handles adding, updating, and deleting quotes from the database
- * 
+ *
  * Features:
  * - SQLite persistence
  * - Automatic error handling
@@ -239,6 +254,7 @@ const Command = require('../../core/CommandBase');
 ## Performance Guidelines
 
 ### Avoid Common Pitfalls
+
 ```javascript
 // ❌ Unnecessary database queries in loops
 for (const userId of userIds) {
@@ -250,6 +266,7 @@ const users = await getUsers(userIds); // Single query
 ```
 
 ### Async Best Practices
+
 ```javascript
 // ✅ Proper async/await
 try {
@@ -266,6 +283,7 @@ return new Promise((resolve) => {
 ```
 
 ### Memory Management
+
 ```javascript
 // ✅ Clean up resources
 const connection = await db.connect();
@@ -283,6 +301,7 @@ const connection = await db.connect();
 ## Error Handling
 
 ### Always Handle Async Errors
+
 ```javascript
 // ✅ Try-catch for async operations
 async function safeOperation() {
@@ -296,11 +315,12 @@ async function safeOperation() {
 
 // ❌ Unhandled promise rejection
 function badOperation() {
-  return riskyOperation().then(result => result);
+  return riskyOperation().then((result) => result);
 }
 ```
 
 ### Meaningful Error Messages
+
 ```javascript
 // ✅ Include context and actionable info
 throw new Error(`Failed to load quote #${quoteId}: Database timeout (check connection)`);
@@ -312,6 +332,7 @@ throw new Error('Error');
 ## Git Practices
 
 ### Commit Messages
+
 ```
 // ✅ Clear, descriptive messages
 feat: add quote export functionality
@@ -328,6 +349,7 @@ wip
 ```
 
 ### Commit Workflow
+
 ```bash
 # Pre-commit checks run automatically
 git add .
@@ -342,12 +364,14 @@ git commit -m "feat: add new feature"
 ## Quality Metrics
 
 ### Current Status
+
 - **Test Coverage:** 74 tests passing (100%)
 - **Linting:** All rules enforced
 - **Code Style:** ESLint configured
 - **Pre-commit Checks:** Enabled
 
 ### Monitoring
+
 ```bash
 # Check lint warnings
 npm run lint -- --format json | jq '.[] | select(.severity=="warning")'
@@ -366,4 +390,3 @@ cat docs/TEST-SUMMARY-LATEST.md
 3. **Test Coverage:** Aim for 85%+ coverage
 4. **Documentation:** Keep docs in sync with code
 5. **Performance:** Monitor response times and resource usage
-

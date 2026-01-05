@@ -5,6 +5,7 @@ Complete guide to integrating external WebSocket services (like XToys) with Vera
 ## Overview
 
 The WebSocket integration allows VeraBot to:
+
 - **Receive actions** from external services via WebSocket
 - **Execute approved commands** based on incoming actions
 - **Send messages** to Discord channels and users
@@ -53,17 +54,17 @@ Edit `src/config/external-actions.js`:
 ```javascript
 module.exports = {
   xtoys: {
-    enabled: true,  // Set to true to activate
+    enabled: true, // Set to true to activate
     webhookUrl: process.env.XTOYS_WEBHOOK_URL || 'wss://webhook.xtoys.app/YOUR_WEBHOOK_ID',
     allowedActions: [
-      'discord_message',  // Send to channel
-      'discord_dm',       // Send DM
-      'notification',     // Log notification
-      'ping'             // Health check
+      'discord_message', // Send to channel
+      'discord_dm', // Send DM
+      'notification', // Log notification
+      'ping', // Health check
     ],
     description: 'XToys webhook integration',
-    contactEmail: 'admin@example.com'
-  }
+    contactEmail: 'admin@example.com',
+  },
 };
 ```
 
@@ -101,12 +102,7 @@ client.on('ready', async () => {
       }
     };
 
-    await WebSocketService.connect(
-      serviceName,
-      config.webhookUrl,
-      config.allowedActions,
-      actionHandler
-    );
+    await WebSocketService.connect(serviceName, config.webhookUrl, config.allowedActions, actionHandler);
   }
 });
 ```
@@ -118,6 +114,7 @@ client.on('ready', async () => {
 Send message to a Discord channel.
 
 **Payload:**
+
 ```json
 {
   "action": "discord_message",
@@ -126,17 +123,19 @@ Send message to a Discord channel.
   "embed": {
     "title": "Notification",
     "description": "Some message",
-    "color": 0x51CF66
+    "color": 0x51cf66
   }
 }
 ```
 
 **Parameters:**
+
 - `channelId` (required): Discord channel ID
 - `message` (required): Message text
 - `embed` (optional): Discord embed object
 
 **Returns:**
+
 ```json
 {
   "status": "ok",
@@ -150,6 +149,7 @@ Send message to a Discord channel.
 Send direct message to Discord user.
 
 **Payload:**
+
 ```json
 {
   "action": "discord_dm",
@@ -159,11 +159,13 @@ Send direct message to Discord user.
 ```
 
 **Parameters:**
+
 - `userId` (required): Discord user ID
 - `message` (required): Message text
 - `embed` (optional): Discord embed object
 
 **Returns:**
+
 ```json
 {
   "status": "ok",
@@ -177,6 +179,7 @@ Send direct message to Discord user.
 Assign or remove role from user.
 
 **Payload:**
+
 ```json
 {
   "action": "discord_role",
@@ -188,12 +191,14 @@ Assign or remove role from user.
 ```
 
 **Parameters:**
+
 - `guildId` (required): Discord guild ID
 - `userId` (required): Discord user ID
 - `roleId` (required): Discord role ID
 - `action` (required): "add" or "remove"
 
 **Returns:**
+
 ```json
 {
   "status": "ok",
@@ -209,6 +214,7 @@ Assign or remove role from user.
 Send generic notification (logged only, no Discord action).
 
 **Payload:**
+
 ```json
 {
   "action": "notification",
@@ -218,10 +224,12 @@ Send generic notification (logged only, no Discord action).
 ```
 
 **Parameters:**
+
 - `message` (required): Notification text
 - `level` (optional): "info", "warning", or "error"
 
 **Returns:**
+
 ```json
 {
   "status": "ok",
@@ -235,6 +243,7 @@ Send generic notification (logged only, no Discord action).
 Health check / keep-alive.
 
 **Payload:**
+
 ```json
 {
   "action": "ping"
@@ -242,6 +251,7 @@ Health check / keep-alive.
 ```
 
 **Returns:**
+
 ```json
 {
   "status": "ok",
@@ -257,12 +267,14 @@ Health check / keep-alive.
 Check status of all or specific WebSocket service.
 
 **Usage:**
+
 ```
 /external-action-status                 # Show all services
 /external-action-status service:xtoys   # Show specific service
 ```
 
 **Output:**
+
 - Connection status (connected/disconnected)
 - Message count
 - Error count
@@ -273,12 +285,14 @@ Check status of all or specific WebSocket service.
 Send approved action to external service.
 
 **Usage:**
+
 ```
 /external-action-send service:xtoys action:ping
 /external-action-send service:xtoys action:notification data:"{\"message\":\"test\"}"
 ```
 
 **Parameters:**
+
 - `service` (required): Service name
 - `action` (required): Action name (must be approved for that service)
 - `data` (optional): JSON object with additional parameters
@@ -292,7 +306,7 @@ In `src/services/ExternalActionHandler.js`, add a handler method:
 ```javascript
 async _handleCustomAction(client, payload) {
   const { customParam } = payload;
-  
+
   if (!customParam) {
     throw new Error('customParam is required');
   }
@@ -324,9 +338,9 @@ module.exports = {
     // ...
     allowedActions: [
       'discord_message',
-      'custom_action'  // Add here
-    ]
-  }
+      'custom_action', // Add here
+    ],
+  },
 };
 ```
 
@@ -354,6 +368,7 @@ View logs to audit all external service activity.
 Errors are sent back to the external service via acknowledgment:
 
 **Unknown action:**
+
 ```json
 {
   "__ack": true,
@@ -365,6 +380,7 @@ Errors are sent back to the external service via acknowledgment:
 ```
 
 **Handler error:**
+
 ```json
 {
   "__ack": true,
@@ -376,6 +392,7 @@ Errors are sent back to the external service via acknowledgment:
 ```
 
 **Invalid message:**
+
 ```json
 {
   "__ack": true,
@@ -395,9 +412,10 @@ Errors are sent back to the external service via acknowledgment:
    - Test URL format is correct
 
 2. **Check service is enabled**
+
    ```javascript
    // In external-actions.js
-   enabled: true  // Must be true
+   enabled: true; // Must be true
    ```
 
 3. **Check network connectivity**
@@ -473,11 +491,13 @@ Go to XToys app → Webhooks → Create private webhook → Copy webhook ID
 ### 2. Configure Bot
 
 **.env:**
+
 ```env
 XTOYS_WEBHOOK_URL=wss://webhook.xtoys.app/abc123def456ghi789
 ```
 
 **src/config/external-actions.js:**
+
 ```javascript
 module.exports = {
   xtoys: {
@@ -485,14 +505,15 @@ module.exports = {
     webhookUrl: process.env.XTOYS_WEBHOOK_URL,
     allowedActions: ['discord_message', 'discord_dm', 'notification', 'ping'],
     description: 'XToys event notifications',
-    contactEmail: 'admin@example.com'
-  }
+    contactEmail: 'admin@example.com',
+  },
 };
 ```
 
 ### 3. Initialize in Bot
 
 In `src/index.js`:
+
 ```javascript
 const WebSocketService = require('./services/WebSocketService');
 const ExternalActionHandler = require('./services/ExternalActionHandler');
@@ -501,15 +522,10 @@ const externalActionsConfig = require('./config/external-actions');
 client.on('ready', async () => {
   for (const [serviceName, config] of Object.entries(externalActionsConfig)) {
     if (!config.enabled) continue;
-    
-    await WebSocketService.connect(
-      serviceName,
-      config.webhookUrl,
-      config.allowedActions,
-      (action, payload) => {
-        ExternalActionHandler.executeAction(client, action, payload).catch(console.error);
-      }
-    );
+
+    await WebSocketService.connect(serviceName, config.webhookUrl, config.allowedActions, (action, payload) => {
+      ExternalActionHandler.executeAction(client, action, payload).catch(console.error);
+    });
   }
 });
 ```
@@ -529,44 +545,45 @@ Should return: `{"status":"ok","pong":true,"timestamp":"..."}`
 ```javascript
 // Connect to service
 await WebSocketService.connect(
-  serviceName,      // string
-  webhookUrl,       // string
-  allowedActions,   // string[]
-  actionHandler     // function(action, payload)
-)
+  serviceName, // string
+  webhookUrl, // string
+  allowedActions, // string[]
+  actionHandler // function(action, payload)
+);
 
 // Disconnect from service
-await WebSocketService.disconnect(serviceName)
+await WebSocketService.disconnect(serviceName);
 
 // Send data
-WebSocketService.send(serviceName, payload)
+WebSocketService.send(serviceName, payload);
 
 // Get status
-WebSocketService.getStatus([serviceName])
+WebSocketService.getStatus([serviceName]);
 
 // Get connected services
-WebSocketService.getConnectedServices()
+WebSocketService.getConnectedServices();
 
 // Check if connected
-WebSocketService.isConnected(serviceName)
+WebSocketService.isConnected(serviceName);
 ```
 
 ### ExternalActionHandler
 
 ```javascript
 // Execute action
-await ExternalActionHandler.executeAction(client, action, payload)
+await ExternalActionHandler.executeAction(client, action, payload);
 
 // Register custom action
-ExternalActionHandler.register(actionName, handlerFunction)
+ExternalActionHandler.register(actionName, handlerFunction);
 
 // Get registered actions
-ExternalActionHandler.getRegisteredActions()
+ExternalActionHandler.getRegisteredActions();
 ```
 
 ## Support
 
 For issues or questions:
+
 1. Check logs in error handler output
 2. Verify configuration in external-actions.js
 3. Test with /external-action-status

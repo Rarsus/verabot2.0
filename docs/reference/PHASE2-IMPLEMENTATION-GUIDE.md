@@ -7,6 +7,7 @@ Phase 2 adds backward compatibility to `DatabaseService.js` so existing code con
 ## Strategy
 
 Instead of rewriting `DatabaseService.js` completely, we'll add an optional `guildId` parameter that:
+
 1. Routes to `GuildAwareDatabaseService` when `guildId` is provided
 2. Routes to existing DatabaseService when `guildId` is omitted (backward compatible)
 
@@ -48,7 +49,9 @@ For each method, add guild-aware overload:
 
 ```javascript
 // BEFORE: Only shared database
-function addQuote(text, author = 'Anonymous') { /* ... */ }
+function addQuote(text, author = 'Anonymous') {
+  /* ... */
+}
 
 // AFTER: Supports both
 function addQuote(textOrGuildId, authorOrText, optionalAuthor) {
@@ -113,6 +116,7 @@ const quote = await db.addQuote(interaction.guildId, text, author);
 ## Testing
 
 Phase 2 testing ensures:
+
 - ✅ Old API still works (shared database)
 - ✅ New API works (per-guild)
 - ✅ Both APIs can coexist
@@ -124,7 +128,6 @@ Phase 2 testing ensures:
   - Add detection logic
   - Create overloads for all methods
   - Test backward compatibility
-  
 - Phase 3: 2-3 days
   - Update ~20 command files
   - Test each command
@@ -137,6 +140,7 @@ Phase 2 testing ensures:
 ## Next Steps
 
 After Phase 2 is complete:
+
 1. Run tests to verify backward compatibility
 2. Proceed to Phase 3 (update command handlers)
 3. After all commands are updated, run Phase 4 (migration)

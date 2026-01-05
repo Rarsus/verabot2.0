@@ -24,11 +24,11 @@ app.use(express.json());
 // Store services for API access
 client.once('ready', () => {
   console.log(`✓ Bot ready as ${client.user.tag}`);
-  
+
   app.locals.discordClient = client;
   app.locals.webSocketService = require('./services/WebSocketService');
   app.locals.quoteService = require('./services/QuoteService');
-  
+
   const PORT = process.env.API_PORT || 3000;
   app.listen(PORT, () => {
     console.log(`✓ API server running on port ${PORT}`);
@@ -70,7 +70,7 @@ router.post('/verify', (req, res) => {
     if (!token || token !== adminToken) {
       return res.status(401).json({
         success: false,
-        error: 'Invalid token'
+        error: 'Invalid token',
       });
     }
 
@@ -79,8 +79,8 @@ router.post('/verify', (req, res) => {
       user: {
         id: 'admin',
         name: 'Admin User',
-        role: 'admin'
-      }
+        role: 'admin',
+      },
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -113,7 +113,7 @@ router.get('/status', (req, res) => {
       uptime: client.uptime,
       latency: client.ws.ping,
       memory: process.memoryUsage().heapUsed,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -131,7 +131,7 @@ router.get('/info', (req, res) => {
       avatar: client.user.displayAvatarURL(),
       version: require('../../../package.json').version,
       prefix: process.env.PREFIX || '!',
-      ready: client.isReady()
+      ready: client.isReady(),
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -149,10 +149,7 @@ router.get('/stats', (req, res) => {
       channelCount: client.channels.cache.size,
       commandCount: client.application?.commands?.cache?.size || 0,
       messageCount: 0, // Track this separately
-      roleCount: Array.from(client.guilds.cache.values()).reduce(
-        (total, guild) => total + guild.roles.cache.size,
-        0
-      )
+      roleCount: Array.from(client.guilds.cache.values()).reduce((total, guild) => total + guild.roles.cache.size, 0),
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -165,11 +162,11 @@ router.get('/commands', (req, res) => {
     const client = req.app.locals.discordClient;
     const commands = client.application?.commands?.cache || new Map();
 
-    const commandList = Array.from(commands.values()).map(cmd => ({
+    const commandList = Array.from(commands.values()).map((cmd) => ({
       name: cmd.name,
       description: cmd.description,
       defaultMemberPermissions: cmd.defaultMemberPermissions?.toString(),
-      nsfw: cmd.nsfw
+      nsfw: cmd.nsfw,
     }));
 
     res.json(commandList);
@@ -184,13 +181,13 @@ router.get('/guilds', (req, res) => {
     const client = req.app.locals.discordClient;
     const guilds = client.guilds.cache;
 
-    const guildList = Array.from(guilds.values()).map(guild => ({
+    const guildList = Array.from(guilds.values()).map((guild) => ({
       id: guild.id,
       name: guild.name,
       icon: guild.iconURL(),
       memberCount: guild.memberCount,
       owner: guild.ownerId,
-      createdAt: guild.createdAt.toISOString()
+      createdAt: guild.createdAt.toISOString(),
     }));
 
     res.json(guildList);
@@ -219,7 +216,7 @@ router.get('/guilds/:id', (req, res) => {
       channels: guild.channels.cache.size,
       roles: guild.roles.cache.size,
       createdAt: guild.createdAt.toISOString(),
-      joinedAt: guild.joinedAt.toISOString()
+      joinedAt: guild.joinedAt.toISOString(),
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -250,7 +247,7 @@ router.get('/services', (req, res) => {
       webhookUrl: cfg.webhookUrl ? cfg.webhookUrl.substring(0, 20) + '...' : '',
       allowedActions: cfg.allowedActions,
       isConnected: webSocketService.isConnected(name),
-      contactEmail: cfg.contactEmail || 'admin@example.com'
+      contactEmail: cfg.contactEmail || 'admin@example.com',
     }));
 
     res.json(services);
@@ -275,7 +272,7 @@ router.get('/services/:name', (req, res) => {
       webhookUrl: service.webhookUrl,
       allowedActions: service.allowedActions,
       description: service.description,
-      contactEmail: service.contactEmail
+      contactEmail: service.contactEmail,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -305,8 +302,8 @@ router.put('/services/:name', (req, res) => {
         name: req.params.name,
         enabled: service.enabled,
         webhookUrl: service.webhookUrl,
-        allowedActions: service.allowedActions
-      }
+        allowedActions: service.allowedActions,
+      },
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -335,9 +332,9 @@ router.get('/status', (req, res) => {
     const webSocketService = req.app.locals.webSocketService;
     const connectedServices = webSocketService.getConnectedServices();
 
-    const statuses = connectedServices.map(serviceName => ({
+    const statuses = connectedServices.map((serviceName) => ({
       serviceName,
-      status: webSocketService.getStatus(serviceName)
+      status: webSocketService.getStatus(serviceName),
     }));
 
     res.json(statuses);
@@ -363,12 +360,12 @@ router.post('/test/:name', async (req, res) => {
     if (success) {
       res.json({
         success: true,
-        message: `Connected to ${req.params.name} successfully`
+        message: `Connected to ${req.params.name} successfully`,
       });
     } else {
       res.status(500).json({
         success: false,
-        error: `Failed to connect to ${req.params.name}`
+        error: `Failed to connect to ${req.params.name}`,
       });
     }
   } catch (error) {
@@ -392,7 +389,7 @@ router.patch('/services/:name/toggle', (req, res) => {
     res.json({
       success: true,
       serviceName: req.params.name,
-      enabled: service.enabled
+      enabled: service.enabled,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -406,14 +403,8 @@ router.get('/actions', (req, res) => {
     const actions = externalActionHandler.getRegisteredActions();
 
     res.json({
-      builtIn: [
-        'discord_message',
-        'discord_dm',
-        'discord_role',
-        'notification',
-        'ping'
-      ],
-      registered: actions
+      builtIn: ['discord_message', 'discord_dm', 'discord_role', 'notification', 'ping'],
+      registered: actions,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -437,10 +428,7 @@ router.get('/', async (req, res) => {
     const { page = 1, limit = 20 } = req.query;
     const quoteService = req.app.locals.quoteService;
 
-    const quotes = await quoteService.getAll(
-      parseInt(page),
-      parseInt(limit)
-    );
+    const quotes = await quoteService.getAll(parseInt(page), parseInt(limit));
     const total = await quoteService.count();
 
     res.json({
@@ -448,7 +436,7 @@ router.get('/', async (req, res) => {
       total,
       page: parseInt(page),
       limit: parseInt(limit),
-      pages: Math.ceil(total / parseInt(limit))
+      pages: Math.ceil(total / parseInt(limit)),
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -478,7 +466,7 @@ router.post('/', async (req, res) => {
 
     if (!text || !author) {
       return res.status(400).json({
-        error: 'text and author are required'
+        error: 'text and author are required',
       });
     }
 
@@ -555,7 +543,7 @@ router.get('/stats', async (req, res) => {
       mostRated: stats.mostRated || 'N/A',
       totalTags: stats.totalTags || 0,
       topAuthors: stats.topAuthors || [],
-      recentQuotes: stats.recentQuotes || []
+      recentQuotes: stats.recentQuotes || [],
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -630,7 +618,7 @@ For validation errors:
 if (!token || token !== adminToken) {
   return res.status(401).json({
     success: false,
-    error: 'Invalid token'
+    error: 'Invalid token',
   });
 }
 ```

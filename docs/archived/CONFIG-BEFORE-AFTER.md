@@ -3,6 +3,7 @@
 ## Current State (Before) 😕
 
 ### File Structure
+
 ```
 Root/
 ├── .env.example              (33 lines - core config)
@@ -12,6 +13,7 @@ Root/
 ```
 
 ### User Experience
+
 ```
 Developer: "I want to set up VeraBot!"
 
@@ -30,9 +32,11 @@ Step 12: Give up or spend 30+ minutes ⏰
 ```
 
 ### Setup Time
+
 ⏱️ **15-30 minutes** (with trial and error)
 
 ### Common Issues
+
 - ❌ "Where is ENCRYPTION_KEY mentioned?"
 - ❌ "Do I need .env.security?"
 - ❌ "Which config/.env.example is correct?"
@@ -44,6 +48,7 @@ Step 12: Give up or spend 30+ minutes ⏰
 ## Proposed State (After) 😊
 
 ### File Structure
+
 ```
 Root/
 ├── .env.example              (200+ lines - EVERYTHING)
@@ -53,6 +58,7 @@ Root/
 ```
 
 ### User Experience
+
 ```
 Developer: "I want to set up VeraBot!"
 
@@ -64,21 +70,23 @@ Step 3: See clear sections:
         ============================================
         [REQUIRED] DISCORD_TOKEN=
         [REQUIRED] CLIENT_ID=
-        
+
         ============================================
         OPTIONAL FEATURES
         ============================================
         [OPTIONAL] HUGGINGFACE_API_KEY=  # For /poem command
-        
+
 Step 4: Set required variables
 Step 5: See optional features and decide
 Step 6: Start bot successfully! ✅
 ```
 
 ### Setup Time
+
 ⏱️ **5 minutes** (clear and guided)
 
 ### User Feedback
+
 - ✅ "Everything in one place!"
 - ✅ "Clear what's required vs optional"
 - ✅ "Inline docs are super helpful"
@@ -92,6 +100,7 @@ Step 6: Start bot successfully! ✅
 ### Configuration Discovery
 
 **Before:**
+
 ```
 .env.example (partial view):
 DISCORD_TOKEN=your_token
@@ -107,6 +116,7 @@ RATE_LIMIT_MAX_REQUESTS=...
 ```
 
 **After:**
+
 ```
 .env.example (complete):
 # ============================================
@@ -145,6 +155,7 @@ SECRET_KEY=
 ### Secret Generation
 
 **Before:**
+
 ```
 User reads .env.security
 User finds: "Generate with: node -e ..."
@@ -155,6 +166,7 @@ User wonders if they did it right 🤔
 ```
 
 **After:**
+
 ```
 User opens .env.example
 User sees inline:
@@ -169,6 +181,7 @@ Done! ✅
 ### Feature Discovery
 
 **Before:**
+
 ```
 User: "Does this bot have performance settings?"
 Answer: "Yes, check .env.example... wait, actually .env.security"
@@ -178,6 +191,7 @@ User: "This is confusing..." 😵
 ```
 
 **After:**
+
 ```
 User: "What features are available?"
 Answer: "Open .env.example, see all sections:
@@ -193,6 +207,7 @@ User: "Perfect! I can see everything!" 😊
 ## Documentation Impact
 
 ### Before
+
 ```
 README.md:
   "Copy .env.example to .env"
@@ -202,15 +217,16 @@ User sets up → Missing security features → Confusion
 ```
 
 ### After
+
 ```
 README.md:
   Minimal Setup:
     - Copy .env.example
     - Set DISCORD_TOKEN and CLIENT_ID
-  
+
   Recommended Setup:
     - Also set GUILD_ID, HUGGINGFACE_API_KEY, ENCRYPTION_KEY
-  
+
   Production Setup:
     - See Configuration Guide for full hardening
 
@@ -224,6 +240,7 @@ User chooses path → Complete setup → Success ✅
 ### Scenario 1: New User - Just Want to Try It
 
 **Before:**
+
 ```
 Time: 20+ minutes
 Steps: 12
@@ -232,6 +249,7 @@ Result: Maybe works, probably missing features
 ```
 
 **After:**
+
 ```
 Time: 5 minutes
 Steps: 4
@@ -242,6 +260,7 @@ Result: Works perfectly with informed choices
 ### Scenario 2: Production Deployment
 
 **Before:**
+
 ```
 User: "What security settings should I enable?"
 Bot: "Check .env.security for 35+ options"
@@ -251,6 +270,7 @@ Result: Insecure deployment 😬
 ```
 
 **After:**
+
 ```
 User: "What security settings should I enable?"
 Bot: "See SECURITY CONFIGURATION section, variables marked [PRODUCTION RECOMMENDED]"
@@ -261,6 +281,7 @@ Result: Secure deployment ✅
 ### Scenario 3: Troubleshooting
 
 **Before:**
+
 ```
 User: "Webhook proxy not working"
 Support: "Did you set PROXY_PORT?"
@@ -272,6 +293,7 @@ Time wasted: 30+ minutes
 ```
 
 **After:**
+
 ```
 User: "Webhook proxy not working"
 Support: "Check OPTIONAL FEATURES → Webhook Proxy section in .env"
@@ -284,15 +306,15 @@ Time wasted: 2 minutes
 
 ## Metrics Comparison
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| **Setup Time** | 15-30 min | 5 min | **66-83% faster** |
-| **Files to Check** | 3 | 1 | **66% reduction** |
-| **Config Variables Visible** | 10 | 50+ | **400% increase** |
-| **Inline Documentation** | Minimal | Comprehensive | **Infinite%** 😊 |
-| **User Confusion** | High | Low | **Dramatic reduction** |
-| **Security Awareness** | Poor | Excellent | **Major improvement** |
-| **Support Burden** | High | Low | **Significant reduction** |
+| Metric                       | Before    | After         | Improvement               |
+| ---------------------------- | --------- | ------------- | ------------------------- |
+| **Setup Time**               | 15-30 min | 5 min         | **66-83% faster**         |
+| **Files to Check**           | 3         | 1             | **66% reduction**         |
+| **Config Variables Visible** | 10        | 50+           | **400% increase**         |
+| **Inline Documentation**     | Minimal   | Comprehensive | **Infinite%** 😊          |
+| **User Confusion**           | High      | Low           | **Dramatic reduction**    |
+| **Security Awareness**       | Poor      | Excellent     | **Major improvement**     |
+| **Support Burden**           | High      | Low           | **Significant reduction** |
 
 ---
 
@@ -324,6 +346,7 @@ Time: 5 minutes, zero questions
 ## Visual Structure Comparison
 
 ### Before (Fragmented)
+
 ```
 Configuration
 ├─ Core Settings (.env.example)
@@ -344,6 +367,7 @@ Configuration
 ```
 
 ### After (Unified)
+
 ```
 Configuration (.env.example)
 ├─ 📋 CORE CONFIGURATION
@@ -377,12 +401,14 @@ Configuration (.env.example)
 ## Community Feedback Prediction
 
 ### Before (Expected Reactions)
+
 - "Where do I find ENCRYPTION_KEY?"
 - "The .env.example doesn't have security settings!"
 - "There are three .env files, which one is correct?"
 - "This is too complicated for a Discord bot"
 
 ### After (Expected Reactions)
+
 - "Best .env template I've seen!"
 - "Everything I need in one place"
 - "Clear documentation inline"
@@ -393,12 +419,15 @@ Configuration (.env.example)
 ## Bottom Line
 
 ### Before
+
 🔴 **Fragmented, Confusing, Time-Consuming**
 
 ### After
+
 🟢 **Unified, Clear, Fast**
 
 ### Impact
+
 - ⬆️ User Satisfaction
 - ⬆️ Security Adoption
 - ⬆️ Setup Success Rate

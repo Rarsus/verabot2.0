@@ -65,18 +65,18 @@ Located in: `src/utils/helpers/resolution-helpers.js`
 
 ```javascript
 // Single resolution
-const channel = await resolveChannel("writing-corner", guild);
-const user = await resolveUser("john", client);
-const role = await resolveRole("admin", guild);
+const channel = await resolveChannel('writing-corner', guild);
+const user = await resolveUser('john', client);
+const role = await resolveRole('admin', guild);
 
 // Bulk resolution
-const channels = await resolveChannels(["chan1", "chan2", "chan3"], guild);
-const users = await resolveUsers(["user1", "user2"], client);
-const roles = await resolveRoles(["role1", "role2"], guild);
+const channels = await resolveChannels(['chan1', 'chan2', 'chan3'], guild);
+const users = await resolveUsers(['user1', 'user2'], client);
+const roles = await resolveRoles(['role1', 'role2'], guild);
 
 // Results include resolved items and failed items
 console.log(channels.resolved); // Channel objects that were found
-console.log(channels.failed);   // Input strings that couldn't be resolved
+console.log(channels.failed); // Input strings that couldn't be resolved
 ```
 
 ## Usage in Commands
@@ -90,7 +90,7 @@ const { resolveChannel, resolveUser } = require('../../utils/helpers/resolution-
 async executeInteraction(interaction) {
   const channelInput = interaction.options.getString('channel');
   const channel = await resolveChannel(channelInput, interaction.guild);
-  
+
   if (!channel) {
     return sendError(interaction, `Channel "${channelInput}" not found`, true);
   }
@@ -108,11 +108,13 @@ These commands now support automatic resolution:
 - **`/embed`** - Use channel names instead of IDs
 
 ### Before (Old Way)
+
 ```
 /embed channel: "1234567890123456789" title: "Title" description: "Description"
 ```
 
 ### After (New Way - Much Easier!)
+
 ```
 /embed channel: "writing-corner" title: "Title" description: "Description"
 /embed channel: "#announcements" title: "Title" description: "Description"
@@ -127,6 +129,7 @@ When a name can't be resolved:
 ```
 
 **What to do:**
+
 1. Double-check the spelling
 2. Make sure the channel exists in your server
 3. Make sure the bot can see the channel
@@ -134,13 +137,13 @@ When a name can't be resolved:
 
 ## Benefits
 
-| Before | After |
-|--------|-------|
+| Before                         | After                              |
+| ------------------------------ | ---------------------------------- |
 | `/embed channel: "1234567890"` | `/embed channel: "writing-corner"` |
-| Must copy channel IDs | Use friendly names |
-| Hard to remember | Intuitive |
-| Error-prone | Fuzzy matching helps |
-| User mentions needed IDs | Works with names/mentions |
+| Must copy channel IDs          | Use friendly names                 |
+| Hard to remember               | Intuitive                          |
+| Error-prone                    | Fuzzy matching helps               |
+| User mentions needed IDs       | Works with names/mentions          |
 
 ## Advanced: Partial Matches
 
@@ -168,6 +171,7 @@ Reason: Multiple channels start with "w": #writing-corner, #welcome
 ## Future Enhancements
 
 These helpers can be extended to support:
+
 - Multiple commands (more admin commands)
 - User DM delivery
 - Role management commands

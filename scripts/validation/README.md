@@ -9,11 +9,13 @@ This directory contains automated scripts for validating and maintaining documen
 Validates all internal and external links in markdown files.
 
 **Usage:**
+
 ```bash
 npm run docs:links
 ```
 
 **Features:**
+
 - Scans all markdown files in the repository
 - Checks internal file references
 - Validates external URLs (with configurable timeout)
@@ -28,17 +30,20 @@ Edit `.markdown-link-check.json` to customize behavior.
 Ensures version numbers are consistent across all documentation.
 
 **Usage:**
+
 ```bash
 npm run docs:version
 ```
 
 **Features:**
+
 - Reads version from `package.json` as source of truth
 - Scans specified documentation files for version references
 - Reports any version inconsistencies
 - Handles multiple version formats (v1.0.0, version 1.0.0, etc.)
 
 **Files Checked:**
+
 - README.md
 - CHANGELOG.md
 - docs/README.md
@@ -51,11 +56,13 @@ npm run docs:version
 Updates dynamic status badges in README.md based on current state.
 
 **Usage:**
+
 ```bash
 npm run docs:badges
 ```
 
 **Features:**
+
 - Reads version from package.json
 - Extracts test results from docs/TEST-SUMMARY-LATEST.md
 - Calculates code coverage percentage
@@ -63,6 +70,7 @@ npm run docs:badges
 - Updates badges in README.md automatically
 
 **Generated Badges:**
+
 - Version badge (blue)
 - Tests badge (green/red based on status)
 - Coverage badge (color based on percentage)
@@ -77,6 +85,7 @@ npm run docs:validate
 ```
 
 This runs:
+
 1. Markdown linting (`npm run docs:lint`)
 2. Link checking (`npm run docs:links`)
 3. Version consistency check (`npm run docs:version`)
@@ -86,6 +95,7 @@ This runs:
 These scripts are integrated into the GitHub Actions workflow at `.github/workflows/validate-docs.yml`.
 
 The workflow runs on:
+
 - Every push to main (for documentation paths)
 - Every pull request (for documentation paths)
 - Manual dispatch
@@ -109,7 +119,7 @@ const VERSION_FILES = [
   'CHANGELOG.md',
   'docs/README.md',
   'docs/INDEX.md',
-  'your-new-file.md'  // Add here
+  'your-new-file.md', // Add here
 ];
 ```
 
@@ -145,6 +155,7 @@ Edit `.markdownlint.json` to adjust rules:
 ### Link Checker Failing on External Links
 
 External links may fail due to:
+
 - Network restrictions
 - Rate limiting
 - Temporary server issues
@@ -158,6 +169,7 @@ This is expected behavior. The CHANGELOG.md will contain historical version numb
 ### Badge Updates Not Appearing
 
 Ensure:
+
 1. Tests have been run recently (`npm test`)
 2. TEST-SUMMARY-LATEST.md exists and is up to date
 3. README.md has existing badge section or title header

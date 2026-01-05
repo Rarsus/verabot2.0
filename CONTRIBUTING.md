@@ -18,17 +18,17 @@ This project uses **Semantic Versioning** with **Conventional Commits**. Your co
 
 ### Types
 
-| Type | Version Bump | Description |
-|------|-------------|-------------|
-| `feat` | **MINOR** ↑ | New feature |
-| `fix` | **PATCH** ↑ | Bug fix |
-| `docs` | No change | Documentation updates |
-| `style` | No change | Code style (formatting, semicolons, etc.) |
-| `refactor` | No change | Code refactoring (no feature/fix) |
-| `test` | No change | Adding or updating tests |
-| `chore` | No change | Build, dependencies, tooling |
-| `ci` | No change | CI/CD configuration |
-| `perf` | **PATCH** ↑ | Performance improvements |
+| Type       | Version Bump | Description                               |
+| ---------- | ------------ | ----------------------------------------- |
+| `feat`     | **MINOR** ↑  | New feature                               |
+| `fix`      | **PATCH** ↑  | Bug fix                                   |
+| `docs`     | No change    | Documentation updates                     |
+| `style`    | No change    | Code style (formatting, semicolons, etc.) |
+| `refactor` | No change    | Code refactoring (no feature/fix)         |
+| `test`     | No change    | Adding or updating tests                  |
+| `chore`    | No change    | Build, dependencies, tooling              |
+| `ci`       | No change    | CI/CD configuration                       |
+| `perf`     | **PATCH** ↑  | Performance improvements                  |
 
 ### Examples
 
@@ -58,13 +58,14 @@ Mark breaking changes with `BREAKING CHANGE:` in the commit body:
 ```
 feat(auth): remove legacy token support
 
-BREAKING CHANGE: Old authentication tokens are no longer supported. 
+BREAKING CHANGE: Old authentication tokens are no longer supported.
 Users must migrate to the new OAuth2 system.
 ```
 
 ---
 
 ## Contribution Workflow
+
 1. **Fork & Clone**: Fork the repository and clone it locally.
 2. **Create a Branch**: Create a descriptive branch for your feature or fix (`feature/user-auth` or `bugfix/login-error`).
 3. **Open a Draft PR**: Use Draft Pull Requests to signal work in progress.
@@ -72,17 +73,20 @@ Users must migrate to the new OAuth2 system.
 5. **Request Review**: Mark the PR as ready for review when complete.
 
 ## Coding Standards
+
 - Respect the styling defined by the `.editorconfig` file.
 - Use features of Node.js 18 and later compatibility (ES modules, native fetch).
 - Write clean, self-documenting code.
 - Follow the Command base class pattern for new commands
 - Use response helpers for Discord messages
-  
+
 ## Reporting Bugs
+
 - Check if the bug has not been reported in the [GitHub Issues](https://github.com/Rarsus/verabot2.0/issues).
 - Provide detailed reproduction steps.
 
 ## Guidelines for Pull Requests
+
 - Break down large contributions into smaller cohesive commits.
 - Each Pull Request must include:
   - A description of the rationale.
@@ -113,7 +117,7 @@ This project uses **Semantic Release** for automated versioning and releases:
 ✅ `CHANGELOG.md` - release notes generated from commits  
 ✅ `README.md` - version badge  
 ✅ GitHub Releases - created with generated notes  
-✅ Git tags - semantic version tags  
+✅ Git tags - semantic version tags
 
 ### Manual Testing
 
@@ -132,6 +136,7 @@ npm run release:check
 Versions follow **Semantic Versioning**: `MAJOR.MINOR.PATCH`
 
 Example progression:
+
 - `1.0.0` (initial release)
 - `1.1.0` (new feature via `feat` commit)
 - `1.1.1` (bug fix via `fix` commit)
@@ -185,15 +190,19 @@ Brief description of what this document covers.
 ## Table of Contents (for longer docs)
 
 ## Section 1
+
 Content...
 
 ## Section 2
+
 Content...
 
 ## Examples
+
 Practical examples...
 
 ## Related Documentation
+
 - [Architecture Overview](docs/architecture/ARCHITECTURE-OVERVIEW.md)
 - [Testing Guide](docs/guides/02-TESTING-GUIDE.md)
 ```
@@ -233,50 +242,61 @@ await interaction.reply({ content: 'Message' });
 #### Guides (`docs/guides/`)
 
 Step-by-step tutorials for common tasks:
+
 - Creating new commands
 - Writing tests
 - Setting up integrations
 - Deployment guides
 
 **Template:**
+
 ```markdown
 # Guide Title
 
 ## Overview
+
 What this guide covers...
 
 ## Prerequisites
+
 - Requirement 1
 - Requirement 2
 
 ## Steps
 
 ### Step 1: ...
+
 Instructions...
 
 ### Step 2: ...
+
 Instructions...
 
 ## Troubleshooting
+
 Common issues...
 
 ## Next Steps
+
 - [Testing Guide](docs/guides/02-TESTING-GUIDE.md)
 ```
 
 #### Reference Docs (`docs/reference/`)
 
 Technical specifications and API documentation:
+
 - Architecture details
 - Database schemas
 - API references
 - Configuration options
 
 **Template:**
-```markdown
+
+````markdown
 # Reference Title
 
 ## Description
+
 Technical overview...
 
 ## Specifications
@@ -286,19 +306,24 @@ Technical overview...
 **Description:** ...
 
 **Parameters:**
+
 - `param1` (type): Description
 - `param2` (type): Description
 
 **Returns:** Description
 
 **Example:**
+
 ```js
 // Example code
 ```
+````
 
 ## Related References
+
 - [Architecture Reference](docs/reference/ARCHITECTURE.md)
-```
+
+````
 
 #### Project Documentation (`docs/project/`)
 
@@ -317,14 +342,16 @@ Our documentation undergoes automated validation:
 1. **Markdown Linting**: Ensures consistent formatting
    ```bash
    npm run docs:lint
-   ```
+````
 
 2. **Link Checking**: Validates all internal and external links
+
    ```bash
    npm run docs:links
    ```
 
 3. **Version Consistency**: Ensures version numbers are synchronized
+
    ```bash
    npm run docs:version
    ```
@@ -358,20 +385,23 @@ Before submitting documentation changes:
 
 #### Example 1: Command Documentation
 
-```markdown
+````markdown
 ## add-quote Command
 
 Add a new quote to the database.
 
 **Usage:**
+
 - Slash command: `/add-quote text:"Quote text" author:"Author name"`
 - Prefix command: `!add-quote "Quote text" --author "Author name"`
 
 **Parameters:**
+
 - `text` (required): The quote text
 - `author` (optional): Quote author
 
 **Examples:**
+
 ```js
 // Good quote
 /add-quote text:"To be or not to be" author:"Shakespeare"
@@ -379,10 +409,13 @@ Add a new quote to the database.
 // Quote without author
 /add-quote text:"Unknown wisdom"
 ```
+````
 
 **Related:**
+
 - [Creating Commands Guide](docs/guides/01-CREATING-COMMANDS.md)
-```
+
+````
 
 #### Example 2: Feature Documentation
 
@@ -408,7 +441,7 @@ See [Creating Commands Guide](docs/guides/01-CREATING-COMMANDS.md)
 ### Database Schema
 
 See [Architecture Reference](docs/reference/ARCHITECTURE.md)
-```
+````
 
 ### Getting Help
 
@@ -429,11 +462,13 @@ We use these tools for documentation:
 - **GitHub Actions**: Automated validation
 
 Install tools:
+
 ```bash
 npm install
 ```
 
 Run validation:
+
 ```bash
 npm run docs:validate
 ```

@@ -7,11 +7,13 @@ This guide provides step-by-step instructions to implement the recommended confi
 We're consolidating three separate .env files into one comprehensive, well-documented template to improve user experience and reduce setup confusion.
 
 ### Current State
+
 - `.env.example` (33 lines) - Main template
 - `config/.env.example` (9 lines) - Duplicate/outdated
 - `.env.security` (122 lines) - Security settings
 
 ### Target State
+
 - `.env.example` (200+ lines) - Unified comprehensive template
 - Removed: `config/.env.example`
 - Archived: `.env.security` → documentation
@@ -23,6 +25,7 @@ We're consolidating three separate .env files into one comprehensive, well-docum
 ### Step 1: Review New Unified Template
 
 The new `.env.example.unified` file has been created with:
+
 - All variables from existing templates
 - Clear categorization and comments
 - Required vs optional markings
@@ -70,7 +73,7 @@ echo "✅ Removed duplicate config/.env.example"
 
 Instead of deleting, convert to documentation:
 
-```bash
+````bash
 # Move security template content to docs
 cat > docs/reference/ENV-SECURITY-REFERENCE.md << 'EOF'
 # Security Environment Variables Reference
@@ -297,7 +300,7 @@ const crypto = require('crypto');
 console.log('ENCRYPTION_KEY=' + crypto.randomBytes(32).toString('hex'));
 console.log('SECRET_KEY=' + crypto.randomBytes(32).toString('hex'));
 "
-```
+````
 
 ### File Permissions
 
@@ -337,9 +340,11 @@ EOF
 echo "✅ Created security reference documentation"
 
 # Remove old .env.security
+
 rm .env.security
 echo "✅ Removed .env.security (content moved to docs)"
-```
+
+````
 
 ### Step 6: Update .gitignore
 
@@ -356,7 +361,7 @@ grep -q "^\.env\." .gitignore || echo ".env.*" >> .gitignore
 grep -q "^!\.env\.example$" .gitignore || echo "!.env.example" >> .gitignore
 
 echo "✅ Updated .gitignore"
-```
+````
 
 ### Step 7: Update Documentation
 
@@ -372,8 +377,10 @@ Replace the environment configuration section:
 ```
 
 **Old:**
-```markdown
+
+````markdown
 2. Copy `.env.example` to `.env` and set values:
+
 ```env
 DISCORD_TOKEN=your_bot_token_here
 CLIENT_ID=your_client_id_here
@@ -381,7 +388,9 @@ GUILD_ID=optional_test_guild_id    # Speeds up command registration
 PREFIX=!                            # Prefix for legacy commands
 HUGGINGFACE_API_KEY=optional_key   # For AI poem generation
 ```
-```
+````
+
+````
 
 **New:**
 ```markdown
@@ -393,9 +402,10 @@ cp .env.example .env
 # Edit .env and set:
 # - DISCORD_TOKEN (required)
 # - CLIENT_ID (required)
-```
+````
 
 **Recommended Setup:**
+
 ```bash
 cp .env.example .env
 # Edit .env and set:
@@ -410,7 +420,8 @@ cp .env.example .env
 See [Configuration Guide](docs/CONFIGURATION-ANALYSIS.md) for full security hardening.
 
 All configuration options are documented in `.env.example` with inline comments.
-```
+
+````
 
 #### Update copilot-instructions.md
 
@@ -431,8 +442,9 @@ CLIENT_ID=your_client_id_here
 GUILD_ID=optional_test_guild_id
 PREFIX=!
 HUGGINGFACE_API_KEY=optional_key
-```
-```
+````
+
+````
 
 **Replace with:**
 ```markdown
@@ -442,9 +454,10 @@ Required environment variables (`.env` file):
 ```env
 DISCORD_TOKEN=your_bot_token_here         # Discord bot token
 CLIENT_ID=your_client_id_here             # Discord application ID
-```
+````
 
 **Optional but Recommended:**
+
 ```env
 GUILD_ID=optional_test_guild_id           # Faster command registration
 PREFIX=!                                   # Legacy command prefix
@@ -452,6 +465,7 @@ ENCRYPTION_KEY=64_char_hex                # Secure credential storage
 ```
 
 **Feature-Specific:**
+
 ```env
 HUGGINGFACE_API_KEY=optional_key          # AI poem generation
 PROXY_PORT=3000                            # Webhook proxy
@@ -459,13 +473,15 @@ REMINDER_CHECK_INTERVAL=60000             # Reminder system
 ```
 
 For complete configuration options, see `.env.example` (200+ lines) with:
+
 - Core settings (required to start)
 - Optional features (AI, proxy, reminders)
 - Performance tuning (cache, database pool)
 - Security hardening (rate limiting, validation, audit)
 
 See [Configuration Guide](docs/CONFIGURATION-ANALYSIS.md) for details.
-```
+
+````
 
 ### Step 8: Add to Documentation Index
 
@@ -473,19 +489,22 @@ Update `docs/INDEX.md`:
 
 ```bash
 # Add under "Setup & Configuration" or create new section
-```
+````
 
 Add this content:
+
 ```markdown
 ### Configuration & Setup
 
 **Essential:**
+
 - [Configuration Analysis](CONFIGURATION-ANALYSIS.md) - **NEW** Comprehensive configuration guide
 - [Environment Variables Reference](reference/ENV-SECURITY-REFERENCE.md) - **NEW** Detailed variable documentation
 - [Quick Start](../README.md#-quick-start) - Get started in minutes
 - [Setup Guide](../README.md#installation) - Detailed installation
 
 **Security:**
+
 - [Security Guide](SECURITY.md) - Security best practices
 - [Security Hardening](SECURITY-HARDENING.md) - Production hardening
 ```
@@ -787,36 +806,43 @@ Benefits:
 
 ### GitHub Release Notes
 
-```markdown
+````markdown
 ## Configuration Improvements
 
 This release consolidates configuration management for better user experience:
 
 ### What Changed
+
 - **Unified Configuration**: Single `.env.example` template (was 3 separate files)
 - **Better Documentation**: Inline comments explain every variable
 - **Clear Organization**: Grouped by Core, Features, Performance, Security
 - **Quick Start Guides**: Minimal, Standard, and Production configurations included
 
 ### Migration Guide
+
 **Existing users:** No action needed! Your `.env` file continues to work.
 
-**New users:** 
+**New users:**
+
 ```bash
 cp .env.example .env
 # Edit .env with your values
 npm start
 ```
+````
 
 ### New Documentation
+
 - [Configuration Analysis](docs/CONFIGURATION-ANALYSIS.md) - Comprehensive guide
 - [Security Reference](docs/reference/ENV-SECURITY-REFERENCE.md) - Variable documentation
 
 ### Removed Files
+
 - `config/.env.example` - Outdated duplicate
 - `.env.security` - Content moved to main template and docs
 
 See [CONFIGURATION-ANALYSIS.md](docs/CONFIGURATION-ANALYSIS.md) for full details.
+
 ```
 
 ---
@@ -853,7 +879,8 @@ Questions or issues with implementation:
 
 ---
 
-**Implementation Guide Version:** 1.0  
-**Last Updated:** 2025-12-28  
-**Estimated Time:** 2-3 hours (Phase 1)  
+**Implementation Guide Version:** 1.0
+**Last Updated:** 2025-12-28
+**Estimated Time:** 2-3 hours (Phase 1)
 **Risk Level:** Low (no code changes, backward compatible)
+```

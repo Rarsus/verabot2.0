@@ -3,6 +3,7 @@
 ## Issues Identified
 
 ### 1. **Command Structure Duplication** (15 commands affected)
+
 Every command repeats SlashCommandBuilder + options array definition:
 
 ```javascript
@@ -21,6 +22,7 @@ options: [{ name: 'option', type: 'string', ... }]
 ---
 
 ### 2. **Error Handling Boilerplate** (15 commands affected)
+
 Repeated try-catch blocks with identical error responses:
 
 ```javascript
@@ -35,7 +37,9 @@ try {
     } else {
       await interaction.reply('There was an error...');
     }
-  } catch (e) { /* ignore */ }
+  } catch (e) {
+    /* ignore */
+  }
 }
 ```
 
@@ -44,6 +48,7 @@ try {
 ---
 
 ### 3. **Response Pattern Duplication** (10+ commands)
+
 Repeated message/embed creation and sending:
 
 ```javascript
@@ -52,7 +57,7 @@ const embed = new EmbedBuilder()
   .setTitle('Quote')
   .setDescription(`"${quote.text}"`)
   .setFooter({ text: `— ${quote.author} | #${quote.id}` })
-  .setColor(0x5865F2);
+  .setColor(0x5865f2);
 await interaction.reply({ embeds: [embed] });
 
 // REPEATED: Error responses
@@ -71,6 +76,7 @@ await interaction.reply({ content: `✅ ${message}` });
 ---
 
 ### 4. **Channel Send Duplication** (5+ simple commands)
+
 Repeated logic for sending to message or interaction:
 
 ```javascript
@@ -87,6 +93,7 @@ if (message.channel && typeof message.channel.send === 'function') {
 ---
 
 ### 5. **Database Query Patterns** (Quote commands)
+
 Repeated fetch → validate → embed → reply pattern:
 
 ```javascript
@@ -106,19 +113,25 @@ const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 ## New Files Created
 
 ### 1. **src/utils/command-base.js**
+
 Base class for all commands with:
+
 - Automatic error wrapping
 - Consistent error handling
 - No try-catch boilerplate needed
 
 ### 2. **src/utils/command-options.js**
+
 Builds both SlashCommandBuilder and options array from single definition:
+
 - Eliminates duplication
 - Easier to maintain
 - Single source of truth for command options
 
 ### 3. **src/utils/response-helpers.js**
+
 Common response patterns:
+
 - `sendQuoteEmbed()` - Quote responses
 - `sendSuccess()` - Success messages
 - `sendError()` - Error messages
@@ -130,21 +143,26 @@ Common response patterns:
 ## Migration Path
 
 ### Phase 1: Create Helpers (Done)
+
 ✅ Created base classes and helpers
 
 ### Phase 2: Refactor Simple Commands (Recommended)
+
 Start with simple commands that benefit most:
+
 1. `hi.js` - Minimal changes, big reduction
 2. `ping.js` - Same pattern
 3. `random-quote.js` - Good example
 4. `search-quotes.js` - Shows embed pattern
 
 ### Phase 3: Refactor Complex Commands
+
 5. Commands with admin checks
 6. Export/filtering commands
 7. Rating/tagging commands
 
 ### Phase 4: Optional Cleanup
+
 - Extract more patterns if needed
 - Consider database query abstraction
 - Create command factory/registry
@@ -174,27 +192,27 @@ module.exports = {
   async executeInteraction(interaction) {
     const name = interaction.options.getString('name') || 'there';
     await interaction.reply(`hello ${name}!`);
-  }
+  },
 };
 
 // AFTER: 12 lines, no duplication
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 
-const { data, options } = buildCommandOptions(
-  'hi',
-  'Say hi to someone',
-  [{ name: 'name', type: 'string', description: 'Name to say hi to', required: false }]
-);
+const { data, options } = buildCommandOptions('hi', 'Say hi to someone', [
+  { name: 'name', type: 'string', description: 'Name to say hi to', required: false },
+]);
 
 class HiCommand extends Command {
-  constructor() { super({ name: 'hi', description: 'Say hi', data, options }); }
-  
+  constructor() {
+    super({ name: 'hi', description: 'Say hi', data, options });
+  }
+
   async execute(message, args) {
     const name = args[0] || 'there';
     await message.reply(`hello ${name}!`);
   }
-  
+
   async executeInteraction(interaction) {
     const name = interaction.options.getString('name') || 'there';
     await interaction.reply(`hello ${name}!`);
@@ -210,13 +228,13 @@ module.exports = new HiCommand().register();
 
 ## Benefits of Refactoring
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|------------|
-| Lines per command | 40-60 | 20-30 | 50% reduction |
-| Boilerplate | High | Low | 80% reduction |
-| Error handling consistency | Manual | Automatic | 100% |
-| Code duplication | 15+ copies | 1 copy | 93% reduction |
-| Time to add new command | 5 min | 2 min | 60% faster |
+| Metric                     | Before     | After     | Improvement   |
+| -------------------------- | ---------- | --------- | ------------- |
+| Lines per command          | 40-60      | 20-30     | 50% reduction |
+| Boilerplate                | High       | Low       | 80% reduction |
+| Error handling consistency | Manual     | Automatic | 100%          |
+| Code duplication           | 15+ copies | 1 copy    | 93% reduction |
+| Time to add new command    | 5 min      | 2 min     | 60% faster    |
 
 ---
 

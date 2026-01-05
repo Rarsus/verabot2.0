@@ -17,6 +17,7 @@ VeraBot2.0 uses a **Command-Based Architecture** with enterprise-grade project s
 The project has evolved from a simple utility-based structure to an enterprise-grade architecture:
 
 **v0.1.0 → v0.2.0 Changes:**
+
 - Moved core classes from `src/utils/` to `src/core/` for better organization
 - Added service layer pattern in `src/services/` for business logic
 - Introduced middleware pattern in `src/middleware/` for cross-cutting concerns
@@ -25,6 +26,7 @@ The project has evolved from a simple utility-based structure to an enterprise-g
 - Legacy files remain in `src/utils/` for backward compatibility
 
 **Import Path Changes:**
+
 ```javascript
 // OLD (v0.1.x)
 const Command = require('../../utils/command-base');
@@ -44,6 +46,7 @@ const { sendSuccess } = require('../../utils/helpers/response-helpers');
 ### 1. Command Pattern with Inheritance
 
 Every command inherits from a base `Command` class that provides:
+
 - Automatic error wrapping
 - Consistent lifecycle methods
 - Built-in registration system
@@ -73,11 +76,12 @@ The `buildCommandOptions` function uses the Builder pattern to create command op
 ```javascript
 const { data, options } = buildCommandOptions('name', 'description', [
   { name: 'arg1', type: 'string', required: true },
-  { name: 'arg2', type: 'integer', required: false }
+  { name: 'arg2', type: 'integer', required: false },
 ]);
 ```
 
 **Benefits:**
+
 - Single source of truth for option definitions
 - Automatic Discord.js data structure generation
 - Type-safe option creation
@@ -105,6 +109,7 @@ await sendSuccess(interaction, 'Success message', true);
 **Purpose:** Provides automatic error handling and consistent command structure
 
 **Key Features:**
+
 - Automatic try-catch wrapping
 - Error logging to console
 - Chainable `.register()` method
@@ -117,11 +122,11 @@ const Command = require('../../core/CommandBase');
 
 class MyCommand extends Command {
   constructor() {
-    super({ 
+    super({
       name: 'mycommand',
       description: 'What the command does',
       data: slashCommandData,
-      options: prefixOptions
+      options: prefixOptions,
     });
   }
 
@@ -141,6 +146,7 @@ module.exports = new MyCommand().register();
 ```
 
 **Error Handling:**
+
 - All errors are automatically caught
 - Errors are logged to console with command name and trace
 - User receives automatic error message via Discord
@@ -152,10 +158,11 @@ module.exports = new MyCommand().register();
 **API:**
 
 ```javascript
-buildCommandOptions(name, description, optionsList)
+buildCommandOptions(name, description, optionsList);
 ```
 
 **Parameters:**
+
 - `name` (string): Command name
 - `description` (string): Command description (used for slash command)
 - `optionsList` (array): Array of option objects
@@ -172,6 +179,7 @@ buildCommandOptions(name, description, optionsList)
 ```
 
 **Returns:**
+
 ```javascript
 {
   data: { /* Discord.js SlashCommandBuilder data */ },
@@ -183,20 +191,18 @@ buildCommandOptions(name, description, optionsList)
 
 ```javascript
 // Simple string argument
-const { data, options } = buildCommandOptions('greet', 'Say hello', [
-  { name: 'name', type: 'string', required: true }
-]);
+const { data, options } = buildCommandOptions('greet', 'Say hello', [{ name: 'name', type: 'string', required: true }]);
 
 // Multiple arguments
 const { data, options } = buildCommandOptions('add', 'Add two numbers', [
   { name: 'first', type: 'integer', required: true },
-  { name: 'second', type: 'integer', required: true }
+  { name: 'second', type: 'integer', required: true },
 ]);
 
 // Optional arguments
 const { data, options } = buildCommandOptions('search', 'Search quotes', [
   { name: 'query', type: 'string', required: true },
-  { name: 'limit', type: 'integer', required: false }
+  { name: 'limit', type: 'integer', required: false },
 ]);
 ```
 
@@ -207,14 +213,16 @@ const { data, options } = buildCommandOptions('search', 'Search quotes', [
 **Available Functions:**
 
 #### `sendQuoteEmbed(interaction, quote, title)`
+
 Send a formatted quote embed
 
 ```javascript
-const quote = { text: "Life is...", author: "Someone", rating: 4.5 };
+const quote = { text: 'Life is...', author: 'Someone', rating: 4.5 };
 await sendQuoteEmbed(interaction, quote, 'Random Quote');
 ```
 
 #### `sendSuccess(interaction, message, ephemeral)`
+
 Send a success message
 
 ```javascript
@@ -222,6 +230,7 @@ await sendSuccess(interaction, 'Quote added successfully!', true);
 ```
 
 #### `sendError(interaction, message, ephemeral)`
+
 Send an error message
 
 ```javascript
@@ -229,6 +238,7 @@ await sendError(interaction, 'Failed to add quote', true);
 ```
 
 #### `sendDM(channel, message)`
+
 Send a DM to a user and return confirmation
 
 ```javascript
@@ -236,6 +246,7 @@ const success = await sendDM(user, 'Here are your quotes:\n...');
 ```
 
 #### `deferReply(interaction, ephemeral)`
+
 Safely defer a reply with optional ephemeral setting
 
 ```javascript
@@ -287,6 +298,7 @@ This organization makes it easy to understand what each command does and locate 
 ### Step 1: Choose a Category
 
 Determine which category your command belongs to based on its function:
+
 - Retrieves quotes? → `quote-discovery/`
 - Adds/modifies quotes? → `quote-management/`
 - Rates/tags quotes? → `quote-social/`
@@ -300,7 +312,7 @@ const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
 
 const { data, options } = buildCommandOptions('mycommand', 'What it does', [
-  { name: 'arg', type: 'string', required: true }
+  { name: 'arg', type: 'string', required: true },
 ]);
 
 class MyCommand extends Command {
@@ -339,6 +351,7 @@ module.exports = new MyCommand().register();
 Commands auto-register when exported from `command-base.js`, but you need to add them to the command loader:
 
 Edit `src/index.js`:
+
 ```javascript
 const commands = new Collection();
 
@@ -371,6 +384,7 @@ async executeWithErrorHandling(handler, context) {
 ```
 
 **What happens when an error occurs:**
+
 1. Error is logged to console with command name and full trace
 2. User receives automatic error message
 3. Command continues handling other requests
@@ -460,6 +474,7 @@ await db.run('DELETE FROM quotes WHERE id = ?', [id]);
 ### Command Response Time
 
 Typical response times:
+
 - Simple commands (no DB): < 50ms
 - DB queries (single): < 100ms
 - Embed generation: < 150ms
@@ -468,11 +483,13 @@ Typical response times:
 ### Optimization Tips
 
 1. **Use ephemeral responses** for temporary messages:
+
    ```javascript
    await sendSuccess(interaction, 'Message', true); // ephemeral: true
    ```
 
 2. **Defer long-running operations**:
+
    ```javascript
    await deferReply(interaction, false);
    // Do heavy work...
@@ -480,18 +497,20 @@ Typical response times:
    ```
 
 3. **Cache frequently accessed data**:
+
    ```javascript
    const cachedQuotes = new Map();
    const getQuote = (id) => cachedQuotes.get(id) || fetchFromDB(id);
    ```
 
 4. **Batch database operations**:
+
    ```javascript
    // Good: Single transaction
    await db.run('BEGIN TRANSACTION');
    // Multiple operations
    await db.run('COMMIT');
-   
+
    // Bad: Multiple separate operations
    await db.run('INSERT ...');
    await db.run('UPDATE ...');
@@ -505,6 +524,7 @@ Typical response times:
 ### Test Structure
 
 Tests are organized by module:
+
 - `test-command-base.js` - Command class tests
 - `test-command-options.js` - Options builder tests
 - `test-response-helpers.js` - Response helper tests
@@ -533,9 +553,9 @@ testCommandInheritance();
 
 ```javascript
 // Bad
-await interaction.reply({ 
-  embeds: [embed], 
-  ephemeral: true 
+await interaction.reply({
+  embeds: [embed],
+  ephemeral: true,
 });
 
 // Good
@@ -548,12 +568,16 @@ await sendQuoteEmbed(interaction, quote, 'Title');
 // Bad
 module.exports = {
   name: 'cmd',
-  async execute() { /* logic */ }
+  async execute() {
+    /* logic */
+  },
 };
 
 // Good
 class MyCommand extends Command {
-  async execute() { /* logic */ }
+  async execute() {
+    /* logic */
+  }
 }
 module.exports = new MyCommand().register();
 ```
@@ -562,14 +586,10 @@ module.exports = new MyCommand().register();
 
 ```javascript
 // Bad
-const options = [
-  { name: 'text', description: 'Input text', type: STRING }
-];
+const options = [{ name: 'text', description: 'Input text', type: STRING }];
 
 // Good
-const { data, options } = buildCommandOptions('cmd', 'Description', [
-  { name: 'text', type: 'string', required: true }
-]);
+const { data, options } = buildCommandOptions('cmd', 'Description', [{ name: 'text', type: 'string', required: true }]);
 ```
 
 ### 4. Handle Errors Explicitly
@@ -595,13 +615,13 @@ try {
 class MyCommand extends Command {
   constructor() {
     // Document your options
-    super({ 
+    super({
       name: 'mycommand',
       description: 'Does something amazing',
       data: slashData,
       options: [
-        { name: 'input', type: 'string', required: true },  // What it is
-      ]
+        { name: 'input', type: 'string', required: true }, // What it is
+      ],
     });
   }
 }
@@ -612,21 +632,25 @@ class MyCommand extends Command {
 ## Troubleshooting
 
 ### Command not registering
+
 - Check command file is in correct directory
 - Verify command exports from `Command` class
 - Ensure `.register()` is called on export
 
 ### Options not working
+
 - Verify option types match Discord.js types
 - Check required fields are marked correctly
 - Ensure option names match parameter names in execute()
 
 ### Errors not being caught
+
 - Make sure to `await` async operations
 - Verify error-prone code is inside execute() or executeInteraction()
 - Check Command base class is being extended
 
 ### Tests failing
+
 - Run tests with `npm run test:all`
 - Check test output for specific failures
 - Verify utility modules are loaded correctly

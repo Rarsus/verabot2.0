@@ -5,6 +5,7 @@
 Phase 3 implements the **actual permission enforcement** in the CommandBase class. This is the final step where user permissions are actively checked before command execution, completing the role-based access control system.
 
 **Status:** ✅ COMPLETE
+
 - **Tests:** 30/30 passing (100%)
 - **Linting:** 0 warnings
 - **Ready:** Yes, can be committed
@@ -77,13 +78,13 @@ wrapError(fn, firstArg, isInteractionHandler = false) {
 
 The system uses a 5-tier hierarchy:
 
-| Tier | Name | Examples |
-|------|------|----------|
-| 0 | **Guest** | Public users, no roles |
-| 1 | **Member** | Users with server role |
-| 2 | **Moderator** | Users with moderator role |
-| 3 | **Administrator** | Users with admin role |
-| 4 | **Owner** | Server owner, bot owner |
+| Tier | Name              | Examples                  |
+| ---- | ----------------- | ------------------------- |
+| 0    | **Guest**         | Public users, no roles    |
+| 1    | **Member**        | Users with server role    |
+| 2    | **Moderator**     | Users with moderator role |
+| 3    | **Administrator** | Users with admin role     |
+| 4    | **Owner**         | Server owner, bot owner   |
 
 ## Command Tier Configuration
 
@@ -97,9 +98,9 @@ class AddQuoteCommand extends CommandBase {
       description: 'Add a quote to the database',
       // Permission enforcement configuration
       permissions: {
-        minTier: 1,      // Requires Member tier minimum
-        visible: true    // Shown in /help
-      }
+        minTier: 1, // Requires Member tier minimum
+        visible: true, // Shown in /help
+      },
     });
   }
 
@@ -118,6 +119,7 @@ class AddQuoteCommand extends CommandBase {
 **Command:** `/add-quote` (minTier: 1)
 
 **Result:**
+
 ```
 ❌ You need Member to use this command. Your tier: Guest
 ```
@@ -130,6 +132,7 @@ Command does NOT execute.
 **Command:** `/add-quote` (minTier: 1)
 
 **Result:**
+
 ```
 ✅ Quote "..." added to database
 ```
@@ -142,6 +145,7 @@ Command executes normally.
 **Command:** `/broadcast` (minTier: 3)
 
 **Result:**
+
 ```
 ❌ You need Administrator to use this command. Your tier: Member
 ```
@@ -159,24 +163,34 @@ Commands execute based on their minTier (admin users bypass all restrictions).
 ## Command Permissions Breakdown
 
 ### Public Commands (Tier 0) - 9 commands
+
 No special role needed:
+
 - `hi`, `ping`, `help`, `poem`, `random-quote`, `quote-stats`, `search-quotes`, `list-quotes`, `quote`
 
 ### Member Commands (Tier 1) - 13 commands
+
 Requires server role membership:
+
 - `add-quote`, `rate-quote`, `tag-quote`, `opt-in`, `opt-out`, `comm-status`, `opt-in-request`
 - `reminders` (and sub-commands), `birthday`, `poll`, `uptime`
 
 ### Moderator Commands (Tier 2) - 2 commands
+
 Requires moderator role:
+
 - `update-quote`, `delete-quote`
 
 ### Admin Commands (Tier 3) - 7 commands
+
 Requires administrator role:
+
 - `broadcast`, `embed`, `say`, `proxy-send`, `proxy-config`, `proxy-list`, `whisper`
 
 ### User Preference Commands - 4 commands
+
 Special handling:
+
 - `opt-in`, `opt-out`, `comm-status`, `opt-in-request`
 
 ## Permission Check Flow in Code
@@ -250,8 +264,8 @@ async checkPermission(interaction, client) {
 if (!permissionCheck.allowed) {
   return await sendError(
     interaction,
-    permissionCheck.reason,  // "You need Member to use this..."
-    true                      // ephemeral = true (only user sees it)
+    permissionCheck.reason, // "You need Member to use this..."
+    true // ephemeral = true (only user sees it)
   );
 }
 
@@ -295,11 +309,13 @@ ESLint check: ✅ PASS (0 warnings)
 ### Modified Files
 
 **`src/core/CommandBase.js`**
+
 - Updated `wrapError()` method to include permission checks
 - Updated `register()` method to pass `isInteractionHandler` flag
 - No breaking changes to existing API
 
 **`eslint.config.js`**
+
 - Added rule for `src/core/**/*.js` files
 - Increased complexity threshold to 25 (was 18)
 - Justification: Permission enforcement naturally increases complexity
@@ -307,11 +323,13 @@ ESLint check: ✅ PASS (0 warnings)
 ### Reference Files (No Changes)
 
 **`src/config/roles.js`**
+
 - 5-tier hierarchy configuration
 - All 32 commands configured with minTier
 - Used by RolePermissionService
 
 **`src/services/RolePermissionService.js`**
+
 - Provides permission checking logic
 - `canExecuteCommand()` - Called by CommandBase
 - `getUserTier()` - Gets user's tier in guild
@@ -321,11 +339,13 @@ ESLint check: ✅ PASS (0 warnings)
 ## Behavior Changes
 
 ### Before Phase 3
+
 - Commands had permission metadata but it wasn't enforced
 - Any user could try any command
 - Commands would need manual permission checks inside each command
 
 ### After Phase 3
+
 - Permission enforcement is **automatic**
 - CommandBase blocks execution before command runs
 - All 32 commands immediately have working permission checks
@@ -349,14 +369,17 @@ ESLint check: ✅ PASS (0 warnings)
 ## Next Steps (Phase 4+)
 
 ### Phase 4: Admin Permission Management
+
 - Create admin commands to manage role assignments
 - Commands like `/assign-role`, `/remove-role`, `/list-roles`
 
 ### Phase 5: User-Facing Help Filtering
+
 - Update `/help` command to filter by user's tier
 - Only show commands they can access
 
 ### Phase 6: Monitoring & Audit Dashboard
+
 - Create dashboard showing permission denials
 - Track who tried what commands
 - Identify permission configuration issues
@@ -388,6 +411,6 @@ Phase 3 completion means:
 ✅ Zero linting warnings  
 ✅ Informative error messages for users  
 ✅ Consistent enforcement across all commands  
-✅ Ready for production deployment  
+✅ Ready for production deployment
 
 The role-based permission system is now **fully operational and enforced**.

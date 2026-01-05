@@ -12,11 +12,13 @@ Advanced Discord bot with organized commands, quote management system, and moder
 ### Installation
 
 1. Install dependencies:
+
 ```bash
 npm install
 ```
 
 2. Copy `.env.example` to `.env` and set values:
+
 ```env
 DISCORD_TOKEN=your_bot_token_here
 CLIENT_ID=your_client_id_here
@@ -26,11 +28,13 @@ HUGGINGFACE_API_KEY=optional_key   # For AI poem generation
 ```
 
 3. Register commands:
+
 ```bash
 npm run register-commands
 ```
 
 4. Start the bot:
+
 ```bash
 npm start
 ```
@@ -40,6 +44,7 @@ npm start
 ## ✨ Key Features
 
 ### 📝 Quote Management System
+
 - **Add, update, delete quotes** with author attribution
 - **Search and filter** by text, author, or tags
 - **Rate quotes** (1-5 stars) with community ratings
@@ -47,6 +52,7 @@ npm start
 - **Export functionality** (JSON/CSV) for backups
 
 ### 🔔 Reminder Management System
+
 - **Create reminders** with scheduled notifications
 - **User & role assignments** for targeted notifications
 - **Rich content** support (descriptions, links, images)
@@ -58,6 +64,7 @@ npm start
 [📖 Read the Reminder System Guide](docs/user-guides/05-REMINDER-SYSTEM.md)
 
 ### 💬 Bi-Directional Message Proxy
+
 - **Forward messages** from Discord channels to external webhooks
 - **Receive messages** from external systems and relay to Discord
 - **Admin-only commands** for secure configuration
@@ -69,10 +76,12 @@ npm start
 [📖 Read the Proxy Setup Guide](docs/user-guides/04-PROXY-SETUP.md)
 
 ### 🤖 AI Integration
+
 - **AI poem generation** using HuggingFace API
 - Extensible framework for adding more AI features
 
 ### 🏗️ Modern Architecture
+
 - **Command base class** with automatic error handling
 - **Slash commands** and legacy prefix command support
 - **SQLite database** with automatic migrations
@@ -89,6 +98,7 @@ npm start
 **Visit our comprehensive documentation website:** [https://Rarsus.github.io/Verabot](https://Rarsus.github.io/Verabot)
 
 Features include:
+
 - 📚 Complete setup and usage guides
 - 🔧 API documentation with examples
 - 🤝 Contributing guidelines
@@ -98,11 +108,12 @@ Features include:
 
 ### 📁 Documentation Files
 
-Complete documentation is organized in the [docs/](docs/) folder. 
+Complete documentation is organized in the [docs/](docs/) folder.
 
 **[📖 Start with the Documentation Index](docs/INDEX.md)** for complete navigation.
 
 ### 🚀 Quick Links
+
 - **New developer?** → [docs/user-guides/01-CREATING-COMMANDS.md](docs/user-guides/01-CREATING-COMMANDS.md)
 - **Set up Docker?** → [docs/user-guides/DOCKER-SETUP.md](docs/user-guides/DOCKER-SETUP.md)
 - **Learn architecture?** → [docs/architecture/ARCHITECTURE-OVERVIEW.md](docs/architecture/ARCHITECTURE-OVERVIEW.md)
@@ -110,6 +121,7 @@ Complete documentation is organized in the [docs/](docs/) folder.
 - **Permission system?** → [docs/reference/ROLE-BASED-PERMISSIONS-COMPLETE.md](docs/reference/ROLE-BASED-PERMISSIONS-COMPLETE.md)
 
 ### 📚 All Guides
+
 - [User Guides](docs/user-guides/) - Step-by-step how-to guides
 - [Admin Guides](docs/admin-guides/) - Admin and operator documentation
 - [Architecture](docs/architecture/) - System design and structure
@@ -194,6 +206,7 @@ scripts/
 ## 🧪 Testing
 
 ### Run All Tests
+
 ```bash
 npm test                    # Quick sanity checks
 npm run test:all           # All tests (74 tests)
@@ -202,6 +215,7 @@ npm run test:quotes-advanced # Advanced quote tests
 ```
 
 ### Test Results
+
 - ✅ **74/74 tests passing** (100% pass rate)
 - ✅ Core Framework: 27 tests
 - ✅ Quote System: 35 tests
@@ -209,9 +223,11 @@ npm run test:quotes-advanced # Advanced quote tests
 - ✅ Linting: 0 errors
 
 ### Test Coverage Overview
+
 📊 **[View Complete Test Coverage Overview](docs/TEST-COVERAGE-OVERVIEW.md)**
 
 The test suite covers:
+
 - Core framework (CommandBase, CommandOptions)
 - Quote system (CRUD, tags, ratings, export)
 - Response helpers and Discord interactions
@@ -220,6 +236,7 @@ The test suite covers:
 Current coverage: ~40-50% of codebase with 100% pass rate.
 
 ### Individual Test Suites
+
 ```bash
 npm run test:utils:base     # Command base class tests (7/7)
 npm run test:utils:options  # Options builder tests (10/10)
@@ -242,6 +259,7 @@ VeraBot2.0 features an enterprise-grade architecture with clear separation of co
 - **`src/commands/`** - Command implementations organized by category
 
 ### Command Base Class
+
 All commands extend `Command` base class for automatic error handling:
 
 ```javascript
@@ -249,7 +267,7 @@ const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 
 const { data, options } = buildCommandOptions('mycommand', 'Description', [
-  { name: 'arg', type: 'string', required: false }
+  { name: 'arg', type: 'string', required: false },
 ]);
 
 class MyCommand extends Command {
@@ -270,21 +288,23 @@ module.exports = new MyCommand().register();
 ```
 
 **Benefits:**
+
 - ✅ Automatic error wrapping & logging
 - ✅ Consistent error handling across all commands
 - ✅ No manual try-catch blocks needed
 - ✅ Chainable `.register()` method
 
 ### Response Helpers
+
 Standardized Discord response functions:
 
 ```javascript
-const { 
-  sendQuoteEmbed,    // Send formatted quote embed
-  sendSuccess,       // Send success message
-  sendError,         // Send error message
-  sendDM,            // Send DM with confirmation
-  deferReply         // Safe defer handling
+const {
+  sendQuoteEmbed, // Send formatted quote embed
+  sendSuccess, // Send success message
+  sendError, // Send error message
+  sendDM, // Send DM with confirmation
+  deferReply, // Safe defer handling
 } = require('../../utils/helpers/response-helpers');
 
 // Use in your commands
@@ -294,6 +314,7 @@ await sendError(interaction, 'Something went wrong', true);
 ```
 
 ### Command Options Builder
+
 Single source of truth for command options:
 
 ```javascript
@@ -302,7 +323,7 @@ const buildCommandOptions = require('../../core/CommandOptions');
 const { data, options } = buildCommandOptions('mycommand', 'Description', [
   { name: 'text', type: 'string', required: true },
   { name: 'count', type: 'integer', required: false },
-  { name: 'enabled', type: 'boolean', required: false }
+  { name: 'enabled', type: 'boolean', required: false },
 ]);
 ```
 
@@ -386,6 +407,7 @@ quote_tags
 ## 🧬 Code Quality Metrics
 
 ### Refactoring Results (All 15 Commands)
+
 - **Lines of Code:** Reduced from ~1100 to ~800 (-27%)
 - **Average per Command:** -40% reduction
 - **Boilerplate:** 100% of manual try-catch eliminated
@@ -393,9 +415,10 @@ quote_tags
 - **Development Speed:** 50% faster new commands
 
 ### Testing Coverage
+
 - **Total Tests:** 74/74 passing (100%)
 - **Core Framework:** 27 tests
-- **Quote System:** 35 tests  
+- **Quote System:** 35 tests
 - **Helper & Utilities:** 12 tests
 - **Estimated Coverage:** ~40-50%
 
@@ -406,6 +429,7 @@ See [docs/TEST-COVERAGE-OVERVIEW.md](docs/TEST-COVERAGE-OVERVIEW.md) for detaile
 ## 🔧 Development
 
 ### Linting
+
 ```bash
 npm run lint                # Check for style issues
 ```
@@ -413,6 +437,7 @@ npm run lint                # Check for style issues
 ### Docker
 
 **Using Pre-built Images from GitHub Container Registry:**
+
 ```bash
 # Pull the latest release
 docker pull ghcr.io/rarsus/verabot2.0:latest
@@ -428,6 +453,7 @@ docker-compose up -d
 ```
 
 **Building Locally:**
+
 ```bash
 # Build your own image
 docker build -t verabot2 .
@@ -437,11 +463,13 @@ docker-compose up -d
 ```
 
 **Available Tags:**
+
 - `latest` - Latest stable release (from docker-publish.yml on release)
 - `3.0.0`, `3.0`, `3` - Specific version tags (from docker-publish.yml)
 - `main`, `main-<sha>` - Development builds from main branch (from deploy.yml)
 
 ### Environment Variables
+
 ```env
 # Required
 DISCORD_TOKEN=your_token              # Discord bot token
@@ -473,7 +501,7 @@ const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
 
 const { data, options } = buildCommandOptions('mycommand', 'What it does', [
-  { name: 'arg', type: 'string', description: 'An argument', required: true }
+  { name: 'arg', type: 'string', description: 'An argument', required: true },
 ]);
 
 class MyCommand extends Command {
@@ -517,6 +545,7 @@ module.exports = new MyCommand().register();
 ## 🤝 Contributing
 
 When adding new commands or features:
+
 1. Follow the Command base class pattern
 2. Use response helpers for Discord messages
 3. Use buildCommandOptions for command options
@@ -531,6 +560,7 @@ When adding new commands or features:
 ### v2.0.0 - December 2025 🎉
 
 **Production Ready Release**
+
 - 🎯 First production-ready stable release
 - ✅ 100% test coverage (74/74 tests passing)
 - ✅ Zero security vulnerabilities
@@ -542,6 +572,7 @@ When adding new commands or features:
 ### v0.2.0 - December 2025
 
 **Architecture Evolution**
+
 - ✨ Reorganized project structure with enterprise-grade folders (core, services, middleware)
 - ✨ Enhanced Command base class and options builder
 - ✨ Added service layer for database, validation, and Discord operations
@@ -552,6 +583,7 @@ When adding new commands or features:
 ### v0.1.1 - December 2025
 
 **Critical Bug Fixes**
+
 - 🐛 Fixed missing database function exports
 - 🐛 Fixed update quote command result handling
 - 🐛 Fixed Discord interaction timeout errors
@@ -561,6 +593,7 @@ When adding new commands or features:
 ### v0.1.0 - December 2025
 
 **Major Refactoring (All 15 Commands)**
+
 - ✨ Implemented Command base class for automatic error handling
 - ✨ Created buildCommandOptions for unified option definition
 - ✨ Added response helpers for consistent Discord messages

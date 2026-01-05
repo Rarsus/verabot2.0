@@ -17,6 +17,7 @@ This document outlines security considerations and best practices for deploying 
 ### Environment Variables
 
 **✅ DO:**
+
 - Store all secrets in `.env` file (never committed to git)
 - Use strong, randomly generated tokens and keys
 - Rotate secrets regularly (every 90 days minimum)
@@ -24,6 +25,7 @@ This document outlines security considerations and best practices for deploying 
 - Set appropriate file permissions on `.env` (600 or 400)
 
 **❌ DON'T:**
+
 - Commit `.env` file to version control
 - Share secrets via email, chat, or public channels
 - Use default or example secrets in production
@@ -35,15 +37,18 @@ This document outlines security considerations and best practices for deploying 
 Follow the principle of least privilege:
 
 **Required Permissions:**
+
 - `GUILD_MESSAGES` - Read messages in guilds
 - `MESSAGE_CONTENT` - Access message content
 - `SEND_MESSAGES` - Send messages to channels
 
 **Admin-Only Features:**
+
 - `ADMINISTRATOR` - For proxy configuration commands
 - Grant to trusted users only
 
 **Avoid:**
+
 - Granting unnecessary permissions
 - Using bot accounts with server-wide admin rights
 - Exposing bot token to untrusted parties
@@ -51,6 +56,7 @@ Follow the principle of least privilege:
 ### Database Security
 
 **Protection Measures:**
+
 - Database is stored in `data/db/` directory
 - Use filesystem permissions to protect database file
 - Regular backups (automated if possible)
@@ -58,6 +64,7 @@ Follow the principle of least privilege:
 - Monitor database size and growth
 
 **SQLite Security:**
+
 ```bash
 # Set appropriate permissions
 chmod 600 data/db/quotes.db
@@ -71,17 +78,20 @@ chown bot-user:bot-user data/db/quotes.db
 All sensitive data is encrypted before storage using AES-256-CBC:
 
 **What's Encrypted:**
+
 - Webhook authentication tokens
 - Webhook secrets for signature verification
 - Any other sensitive configuration values
 
 **Encryption Key:**
+
 ```env
 # Generate strong encryption key (64 hex characters)
 ENCRYPTION_KEY=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
 ```
 
 **Key Management:**
+
 - Store encryption key in `.env` file
 - Never commit encryption key to version control
 - Rotate encryption key periodically
@@ -92,11 +102,13 @@ ENCRYPTION_KEY=$(node -e "console.log(require('crypto').randomBytes(32).toString
 #### Outgoing Webhooks (Discord → External)
 
 **Bearer Token Authentication:**
+
 ```
 Authorization: Bearer <your-secret-token>
 ```
 
 **Best Practices:**
+
 - Generate tokens with at least 32 bytes of entropy
 - Use different tokens for different environments
 - Rotate tokens every 90 days
@@ -104,6 +116,7 @@ Authorization: Bearer <your-secret-token>
 - Implement rate limiting on receiving end
 
 **Token Generation:**
+
 ```bash
 # Generate secure token
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
@@ -112,17 +125,20 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 #### Incoming Webhooks (External → Discord)
 
 **HMAC SHA-256 Signature Verification:**
+
 ```
 X-Webhook-Signature: <hmac-sha256-signature>
 ```
 
 **Security Features:**
+
 - Signature verification prevents unauthorized messages
 - Uses secret key known only to authorized parties
 - Timing-safe comparison prevents timing attacks
 - Rejects requests with invalid or missing signatures
 
 **Secret Generation:**
+
 ```bash
 # Generate secure secret
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
@@ -131,6 +147,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ### Transport Security
 
 **HTTPS/TLS Requirements:**
+
 - ✅ Use HTTPS for all webhook URLs
 - ✅ Verify SSL certificates
 - ✅ Use TLS 1.2 or higher
@@ -138,27 +155,31 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 - ❌ Never disable certificate verification
 
 **Configuration:**
+
 ```javascript
 // Good - HTTPS with proper verification
-webhookUrl: "https://secure-endpoint.com/webhook"
+webhookUrl: 'https://secure-endpoint.com/webhook';
 
 // Bad - HTTP (unencrypted)
-webhookUrl: "http://insecure-endpoint.com/webhook"
+webhookUrl: 'http://insecure-endpoint.com/webhook';
 ```
 
 ### Access Control
 
 **Admin-Only Commands:**
+
 - `/proxy-config` - Configure webhook settings
 - `/proxy-enable` - Enable/disable proxy
 - `/proxy-status` - View configuration
 
 **Permission Checks:**
+
 - Requires `Administrator` permission
 - Checked on every command invocation
 - Logs unauthorized access attempts
 
 **Monitoring:**
+
 ```bash
 # Check logs for unauthorized access
 grep "Administrator permissions" logs/bot.log
@@ -182,11 +203,13 @@ Before going to production, ensure:
 ### Secret Rotation Procedure
 
 1. **Generate new secret:**
+
    ```bash
    NEW_TOKEN=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
    ```
 
 2. **Update configuration:**
+
    ```
    /proxy-config webhook-token:$NEW_TOKEN
    ```
@@ -202,25 +225,30 @@ Before going to production, ensure:
 ### Secret Storage Options
 
 **Development:**
+
 - `.env` file (local only)
 - Git-ignored, never committed
 
 **Production Options:**
+
 - **Environment variables** (simple, works everywhere)
 - **Secret management services** (AWS Secrets Manager, HashiCorp Vault)
 - **Kubernetes secrets** (if deploying on Kubernetes)
 - **Docker secrets** (if using Docker Swarm)
 
 **Example with AWS Secrets Manager:**
+
 ```javascript
 // Optional enhancement (not included by default)
 const AWS = require('aws-sdk');
 const secretsManager = new AWS.SecretsManager();
 
 async function getSecret(secretName) {
-  const data = await secretsManager.getSecretValue({
-    SecretId: secretName
-  }).promise();
+  const data = await secretsManager
+    .getSecretValue({
+      SecretId: secretName,
+    })
+    .promise();
   return JSON.parse(data.SecretString);
 }
 ```
@@ -230,6 +258,7 @@ async function getSecret(secretName) {
 ### Firewall Configuration
 
 **Incoming Webhook Listener:**
+
 ```bash
 # Only allow connections from trusted IPs
 iptables -A INPUT -p tcp --dport 3000 -s TRUSTED_IP -j ACCEPT
@@ -241,6 +270,7 @@ ufw deny 3000
 ```
 
 **Rate Limiting:**
+
 ```bash
 # Limit connections per IP
 iptables -A INPUT -p tcp --dport 3000 -m connlimit \
@@ -252,6 +282,7 @@ iptables -A INPUT -p tcp --dport 3000 -m connlimit \
 Use Nginx or Apache as reverse proxy:
 
 **Nginx Configuration:**
+
 ```nginx
 server {
     listen 443 ssl http2;
@@ -282,12 +313,14 @@ server {
 ### DDoS Protection
 
 **Cloudflare (Recommended):**
+
 - Free DDoS protection
 - Rate limiting
 - SSL/TLS encryption
 - Geographic restrictions
 
 **Implementation:**
+
 1. Sign up for Cloudflare
 2. Add your domain
 3. Update DNS records
@@ -298,6 +331,7 @@ server {
 ### Docker Deployment
 
 **Secure Dockerfile:**
+
 ```dockerfile
 FROM node:18-alpine
 
@@ -321,6 +355,7 @@ CMD ["node", "src/index.js"]
 ```
 
 **Secure docker-compose.yml:**
+
 ```yaml
 version: '3.8'
 services:
@@ -347,6 +382,7 @@ networks:
 ### System Hardening
 
 **Linux Security:**
+
 ```bash
 # Keep system updated
 apt update && apt upgrade -y
@@ -373,6 +409,7 @@ ufw enable
 ### Logging Best Practices
 
 **What to Log:**
+
 - ✅ Authentication attempts (success/failure)
 - ✅ Configuration changes
 - ✅ Webhook forwarding attempts (without content)
@@ -380,24 +417,26 @@ ufw enable
 - ✅ Admin command usage
 
 **What NOT to Log:**
+
 - ❌ Full message content
 - ❌ Tokens or secrets
 - ❌ User passwords
 - ❌ Webhook payloads with sensitive data
 
 **Log Configuration:**
+
 ```javascript
 // Good - Log without sensitive data
 console.log('Webhook forwarded', {
   channel: message.channel.id,
   timestamp: Date.now(),
-  success: true
+  success: true,
 });
 
 // Bad - Logging sensitive data
 console.log('Webhook forwarded', {
-  content: message.content,  // Don't log full content
-  token: webhookToken        // Never log tokens!
+  content: message.content, // Don't log full content
+  token: webhookToken, // Never log tokens!
 });
 ```
 
@@ -420,6 +459,7 @@ console.log('Webhook forwarded', {
 ### Security Monitoring Tools
 
 **Log Analysis:**
+
 ```bash
 # Check for failed authentication
 grep "permission" logs/bot.log | tail -20
@@ -472,6 +512,7 @@ grep "ERROR" logs/bot.log | wc -l
 ### Emergency Contacts
 
 Maintain a list of:
+
 - Security team contacts
 - Hosting provider support
 - Discord API support
@@ -480,6 +521,7 @@ Maintain a list of:
 ### Backup and Recovery
 
 **Backup Strategy:**
+
 ```bash
 #!/bin/bash
 # Daily backup script
@@ -501,6 +543,7 @@ find ${BACKUP_DIR} -name "quotes-*.db*" -mtime +30 -delete
 ```
 
 **Recovery Testing:**
+
 - Test backup restoration monthly
 - Verify data integrity
 - Document recovery procedures
@@ -511,6 +554,7 @@ find ${BACKUP_DIR} -name "quotes-*.db*" -mtime +30 -delete
 Use this checklist before deploying to production:
 
 ### Pre-Deployment
+
 - [ ] All secrets are randomly generated (32+ bytes)
 - [ ] `.env` file is not in version control
 - [ ] HTTPS is used for all webhook URLs
@@ -521,6 +565,7 @@ Use this checklist before deploying to production:
 - [ ] Reverse proxy is configured (if applicable)
 
 ### Post-Deployment
+
 - [ ] Admin permissions are correctly restricted
 - [ ] Webhook endpoints are responding correctly
 - [ ] Signature verification is working
@@ -530,6 +575,7 @@ Use this checklist before deploying to production:
 - [ ] Incident response plan is documented
 
 ### Ongoing
+
 - [ ] Review logs weekly
 - [ ] Rotate secrets every 90 days
 - [ ] Update dependencies monthly
@@ -565,4 +611,4 @@ If you discover a security vulnerability:
 **Last Updated:** December 2024  
 **Version:** 2.0.0
 
-*This document should be reviewed and updated regularly as new security best practices emerge.*
+_This document should be reviewed and updated regularly as new security best practices emerge._

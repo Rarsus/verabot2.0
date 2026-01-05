@@ -1,146 +1,126 @@
 # [2.13.0](https://github.com/Rarsus/verabot2.0/compare/v2.12.0...v2.13.0) (2026-01-05)
 
-
 ### Bug Fixes
 
-* Remove duplicate catch block in RolePermissionService ([4016dad](https://github.com/Rarsus/verabot2.0/commit/4016dad030dfbab9f921947953a3b4524e6e211c))
-* Resolve database schema, deprecated APIs, and external service errors ([43541b7](https://github.com/Rarsus/verabot2.0/commit/43541b70493d18058547025a78132c9cea8e0eba))
-
+- Remove duplicate catch block in RolePermissionService ([4016dad](https://github.com/Rarsus/verabot2.0/commit/4016dad030dfbab9f921947953a3b4524e6e211c))
+- Resolve database schema, deprecated APIs, and external service errors ([43541b7](https://github.com/Rarsus/verabot2.0/commit/43541b70493d18058547025a78132c9cea8e0eba))
 
 ### Features
 
-* Add React admin dashboard for VeraBot management ([ee5412f](https://github.com/Rarsus/verabot2.0/commit/ee5412ff376f3a25d505da39fccc01dc0b327d34))
+- Add React admin dashboard for VeraBot management ([ee5412f](https://github.com/Rarsus/verabot2.0/commit/ee5412ff376f3a25d505da39fccc01dc0b327d34))
 
 # [2.12.0](https://github.com/Rarsus/verabot2.0/compare/v2.11.0...v2.12.0) (2026-01-03)
 
-
 ### Features
 
-* Add WebSocket integration for external services (XToys, etc.) ([c273310](https://github.com/Rarsus/verabot2.0/commit/c27331094cba8217c3779cf42fb53d9862894e79))
+- Add WebSocket integration for external services (XToys, etc.) ([c273310](https://github.com/Rarsus/verabot2.0/commit/c27331094cba8217c3779cf42fb53d9862894e79))
 
 # [2.11.0](https://github.com/Rarsus/verabot2.0/compare/v2.10.0...v2.11.0) (2026-01-03)
 
-
 ### Features
 
-* Migrate all quote commands to guild-aware QuoteService pattern ([b913d04](https://github.com/Rarsus/verabot2.0/commit/b913d0424c0f9959cdb3c08b5fe30b9d92c1f3f9))
+- Migrate all quote commands to guild-aware QuoteService pattern ([b913d04](https://github.com/Rarsus/verabot2.0/commit/b913d0424c0f9959cdb3c08b5fe30b9d92c1f3f9))
 
 # [2.10.0](https://github.com/Rarsus/verabot2.0/compare/v2.9.0...v2.10.0) (2026-01-03)
 
-
 ### Features
 
-* **multi-database:** implement complete per-guild database architecture ([3a47b12](https://github.com/Rarsus/verabot2.0/commit/3a47b1235925e4333410fccefb67d69fd0add1b4))
-* **phase-1-3:** implement guild-aware database architecture with per-guild databases and updated commands ([747618e](https://github.com/Rarsus/verabot2.0/commit/747618e510ca66d6867a560a9f21a757ba7134db))
-* **phase-3-extended:** implement guild-aware ReminderService and CommunicationService for GDPR compliance ([0414841](https://github.com/Rarsus/verabot2.0/commit/0414841ee7bcc2ad555730f11a67d43ef63516b5))
+- **multi-database:** implement complete per-guild database architecture ([3a47b12](https://github.com/Rarsus/verabot2.0/commit/3a47b1235925e4333410fccefb67d69fd0add1b4))
+- **phase-1-3:** implement guild-aware database architecture with per-guild databases and updated commands ([747618e](https://github.com/Rarsus/verabot2.0/commit/747618e510ca66d6867a560a9f21a757ba7134db))
+- **phase-3-extended:** implement guild-aware ReminderService and CommunicationService for GDPR compliance ([0414841](https://github.com/Rarsus/verabot2.0/commit/0414841ee7bcc2ad555730f11a67d43ef63516b5))
 
 # [2.9.0](https://github.com/Rarsus/verabot2.0/compare/v2.8.0...v2.9.0) (2026-01-03)
 
-
 ### Features
 
-* add permission enforcement tests for CommandBase ([c54c781](https://github.com/Rarsus/verabot2.0/commit/c54c7818ff7d43464606b0b474566f872773eedc))
-* add permission metadata to all 32 commands - Phase 2 integration ([104de8a](https://github.com/Rarsus/verabot2.0/commit/104de8a59809f712a85d412d45299f72c4f40e3b))
-* implement permission enforcement in CommandBase ([e2384f5](https://github.com/Rarsus/verabot2.0/commit/e2384f5ec5fefe9a500f7ee24ef8674f084dbcf4))
+- add permission enforcement tests for CommandBase ([c54c781](https://github.com/Rarsus/verabot2.0/commit/c54c7818ff7d43464606b0b474566f872773eedc))
+- add permission metadata to all 32 commands - Phase 2 integration ([104de8a](https://github.com/Rarsus/verabot2.0/commit/104de8a59809f712a85d412d45299f72c4f40e3b))
+- implement permission enforcement in CommandBase ([e2384f5](https://github.com/Rarsus/verabot2.0/commit/e2384f5ec5fefe9a500f7ee24ef8674f084dbcf4))
 
 # [2.8.0](https://github.com/Rarsus/verabot2.0/compare/v2.7.0...v2.8.0) (2026-01-03)
 
-
 ### Features
 
-* implement role-based permission system core ([a0f296e](https://github.com/Rarsus/verabot2.0/commit/a0f296e471d1407e8e72f417e5b961c55be9a1fc))
-* integrate permission system into whisper and ping commands ([b79bc5a](https://github.com/Rarsus/verabot2.0/commit/b79bc5a7a9093233de4bf978435eae7d90b7f70f))
+- implement role-based permission system core ([a0f296e](https://github.com/Rarsus/verabot2.0/commit/a0f296e471d1407e8e72f417e5b961c55be9a1fc))
+- integrate permission system into whisper and ping commands ([b79bc5a](https://github.com/Rarsus/verabot2.0/commit/b79bc5a7a9093233de4bf978435eae7d90b7f70f))
 
 # [2.7.0](https://github.com/Rarsus/verabot2.0/compare/v2.6.3...v2.7.0) (2026-01-03)
 
-
 ### Bug Fixes
 
-* refactor auto-register-commands and exclude from linting ([2f464c3](https://github.com/Rarsus/verabot2.0/commit/2f464c3c0927aa5c7986baadd4dde551f01f4e98))
-
+- refactor auto-register-commands and exclude from linting ([2f464c3](https://github.com/Rarsus/verabot2.0/commit/2f464c3c0927aa5c7986baadd4dde551f01f4e98))
 
 ### Features
 
-* add automatic command registration on bot join ([7587c01](https://github.com/Rarsus/verabot2.0/commit/7587c0100a4764ad541893bdf92515bc0a6b97e4))
+- add automatic command registration on bot join ([7587c01](https://github.com/Rarsus/verabot2.0/commit/7587c0100a4764ad541893bdf92515bc0a6b97e4))
 
 ## [2.6.3](https://github.com/Rarsus/verabot2.0/compare/v2.6.2...v2.6.3) (2026-01-03)
 
-
 ### Bug Fixes
 
-* Enhance command registration by respecting feature flags and logging skipped commands ([ccb1746](https://github.com/Rarsus/verabot2.0/commit/ccb174665a47557e54b78c760605e45bdcdcc6e9))
-* Improve logging for skipped admin and reminder commands based on feature flags ([f4d02f9](https://github.com/Rarsus/verabot2.0/commit/f4d02f9d15e8832b2deab29b2e1db8532aec9253))
+- Enhance command registration by respecting feature flags and logging skipped commands ([ccb1746](https://github.com/Rarsus/verabot2.0/commit/ccb174665a47557e54b78c760605e45bdcdcc6e9))
+- Improve logging for skipped admin and reminder commands based on feature flags ([f4d02f9](https://github.com/Rarsus/verabot2.0/commit/f4d02f9d15e8832b2deab29b2e1db8532aec9253))
 
 ## [2.6.2](https://github.com/Rarsus/verabot2.0/compare/v2.6.1...v2.6.2) (2026-01-03)
 
-
 ### Bug Fixes
 
-* Enhance Whisper Command with user opt-in/out functionality and error handling ([ecbf92f](https://github.com/Rarsus/verabot2.0/commit/ecbf92f063ecdba74c2337fb65283168287145c9))
+- Enhance Whisper Command with user opt-in/out functionality and error handling ([ecbf92f](https://github.com/Rarsus/verabot2.0/commit/ecbf92f063ecdba74c2337fb65283168287145c9))
 
 ## [2.6.1](https://github.com/Rarsus/verabot2.0/compare/v2.6.0...v2.6.1) (2026-01-03)
 
-
 ### Bug Fixes
 
-* Add interaction.deferReply() to prevent timeout errors in reminder and quote commands ([d18eb46](https://github.com/Rarsus/verabot2.0/commit/d18eb46cc9f6f106be2342bdf76029671feb04d3))
+- Add interaction.deferReply() to prevent timeout errors in reminder and quote commands ([d18eb46](https://github.com/Rarsus/verabot2.0/commit/d18eb46cc9f6f106be2342bdf76029671feb04d3))
 
 # [2.6.0](https://github.com/Rarsus/verabot2.0/compare/v2.5.0...v2.6.0) (2026-01-02)
 
-
 ### Features
 
-* Update test coverage reports and add new test cases for communication service ([44f3116](https://github.com/Rarsus/verabot2.0/commit/44f3116e763dd2f4f89398dbb0b6a2cdc0c51abc))
+- Update test coverage reports and add new test cases for communication service ([44f3116](https://github.com/Rarsus/verabot2.0/commit/44f3116e763dd2f4f89398dbb0b6a2cdc0c51abc))
 
 # [2.5.0](https://github.com/Rarsus/verabot2.0/compare/v2.4.0...v2.5.0) (2026-01-02)
 
-
 ### Features
 
-* Implement communication opt-in/opt-out system ([25becf9](https://github.com/Rarsus/verabot2.0/commit/25becf9215300e56f4729ac640a295049aa9c63e))
+- Implement communication opt-in/opt-out system ([25becf9](https://github.com/Rarsus/verabot2.0/commit/25becf9215300e56f4729ac640a295049aa9c63e))
 
 # [2.4.0](https://github.com/Rarsus/verabot2.0/compare/v2.3.1...v2.4.0) (2025-12-31)
 
-
 ### Features
 
-* Add natural language datetime parsing for reminders ([#46](https://github.com/Rarsus/verabot2.0/issues/46)) ([c605451](https://github.com/Rarsus/verabot2.0/commit/c60545172fe57da875a1235bbc27510ba0ee15c9))
+- Add natural language datetime parsing for reminders ([#46](https://github.com/Rarsus/verabot2.0/issues/46)) ([c605451](https://github.com/Rarsus/verabot2.0/commit/c60545172fe57da875a1235bbc27510ba0ee15c9))
 
 ## [2.3.1](https://github.com/Rarsus/verabot2.0/compare/v2.3.0...v2.3.1) (2025-12-31)
 
-
 ### Bug Fixes
 
-* implement channel resolution helpers for broadcast and embed commands ([15b5193](https://github.com/Rarsus/verabot2.0/commit/15b519380a19739ef6017868ca049f964d52f9bb))
+- implement channel resolution helpers for broadcast and embed commands ([15b5193](https://github.com/Rarsus/verabot2.0/commit/15b519380a19739ef6017868ca049f964d52f9bb))
 
 # [2.3.0](https://github.com/Rarsus/verabot2.0/compare/v2.2.0...v2.3.0) (2025-12-30)
 
-
 ### Features
 
-* add admin communication commands suite ([011b6dc](https://github.com/Rarsus/verabot2.0/commit/011b6dc3804921406bea4cfd988d30778658b264))
+- add admin communication commands suite ([011b6dc](https://github.com/Rarsus/verabot2.0/commit/011b6dc3804921406bea4cfd988d30778658b264))
 
 # [2.2.0](https://github.com/Rarsus/verabot2.0/compare/v2.1.0...v2.2.0) (2025-12-30)
 
-
 ### Features
 
-* implement feature module system with per-instance configuration ([ea9e912](https://github.com/Rarsus/verabot2.0/commit/ea9e912c0374e4c78889fee88121113cb63a940d))
+- implement feature module system with per-instance configuration ([ea9e912](https://github.com/Rarsus/verabot2.0/commit/ea9e912c0374e4c78889fee88121113cb63a940d))
 
 # [2.1.0](https://github.com/Rarsus/verabot2.0/compare/v2.0.0...v2.1.0) (2025-12-30)
 
-
 ### Bug Fixes
 
-* add release scripts to package.json ([53fadfc](https://github.com/Rarsus/verabot2.0/commit/53fadfce1aeb079ab0be47a68a3375780ecbc592))
-* Update documentation paths to fetch from GitHub raw URLs ([#32](https://github.com/Rarsus/verabot2.0/issues/32)) ([9772976](https://github.com/Rarsus/verabot2.0/commit/9772976dd1d0440c3caf3f1609de3d1e3c69bc58))
-
+- add release scripts to package.json ([53fadfc](https://github.com/Rarsus/verabot2.0/commit/53fadfce1aeb079ab0be47a68a3375780ecbc592))
+- Update documentation paths to fetch from GitHub raw URLs ([#32](https://github.com/Rarsus/verabot2.0/issues/32)) ([9772976](https://github.com/Rarsus/verabot2.0/commit/9772976dd1d0440c3caf3f1609de3d1e3c69bc58))
 
 ### Features
 
-* Add comprehensive CI/CD workflows and security hardening ([#42](https://github.com/Rarsus/verabot2.0/issues/42)) ([0e95802](https://github.com/Rarsus/verabot2.0/commit/0e95802d9152b41635a5c2c20bebc107a3f0acf8))
-* Add Reminder Management System v3.0.0 ([#38](https://github.com/Rarsus/verabot2.0/issues/38)) ([ec5e4d9](https://github.com/Rarsus/verabot2.0/commit/ec5e4d94ead90164a02f8e6fafaac4ac9e15f5d1))
-* Implement database optimization with caching, connection pooling, and performance monitoring ([#44](https://github.com/Rarsus/verabot2.0/issues/44)) ([0cba7c1](https://github.com/Rarsus/verabot2.0/commit/0cba7c102981e411792ba3822215738585b69c9a))
+- Add comprehensive CI/CD workflows and security hardening ([#42](https://github.com/Rarsus/verabot2.0/issues/42)) ([0e95802](https://github.com/Rarsus/verabot2.0/commit/0e95802d9152b41635a5c2c20bebc107a3f0acf8))
+- Add Reminder Management System v3.0.0 ([#38](https://github.com/Rarsus/verabot2.0/issues/38)) ([ec5e4d9](https://github.com/Rarsus/verabot2.0/commit/ec5e4d94ead90164a02f8e6fafaac4ac9e15f5d1))
+- Implement database optimization with caching, connection pooling, and performance monitoring ([#44](https://github.com/Rarsus/verabot2.0/issues/44)) ([0cba7c1](https://github.com/Rarsus/verabot2.0/commit/0cba7c102981e411792ba3822215738585b69c9a))
 
 # Changelog
 
@@ -176,7 +156,6 @@ This major release introduces significant new functionality including a complete
   - `search-reminders` - Search reminders by subject or category
   - `update-reminder` - Modify existing reminders
   - `delete-reminder` - Remove reminders
-  
 - **Reminder Features:**
   - Subject validation (3-100 characters)
   - Category organization
@@ -196,12 +175,10 @@ This major release introduces significant new functionality including a complete
   - Version consistency checking across all documentation
   - Dynamic badge generation based on test results
   - Markdown linting with configurable rules
-  
 - **Validation Scripts:**
   - `check-links.js` - Validates all markdown links
   - `check-version.js` - Ensures version consistency
   - `update-badges.js` - Auto-updates README badges
-  
 - **CI/CD Integration:**
   - `.github/workflows/validate-docs.yml` - Documentation validation on every push
   - `.github/workflows/scheduled-checks.yml` - Periodic validation checks
@@ -214,14 +191,12 @@ This major release introduces significant new functionality including a complete
   - Dynamic content loading from markdown files
   - Responsive design with mobile menu
   - Dark mode support (system preference)
-  
 - **Features:**
   - Auto-generated table of contents
   - Syntax highlighting with highlight.js
   - Markdown parsing with marked.js
   - Comprehensive CSS with CSS variables
   - No build process required (CDN dependencies)
-  
 - **Deployment:**
   - Automated deployment via GitHub Actions
   - Available at `https://Rarsus.github.io/Verabot`
@@ -233,7 +208,6 @@ This major release introduces significant new functionality including a complete
   - Documentation validation and deployment workflows
   - Scheduled checks for link validation
   - PR validation improvements
-  
 - **Docker Improvements:**
   - Optimized multi-stage builds
   - Health check configuration
@@ -259,7 +233,6 @@ This major release introduces significant new functionality including a complete
 - **New Services:**
   - `ReminderService` - Core reminder business logic
   - `ReminderNotificationService` - Notification handling
-  
 - **Database Updates:**
   - New `reminders` table with proper schema
   - Migration support for existing databases
@@ -394,7 +367,7 @@ This release represents the culmination of extensive refactoring, testing, and d
 
 - **Critical: Missing Database Function Exports**
   - Added missing exports for `rateQuote`, `getQuoteById`, `addTag`, `getTagByName`, `addTagToQuote`
-  - Added exports for `exportQuotesAsJson`, `exportQuotesAsCsv` 
+  - Added exports for `exportQuotesAsJson`, `exportQuotesAsCsv`
   - Fixes "getQuoteById is not a function" errors in quote commands
 
 - **Critical: Update Quote Command Failure**

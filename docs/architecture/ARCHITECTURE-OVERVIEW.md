@@ -148,6 +148,7 @@ Data Persistence
 ## File Organization by Purpose
 
 ### Configuration Management
+
 ```
 config/
 ├── .env              ← Environment variables
@@ -156,6 +157,7 @@ config/
 ```
 
 ### Source Code Organization
+
 ```
 src/
 ├── commands/         ← Command implementations (5 categories)
@@ -170,6 +172,7 @@ src/
 ```
 
 ### Testing Structure
+
 ```
 tests/
 ├── unit/            ← Unit tests (6 test files)
@@ -179,6 +182,7 @@ tests/
 ```
 
 ### Scripts Organization
+
 ```
 scripts/
 ├── build/           ← Build scripts (test documentation generation)
@@ -187,6 +191,7 @@ scripts/
 ```
 
 ### Data Management
+
 ```
 data/
 ├── db/              ← Database files
@@ -197,6 +202,7 @@ data/
 ```
 
 ### Documentation
+
 ```
 docs/
 ├── api/             ← API documentation (ready)
@@ -210,6 +216,7 @@ docs/
 ```
 
 ### Logs
+
 ```
 logs/
 └── .gitkeep         ← Application logs go here
@@ -220,6 +227,7 @@ logs/
 ## Scalability Points
 
 ### Easy to Add
+
 1. **New Services** - Create in `src/services/` following pattern
 2. **New Middleware** - Create in `src/middleware/` with consistent exports
 3. **New Commands** - Extend `CommandBase` in `src/commands/`
@@ -227,6 +235,7 @@ logs/
 5. **New Utilities** - Add to `src/utils/` or `src/utils/helpers/`
 
 ### Ready for Expansion
+
 - Multiple database services
 - Caching layer
 - Authentication service
@@ -237,6 +246,7 @@ logs/
 - Background job queue
 
 ### Supports Growth To
+
 - 50+ commands (organized in subfolders)
 - 10+ services (all in src/services/)
 - 100+ tests (organized in test structure)
@@ -247,6 +257,7 @@ logs/
 ## Development Workflow
 
 ### Adding a New Command
+
 ```javascript
 // 1. Create in src/commands/{category}/my-command.js
 const Command = require('../../core/CommandBase');
@@ -261,7 +272,7 @@ class MyCommand extends Command {
       data: new SlashCommandBuilder()...
     });
   }
-  
+
   async executeInteraction(interaction) {
     // Use services for business logic
     const result = await MyService.doSomething();
@@ -274,6 +285,7 @@ module.exports = new MyCommand();
 ```
 
 ### Adding a New Service
+
 ```javascript
 // 1. Create in src/services/MyService.js
 /**
@@ -292,11 +304,12 @@ const MyService = require('./MyService');
 
 module.exports = {
   // ... existing services
-  MyService
+  MyService,
 };
 ```
 
 ### Adding Middleware
+
 ```javascript
 // 1. Create in src/middleware/myMiddleware.js
 function myMiddleware(context) {
@@ -313,30 +326,35 @@ module.exports = { myMiddleware };
 ## Benefits Achieved
 
 ✅ **Separation of Concerns**
+
 - Commands handle Discord interactions
 - Services handle business logic
 - Middleware handles cross-cutting concerns
 - Utils provide reusable functions
 
 ✅ **Dependency Management**
+
 - Clear import hierarchy
 - No circular dependencies
 - Easy to trace dependencies
 - Type-safe with JSDoc
 
 ✅ **Testing**
+
 - Services easily testable
 - Middleware independently testable
 - Commands can mock services
 - Fixtures provide test data
 
 ✅ **Maintenance**
+
 - Change in one layer doesn't break others
 - Easy to locate code by function
 - Simple to refactor subsystems
 - Clear patterns for new developers
 
 ✅ **Documentation**
+
 - Architecture self-documents
 - Folders explain purpose
 - Services document their API
@@ -364,6 +382,7 @@ Key Metrics:
 ---
 
 This refactoring represents **enterprise-grade architecture** suitable for:
+
 - ✅ Team collaboration
 - ✅ Long-term maintenance
 - ✅ Feature expansion

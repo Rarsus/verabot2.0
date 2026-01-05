@@ -1,8 +1,10 @@
+<!-- markdownlint-disable MD013 MD022 MD031 MD032 MD040 MD060 -->
 # MCP Server Configuration - Complete Implementation Summary
 
 ## Overview
 
-Successfully configured 5 Model Context Protocol (MCP) servers for VeraBot2.0, enabling GitHub Copilot and other AI tools to safely interact with your project code, databases, and build tools.
+Successfully configured 5 Model Context Protocol (MCP) servers for VeraBot2.0, enabling GitHub Copilot
+and other AI tools to safely interact with your project code, databases, and build tools.
 
 ## What Was Implemented
 
@@ -141,7 +143,7 @@ GitHub Copilot / AI Tools
     ├─ Git history (.git/)
     ├─ Databases (data/db/)
     └─ npm scripts (package.json)
-```
+```txt
 
 ### Security Features
 

@@ -131,6 +131,7 @@ Advantages of this pattern:
 ### Scenario: Add a quote to guild 123456789
 
 #### Quote Pattern (Current)
+
 ```javascript
 // PROBLEM: Multiple ways to call it
 // Way 1: Without guildId (legacy single-db)
@@ -148,6 +149,7 @@ const quotes2 = await getAllQuotes(guildId);
 ```
 
 #### Reminder Pattern (Recommended)
+
 ```javascript
 // CLEAR: One way to call it
 // Guild context ALWAYS required
@@ -168,6 +170,7 @@ const reminders = await getAllReminders();
 ## Testability Comparison
 
 ### Quote Pattern Testing (Hard)
+
 ```javascript
 // test-add-quote.js
 
@@ -176,10 +179,10 @@ describe('Add Quote', () => {
     // Problem: db.js is wrapper, need to mock multiple things
     jest.mock('../../db');
     jest.mock('../../services/DatabaseService');
-    
+
     // Confusing: which module actually runs?
     const result = await addQuote('guild-123', 'text', 'author');
-    
+
     // Hard to verify guild isolation
     // Did it actually call the guild-aware service?
     // Or the legacy single-db path?
@@ -188,6 +191,7 @@ describe('Add Quote', () => {
 ```
 
 ### Reminder Pattern Testing (Easy)
+
 ```javascript
 // test-create-reminder.js
 
@@ -195,13 +199,12 @@ describe('Create Reminder', () => {
   it('should create reminder in guild', async () => {
     // Mock just the service
     jest.mock('../../services/GuildAwareReminderService');
-    
+
     const result = await createReminder('guild-123', data);
-    
+
     // Clear: what was called?
-    expect(GuildAwareReminderService.createReminder)
-      .toHaveBeenCalledWith('guild-123', expect.any(Object));
-    
+    expect(GuildAwareReminderService.createReminder).toHaveBeenCalledWith('guild-123', expect.any(Object));
+
     // Easy to verify guild isolation
     // Service ALWAYS requires guildId
   });
@@ -213,6 +216,7 @@ describe('Create Reminder', () => {
 ## Performance Impact
 
 ### Quote Pattern (Extra Indirection)
+
 ```
 Command
   ↓ (function call overhead)
@@ -228,6 +232,7 @@ Total: 3 function calls + detection logic
 ```
 
 ### Reminder Pattern (Direct)
+
 ```
 Command
   ↓ (no indirection)
@@ -247,6 +252,7 @@ Total: 1 function call, direct routing
 ## Scaling Scenarios
 
 ### Scenario 1: 10 Guilds
+
 ```
 Quote Pattern:  Works, but guild context unclear
 Reminder Pattern: Works perfectly, guild context clear
@@ -255,6 +261,7 @@ Winner: Reminder Pattern (clearer intent)
 ```
 
 ### Scenario 2: 1000 Guilds
+
 ```
 Quote Pattern:  Hard to debug which guild got the quote
 Reminder Pattern: Easy to trace by guild context in every call
@@ -263,6 +270,7 @@ Winner: Reminder Pattern (debuggability)
 ```
 
 ### Scenario 3: Separate Servers Per Guild
+
 ```
 Quote Pattern:  db.js needs to route across servers - complicated
 Reminder Pattern: GuildAwareReminderService routes cleanly
@@ -271,6 +279,7 @@ Winner: Reminder Pattern (routing)
 ```
 
 ### Scenario 4: Database Sharding
+
 ```
 Quote Pattern:  db.js must handle shard routing - messy
 Reminder Pattern: Service handles shard routing - clean
@@ -282,15 +291,15 @@ Winner: Reminder Pattern (distribution)
 
 ## Code Quality Metrics
 
-| Metric | Quote Pattern | Reminder Pattern |
-|--------|---------------|------------------|
-| **Cyclomatic Complexity** | Higher (multiple paths) | Lower (single path) |
-| **Testability Score** | 6/10 (hard to mock) | 9/10 (easy to mock) |
-| **Maintainability** | 6/10 (wrapper confusion) | 9/10 (clear services) |
-| **Lines of Code** | More (wrapper layer) | Less (direct imports) |
-| **Readability** | Medium (wrapper hides logic) | High (explicit logic) |
-| **Guild Safety** | 6/10 (optional context) | 10/10 (mandatory context) |
-| **Multi-Guild Readiness** | 5/10 (needs retrofitting) | 10/10 (native support) |
+| Metric                    | Quote Pattern                | Reminder Pattern          |
+| ------------------------- | ---------------------------- | ------------------------- |
+| **Cyclomatic Complexity** | Higher (multiple paths)      | Lower (single path)       |
+| **Testability Score**     | 6/10 (hard to mock)          | 9/10 (easy to mock)       |
+| **Maintainability**       | 6/10 (wrapper confusion)     | 9/10 (clear services)     |
+| **Lines of Code**         | More (wrapper layer)         | Less (direct imports)     |
+| **Readability**           | Medium (wrapper hides logic) | High (explicit logic)     |
+| **Guild Safety**          | 6/10 (optional context)      | 10/10 (mandatory context) |
+| **Multi-Guild Readiness** | 5/10 (needs retrofitting)    | 10/10 (native support)    |
 
 ---
 

@@ -5,6 +5,7 @@
 This proposal outlines a **fine-grained, role-based permission system** for VeraBot 2.0 that builds on your existing architecture while providing Discord role-based access control.
 
 **Key Principles:**
+
 - ✅ Backward compatible with existing 2-tier system (Admin + Opt-In)
 - ✅ Flexible hierarchy supporting custom role definitions
 - ✅ Guild-specific permission overrides
@@ -16,6 +17,7 @@ This proposal outlines a **fine-grained, role-based permission system** for Vera
 ## 1. Architecture Overview
 
 ### Current System
+
 ```
 User → Discord Administrator? → Allowed
             ↓ NO
@@ -25,6 +27,7 @@ User → Discord Administrator? → Allowed
 ```
 
 ### Proposed System
+
 ```
 User → Has Required Roles? → Check Role Hierarchy
     ↓ NO                       ↓
@@ -94,6 +97,7 @@ Users can define custom role requirements per guild:
 **Location:** `src/services/RolePermissionService.js`
 
 **Responsibilities:**
+
 - Define role hierarchies and permissions
 - Check user permissions
 - Apply guild-specific overrides
@@ -102,6 +106,7 @@ Users can define custom role requirements per guild:
 - Cache role checks for performance
 
 **Key Methods:**
+
 ```javascript
 RolePermissionService.getUserRoles(userId, guildId)
   → Returns user's role tier(s)
@@ -179,11 +184,11 @@ class PingCommand extends Command {
       options: {},
       // NEW: Permission and visibility requirements
       permissions: {
-        minTier: 0,           // Anyone can use
+        minTier: 0, // Anyone can use
         requiredRoles: [],
         allowGuildOverride: true,
-        visible: true         // Show in slash command list
-      }
+        visible: true, // Show in slash command list
+      },
     });
   }
 
@@ -201,11 +206,11 @@ class WhisperCommand extends Command {
       data: whisperData,
       options: {},
       permissions: {
-        minTier: 3,           // Admin only
+        minTier: 3, // Admin only
         requiredRoles: ['administrator'],
         allowGuildOverride: false,
-        visible: false        // HIDDEN from regular users
-      }
+        visible: false, // HIDDEN from regular users
+      },
     });
   }
 
@@ -227,7 +232,7 @@ async execute(message, args) {
     message.guildId,
     this.name
   );
-  
+
   if (!hasPermission) {
     await sendError(message, 'You do not have permission to use this command', true);
     return;
@@ -259,17 +264,12 @@ module.exports = {
     0: {
       name: 'Guest',
       description: 'Read-only access',
-      permissions: ['read:quotes']
+      permissions: ['read:quotes'],
     },
     1: {
       name: 'Member',
       description: 'Standard user permissions',
-      permissions: [
-        'create:quotes',
-        'read:quotes',
-        'rate:quotes',
-        'view:own_reminders'
-      ]
+      permissions: ['create:quotes', 'read:quotes', 'rate:quotes', 'view:own_reminders'],
     },
     2: {
       name: 'Moderator',
@@ -280,50 +280,45 @@ module.exports = {
         'delete:quotes',
         'rate:quotes',
         'moderate:users',
-        'view:all_reminders'
-      ]
+        'view:all_reminders',
+      ],
     },
     3: {
       name: 'Administrator',
       description: 'Guild administration',
-      permissions: [
-        '*:admin_commands',
-        '*:quotes',
-        '*:reminders',
-        '*:moderation'
-      ]
+      permissions: ['*:admin_commands', '*:quotes', '*:reminders', '*:moderation'],
     },
     4: {
       name: 'Bot Owner',
       description: 'Full bot access',
-      permissions: ['*']
-    }
+      permissions: ['*'],
+    },
   },
 
   // Command-level requirements
   commands: {
-    'ping': { minTier: 0, visible: true },
-    'help': { minTier: 0, visible: true },
+    ping: { minTier: 0, visible: true },
+    help: { minTier: 0, visible: true },
     'add-quote': { minTier: 1, visible: true },
     'delete-quote': { minTier: 2, visible: true },
-    'whisper': { minTier: 3, visible: false },  // Hidden from non-admins
-    'embed-message': { minTier: 3, visible: false },  // Hidden from non-admins
-    'remind': { minTier: 1, visible: true }
+    whisper: { minTier: 3, visible: false }, // Hidden from non-admins
+    'embed-message': { minTier: 3, visible: false }, // Hidden from non-admins
+    remind: { minTier: 1, visible: true },
   },
 
   // Guild-specific overrides
   guildOverrides: {
-    'SERVER_ID_1': {
+    SERVER_ID_1: {
       tiers: {
         1: {
           name: 'Contributors',
-          permissions: ['*:quotes']
-        }
+          permissions: ['*:quotes'],
+        },
       },
       commands: {
-        'add-quote': { minTier: 0, visible: true }  // Allow guests to add quotes in this guild
-      }
-    }
+        'add-quote': { minTier: 0, visible: true }, // Allow guests to add quotes in this guild
+      },
+    },
   },
 
   // Command visibility rules
@@ -332,21 +327,21 @@ module.exports = {
     // 'restricted' - Only shown if user has permission
     // 'public' - Always shown
     defaultMode: 'restricted',
-    
+
     rules: {
-      'ping': 'public',          // Always visible
-      'help': 'public',          // Always visible
-      'whisper': 'hidden',       // Never visible to non-admins
+      ping: 'public', // Always visible
+      help: 'public', // Always visible
+      whisper: 'hidden', // Never visible to non-admins
       'embed-message': 'hidden', // Never visible to non-admins
-      'manage-roles': 'hidden'   // Admin-only tool
-    }
+      'manage-roles': 'hidden', // Admin-only tool
+    },
   },
 
   // Enable/disable role checking
   enabled: true,
   auditLogging: true,
   cacheRoleChecks: true,
-  cacheTTL: 3600  // 1 hour
+  cacheTTL: 3600, // 1 hour
 };
 ```
 
@@ -359,13 +354,14 @@ module.exports = {
 There are three approaches to control command visibility:
 
 #### Strategy 1: Hidden Commands (Recommended)
+
 Commands are completely hidden from the slash menu if the user doesn't have permission.
 
 ```
 User sees:            /ping
                       /help
                       /add-quote
-                      
+
 Admin sees:           /ping
                       /help
                       /add-quote
@@ -375,20 +371,21 @@ Admin sees:           /ping
 ```
 
 **Implementation:**
+
 ```javascript
 // When registering slash commands with Discord
 // Filter out commands user doesn't have permission to see
 
-const visibleCommands = await RolePermissionService
-  .getVisibleCommands(userId, guildId, allCommandData);
+const visibleCommands = await RolePermissionService.getVisibleCommands(userId, guildId, allCommandData);
 
 // Send only visibleCommands to Discord API
 await rest.put(Routes.applicationCommands(clientId), {
-  body: visibleCommands
+  body: visibleCommands,
 });
 ```
 
 #### Strategy 2: Disabled Commands
+
 Commands appear but are grayed out if user lacks permission.
 
 ```
@@ -403,6 +400,7 @@ User sees:            /ping ✓
 **Cons:** Requires Discord Slash Command permissions system
 
 #### Strategy 3: Smart Help Command
+
 Help command dynamically shows only accessible commands.
 
 ```
@@ -414,20 +412,19 @@ Help command dynamically shows only accessible commands.
 ### Implementation in Practice
 
 #### Update Help Command
+
 ```javascript
 class HelpCommand extends Command {
   async executeInteraction(interaction) {
-    const userTier = await RolePermissionService
-      .getUserRoles(interaction.user.id, interaction.guildId);
-    
+    const userTier = await RolePermissionService.getUserRoles(interaction.user.id, interaction.guildId);
+
     // Get all visible commands for this user
-    const visibleCommands = await RolePermissionService
-      .getVisibleCommands(
-        interaction.user.id,
-        interaction.guildId,
-        this.allLoadedCommands
-      );
-    
+    const visibleCommands = await RolePermissionService.getVisibleCommands(
+      interaction.user.id,
+      interaction.guildId,
+      this.allLoadedCommands
+    );
+
     // Build help embed showing only accessible commands
     const helpEmbed = this.buildHelpEmbed(visibleCommands, userTier);
     await interaction.reply({ embeds: [helpEmbed], ephemeral: true });
@@ -436,31 +433,29 @@ class HelpCommand extends Command {
 ```
 
 #### Autocomplete Filtering
+
 ```javascript
 // When user types "/" - Discord requests autocomplete suggestions
 // Filter based on permissions
 
 async function autocompleteHandler(interaction) {
-  const visibleCommandNames = await RolePermissionService
-    .getVisibleCommandNames(
-      interaction.user.id,
-      interaction.guildId
-    );
-  
+  const visibleCommandNames = await RolePermissionService.getVisibleCommandNames(
+    interaction.user.id,
+    interaction.guildId
+  );
+
   // Return only accessible command names for autocomplete
   const focused = interaction.options.getFocused(true);
-  const filtered = visibleCommandNames
-    .filter(cmd => cmd.startsWith(focused.value));
-  
-  await interaction.respond(
-    filtered.map(name => ({ name, value: name }))
-  );
+  const filtered = visibleCommandNames.filter((cmd) => cmd.startsWith(focused.value));
+
+  await interaction.respond(filtered.map((name) => ({ name, value: name })));
 }
 ```
 
 ### Visibility Configuration Examples
 
 **Make admin commands completely hidden:**
+
 ```javascript
 commands: {
   'whisper': { minTier: 3, visible: false },     // Hidden
@@ -470,6 +465,7 @@ commands: {
 ```
 
 **Show all commands but gate execution:**
+
 ```javascript
 commands: {
   'whisper': { minTier: 3, visible: true },      // Visible but locked
@@ -479,6 +475,7 @@ commands: {
 ```
 
 **Dynamic visibility per guild:**
+
 ```javascript
 guildOverrides: {
   'SERVER_ID_1': {
@@ -526,24 +523,28 @@ Proxy                     3           Administrator
 ## 7. Implementation Timeline
 
 ### Phase 1: Core Infrastructure (Week 1)
+
 - ✓ Create `RolePermissionService`
 - ✓ Design database schema
 - ✓ Create migration script
 - ✓ Update `CommandBase` with permission checks
 
 ### Phase 2: Configuration (Week 2)
+
 - ✓ Create `src/config/roles.js`
 - ✓ Implement role tier system
 - ✓ Setup command-level permissions
 - ✓ Add guild-specific override support
 
 ### Phase 3: Integration (Week 3)
+
 - ✓ Update all 32 commands with permission metadata
 - ✓ Implement audit logging
 - ✓ Add caching layer
 - ✓ Create admin commands for managing roles
 
 ### Phase 4: Testing & Documentation (Week 4)
+
 - ✓ Write comprehensive tests
 - ✓ Document permission model
 - ✓ Create troubleshooting guide
@@ -565,7 +566,7 @@ class RolePermissionService {
    */
   async getUserRoles(userId, guildId) {
     const cacheKey = `${userId}:${guildId}`;
-    
+
     // Check cache
     if (this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey);
@@ -577,7 +578,7 @@ class RolePermissionService {
     // Fetch from Discord API
     const guild = await client.guilds.fetch(guildId);
     const member = await guild.members.fetch(userId);
-    
+
     if (!member) return 0;
 
     // Get user's highest tier
@@ -597,7 +598,7 @@ class RolePermissionService {
     // Cache result
     this.cache.set(cacheKey, {
       roles: maxTier,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     return maxTier;
@@ -611,8 +612,8 @@ class RolePermissionService {
 
     const userTier = await this.getUserRoles(userId, guildId);
     const commandPerms = this.roleConfig.commands[commandName];
-    
-    if (!commandPerms) return true;  // No restrictions
+
+    if (!commandPerms) return true; // No restrictions
 
     return userTier >= commandPerms.minTier;
   }
@@ -631,7 +632,7 @@ class RolePermissionService {
     // Check visibility settings
     const cmdConfig = this.roleConfig.commands[commandName];
     if (cmdConfig && cmdConfig.visible === false) {
-      return false;  // Hidden command
+      return false; // Hidden command
     }
 
     return true;
@@ -643,7 +644,7 @@ class RolePermissionService {
    */
   async getVisibleCommands(userId, guildId, allCommands) {
     const visible = [];
-    
+
     for (const cmd of allCommands) {
       if (await this.isCommandVisible(userId, guildId, cmd.name)) {
         visible.push(cmd);
@@ -658,7 +659,7 @@ class RolePermissionService {
    */
   async getVisibleCommandNames(userId, guildId, allCommandNames) {
     const visible = [];
-    
+
     for (const name of allCommandNames) {
       if (await this.isCommandVisible(userId, guildId, name)) {
         visible.push(name);
@@ -683,7 +684,7 @@ class RolePermissionService {
       command_name: commandName,
       result,
       user_tier: userTier,
-      required_tier: commandPerms.minTier || 0
+      required_tier: commandPerms.minTier || 0,
     });
   }
 }
@@ -703,6 +704,7 @@ class RolePermissionService {
 ```
 
 **Example:**
+
 ```
 /manage-roles set-tier @Moderators 2
 # Sets the Moderators role to tier 2
@@ -718,35 +720,38 @@ class RolePermissionService {
 
 ## 10. Advantages of This Approach
 
-| Feature | Benefit |
-|---------|---------|
-| **Tier-based** | Simple to understand, easy to manage |
-| **Flexible** | Supports custom role definitions per guild |
-| **Backward compatible** | Existing 2-tier system still works |
-| **Audit trail** | Track who tried to access what |
-| **Cached** | High performance even with many roles |
-| **Per-command** | Fine-grained control over each command |
-| **Guild-specific** | Different servers can have different rules |
-| **Extensible** | Easy to add new permissions/roles |
+| Feature                 | Benefit                                    |
+| ----------------------- | ------------------------------------------ |
+| **Tier-based**          | Simple to understand, easy to manage       |
+| **Flexible**            | Supports custom role definitions per guild |
+| **Backward compatible** | Existing 2-tier system still works         |
+| **Audit trail**         | Track who tried to access what             |
+| **Cached**              | High performance even with many roles      |
+| **Per-command**         | Fine-grained control over each command     |
+| **Guild-specific**      | Different servers can have different rules |
+| **Extensible**          | Easy to add new permissions/roles          |
 
 ---
 
 ## 11. Migration Path
 
 ### Step 1: Dual System (Compatibility)
+
 ```javascript
 // Both old and new systems work
-if (isAdministrator(user)) return true;      // Old system
-if (await userHasPermission(user)) return true;  // New system
+if (isAdministrator(user)) return true; // Old system
+if (await userHasPermission(user)) return true; // New system
 return false;
 ```
 
 ### Step 2: Gradual Adoption
+
 - Deploy new system alongside old
 - Gradually update commands to use new permissions
 - Monitor logs for issues
 
 ### Step 3: Complete Migration
+
 - Update all 32 commands
 - Remove old permission checks
 - Deprecate legacy system
@@ -756,6 +761,7 @@ return false;
 ## 12. Recommended Next Steps
 
 ### To Proceed:
+
 1. **Review this proposal** - Provide feedback on approach
 2. **Approve database schema** - Finalize table structures
 3. **Create RolePermissionService** - Core service implementation

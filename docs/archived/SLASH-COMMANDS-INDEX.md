@@ -8,18 +8,21 @@ Complete documentation for the "slash commands not available after Docker rebuil
 
 **If you just want the fix:**
 → [SLASH-COMMANDS-SOLUTION.md](SLASH-COMMANDS-SOLUTION.md) (2 min read)
+
 - Direct answer to your problem
 - 3-step solution
 - Quick diagnostic checklist
 
 **If you want quick diagnosis:**
 → [SLASH-COMMANDS-QUICK-FIX.md](SLASH-COMMANDS-QUICK-FIX.md) (3 min read)
+
 - Decision tree to find your issue
 - Quick fixes for common problems
 - Debug commands
 
 **If you want the full picture:**
 → [SLASH-COMMANDS-VISUAL.md](SLASH-COMMANDS-VISUAL.md) (5 min read)
+
 - Visual flowcharts and diagrams
 - Timeline of what happens
 - Reference cheat sheet
@@ -30,6 +33,7 @@ Complete documentation for the "slash commands not available after Docker rebuil
 
 **Docker Workflow Guide:**
 → [guides/DOCKER-WORKFLOW.md](guides/DOCKER-WORKFLOW.md) (10 min read)
+
 - Complete build-to-test workflow
 - Day-to-day usage patterns
 - Common scenarios and solutions
@@ -37,6 +41,7 @@ Complete documentation for the "slash commands not available after Docker rebuil
 
 **Detailed Troubleshooting:**
 → [guides/SLASH-COMMANDS-TROUBLESHOOTING.md](guides/SLASH-COMMANDS-TROUBLESHOOTING.md) (20 min read)
+
 - All 8 common causes
 - Step-by-step diagnostics
 - Debug commands
@@ -44,6 +49,7 @@ Complete documentation for the "slash commands not available after Docker rebuil
 
 **Docker Setup Guide:**
 → [guides/DOCKER-SETUP.md](guides/DOCKER-SETUP.md) (15 min read)
+
 - Explains your Dockerfile
 - Docker Compose usage
 - Persistent data management
@@ -86,14 +92,14 @@ docker-compose exec verabot2 npm run register-commands
 
 ## 🔍 Choose Your Guide
 
-| Your Situation | Guide | Time |
-|---|---|---|
-| Just want the fix | [SLASH-COMMANDS-SOLUTION.md](SLASH-COMMANDS-SOLUTION.md) | 2 min |
-| Need quick diagnosis | [SLASH-COMMANDS-QUICK-FIX.md](SLASH-COMMANDS-QUICK-FIX.md) | 3 min |
-| Want visual explanation | [SLASH-COMMANDS-VISUAL.md](SLASH-COMMANDS-VISUAL.md) | 5 min |
-| Learning Docker workflow | [guides/DOCKER-WORKFLOW.md](guides/DOCKER-WORKFLOW.md) | 10 min |
+| Your Situation                | Guide                                                                                | Time   |
+| ----------------------------- | ------------------------------------------------------------------------------------ | ------ |
+| Just want the fix             | [SLASH-COMMANDS-SOLUTION.md](SLASH-COMMANDS-SOLUTION.md)                             | 2 min  |
+| Need quick diagnosis          | [SLASH-COMMANDS-QUICK-FIX.md](SLASH-COMMANDS-QUICK-FIX.md)                           | 3 min  |
+| Want visual explanation       | [SLASH-COMMANDS-VISUAL.md](SLASH-COMMANDS-VISUAL.md)                                 | 5 min  |
+| Learning Docker workflow      | [guides/DOCKER-WORKFLOW.md](guides/DOCKER-WORKFLOW.md)                               | 10 min |
 | Troubleshooting complex issue | [guides/SLASH-COMMANDS-TROUBLESHOOTING.md](guides/SLASH-COMMANDS-TROUBLESHOOTING.md) | 20 min |
-| Understanding Docker | [guides/DOCKER-SETUP.md](guides/DOCKER-SETUP.md) | 15 min |
+| Understanding Docker          | [guides/DOCKER-SETUP.md](guides/DOCKER-SETUP.md)                                     | 15 min |
 
 ---
 
@@ -130,6 +136,7 @@ docs/
 ### Why Register Commands?
 
 Discord doesn't automatically know about your bot's commands. You must explicitly tell Discord's API:
+
 - What commands exist
 - What they're named
 - How to display them to users
@@ -164,6 +171,7 @@ docker-compose exec verabot2 npm run register-commands
 ```
 
 Do this after:
+
 - First time starting bot
 - Rebuilding Docker image
 - Adding new commands

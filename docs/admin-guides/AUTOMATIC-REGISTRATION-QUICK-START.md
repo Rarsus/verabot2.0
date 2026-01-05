@@ -105,6 +105,7 @@ ENABLE_ADMIN_COMMANDS=false docker-compose up -d --build
 ```
 
 When the bot joins a new server, it will:
+
 - Register 19 commands (skipping 7 admin commands)
 - Log: `⏭️  Skipped: admin commands (ENABLE_ADMIN_COMMANDS=false)`
 - Send owner a welcome message
@@ -116,10 +117,12 @@ When the bot joins a new server, it will:
 ### 1. **New File: `src/utils/auto-register-commands.js`**
 
 Reusable function for command registration. Used by both:
+
 - Manual registration script (`register-commands.js`)
 - Automatic registration (`guildCreate` event in `index.js`)
 
 **Example usage:**
+
 ```javascript
 const { autoRegisterCommands } = require('./utils/auto-register-commands');
 
@@ -127,7 +130,7 @@ const result = await autoRegisterCommands({
   token: process.env.DISCORD_TOKEN,
   clientId: process.env.CLIENT_ID,
   guildId: 'optional-guild-id',
-  verbose: true
+  verbose: true,
 });
 
 // Result:
@@ -141,6 +144,7 @@ const result = await autoRegisterCommands({
 ### 2. **Updated: `src/register-commands.js`**
 
 Now uses the shared utility:
+
 - Cleaner code (33 lines → previously 130 lines)
 - Easier to maintain
 - Shares logic with automatic registration
@@ -148,6 +152,7 @@ Now uses the shared utility:
 ### 3. **Updated: `src/index.js`**
 
 Added `guildCreate` event handler:
+
 ```javascript
 client.on('guildCreate', async (guild) => {
   // Auto-register commands when bot is added to a new server
@@ -212,6 +217,7 @@ docker-compose logs -f | grep -E "(guildCreate|Successfully registered|Auto-regi
 ### "Bot joined but no commands appear"
 
 This usually means Discord hasn't synced yet. Try:
+
 1. Refresh Discord client (Ctrl+R or Cmd+R)
 2. Wait a few seconds
 3. Type `/` again
@@ -219,11 +225,13 @@ This usually means Discord hasn't synced yet. Try:
 ### "Got an error during auto-registration"
 
 Check the logs:
+
 ```bash
 docker-compose logs | grep -E "(Error|Failed|❌)"
 ```
 
 If registration failed:
+
 1. Manual registration might still work: `npm run register-commands`
 2. Check bot has `applications.commands` scope in Discord app settings
 3. Check bot has permission in the server
@@ -231,6 +239,7 @@ If registration failed:
 ### "Some commands are missing"
 
 If a feature flag is disabled:
+
 ```bash
 # Check your .env
 cat .env | grep ENABLE_
@@ -257,7 +266,7 @@ client.on('guildCreate', async (guild) => {
     .addFields(
       {
         name: '🎯 Getting Started',
-        value: 'Type `/` in any channel and select a command to get started.'
+        value: 'Type `/` in any channel and select a command to get started.',
       }
       // Add more fields here!
     );
@@ -278,6 +287,7 @@ client.on('guildCreate', async (guild) => {
 ## Backward Compatibility
 
 ✅ **100% backward compatible**
+
 - Manual registration still works identically
 - Feature flags still work identically
 - No breaking changes to any existing code
@@ -287,13 +297,13 @@ client.on('guildCreate', async (guild) => {
 
 ## Summary
 
-| Feature | Before | After |
-|---------|--------|-------|
-| **Time to use commands** | 1 hour (global) or manual registration | Instant! ⚡ |
-| **Manual registration** | Still required | Optional |
-| **User experience** | Complex onboarding | Seamless |
-| **Feature flags** | Respected at runtime | Respected at registration too |
-| **Customizable** | In `register-commands.js` | In `register-commands.js` + `guildCreate` handler |
+| Feature                  | Before                                 | After                                             |
+| ------------------------ | -------------------------------------- | ------------------------------------------------- |
+| **Time to use commands** | 1 hour (global) or manual registration | Instant! ⚡                                       |
+| **Manual registration**  | Still required                         | Optional                                          |
+| **User experience**      | Complex onboarding                     | Seamless                                          |
+| **Feature flags**        | Respected at runtime                   | Respected at registration too                     |
+| **Customizable**         | In `register-commands.js`              | In `register-commands.js` + `guildCreate` handler |
 
 ---
 

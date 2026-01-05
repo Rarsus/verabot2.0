@@ -16,6 +16,7 @@ The documentation validation system ensures high-quality, consistent, and accura
 - **Command**: `npm run docs:lint`
 
 **Checks:**
+
 - Header hierarchy
 - Line length limits
 - List formatting
@@ -31,6 +32,7 @@ The documentation validation system ensures high-quality, consistent, and accura
 - **Command**: `npm run docs:links`
 
 **Features:**
+
 - Internal file reference validation
 - External URL accessibility checks
 - Configurable timeouts and retries
@@ -44,6 +46,7 @@ The documentation validation system ensures high-quality, consistent, and accura
 - **Command**: `npm run docs:version`
 
 **Monitored Files:**
+
 - package.json (source of truth)
 - README.md
 - CHANGELOG.md
@@ -57,12 +60,14 @@ The documentation validation system ensures high-quality, consistent, and accura
 - **Command**: `npm run docs:badges`
 
 **Generated Badges:**
+
 - Version (from package.json)
 - Test results (pass/fail count)
 - Code coverage percentage
 - Node.js version requirement
 
 **Badge Colors:**
+
 - Tests: Green (passing) / Red (failing)
 - Coverage: Green (≥90%) / Yellow (≥70%) / Orange (<70%)
 - Version: Blue
@@ -75,6 +80,7 @@ The documentation validation system ensures high-quality, consistent, and accura
 Located at: `.github/workflows/validate-docs.yml`
 
 **Triggers:**
+
 - Push to main (documentation changes)
 - Pull requests (documentation changes)
 - Manual dispatch
@@ -193,10 +199,7 @@ Edit `.markdown-link-check.json` to ignore specific URLs:
 Edit `scripts/validation/check-version.js` to add files:
 
 ```javascript
-const VERSION_FILES = [
-  'README.md',
-  'your-file.md'
-];
+const VERSION_FILES = ['README.md', 'your-file.md'];
 ```
 
 ## Troubleshooting
