@@ -1,3 +1,15 @@
+# [2.14.0](https://github.com/Rarsus/verabot2.0/compare/v2.13.0...v2.14.0) (2026-01-05)
+
+
+### Bug Fixes
+
+* resolve all ESLint warnings to unblock feature commits ([c3c433a](https://github.com/Rarsus/verabot2.0/commit/c3c433ab99e29dc6481f14982f3e19f186c9b7c2))
+
+
+### Features
+
+* implement MCP server configuration for GitHub Copilot integration ([826af7b](https://github.com/Rarsus/verabot2.0/commit/826af7ba362a0705644ae87139c135b4d202d579))
+
 # [2.13.0](https://github.com/Rarsus/verabot2.0/compare/v2.12.0...v2.13.0) (2026-01-05)
 
 ### Bug Fixes
