@@ -35,5 +35,12 @@ module.exports = {
   admin: {
     enabled: process.env.ENABLE_ADMIN_COMMANDS === 'true',
     description: 'Admin commands (proxy configuration)'
+  },
+
+  // Dashboard API server (disabled by default)
+  dashboard: {
+    enabled: process.env.ENABLE_DASHBOARD_API === 'true',
+    description: 'Dashboard API server for web interface',
+    port: process.env.API_PORT || 3000
   }
 };

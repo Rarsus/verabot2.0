@@ -167,6 +167,45 @@ client.once('clientReady', async () => {
       // Continue without reminder notifications if it fails
     }
   }
+
+  // Start dashboard API server (if enabled)
+  if (features.dashboard?.enabled) {
+    try {
+      const express = require('express');
+      const cors = require('cors');
+      const dashboardRoutes = require('./routes/dashboard');
+      const dashboardAuth = require('./middleware/dashboard-auth');
+
+      const app = express();
+      const apiPort = features.dashboard.port;
+
+      // Middleware
+      app.use(express.json());
+      app.use(cors({
+        origin: process.env.DASHBOARD_URL || 'http://localhost:5000',
+        credentials: true,
+      }));
+
+      // Store Discord client for routes
+      app.locals.discordClient = client;
+
+      // Health check
+      app.get('/health', (req, res) => {
+        res.json({ success: true, status: 'healthy', timestamp: Date.now() });
+      });
+
+      // Dashboard routes with authentication
+      app.use('/api', dashboardAuth.verifyToken.bind(dashboardAuth), dashboardAuth.logAccess.bind(dashboardAuth), dashboardRoutes);
+
+      // Start server
+      app.listen(apiPort, () => {
+        console.log(`✓ Dashboard API server started on port ${apiPort}`);
+      });
+    } catch (err) {
+      console.error('Failed to start dashboard API server:', err.message);
+      // Continue without dashboard API if it fails
+    }
+  }
 });
 
 // Handle slash commands and button interactions
