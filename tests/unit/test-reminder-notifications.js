@@ -311,15 +311,15 @@ console.log('\n=== Test 13: Initialize Notification Service ===');
 (async () => {
   try {
     const notificationService = require('../../src/services/ReminderNotificationService');
-    
+
     // Create mock client
     const mockClient = { id: 'test-client' };
-    
+
     notificationService.initializeNotificationService(mockClient);
-    
+
     // Stop the service to clean up
     notificationService.stopNotificationService();
-    
+
     console.log('✅ Test 13 Passed: Notification service initialized');
     passed++;
   } catch (err) {
@@ -333,17 +333,17 @@ console.log('\n=== Test 14: Stop Notification Service ===');
 (async () => {
   try {
     const notificationService = require('../../src/services/ReminderNotificationService');
-    
+
     // Initialize first
     const mockClient = { id: 'test-client' };
     notificationService.initializeNotificationService(mockClient);
-    
+
     // Then stop
     notificationService.stopNotificationService();
-    
+
     // Verify it can be stopped
     notificationService.stopNotificationService();
-    
+
     console.log('✅ Test 14 Passed: Notification service stopped');
     passed++;
   } catch (err) {
@@ -357,7 +357,7 @@ console.log('\n=== Test 15: Send Reminder Notification with Users ===');
 (async () => {
   try {
     const notificationService = require('../../src/services/ReminderNotificationService');
-    
+
     // Create a more complete mock client with user fetching
     const mockClient = {
       users: {
@@ -383,9 +383,9 @@ console.log('\n=== Test 15: Send Reminder Notification with Users ===');
         }
       }
     };
-    
+
     notificationService.initializeNotificationService(mockClient);
-    
+
     const reminder = {
       id: 1,
       subject: 'Test Reminder',
@@ -394,9 +394,9 @@ console.log('\n=== Test 15: Send Reminder Notification with Users ===');
       content: 'Test content',
       assignees: 'user:123456789'
     };
-    
+
     const result = await notificationService.sendReminderNotification(reminder);
-    
+
     if (result && result.users && result.users.includes('123456789')) {
       console.log('✅ Test 15 Passed: Reminder sent to user');
       passed++;
@@ -404,7 +404,7 @@ console.log('\n=== Test 15: Send Reminder Notification with Users ===');
       console.error('❌ Test 15 Failed: Reminder not sent to user');
       failed++;
     }
-    
+
     notificationService.stopNotificationService();
   } catch (err) {
     console.error('❌ Test 15 Failed:', err.message);
@@ -417,16 +417,16 @@ console.log('\n=== Test 16: Multiple Assignees Format ===');
 (async () => {
   try {
     const notificationService = require('../../src/services/ReminderNotificationService');
-    
+
     // Just test that the service can be initialized multiple times
     const mockClient1 = { users: { fetch: async () => ({}) }, channels: { fetch: async () => ({}) } };
     notificationService.initializeNotificationService(mockClient1);
     notificationService.stopNotificationService();
-    
+
     // Re-initialize for another test
     const mockClient2 = { users: { fetch: async () => ({}) }, channels: { fetch: async () => ({}) } };
     notificationService.initializeNotificationService(mockClient2);
-    
+
     // Verify the service is still working
     if (notificationService) {
       console.log('✅ Test 16 Passed: Service re-initialization handled');
@@ -435,7 +435,7 @@ console.log('\n=== Test 16: Multiple Assignees Format ===');
       console.error('❌ Test 16 Failed: Service not available');
       failed++;
     }
-    
+
     notificationService.stopNotificationService();
   } catch (err) {
     console.error('❌ Test 16 Failed:', err.message);
@@ -448,11 +448,11 @@ console.log('\n=== Test 17: Send Reminder with No Assignees ===');
 (async () => {
   try {
     const notificationService = require('../../src/services/ReminderNotificationService');
-    
+
     const mockClient = { users: { fetch: async () => ({}) } };
-    
+
     notificationService.initializeNotificationService(mockClient);
-    
+
     const reminder = {
       id: 3,
       subject: 'No Assignees',
@@ -460,9 +460,9 @@ console.log('\n=== Test 17: Send Reminder with No Assignees ===');
       when_datetime: '2024-12-31T10:00:00.000Z',
       assignees: ''
     };
-    
+
     const result = await notificationService.sendReminderNotification(reminder);
-    
+
     if (result && result.users.length === 0 && result.roles.length === 0) {
       console.log('✅ Test 17 Passed: No assignees handled');
       passed++;
@@ -470,7 +470,7 @@ console.log('\n=== Test 17: Send Reminder with No Assignees ===');
       console.error('❌ Test 17 Failed: No assignees handling failed');
       failed++;
     }
-    
+
     notificationService.stopNotificationService();
   } catch (err) {
     console.error('❌ Test 17 Failed:', err.message);
@@ -485,7 +485,7 @@ console.log('\n=== Test 18: Send Reminder Without Initialized Client ===');
     // Clear the module cache to get fresh instance
     delete require.cache[require.resolve('../../src/services/ReminderNotificationService')];
     const notificationService = require('../../src/services/ReminderNotificationService');
-    
+
     const reminder = {
       id: 4,
       subject: 'Test',
@@ -493,7 +493,7 @@ console.log('\n=== Test 18: Send Reminder Without Initialized Client ===');
       when_datetime: '2024-12-31T10:00:00.000Z',
       assignees: 'user:123'
     };
-    
+
     try {
       await notificationService.sendReminderNotification(reminder);
       console.error('❌ Test 18 Failed: Should have thrown error');
@@ -524,11 +524,11 @@ console.log('\n=== Test 19: Format DateTime ===');
       category: 'Event',
       when_datetime: '2024-12-31T10:00:00.000Z'
     };
-    
+
     const embed = createReminderEmbed(reminder);
-    
+
     const whenField = embed.data.fields.find(f => f.name.includes('When'));
-    
+
     if (whenField && whenField.value.includes('<t:')) {
       console.log('✅ Test 19 Passed: DateTime formatted correctly');
       passed++;
@@ -547,16 +547,16 @@ console.log('\n=== Test 20: Trigger Notification Check ===');
 (async () => {
   try {
     const notificationService = require('../../src/services/ReminderNotificationService');
-    
+
     const mockClient = { users: { fetch: async () => ({}) } };
     notificationService.initializeNotificationService(mockClient);
-    
+
     // This should not throw an error
     await notificationService.triggerNotificationCheck();
-    
+
     console.log('✅ Test 20 Passed: Notification check triggered');
     passed++;
-    
+
     notificationService.stopNotificationService();
   } catch (err) {
     console.error('❌ Test 20 Failed:', err.message);
@@ -569,7 +569,7 @@ console.log('\n=== Test 21: Invalid Assignee Format ===');
 (async () => {
   try {
     const notificationService = require('../../src/services/ReminderNotificationService');
-    
+
     const mockClient = {
       users: {
         fetch: async (userId) => {
@@ -593,9 +593,9 @@ console.log('\n=== Test 21: Invalid Assignee Format ===');
         }
       }
     };
-    
+
     notificationService.initializeNotificationService(mockClient);
-    
+
     const reminder = {
       id: 5,
       subject: 'Invalid Format',
@@ -603,9 +603,9 @@ console.log('\n=== Test 21: Invalid Assignee Format ===');
       when_datetime: '2024-12-31T10:00:00.000Z',
       assignees: 'user:invalid_id,user:123456'
     };
-    
+
     const result = await notificationService.sendReminderNotification(reminder);
-    
+
     if (result && result.errors && result.errors.length > 0 && result.users.includes('123456')) {
       console.log('✅ Test 21 Passed: Invalid assignee format handled');
       passed++;
@@ -613,7 +613,7 @@ console.log('\n=== Test 21: Invalid Assignee Format ===');
       console.error('❌ Test 21 Failed: Invalid format handling failed');
       failed++;
     }
-    
+
     notificationService.stopNotificationService();
   } catch (err) {
     console.error('❌ Test 21 Failed:', err.message);
@@ -626,7 +626,7 @@ console.log('\n=== Test 22: Parse Mention Format Assignees ===');
 (async () => {
   try {
     const notificationService = require('../../src/services/ReminderNotificationService');
-    
+
     const mockClient = {
       users: {
         fetch: async (userId) => {
@@ -650,9 +650,9 @@ console.log('\n=== Test 22: Parse Mention Format Assignees ===');
         }
       }
     };
-    
+
     notificationService.initializeNotificationService(mockClient);
-    
+
     const reminder = {
       id: 6,
       subject: 'Mention Format',
@@ -660,9 +660,9 @@ console.log('\n=== Test 22: Parse Mention Format Assignees ===');
       when_datetime: '2024-12-31T10:00:00.000Z',
       assignees: 'user:<@123456789>'
     };
-    
+
     const result = await notificationService.sendReminderNotification(reminder);
-    
+
     if (result && result.users.includes('123456789')) {
       console.log('✅ Test 22 Passed: Mention format parsed correctly');
       passed++;
@@ -670,7 +670,7 @@ console.log('\n=== Test 22: Parse Mention Format Assignees ===');
       console.error('❌ Test 22 Failed: Mention format parsing failed');
       failed++;
     }
-    
+
     notificationService.stopNotificationService();
   } catch (err) {
     console.error('❌ Test 22 Failed:', err.message);
