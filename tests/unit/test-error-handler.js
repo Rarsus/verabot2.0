@@ -16,7 +16,7 @@
  */
 
 const assert = require('assert');
-const { logError, logWarning, logInfo, ERROR_LEVELS } = require('../../src/middleware/errorHandler');
+const { logError, ERROR_LEVELS } = require('../../src/middleware/errorHandler');
 
 let passed = 0;
 let failed = 0;
@@ -73,7 +73,8 @@ test('Test 1: Log LOW level errors', () => {
   const logs = captureConsoleOutput(() => {
     logError('testFunc', new Error('Low error'), ERROR_LEVELS.LOW);
   });
-  assert(logs.log.length > 0 || logs.warn.length > 0, 'Should log LOW level');
+  // All levels use console.error
+  assert(logs.error.length > 0, 'Should log LOW level');
 });
 
 test('Test 2: Log MEDIUM level errors', () => {
@@ -139,20 +140,24 @@ test('Test 8: Include error stack trace', () => {
   assert(allLogs.includes('test stack'), 'Stack trace should be included');
 });
 
-test('Test 9: Log warning level messages', () => {
+test('Test 9: Handle multiple errors correctly', () => {
   const logs = captureConsoleOutput(() => {
-    logWarning('testFunc', 'This is a warning');
+    logError('testFunc1', new Error('Error 1'), ERROR_LEVELS.LOW);
+    logError('testFunc2', new Error('Error 2'), ERROR_LEVELS.MEDIUM);
   });
-  const hasWarning = logs.warn.length > 0;
-  assert(hasWarning, 'Warning should be logged');
+  const allLogs = [...logs.log, ...logs.warn, ...logs.error].join(' ');
+  assert(allLogs.includes('Error 1') && allLogs.includes('Error 2'), 'Multiple errors should be logged');
 });
 
-test('Test 10: Log info level messages', () => {
+test('Test 10: Handle complex error objects', () => {
   const logs = captureConsoleOutput(() => {
-    logInfo('testFunc', 'This is info');
+    const err = new Error('Complex error');
+    err.code = 'CUSTOM_CODE';
+    err.context = { userId: '123', action: 'test' };
+    logError('complexFunc', err, ERROR_LEVELS.MEDIUM);
   });
-  const hasInfo = logs.log.length > 0;
-  assert(hasInfo, 'Info should be logged');
+  const allLogs = [...logs.log, ...logs.warn, ...logs.error].join(' ');
+  assert(allLogs.includes('Complex error'), 'Complex error should be logged');
 });
 
 // ============================================================================
@@ -167,7 +172,7 @@ test('Test 11: Handle errors with custom metadata', () => {
     err.context = 'custom context';
     logError('func', err, ERROR_LEVELS.MEDIUM);
   });
-  assert(logs.error.length > 0 || logs.warn.length > 0, 'Should handle error with metadata');
+  assert(logs.error.length > 0, 'Should handle error with metadata');
 });
 
 test('Test 12: Handle null error gracefully', () => {
@@ -206,7 +211,7 @@ test('Test 15: Handle promise rejection errors', () => {
     const err = new Error('promise error');
     logError('asyncFunc', err, ERROR_LEVELS.MEDIUM);
   });
-  assert(logs.warn.length > 0 || logs.error.length > 0, 'Should handle promise rejections');
+  assert(logs.error.length > 0, 'Should handle promise rejections');
 });
 
 test('Test 16: Handle database errors', () => {
@@ -233,7 +238,7 @@ test('Test 18: Handle validation errors', () => {
     valErr.field = 'email';
     logError('validate', valErr, ERROR_LEVELS.LOW);
   });
-  assert(logs.log.length > 0 || logs.warn.length > 0, 'Should log validation errors');
+  assert(logs.error.length > 0, 'Should log validation errors');
 });
 
 // ============================================================================
@@ -249,7 +254,7 @@ test('Test 19: Preserve error properties', () => {
     err.guildId = 'guild456';
     logError('func', err, ERROR_LEVELS.MEDIUM);
   });
-  assert(logs.warn.length > 0 || logs.error.length > 0, 'Should preserve error properties');
+  assert(logs.error.length > 0, 'Should preserve error properties');
 });
 
 test('Test 20: Log errors from try-catch blocks', () => {
@@ -260,7 +265,7 @@ test('Test 20: Log errors from try-catch blocks', () => {
       logError('tryBlock', err, ERROR_LEVELS.LOW);
     }
   });
-  assert(logs.log.length > 0 || logs.warn.length > 0, 'Should log errors from try-catch');
+  assert(logs.error.length > 0, 'Should log errors from try-catch');
 });
 
 test('Test 21: Handle error chaining', () => {
@@ -284,7 +289,7 @@ test('Test 22: Format errors for user display', () => {
     const err = new Error('User-friendly message');
     logError('userAPI', err, ERROR_LEVELS.LOW);
   });
-  assert(logs.log.length > 0 || logs.warn.length > 0, 'Should format for display');
+  assert(logs.error.length > 0, 'Should format for display');
 });
 
 test('Test 23: Include error context in logs', () => {
@@ -293,7 +298,7 @@ test('Test 23: Include error context in logs', () => {
     err.context = { operation: 'quote_save', timestamp: Date.now() };
     logError('save', err, ERROR_LEVELS.MEDIUM);
   });
-  assert(logs.warn.length > 0 || logs.error.length > 0, 'Should include context in logs');
+  assert(logs.error.length > 0, 'Should include context in logs');
 });
 
 test('Test 24: Handle multiple errors in sequence', () => {
@@ -302,7 +307,7 @@ test('Test 24: Handle multiple errors in sequence', () => {
     logError('func2', new Error('error 2'), ERROR_LEVELS.MEDIUM);
     logError('func3', new Error('error 3'), ERROR_LEVELS.HIGH);
   });
-  assert(logs.log.length > 0 || logs.warn.length > 0 || logs.error.length > 0, 'Should handle multiple errors');
+  assert(logs.error.length >= 3, 'Should handle multiple errors');
 });
 
 // ============================================================================

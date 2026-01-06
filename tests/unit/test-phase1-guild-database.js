@@ -28,6 +28,18 @@ async function runTests() {
     const guildId1 = 'test-guild-001';
     const guildId2 = 'test-guild-002';
 
+    // Clean up any existing test data from previous runs
+    try {
+      await db.deleteGuildData(guildId1);
+    } catch (e) {
+      // Ignore if data doesn't exist
+    }
+    try {
+      await db.deleteGuildData(guildId2);
+    } catch (e) {
+      // Ignore if data doesn't exist
+    }
+
     console.log('📌 Testing GuildDatabaseManager\n');
 
     // Test 1: Get database connection
