@@ -22,7 +22,11 @@ const {
   getAllTags,
   getQuotesByCategory,
   exportQuotesAsJson,
-  exportQuotesAsCsv
+  exportQuotesAsCsv,
+  getProxyConfig,
+  setProxyConfig,
+  deleteProxyConfig,
+  getAllProxyConfig
 } = require('../../src/services/DatabaseService');
 
 let passed = 0;
@@ -403,6 +407,231 @@ console.log('\n=== Test 18: Export Specific Quotes ===');
   }
 })();
 
+// Test 19: Set Proxy Config
+console.log('\n=== Test 19: Set Proxy Config ===');
+(async () => {
+  try {
+    const result = await setProxyConfig('test_key', 'test_value', false);
+    if (result === true) {
+      console.log('✅ Test 19 Passed: Proxy config set');
+      passed++;
+    } else {
+      console.error('❌ Test 19 Failed: Proxy config not set');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 19 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 20: Get Proxy Config
+console.log('\n=== Test 20: Get Proxy Config ===');
+(async () => {
+  try {
+    await setProxyConfig('test_key_20', 'test_value_20', false);
+    const config = await getProxyConfig('test_key_20');
+    if (config && config.value === 'test_value_20') {
+      console.log('✅ Test 20 Passed: Proxy config retrieved');
+      passed++;
+    } else {
+      console.error('❌ Test 20 Failed: Proxy config not retrieved');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 20 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 21: Get Non-Existent Proxy Config
+console.log('\n=== Test 21: Get Non-Existent Proxy Config ===');
+(async () => {
+  try {
+    const config = await getProxyConfig('non_existent_key_12345');
+    if (config === null || config === undefined) {
+      console.log('✅ Test 21 Passed: Non-existent config returns null/undefined');
+      passed++;
+    } else {
+      console.error('❌ Test 21 Failed: Should return null for non-existent key');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 21 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 22: Set Proxy Config with Encryption
+console.log('\n=== Test 22: Set Proxy Config with Encryption ===');
+(async () => {
+  try {
+    const result = await setProxyConfig('test_key_encrypted', 'secret_value', true);
+    if (result === true) {
+      console.log('✅ Test 22 Passed: Encrypted proxy config set');
+      passed++;
+    } else {
+      console.error('❌ Test 22 Failed: Encrypted proxy config not set');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 22 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 23: Delete Proxy Config
+console.log('\n=== Test 23: Delete Proxy Config ===');
+(async () => {
+  try {
+    await setProxyConfig('test_key_delete', 'value', false);
+    const result = await deleteProxyConfig('test_key_delete');
+    if (result === true) {
+      console.log('✅ Test 23 Passed: Proxy config deleted');
+      passed++;
+    } else {
+      console.error('❌ Test 23 Failed: Proxy config not deleted');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 23 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 24: Delete Non-Existent Proxy Config
+console.log('\n=== Test 24: Delete Non-Existent Proxy Config ===');
+(async () => {
+  try {
+    const result = await deleteProxyConfig('non_existent_delete_key');
+    if (result === false) {
+      console.log('✅ Test 24 Passed: Deleting non-existent key returns false');
+      passed++;
+    } else {
+      console.error('❌ Test 24 Failed: Should return false for non-existent key');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 24 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 25: Get All Proxy Config
+console.log('\n=== Test 25: Get All Proxy Config ===');
+(async () => {
+  try {
+    await setProxyConfig('test_key_all_1', 'value1', false);
+    await setProxyConfig('test_key_all_2', 'value2', false);
+    const configs = await getAllProxyConfig();
+    if (Array.isArray(configs) && configs.length >= 2) {
+      console.log('✅ Test 25 Passed: All proxy configs retrieved');
+      passed++;
+    } else {
+      console.error('❌ Test 25 Failed: Configs array not retrieved');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 25 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 26: Proxy Config Has Key and Value Fields
+console.log('\n=== Test 26: Proxy Config Has Key and Value Fields ===');
+(async () => {
+  try {
+    await setProxyConfig('test_key_fields', 'test_value_fields', false);
+    const config = await getProxyConfig('test_key_fields');
+    if (config && config.key === 'test_key_fields' && config.value === 'test_value_fields') {
+      console.log('✅ Test 26 Passed: Proxy config has correct fields');
+      passed++;
+    } else {
+      console.error('❌ Test 26 Failed: Proxy config missing required fields');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 26 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 27: Proxy Config Has Encrypted Flag
+console.log('\n=== Test 27: Proxy Config Has Encrypted Flag ===');
+(async () => {
+  try {
+    await setProxyConfig('test_key_flag', 'test_value_flag', true);
+    const config = await getProxyConfig('test_key_flag');
+    if (config && config.encrypted !== undefined) {
+      console.log('✅ Test 27 Passed: Proxy config has encrypted flag');
+      passed++;
+    } else {
+      console.error('❌ Test 27 Failed: Proxy config missing encrypted flag');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 27 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 28: Proxy Config Has updatedAt Field
+console.log('\n=== Test 28: Proxy Config Has updatedAt Field ===');
+(async () => {
+  try {
+    await setProxyConfig('test_key_timestamp', 'test_value_timestamp', false);
+    const config = await getProxyConfig('test_key_timestamp');
+    if (config && config.updatedAt) {
+      console.log('✅ Test 28 Passed: Proxy config has updatedAt field');
+      passed++;
+    } else {
+      console.error('❌ Test 28 Failed: Proxy config missing updatedAt field');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 28 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 29: Update Proxy Config
+console.log('\n=== Test 29: Update Proxy Config ===');
+(async () => {
+  try {
+    await setProxyConfig('test_key_update', 'original_value', false);
+    const result = await setProxyConfig('test_key_update', 'updated_value', false);
+    const config = await getProxyConfig('test_key_update');
+    if (result === true && config.value === 'updated_value') {
+      console.log('✅ Test 29 Passed: Proxy config updated successfully');
+      passed++;
+    } else {
+      console.error('❌ Test 29 Failed: Proxy config not updated');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 29 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 30: Get Quote with Missing ID
+console.log('\n=== Test 30: Get Quote with Invalid ID ===');
+(async () => {
+  try {
+    const quote = await getQuoteById(999999);
+    if (quote === null || quote === undefined) {
+      console.log('✅ Test 30 Passed: Invalid quote ID returns null');
+      passed++;
+    } else {
+      console.error('❌ Test 30 Failed: Should return null for invalid ID');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 30 Failed:', err.message);
+    failed++;
+  }
+})();
+
 // Wait for all async tests to complete
 setTimeout(() => {
   console.log(`\n${'='.repeat(50)}`);
@@ -410,4 +639,4 @@ setTimeout(() => {
   if (failed === 0) {
     console.log('✅ All database service tests passed!');
   }
-}, 500);
+}, 1500);

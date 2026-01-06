@@ -232,13 +232,226 @@ await db.addQuote(text, author); // No guild isolation!
 
 See `docs/reference/DB-DEPRECATION-TIMELINE.md` for detailed migration guide.
 
-### Testing Requirements
+### Test-Driven Development (TDD) - MANDATORY
 
-- **All new commands** should have corresponding tests
-- **Utility functions** must have unit tests
-- **Integration tests** for command flows
-- Run tests before committing: `npm test`
-- Run all tests for major changes: `npm run test:all`
+**ALL new code MUST follow strict Test-Driven Development principles:**
+
+#### TDD Workflow (RED → GREEN → REFACTOR)
+
+1. **RED Phase - Write Tests First**
+   - Create test file BEFORE implementation
+   - Define test cases for all scenarios (happy path, error paths, edge cases)
+   - Run tests (should FAIL - RED)
+   - Tests drive design and requirements
+
+2. **GREEN Phase - Implement Minimum Code**
+   - Write ONLY code needed to pass tests
+   - Keep implementation focused and simple
+   - All tests PASS (GREEN)
+   - No over-engineering
+
+3. **REFACTOR Phase - Improve Quality**
+   - Optimize code while tests remain passing
+   - Improve readability and maintainability
+   - All tests STILL PASS
+   - No new functionality during refactor
+
+**This is NON-NEGOTIABLE for new code.**
+
+#### Coverage Requirements by Module Type
+
+| Module Type | Lines | Functions | Branches | Test Count |
+|------------|-------|-----------|----------|-----------|
+| Core Services | **85%+** | **90%+** | **80%+** | 20-30 |
+| Utilities | **90%+** | **95%+** | **85%+** | 15-25 |
+| Commands | **80%+** | **85%+** | **75%+** | 15-20 |
+| Middleware | **95%+** | **100%** | **90%+** | 20-25 |
+| New Features | **90%+** | **95%+** | **85%+** | 20-30 |
+
+#### Test Requirements Checklist
+
+Before ANY code is committed, verify:
+
+- ✅ Test file created BEFORE implementation code
+- ✅ All public methods have test cases
+- ✅ Happy path scenarios tested
+- ✅ Error scenarios tested (all error types)
+- ✅ Edge cases tested (boundary conditions, invalid inputs, null/empty values)
+- ✅ Async/await error handling tested
+- ✅ Database transactions tested (if applicable)
+- ✅ Discord interaction mocking tested (if applicable)
+- ✅ Coverage thresholds met (see table above)
+- ✅ All tests PASS locally: `npm test`
+- ✅ No ESLint errors: `npm run lint`
+- ✅ Coverage maintained/improved: `npm test -- --coverage`
+
+#### Test File Structure (MANDATORY)
+
+```javascript
+// tests/unit/test-{module-name}.js
+const assert = require('assert');
+const Module = require('../path/to/module');
+
+describe('ModuleName', () => {
+  let testData;
+
+  beforeEach(() => {
+    // Initialize test data
+    testData = { /* ... */ };
+  });
+
+  afterEach(() => {
+    // Cleanup resources
+    // Close databases, clear mocks, etc.
+  });
+
+  describe('methodName()', () => {
+    // Test happy path
+    it('should return expected result for valid input', () => {
+      const result = Module.methodName(testData);
+      assert.strictEqual(result, expected);
+    });
+
+    // Test error scenarios
+    it('should throw error for invalid input', () => {
+      assert.throws(() => {
+        Module.methodName(null);
+      }, /Expected error message/);
+    });
+
+    // Test edge cases
+    it('should handle edge case: empty input', () => {
+      const result = Module.methodName('');
+      assert.strictEqual(result, null);
+    });
+  });
+});
+```
+
+#### Mocking Standards
+
+**Discord.js Mocking:**
+```javascript
+const mockInteraction = {
+  user: { id: 'test-user-123', username: 'TestUser' },
+  guildId: 'test-guild-456',
+  channelId: 'test-channel-789',
+  reply: async (msg) => ({ id: 'msg-123', ...msg }),
+  deferReply: async () => ({}),
+  editReply: async (msg) => ({ id: 'msg-123', ...msg }),
+  followUp: async (msg) => ({ id: 'msg-456', ...msg }),
+};
+```
+
+**Database Mocking:**
+```javascript
+// Use in-memory SQLite for isolated tests
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database(':memory:');
+
+// Initialize schema in beforeEach
+// Reset/cleanup in afterEach
+```
+
+**Service Mocking:**
+```javascript
+// Mock external services to avoid dependencies
+const mockService = {
+  method: async (param) => {
+    return { success: true, data: {} };
+  }
+};
+```
+
+#### Error Path Testing (CRITICAL)
+
+Every error scenario must be tested:
+
+```javascript
+describe('error handling', () => {
+  it('should handle database connection error', async () => {
+    // Setup mock to throw error
+    // Assert error is caught and handled
+  });
+
+  it('should handle invalid Discord permissions', async () => {
+    // Setup mock user without permissions
+    // Assert permission denial is handled
+  });
+
+  it('should handle timeout errors', async () => {
+    // Setup slow/timeout scenario
+    // Assert timeout handling
+  });
+
+  it('should handle race conditions', async () => {
+    // Setup concurrent operations
+    // Assert proper synchronization
+  });
+});
+```
+
+#### Integration Testing
+
+For complex workflows, add integration tests:
+
+```javascript
+// tests/integration/test-integration-{feature}.js
+describe('Feature Integration', () => {
+  it('should complete full workflow', async () => {
+    // Setup initial state
+    // Perform multiple operations
+    // Assert final state
+  });
+});
+```
+
+#### Pre-Commit Testing Workflow
+
+MANDATORY before every commit:
+
+```bash
+# 1. Run specific module tests
+npm test -- tests/unit/test-{module-name}.js
+
+# 2. Check code style
+npm run lint
+
+# 3. Generate coverage report
+npm test -- --coverage
+
+# 4. Verify coverage meets thresholds
+npm run coverage:validate
+
+# 5. Run all tests before push
+npm test
+
+# Only commit if ALL checks pass
+```
+
+#### Coverage Maintenance
+
+- **Current:** 79.5% (lines) | 82.7% (functions) | 74.7% (branches)
+- **Target:** 90%+ (lines) | 95%+ (functions) | 85%+ (branches)
+- **Never decrease** existing coverage
+- **Always improve** coverage with new code
+
+See `CODE-COVERAGE-ANALYSIS-PLAN.md` for detailed coverage roadmap and priorities.
+
+#### Testing Guidelines Summary
+
+- ✅ **Write tests FIRST**, not after
+- ✅ **Test all code paths**, not just happy paths
+- ✅ **Use mocks** for external dependencies
+- ✅ **Keep tests focused** (one concept per test)
+- ✅ **Name tests clearly** (describe what is being tested)
+- ✅ **Cleanup after tests** (no side effects between tests)
+- ✅ **Test async code properly** (promises, callbacks, streams)
+- ✅ **Test error handling** (all error types and edge cases)
+- ✅ **Maintain test documentation** (comment complex test logic)
+- ✅ **Run tests frequently** (before every commit)
+
+**Violation of TDD requirements will result in rejection of pull requests.**
 
 ## Command Categories
 
@@ -281,24 +494,34 @@ Commands are organized by purpose:
 
 ### Testing Strategy
 
+**TDD is mandatory for all development.** See section: **Test-Driven Development (TDD) - MANDATORY** above.
+
 ```bash
 npm test                        # Quick sanity checks
-npm run test:all               # All tests (74 tests)
-npm run test:quotes            # Quote system tests (17 tests)
-npm run test:quotes-advanced   # Advanced quote tests (18 tests)
-npm run test:utils:base        # Command base tests (7 tests)
-npm run test:utils:options     # Options builder tests (10 tests)
-npm run test:utils:helpers     # Response helpers tests (12 tests)
-npm run test:integration:refactor # Integration tests (10 tests)
+npm run test:all               # All tests (500+ tests)
+npm run test:coverage          # Coverage report
+npm run test:quotes            # Quote system tests
+npm run test:utils:base        # Command base tests
+npm run test:utils:options     # Options builder tests
+npm run test:utils:helpers     # Response helpers tests
+npm run test:integration:*     # Integration tests
 npm run lint                   # Code style checks
 ```
 
 **Test Coverage Expectations:**
 
-- All test suites: 100% passing (74/74 tests)
-- Command base class: 100% passing
-- Quote system: 100% passing
-- Overall: 100% passing
+- **Line Coverage:** 90%+ (target from 79.5%)
+- **Function Coverage:** 95%+ (target from 82.7%)
+- **Branch Coverage:** 85%+ (target from 74.7%)
+- **Test Pass Rate:** 100% (maintain)
+- **All untested modules:** Eliminated (from 2 to 0)
+
+**Coverage Priority Roadmap:**
+See `CODE-COVERAGE-ANALYSIS-PLAN.md` for detailed implementation roadmap:
+- Phase 1: Critical foundation (response-helpers, ReminderNotificationService, DatabaseService)
+- Phase 2: Service completeness (ReminderService, errorHandler, WebhookListenerService, ProxyConfigService)
+- Phase 3: New features (resolution-helpers, features.js)
+- Phase 4: Optimization (branch coverage, edge cases, performance)
 
 ### Code Quality Standards
 
@@ -423,10 +646,15 @@ HUGGINGFACE_API_KEY=optional_key          # For AI poem generation
 ## Version Information
 
 - **Current Version:** v0.1.0 (December 2024)
+- **Last Updated:** January 5, 2026
 - **Node.js:** 18+ required
 - **Discord.js:** 14.11.0
-- **Major Refactoring:** Completed (27% code reduction)
-- **Test Coverage:** 100% passing (74/74 tests)
+- **Major Refactoring:** Completed (27% code reduction, Guild Isolation)
+- **Test Coverage:** 
+  - Current: 79.5% (lines) | 82.7% (functions) | 74.7% (branches)
+  - Target: 90%+ (lines) | 95%+ (functions) | 85%+ (branches)
+  - Tests: 500+ passing across 32 test suites (100% pass rate)
+- **TDD Framework:** Mandatory for all new code (updated January 5, 2026)
 
 ## Tips for Copilot Usage
 

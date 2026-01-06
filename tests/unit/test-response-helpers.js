@@ -454,6 +454,374 @@ console.log('\n=== Test 18: sendError Ephemeral False on Deferred Interaction ==
   }
 })();
 
+// Test 19: Send opt-in success on new interaction
+console.log('\n=== Test 19: Send Opt-In Success ===');
+(async () => {
+  try {
+    const { sendOptInSuccess } = require('../../src/utils/helpers/response-helpers');
+    const interaction = createMockInteraction(false, false);
+
+    await sendOptInSuccess(interaction);
+
+    if (interaction._lastReply &&
+        interaction._lastReply.content.includes('✅') &&
+        interaction._lastReply.content.includes('opted in') &&
+        interaction._lastReply.flags === 64) {
+      console.log('✅ Test 19 Passed: Opt-in success message sent with ephemeral flag');
+      passed++;
+    } else {
+      console.error('❌ Test 19 Failed: Opt-in success message not correct');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 19 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 20: Send opt-in success on deferred interaction
+console.log('\n=== Test 20: Send Opt-In Success on Deferred ===');
+(async () => {
+  try {
+    const { sendOptInSuccess } = require('../../src/utils/helpers/response-helpers');
+    const interaction = createMockInteraction(false, true);
+
+    await sendOptInSuccess(interaction);
+
+    if (interaction._lastEdit &&
+        interaction._lastEdit.content.includes('✅') &&
+        interaction._lastEdit.flags === 64) {
+      console.log('✅ Test 20 Passed: Opt-in success uses editReply when deferred');
+      passed++;
+    } else {
+      console.error('❌ Test 20 Failed: Opt-in success not using editReply');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 20 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 21: Send opt-out success on new interaction
+console.log('\n=== Test 21: Send Opt-Out Success ===');
+(async () => {
+  try {
+    const { sendOptOutSuccess } = require('../../src/utils/helpers/response-helpers');
+    const interaction = createMockInteraction(false, false);
+
+    await sendOptOutSuccess(interaction);
+
+    if (interaction._lastReply &&
+        interaction._lastReply.content.includes('⚠️') &&
+        interaction._lastReply.content.includes('opted out') &&
+        interaction._lastReply.flags === 64) {
+      console.log('✅ Test 21 Passed: Opt-out success message sent with warning icon');
+      passed++;
+    } else {
+      console.error('❌ Test 21 Failed: Opt-out success message not correct');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 21 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 22: Send opt-out success on deferred interaction
+console.log('\n=== Test 22: Send Opt-Out Success on Deferred ===');
+(async () => {
+  try {
+    const { sendOptOutSuccess } = require('../../src/utils/helpers/response-helpers');
+    const interaction = createMockInteraction(false, true);
+
+    await sendOptOutSuccess(interaction);
+
+    if (interaction._lastEdit &&
+        interaction._lastEdit.content.includes('⚠️') &&
+        interaction._lastEdit.flags === 64) {
+      console.log('✅ Test 22 Passed: Opt-out success uses editReply when deferred');
+      passed++;
+    } else {
+      console.error('❌ Test 22 Failed: Opt-out success not using editReply');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 22 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 23: Send opt-in status - opted in
+console.log('\n=== Test 23: Send Opt-In Status - Opted In ===');
+(async () => {
+  try {
+    const { sendOptInStatus } = require('../../src/utils/helpers/response-helpers');
+    const interaction = createMockInteraction(false, false);
+
+    await sendOptInStatus(interaction, true, '2026-01-05 10:00:00');
+
+    if (interaction._lastReply &&
+        interaction._lastReply.content.includes('✅ Opted In') &&
+        interaction._lastReply.content.includes('2026-01-05 10:00:00') &&
+        interaction._lastReply.flags === 64) {
+      console.log('✅ Test 23 Passed: Opt-in status shows correct status');
+      passed++;
+    } else {
+      console.error('❌ Test 23 Failed: Opt-in status not correct');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 23 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 24: Send opt-in status - opted out
+console.log('\n=== Test 24: Send Opt-In Status - Opted Out ===');
+(async () => {
+  try {
+    const { sendOptInStatus } = require('../../src/utils/helpers/response-helpers');
+    const interaction = createMockInteraction(false, false);
+
+    await sendOptInStatus(interaction, false, '2026-01-04 15:30:00');
+
+    if (interaction._lastReply &&
+        interaction._lastReply.content.includes('❌ Opted Out') &&
+        interaction._lastReply.content.includes('2026-01-04 15:30:00')) {
+      console.log('✅ Test 24 Passed: Opt-in status shows opted out');
+      passed++;
+    } else {
+      console.error('❌ Test 24 Failed: Opt-in status not showing opted out');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 24 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 25: Send opt-in status - never updated
+console.log('\n=== Test 25: Send Opt-In Status - Never Updated ===');
+(async () => {
+  try {
+    const { sendOptInStatus } = require('../../src/utils/helpers/response-helpers');
+    const interaction = createMockInteraction(false, false);
+
+    await sendOptInStatus(interaction, true, null);
+
+    if (interaction._lastReply &&
+        interaction._lastReply.content.includes('Never')) {
+      console.log('✅ Test 25 Passed: Opt-in status shows Never when no timestamp');
+      passed++;
+    } else {
+      console.error('❌ Test 25 Failed: Opt-in status not handling null timestamp');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 25 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 26: Send opt-in decision prompt on new interaction
+console.log('\n=== Test 26: Send Opt-In Decision Prompt ===');
+(async () => {
+  try {
+    const { sendOptInDecisionPrompt } = require('../../src/utils/helpers/response-helpers');
+    const interaction = createMockInteraction(false, false);
+    const recipient = { username: 'TestUser', id: '123456' };
+
+    await sendOptInDecisionPrompt(interaction, recipient, 'Important reminder');
+
+    if (interaction._lastReply &&
+        interaction._lastReply.content.includes('⚠️') &&
+        interaction._lastReply.content.includes('TestUser') &&
+        interaction._lastReply.content.includes('Important reminder') &&
+        interaction._lastReply.components &&
+        interaction._lastReply.components.length > 0) {
+      console.log('✅ Test 26 Passed: Opt-in decision prompt sent with buttons');
+      passed++;
+    } else {
+      console.error('❌ Test 26 Failed: Opt-in decision prompt not correct');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 26 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 27: Send opt-in decision prompt on deferred interaction
+console.log('\n=== Test 27: Send Opt-In Decision Prompt on Deferred ===');
+(async () => {
+  try {
+    const { sendOptInDecisionPrompt } = require('../../src/utils/helpers/response-helpers');
+    const interaction = createMockInteraction(false, true);
+    const recipient = { username: 'TestUser', id: '123456' };
+
+    await sendOptInDecisionPrompt(interaction, recipient, 'Test reminder');
+
+    if (interaction._lastEdit &&
+        interaction._lastEdit.content.includes('⚠️') &&
+        interaction._lastEdit.components &&
+        interaction._lastEdit.components.length > 0) {
+      console.log('✅ Test 27 Passed: Opt-in decision prompt uses editReply when deferred');
+      passed++;
+    } else {
+      console.error('❌ Test 27 Failed: Opt-in decision prompt not using editReply');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 27 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 28: Send reminder created server-only on new interaction
+console.log('\n=== Test 28: Send Reminder Created Server-Only ===');
+(async () => {
+  try {
+    const { sendReminderCreatedServerOnly } = require('../../src/utils/helpers/response-helpers');
+    const interaction = createMockInteraction(false, false);
+    const recipient = { username: 'TestUser', id: '123456' };
+
+    await sendReminderCreatedServerOnly(interaction, recipient, 'Meeting at 3pm');
+
+    if (interaction._lastReply &&
+        interaction._lastReply.content.includes('✅') &&
+        interaction._lastReply.content.includes('TestUser') &&
+        interaction._lastReply.content.includes('Server Only') &&
+        interaction._lastReply.content.includes('Meeting at 3pm')) {
+      console.log('✅ Test 28 Passed: Reminder server-only confirmation sent');
+      passed++;
+    } else {
+      console.error('❌ Test 28 Failed: Reminder server-only confirmation not correct');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 28 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 29: Send reminder created server-only on deferred interaction
+console.log('\n=== Test 29: Send Reminder Created Server-Only on Deferred ===');
+(async () => {
+  try {
+    const { sendReminderCreatedServerOnly } = require('../../src/utils/helpers/response-helpers');
+    const interaction = createMockInteraction(false, true);
+    const recipient = { username: 'TestUser', id: '123456' };
+
+    await sendReminderCreatedServerOnly(interaction, recipient, 'Test reminder');
+
+    if (interaction._lastEdit &&
+        interaction._lastEdit.content.includes('✅')) {
+      console.log('✅ Test 29 Passed: Reminder server-only uses editReply when deferred');
+      passed++;
+    } else {
+      console.error('❌ Test 29 Failed: Reminder server-only not using editReply');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 29 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 30: Send opt-in request
+console.log('\n=== Test 30: Send Opt-In Request ===');
+(async () => {
+  try {
+    const { sendOptInRequest } = require('../../src/utils/helpers/response-helpers');
+    const user = {
+      createDM: async () => ({
+        send: async (msg) => {
+          return { success: true, sent: msg };
+        }
+      })
+    };
+    const sender = { username: 'Admin', id: '654321' };
+
+    await sendOptInRequest(user, sender, 'Urgent notification');
+
+    console.log('✅ Test 30 Passed: Opt-in request sent to user DM');
+    passed++;
+  } catch (err) {
+    console.error('❌ Test 30 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 31: Send opt-in request with DM creation error
+console.log('\n=== Test 31: Send Opt-In Request - DM Error ===');
+(async () => {
+  try {
+    const { sendOptInRequest } = require('../../src/utils/helpers/response-helpers');
+    const user = {
+      createDM: async () => {
+        throw new Error('Cannot create DM');
+      }
+    };
+    const sender = { username: 'Admin', id: '654321' };
+
+    await sendOptInRequest(user, sender, 'Test reminder');
+
+    console.error('❌ Test 31 Failed: Should have thrown error');
+    failed++;
+  } catch (err) {
+    if (err.message.includes('Could not send DM')) {
+      console.log('✅ Test 31 Passed: Opt-in request throws error on DM failure');
+      passed++;
+    } else {
+      console.error('❌ Test 31 Failed: Wrong error message');
+      failed++;
+    }
+  }
+})();
+
+// Test 32: Success on replied interaction uses editReply
+console.log('\n=== Test 32: Success on Replied Uses editReply ===');
+(async () => {
+  try {
+    const interaction = createMockInteraction(true, false);
+
+    await sendSuccess(interaction, 'Done');
+
+    if (interaction._lastEdit && interaction._lastEdit.content.includes('✅')) {
+      console.log('✅ Test 32 Passed: Success uses editReply when already replied');
+      passed++;
+    } else {
+      console.error('❌ Test 32 Failed: Not using editReply');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 32 Failed:', err.message);
+    failed++;
+  }
+})();
+
+// Test 33: Error on replied interaction uses editReply
+console.log('\n=== Test 33: Error on Replied Uses editReply ===');
+(async () => {
+  try {
+    const interaction = createMockInteraction(true, false);
+
+    await sendError(interaction, 'Failed');
+
+    if (interaction._lastEdit && interaction._lastEdit.content.includes('❌')) {
+      console.log('✅ Test 33 Passed: Error uses editReply when already replied');
+      passed++;
+    } else {
+      console.error('❌ Test 33 Failed: Not using editReply');
+      failed++;
+    }
+  } catch (err) {
+    console.error('❌ Test 33 Failed:', err.message);
+    failed++;
+  }
+})();
+
 // Wait for async tests
 setTimeout(() => {
   console.log('\n=== Test Summary ===');
