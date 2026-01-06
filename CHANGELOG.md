@@ -1,3 +1,15 @@
+# [2.15.0](https://github.com/Rarsus/verabot2.0/compare/v2.14.0...v2.15.0) (2026-01-06)
+
+
+### Bug Fixes
+
+* Achieve 100% test pass rate - Fix phase1 database cleanup and error handler tests ([2f1c515](https://github.com/Rarsus/verabot2.0/commit/2f1c5153a32c1f7a0cf21efe2b90980df2b89a34))
+
+
+### Features
+
+* Add comprehensive Phase 2 tests - 37 new tests, 100% passing (70/70 total) ([df8c763](https://github.com/Rarsus/verabot2.0/commit/df8c763f893480cd6ec17f2e62e0ac8a67be11f1))
+
 # [2.14.0](https://github.com/Rarsus/verabot2.0/compare/v2.13.0...v2.14.0) (2026-01-05)
 
 
