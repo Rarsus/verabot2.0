@@ -176,7 +176,7 @@ test('Test 11: Handle errors with custom metadata', () => {
 });
 
 test('Test 12: Handle null error gracefully', () => {
-  const logs = captureConsoleOutput(() => {
+  captureConsoleOutput(() => {
     logError('func', null, ERROR_LEVELS.LOW);
   });
   // Should not throw - just check it was called

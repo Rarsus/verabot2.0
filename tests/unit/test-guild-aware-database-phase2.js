@@ -42,7 +42,7 @@ async function runTests() {
     try {
       await db.deleteGuildData(guildA);
       await db.deleteGuildData(guildB);
-    } catch (_e) {
+    } catch {
       // Ignore cleanup errors
     }
 
@@ -130,7 +130,7 @@ async function runTests() {
     try {
       await db.addQuote('', 'text', 'author');
       assert(false, 'Test 17: Should reject empty guild ID');
-    } catch (_err) {
+    } catch {
       assert(true, 'Test 17: Rejects empty guild ID');
     }
 

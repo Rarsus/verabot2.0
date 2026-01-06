@@ -41,7 +41,7 @@ async function runTests() {
     for (const guildId of guilds) {
       try {
         await db.deleteGuildData(guildId);
-      } catch (_e) {
+      } catch {
         // Ignore
       }
     }
@@ -288,7 +288,7 @@ async function runTests() {
     try {
       // Try invalid operation
       await db.getQuoteById('', 999);
-    } catch (_err) {
+    } catch {
       // Error expected, guild should still work
       const count = await db.getQuoteCount(guilds[0]);
       errorRecovered = count > 0;

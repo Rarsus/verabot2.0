@@ -31,12 +31,12 @@ async function runTests() {
     // Clean up any existing test data from previous runs
     try {
       await db.deleteGuildData(guildId1);
-    } catch (e) {
+    } catch {
       // Ignore if data doesn't exist
     }
     try {
       await db.deleteGuildData(guildId2);
-    } catch (e) {
+    } catch {
       // Ignore if data doesn't exist
     }
 
