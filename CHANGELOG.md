@@ -1,3 +1,16 @@
+# [2.16.0](https://github.com/Rarsus/verabot2.0/compare/v2.15.0...v2.16.0) (2026-01-06)
+
+
+### Bug Fixes
+
+* Phase 4 gap tests now all passing (22/22) ([17dcdcf](https://github.com/Rarsus/verabot2.0/commit/17dcdcfb1ad9e846758101037456b4c570108f33))
+
+
+### Features
+
+* Add Phase 3 coverage gap tests and code cleanup (30 new tests, 100% pass rate) ([83d6f9a](https://github.com/Rarsus/verabot2.0/commit/83d6f9ada6335a23004818d1483ab2db2c7f6e0a))
+* Migrate from custom test runner to Jest ([3063348](https://github.com/Rarsus/verabot2.0/commit/3063348d24b7d4b98fb478a5f65269d7d799f805))
+
 # [2.15.0](https://github.com/Rarsus/verabot2.0/compare/v2.14.0...v2.15.0) (2026-01-06)
 
 
