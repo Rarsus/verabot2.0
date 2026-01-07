@@ -40,10 +40,6 @@ jobs:
       - name: 🧪 Run all tests with coverage
         run: npm run test:coverage
 
-      - name: 📊 Generate coverage report
-        if: always()
-        run: npm run coverage:report
-
       - name: 📝 Update test documentation
         if: always()
         run: npm run test:docs:update

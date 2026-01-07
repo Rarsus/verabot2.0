@@ -28,10 +28,10 @@ module.exports = {
   },
 
   // Coverage directory
-  coverageDirectory: 'coverage/jest',
+  coverageDirectory: 'coverage',
 
   // Coverage reporters
-  coverageReporters: ['text', 'text-summary', 'html', 'json', 'lcov'],
+  coverageReporters: ['text', 'text-summary', 'html', 'json', 'json-summary', 'lcov'],
 
   // Timeout for tests
   testTimeout: 10000,
