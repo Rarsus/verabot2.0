@@ -3,7 +3,7 @@
  * Tests commands that use the new Command base class and helpers
  */
 
-/* eslint-disable no-unused-vars */
+ 
 
 let passed = 0;
 let failed = 0;

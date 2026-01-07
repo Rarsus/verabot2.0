@@ -3,7 +3,7 @@
  * Tests option building, SlashCommandBuilder creation, and options array generation
  */
 
-/* eslint-disable no-unused-vars */
+ 
 const buildCommandOptions = require('../../src/core/CommandOptions');
 
 let passed = 0;

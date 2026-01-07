@@ -3,7 +3,7 @@
  * Tests database operations for quotes, tags, ratings, and exports
  */
 
-/* eslint-disable no-unused-vars */
+ 
 
 const {
   addQuote,

@@ -3,7 +3,7 @@
  * Tests error wrapping, registration, and command lifecycle
  */
 
-/* eslint-disable no-unused-vars */
+ 
 
 const Command = require('../../src/core/CommandBase');
 

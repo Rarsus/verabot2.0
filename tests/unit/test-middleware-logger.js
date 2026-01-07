@@ -3,7 +3,7 @@
  * Tests centralized logging functionality
  */
 
-/* eslint-disable no-unused-vars */
+ 
 
 const { log, LOG_LEVELS } = require('../../src/middleware/logger');
 

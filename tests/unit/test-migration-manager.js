@@ -3,7 +3,7 @@
  * Tests for MigrationManager service
  */
 
-/* eslint-disable no-unused-vars */
+ 
 
 // Check if sqlite3 is available on this platform
 let sqlite3Available = true;

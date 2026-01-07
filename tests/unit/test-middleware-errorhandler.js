@@ -3,7 +3,7 @@
  * Tests error logging and interaction error handling
  */
 
-/* eslint-disable no-unused-vars */
+ 
 
 const { logError, handleInteractionError, ERROR_LEVELS } = require('../../src/middleware/errorHandler');
 

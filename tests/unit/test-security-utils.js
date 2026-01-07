@@ -3,7 +3,7 @@
  * Tests for security utilities including encryption, HMAC, etc.
  */
 
-/* eslint-disable no-unused-vars */
+ 
 
 const security = require('../../src/utils/security');
 const crypto = require('crypto');

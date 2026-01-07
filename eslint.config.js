@@ -177,6 +177,13 @@ module.exports = [
       'security/detect-non-literal-fs-filename': 'off', // Utilities can use dynamic paths
     },
   },
+  // Test files - relaxed variable rules for test setup and mocks
+  {
+    files: ['tests/**/*.js'],
+    rules: {
+      'no-unused-vars': 'off', // Tests have many intentionally unused parameters in mocks and catch blocks
+    },
+  },
   // Script files - relaxed fs and complexity rules
   {
     files: ['scripts/**/*.js'],

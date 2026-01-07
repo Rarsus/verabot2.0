@@ -3,7 +3,7 @@
  * Tests basic command functionality for misc commands
  */
 
-/* eslint-disable no-unused-vars */
+ 
 
 const Command = require('../../src/core/CommandBase');
 const HiCommand = require('../../src/commands/misc/hi');
