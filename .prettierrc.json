@@ -5,6 +5,5 @@
   "printWidth": 120,
   "tabWidth": 2,
   "useTabs": false,
-  "proseWrap": "preserve",
-  "markdownLinkExtensions": [".md"]
+  "proseWrap": "preserve"
 }

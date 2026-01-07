@@ -14,18 +14,14 @@ const database = require('../../services/DatabaseService');
 const proxyConfig = new ProxyConfigService(database);
 
 // Define command options
-const { data, options } = buildCommandOptions(
-  'proxy-enable',
-  'Enable or disable the webhook proxy (Admin only)',
-  [
-    {
-      name: 'enabled',
-      type: 'boolean',
-      required: true,
-      description: 'Enable (true) or disable (false) the proxy'
-    }
-  ]
-);
+const { data, options } = buildCommandOptions('proxy-enable', 'Enable or disable the webhook proxy (Admin only)', [
+  {
+    name: 'enabled',
+    type: 'boolean',
+    required: true,
+    description: 'Enable (true) or disable (false) the proxy',
+  },
+]);
 
 class ProxyEnableCommand extends Command {
   constructor() {
@@ -36,8 +32,8 @@ class ProxyEnableCommand extends Command {
       options,
       permissions: {
         minTier: 3,
-        visible: false
-      }
+        visible: false,
+      },
     });
   }
 
@@ -66,17 +62,9 @@ class ProxyEnableCommand extends Command {
       const status = enabled ? 'enabled' : 'disabled';
       const emoji = enabled ? '✅' : '⏸️';
 
-      await sendSuccess(
-        interaction,
-        `${emoji} Webhook proxy ${status}.`,
-        true
-      );
+      await sendSuccess(interaction, `${emoji} Webhook proxy ${status}.`, true);
     } catch (err) {
-      await sendError(
-        interaction,
-        `Failed to update proxy status: ${err.message}`,
-        true
-      );
+      await sendError(interaction, `Failed to update proxy status: ${err.message}`, true);
     }
   }
 }

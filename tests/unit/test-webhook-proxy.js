@@ -100,7 +100,7 @@ async function testWebhookProxyService() {
       content: 'test',
       author: { username: 'test' },
       timestamp: Date.now(),
-      channel: 'ch1'
+      channel: 'ch1',
     });
     assert.strictEqual(validationResult.valid, true, 'Valid payload should pass validation');
 
@@ -134,13 +134,13 @@ async function testWebhookListenerService() {
           get: (id) => {
             if (id === 'valid-channel') {
               return {
-                send: async (content) => ({ id: 'msg123', content })
+                send: async (content) => ({ id: 'msg123', content }),
               };
             }
             return null;
-          }
-        }
-      }
+          },
+        },
+      },
     };
 
     const service = new WebhookListenerService(mockClient);
@@ -149,7 +149,7 @@ async function testWebhookListenerService() {
     const incomingPayload = {
       content: 'Message from external webhook',
       channel: 'valid-channel',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     const result = await service.processIncomingMessage(incomingPayload);
@@ -160,7 +160,7 @@ async function testWebhookListenerService() {
     const invalidChannelPayload = {
       content: 'Test message',
       channel: 'invalid-channel',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     const invalidResult = await service.processIncomingMessage(invalidChannelPayload);
@@ -248,7 +248,7 @@ async function runTests() {
     await testMessageFiltering();
 
     // Ensure all pending operations are complete before finishing
-    await new Promise(resolve => setImmediate(resolve));
+    await new Promise((resolve) => setImmediate(resolve));
 
     console.log('\n✅ All webhook proxy tests passed!');
   } catch {

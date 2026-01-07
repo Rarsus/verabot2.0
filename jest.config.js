@@ -13,7 +13,7 @@ module.exports = {
     '!src/config/**', // Config files typically have minimal logic
     '!src/utils/auto-register-commands.js', // Auto-registration script
     '!**/*.test.js',
-    '!**/node_modules/**'
+    '!**/node_modules/**',
   ],
 
   // Coverage thresholds - Set realistically for current state
@@ -23,8 +23,8 @@ module.exports = {
       branches: 15,
       functions: 20,
       lines: 20,
-      statements: 20
-    }
+      statements: 20,
+    },
   },
 
   // Coverage directory
@@ -48,7 +48,7 @@ module.exports = {
   // Module name mapper for path aliases (if needed)
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^@tests/(.*)$': '<rootDir>/tests/$1'
+    '^@tests/(.*)$': '<rootDir>/tests/$1',
   },
 
   // Force exit after all tests finish (needed for custom tests that call process.exit)
@@ -59,21 +59,12 @@ module.exports = {
 
   // Transform files
   transform: {
-    '^.+\\.js$': 'babel-jest'
+    '^.+\\.js$': 'babel-jest',
   },
 
   // Ignore patterns
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/dashboard/',
-    '/coverage/'
-  ],
+  testPathIgnorePatterns: ['/node_modules/', '/dashboard/', '/coverage/'],
 
   // Coverage path ignore patterns
-  coveragePathIgnorePatterns: [
-    '/node_modules/',
-    '/tests/',
-    '/dashboard/',
-    '/coverage/'
-  ]
+  coveragePathIgnorePatterns: ['/node_modules/', '/tests/', '/dashboard/', '/coverage/'],
 };

@@ -161,10 +161,7 @@ function verifyHMAC(data, signature, secret = null) {
 
   try {
     const expectedSignature = generateHMAC(data, secret);
-    return crypto.timingSafeEqual(
-      Buffer.from(signature, 'hex'),
-      Buffer.from(expectedSignature, 'hex')
-    );
+    return crypto.timingSafeEqual(Buffer.from(signature, 'hex'), Buffer.from(expectedSignature, 'hex'));
   } catch {
     return false;
   }
@@ -274,12 +271,12 @@ function generateKeyPair() {
     modulusLength: 2048,
     publicKeyEncoding: {
       type: 'spki',
-      format: 'pem'
+      format: 'pem',
     },
     privateKeyEncoding: {
       type: 'pkcs8',
-      format: 'pem'
-    }
+      format: 'pem',
+    },
   });
 
   return { publicKey, privateKey };
@@ -339,5 +336,5 @@ module.exports = {
   hashSHA256,
 
   // Comparison
-  constantTimeCompare
+  constantTimeCompare,
 };

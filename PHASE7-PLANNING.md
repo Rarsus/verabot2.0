@@ -6,18 +6,20 @@
 
 ## Coverage Baseline
 
-| Metric | Current | Target | Gap |
-|--------|---------|--------|-----|
-| **Lines** | 29.31% | 50-60% | +20-31% |
-| **Functions** | 32.42% | 55-65% | +23-33% |
-| **Branches** | 24.41% | 45-55% | +20-31% |
-| **Tests** | 524 | ~900 | +376 |
+| Metric        | Current | Target | Gap     |
+| ------------- | ------- | ------ | ------- |
+| **Lines**     | 29.31%  | 50-60% | +20-31% |
+| **Functions** | 32.42%  | 55-65% | +23-33% |
+| **Branches**  | 24.41%  | 45-55% | +20-31% |
+| **Tests**     | 524     | ~900   | +376    |
 
 ## Phase 7 Structure
 
 ### Phase 7A: Zero-Coverage Critical Services (50-60 tests)
+
 **Objective:** Eliminate zero-coverage modules  
 **Modules (7 critical):**
+
 - `src/services/DiscordService.js` (0%) - Discord API wrapper, critical for bot communication
 - `src/services/ExternalActionHandler.js` (0%) - External event handling
 - `src/services/WebSocketService.js` (0%) - WebSocket communication
@@ -27,6 +29,7 @@
 - `src/routes/dashboard.js` (0%) - Dashboard routes
 
 **Test Coverage Targets:**
+
 - DiscordService: 0% → 75%
 - ExternalActionHandler: 0% → 70%
 - WebSocketService: 0% → 80%
@@ -36,6 +39,7 @@
 - Dashboard Routes: 0% → 75%
 
 **Tests to Create:**
+
 1. DiscordService core methods (8 tests)
 2. ExternalActionHandler scenarios (9 tests)
 3. WebSocketService communication (10 tests)
@@ -47,18 +51,22 @@
 ---
 
 ### Phase 7B: Ultra-Low Coverage Services (40-50 tests)
+
 **Objective:** Bring ultra-low coverage services to minimum 50%  
 **Modules (3 critical):**
+
 - `src/services/GuildAwareReminderService.js` (3.57%)
 - `src/services/ReminderService.js` (4.48%)
 - `src/services/RolePermissionService.js` (6.45%)
 
 **Test Coverage Targets:**
+
 - GuildAwareReminderService: 3.57% → 60%
 - ReminderService: 4.48% → 55%
 - RolePermissionService: 6.45% → 70%
 
 **Tests to Create:**
+
 1. GuildAwareReminderService CRUD (15 tests)
 2. ReminderService operations (14 tests)
 3. RolePermissionService verification (11 tests)
@@ -67,8 +75,10 @@
 ---
 
 ### Phase 7C: Low-Coverage Reminder Commands (45-55 tests)
+
 **Objective:** Improve reminder command coverage from 15-33% to 60%+  
 **Modules (6 commands):**
+
 - `src/commands/reminder-management/create-reminder.js` (17.02%)
 - `src/commands/reminder-management/list-reminders.js` (20%)
 - `src/commands/reminder-management/search-reminders.js` (22.85%)
@@ -77,9 +87,11 @@
 - `src/commands/reminder-management/update-reminder.js` (15.9%)
 
 **Test Coverage Targets:**
+
 - All commands: <33% → 65%+
 
 **Tests to Create:**
+
 1. Create reminder command (8 tests)
 2. List reminders command (7 tests)
 3. Search reminders command (8 tests)
@@ -91,8 +103,10 @@
 ---
 
 ### Phase 7D: Service Gaps & Error Handling (35-45 tests)
+
 **Objective:** Improve remaining service coverage and error paths  
 **Modules:**
+
 - `src/services/QuoteService.js` (25%)
 - `src/services/WebhookListenerService.js` (33.78%)
 - `src/utils/error-handler.js` (29.78%)
@@ -100,6 +114,7 @@
 - `src/services/DatabasePool.js` (48.33%)
 
 **Test Coverage Targets:**
+
 - QuoteService: 25% → 65%
 - WebhookListenerService: 33.78% → 65%
 - Error handler: 29.78% → 80%
@@ -107,6 +122,7 @@
 - DatabasePool: 48.33% → 75%
 
 **Tests to Create:**
+
 1. QuoteService comprehensive (12 tests)
 2. WebhookListenerService operations (10 tests)
 3. Error handler edge cases (9 tests)
@@ -134,6 +150,7 @@
 - **Total: 199 tests**
 
 **Combined Project:**
+
 - Phase 1-6: 524 tests
 - Phase 7: 199 tests
 - **Total: 723 tests**
@@ -155,7 +172,7 @@
 ✅ Zero-coverage modules eliminated  
 ✅ All critical services tested  
 ✅ Error paths thoroughly covered  
-✅ Integration scenarios validated  
+✅ Integration scenarios validated
 
 ## Notes
 

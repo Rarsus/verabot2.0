@@ -10,7 +10,7 @@ const {
   detectSQLInjection,
   detectXSS,
   sanitizeString,
-  RateLimiter
+  RateLimiter,
 } = require('../../src/middleware/inputValidator');
 
 let passed = 0;
@@ -90,7 +90,10 @@ test('XSS detected - javascript protocol', () => {
 test('Text input rejected - too short', () => {
   const result = validateTextInput('Hi', { minLength: 10 });
   assert(result.valid === false, 'Short text should be rejected');
-  assert(result.errors.some(e => e.includes('at least')), 'Should have min length error');
+  assert(
+    result.errors.some((e) => e.includes('at least')),
+    'Should have min length error'
+  );
 });
 
 // Test 10: Text input length validation - too long
@@ -98,7 +101,10 @@ test('Text input rejected - too long', () => {
   const longText = 'a'.repeat(2001);
   const result = validateTextInput(longText, { maxLength: 2000 });
   assert(result.valid === false, 'Long text should be rejected');
-  assert(result.errors.some(e => e.includes('at most')), 'Should have max length error');
+  assert(
+    result.errors.some((e) => e.includes('at most')),
+    'Should have max length error'
+  );
 });
 
 // Test 11: Numeric validation - valid integer
@@ -174,7 +180,7 @@ test('Rate limiter - tracks remaining requests', () => {
 // Print summary after all tests complete
 (async () => {
   // Ensure all pending operations are complete
-  await new Promise(resolve => setImmediate(resolve));
+  await new Promise((resolve) => setImmediate(resolve));
 
   console.log('\n' + '='.repeat(50));
   console.log(`Results: ${passed} passed, ${failed} failed`);
@@ -185,6 +191,6 @@ test('Rate limiter - tracks remaining requests', () => {
   } else {
     console.log('✅ All security validation tests passed!');
   }
-})().catch(err => {
+})().catch((err) => {
   console.error('Error in test summary:', err);
 });

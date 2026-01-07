@@ -12,7 +12,8 @@ function parseRelativeTime(input) {
   const trimmed = input.trim().toLowerCase();
 
   // Match patterns like "1 day", "2 hours", "30 minutes", "1 week", "3 months"
-  const relativePattern = /^(\d+)\s*(minute|minutes|min|hour|hours|hr|hrs|h|day|days|d|week|weeks|w|month|months|mo|year|years|yr|yrs|y)$/i;
+  const relativePattern =
+    /^(\d+)\s*(minute|minutes|min|hour|hours|hr|hrs|h|day|days|d|week|weeks|w|month|months|mo|year|years|yr|yrs|y)$/i;
   const match = trimmed.match(relativePattern);
 
   if (!match) return null;
@@ -30,7 +31,7 @@ function parseRelativeTime(input) {
   } else if (unit.startsWith('day') || unit === 'd') {
     now.setDate(now.getDate() + value);
   } else if (unit.startsWith('week') || unit === 'w') {
-    now.setDate(now.getDate() + (value * 7));
+    now.setDate(now.getDate() + value * 7);
   } else if (unit.startsWith('month') || unit === 'mo') {
     now.setMonth(now.getMonth() + value);
   } else if (unit.startsWith('year') || unit === 'yr' || unit === 'y') {
@@ -73,17 +74,25 @@ function parseNaturalDate(input) {
   }
 
   // Next [day of week]
-  const nextDayPattern = /^next\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|wed|thu|fri|sat|sun)$/i;
+  const nextDayPattern =
+    /^next\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|wed|thu|fri|sat|sun)$/i;
   const dayMatch = trimmed.match(nextDayPattern);
   if (dayMatch) {
     const dayNames = {
-      'monday': 1, 'mon': 1,
-      'tuesday': 2, 'tue': 2,
-      'wednesday': 3, 'wed': 3,
-      'thursday': 4, 'thu': 4,
-      'friday': 5, 'fri': 5,
-      'saturday': 6, 'sat': 6,
-      'sunday': 0, 'sun': 0
+      monday: 1,
+      mon: 1,
+      tuesday: 2,
+      tue: 2,
+      wednesday: 3,
+      wed: 3,
+      thursday: 4,
+      thu: 4,
+      friday: 5,
+      fri: 5,
+      saturday: 6,
+      sat: 6,
+      sunday: 0,
+      sun: 0,
     };
 
     const targetDay = dayNames[dayMatch[1].toLowerCase()];
@@ -201,7 +210,8 @@ function parseCombinedDateTime(input) {
   const trimmed = input.trim().toLowerCase();
 
   // Pattern: "tomorrow at TIME", "next monday at TIME"
-  const naturalWithTimePattern = /^(tomorrow|next\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|wed|thu|fri|sat|sun|week))\s+at\s+(.+)$/i;
+  const naturalWithTimePattern =
+    /^(tomorrow|next\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|wed|thu|fri|sat|sun|week))\s+at\s+(.+)$/i;
   const naturalMatch = trimmed.match(naturalWithTimePattern);
 
   if (naturalMatch) {
@@ -259,7 +269,7 @@ function parseDateTime(input) {
   if (!input || typeof input !== 'string') {
     return {
       valid: false,
-      error: 'Date/time is required and must be a string'
+      error: 'Date/time is required and must be a string',
     };
   }
 
@@ -267,7 +277,7 @@ function parseDateTime(input) {
   if (trimmed.length === 0) {
     return {
       valid: false,
-      error: 'Date/time cannot be empty'
+      error: 'Date/time cannot be empty',
     };
   }
 
@@ -309,7 +319,8 @@ function parseDateTime(input) {
   if (!parsedDate || isNaN(parsedDate.getTime())) {
     return {
       valid: false,
-      error: 'Invalid date/time format. Supported formats: ISO dates, relative time (e.g., "1 day"), natural language (e.g., "tomorrow"), time (e.g., "3:30 PM"), or combinations (e.g., "tomorrow at 3 PM")'
+      error:
+        'Invalid date/time format. Supported formats: ISO dates, relative time (e.g., "1 day"), natural language (e.g., "tomorrow"), time (e.g., "3:30 PM"), or combinations (e.g., "tomorrow at 3 PM")',
     };
   }
 
@@ -319,13 +330,13 @@ function parseDateTime(input) {
   if (parsedDate < oneMinuteAgo) {
     return {
       valid: false,
-      error: 'Date/time cannot be in the past'
+      error: 'Date/time cannot be in the past',
     };
   }
 
   return {
     valid: true,
-    isoString: parsedDate.toISOString()
+    isoString: parsedDate.toISOString(),
   };
 }
 
@@ -336,5 +347,5 @@ module.exports = {
   parseNaturalDate,
   parseTimeOnly,
   parseDateOnly,
-  parseCombinedDateTime
+  parseCombinedDateTime,
 };

@@ -19,7 +19,7 @@ describe.skip('CommandBase', () => {
         name: 'test',
         description: 'Test command',
         data: {},
-        options: []
+        options: [],
       });
 
       expect(cmd.name).toBe('test');
@@ -32,7 +32,7 @@ describe.skip('CommandBase', () => {
         name: 'test',
         description: 'Test',
         data: {},
-        options
+        options,
       });
 
       expect(cmd.options).toEqual(options);
@@ -43,7 +43,7 @@ describe.skip('CommandBase', () => {
         name: 'test',
         description: 'Test',
         data: {},
-        options: []
+        options: [],
       });
 
       expect(cmd.options).toEqual([]);
@@ -56,7 +56,7 @@ describe.skip('CommandBase', () => {
         name: 'test',
         description: 'Test',
         data: {},
-        options: []
+        options: [],
       });
 
       const mockUser = { id: '123', roles: [] };
@@ -71,7 +71,7 @@ describe.skip('CommandBase', () => {
         description: 'Test',
         data: {},
         options: [],
-        requiredPermission: 'admin'
+        requiredPermission: 'admin',
       });
 
       const mockUser = { id: '123', isAdmin: true };
@@ -85,7 +85,7 @@ describe.skip('CommandBase', () => {
         name: 'test',
         description: 'Test',
         data: {},
-        options: []
+        options: [],
       });
 
       expect(() => cmd.checkPermission(null)).not.toThrow();
@@ -98,7 +98,7 @@ describe.skip('CommandBase', () => {
         name: 'test',
         description: 'Test',
         data: {},
-        options: []
+        options: [],
       });
 
       const result = cmd.register();
@@ -110,7 +110,7 @@ describe.skip('CommandBase', () => {
         name: 'test',
         description: 'Test',
         data: {},
-        options: []
+        options: [],
       });
 
       cmd.register();
@@ -124,7 +124,7 @@ describe.skip('CommandBase', () => {
         name: 'test',
         description: 'Test',
         data: {},
-        options: []
+        options: [],
       });
 
       // Override execute to throw
@@ -134,7 +134,7 @@ describe.skip('CommandBase', () => {
 
       const mockInteraction = {
         reply: jest.fn(),
-        editReply: jest.fn()
+        editReply: jest.fn(),
       };
 
       // Should not throw
@@ -146,7 +146,7 @@ describe.skip('CommandBase', () => {
         name: 'test',
         description: 'Test',
         data: {},
-        options: []
+        options: [],
       });
 
       await expect(cmd.executeInteraction(null)).resolves.not.toThrow();

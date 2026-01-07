@@ -26,7 +26,7 @@ function captureConsoleOutput(fn) {
   const logs = {
     log: [],
     warn: [],
-    error: []
+    error: [],
   };
 
   const originalLog = console.log;

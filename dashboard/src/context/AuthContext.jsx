@@ -4,9 +4,7 @@ import { authAPI } from '../services/api';
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem('auth_token')
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('auth_token'));
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -20,17 +18,20 @@ export function AuthProvider({ children }) {
     if (token) {
       // Remove token from URL
       window.history.replaceState({}, document.title, window.location.pathname);
-      
+
       // Store token and authenticate
       localStorage.setItem('auth_token', token);
       setIsAuthenticated(true);
-      
+
       // Fetch user info
-      authAPI.getUser().then(response => {
-        setUser(response.data.user);
-      }).catch(() => {
-        // Failed to get user info, but keep token
-      });
+      authAPI
+        .getUser()
+        .then((response) => {
+          setUser(response.data.user);
+        })
+        .catch(() => {
+          // Failed to get user info, but keep token
+        });
     } else if (oauthError) {
       setError(`OAuth error: ${oauthError}`);
       window.history.replaceState({}, document.title, '/login');

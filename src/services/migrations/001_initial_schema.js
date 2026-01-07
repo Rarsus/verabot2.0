@@ -26,17 +26,21 @@ async function up(db) {
       };
 
       // Schema versions table (MUST be created first)
-      db.run(`
+      db.run(
+        `
         CREATE TABLE IF NOT EXISTS schema_versions (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           version INTEGER NOT NULL UNIQUE,
           description TEXT,
           applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-      `, checkComplete);
+      `,
+        checkComplete
+      );
 
       // Quotes table
-      db.run(`
+      db.run(
+        `
         CREATE TABLE IF NOT EXISTS quotes (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           text TEXT NOT NULL,
@@ -48,10 +52,13 @@ async function up(db) {
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
           updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-      `, checkComplete);
+      `,
+        checkComplete
+      );
 
       // Ratings table
-      db.run(`
+      db.run(
+        `
         CREATE TABLE IF NOT EXISTS quote_ratings (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           quoteId INTEGER NOT NULL,
@@ -61,20 +68,26 @@ async function up(db) {
           UNIQUE(quoteId, userId),
           FOREIGN KEY(quoteId) REFERENCES quotes(id) ON DELETE CASCADE
         )
-      `, checkComplete);
+      `,
+        checkComplete
+      );
 
       // Tags table
-      db.run(`
+      db.run(
+        `
         CREATE TABLE IF NOT EXISTS tags (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT NOT NULL UNIQUE,
           description TEXT,
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-      `, checkComplete);
+      `,
+        checkComplete
+      );
 
       // Quote-Tag junction table
-      db.run(`
+      db.run(
+        `
         CREATE TABLE IF NOT EXISTS quote_tags (
           quoteId INTEGER NOT NULL,
           tagId INTEGER NOT NULL,
@@ -83,10 +96,13 @@ async function up(db) {
           FOREIGN KEY(quoteId) REFERENCES quotes(id) ON DELETE CASCADE,
           FOREIGN KEY(tagId) REFERENCES tags(id) ON DELETE CASCADE
         )
-      `, checkComplete);
+      `,
+        checkComplete
+      );
 
       // Proxy config table
-      db.run(`
+      db.run(
+        `
         CREATE TABLE IF NOT EXISTS proxy_config (
           key TEXT PRIMARY KEY,
           value TEXT NOT NULL,
@@ -94,15 +110,20 @@ async function up(db) {
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
           updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-      `, checkComplete);
+      `,
+        checkComplete
+      );
 
       // Ensure category column exists (for databases that existed before this migration)
-      db.run(`
+      db.run(
+        `
         ALTER TABLE quotes ADD COLUMN category TEXT DEFAULT 'General'
-      `, (_err) => {
-        // Ignore error if column already exists
-        checkComplete(null);
-      });
+      `,
+        (_err) => {
+          // Ignore error if column already exists
+          checkComplete(null);
+        }
+      );
     });
   });
 }

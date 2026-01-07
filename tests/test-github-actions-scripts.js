@@ -55,7 +55,7 @@ test('test:all', 'npm run test:all');
 // Print results asynchronously to avoid async leak
 (async () => {
   // Ensure all pending operations are complete
-  await new Promise(resolve => setImmediate(resolve));
+  await new Promise((resolve) => setImmediate(resolve));
 
   console.log('\n' + '='.repeat(50));
   console.log(`📊 Test Results: ${passed} passed, ${failed} failed`);
@@ -68,6 +68,6 @@ test('test:all', 'npm run test:all');
     console.log('\nℹ️  Note: Some doc validation scripts may report warnings');
     console.log('   (broken links, version inconsistencies) - this is expected.');
   }
-})().catch(err => {
+})().catch((err) => {
   console.error('Error in test summary:', err);
 });

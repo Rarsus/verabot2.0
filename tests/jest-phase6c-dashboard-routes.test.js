@@ -29,7 +29,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
     query: {},
     headers: {},
     user: { id: 'user-123' },
-    ...overrides
+    ...overrides,
   });
 
   const createMockResponse = () => {
@@ -54,7 +54,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
       statusCode: 200,
       jsonData: null,
       sendData: null,
-      headers: {}
+      headers: {},
     };
     return res;
   };
@@ -71,23 +71,23 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
                 fetch: async (userId) => ({
                   id: userId,
                   permissions: {
-                    has: (perm) => perm === 'Administrator'
-                  }
-                })
-              }
-            })
-          }
-        }
-      }
+                    has: (perm) => perm === 'Administrator',
+                  },
+                }),
+              },
+            }),
+          },
+        },
+      },
     },
-    ...overrides
+    ...overrides,
   });
 
   describe('Dashboard Authentication Routes', () => {
     it('should verify admin user by owner ID', async () => {
       const req = createMockRequest({
         body: { userId: 'owner-id', guilds: ['guild-1'] },
-        app: createMockApp()
+        app: createMockApp(),
       });
       req.app.locals.BOT_OWNER_ID = 'owner-id';
       const res = createMockResponse();
@@ -97,7 +97,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
         res.status(200).json({
           success: true,
           isAdmin: true,
-          reason: 'bot_owner'
+          reason: 'bot_owner',
         });
       }
 
@@ -107,7 +107,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
 
     it('should verify admin user by guild permissions', async () => {
       const req = createMockRequest({
-        body: { userId: 'user-123', guilds: ['guild-1'] }
+        body: { userId: 'user-123', guilds: ['guild-1'] },
       });
       const res = createMockResponse();
 
@@ -117,7 +117,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
         res.status(200).json({
           success: true,
           isAdmin: true,
-          reason: 'guild_admin'
+          reason: 'guild_admin',
         });
       }
 
@@ -126,7 +126,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
 
     it('should reject non-admin user', async () => {
       const req = createMockRequest({
-        body: { userId: 'regular-user', guilds: ['guild-1'] }
+        body: { userId: 'regular-user', guilds: ['guild-1'] },
       });
       const res = createMockResponse();
 
@@ -135,7 +135,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
       if (!hasAdminInGuild) {
         res.status(403).json({
           success: false,
-          error: 'User does not have admin access'
+          error: 'User does not have admin access',
         });
       }
 
@@ -145,14 +145,14 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
 
     it('should handle missing userId', async () => {
       const req = createMockRequest({
-        body: { guilds: ['guild-1'] }
+        body: { guilds: ['guild-1'] },
       });
       const res = createMockResponse();
 
       if (!req.body.userId || !Array.isArray(req.body.guilds)) {
         res.status(400).json({
           success: false,
-          error: 'Invalid request body'
+          error: 'Invalid request body',
         });
       }
 
@@ -162,14 +162,14 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
 
     it('should handle missing guilds array', async () => {
       const req = createMockRequest({
-        body: { userId: 'user-123' }
+        body: { userId: 'user-123' },
       });
       const res = createMockResponse();
 
       if (!req.body.userId || !Array.isArray(req.body.guilds)) {
         res.status(400).json({
           success: false,
-          error: 'Invalid request body'
+          error: 'Invalid request body',
         });
       }
 
@@ -179,14 +179,14 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
     it('should handle bot client not available', async () => {
       const req = createMockRequest({
         body: { userId: 'user-123', guilds: ['guild-1'] },
-        app: { locals: { discordClient: null } }
+        app: { locals: { discordClient: null } },
       });
       const res = createMockResponse();
 
       if (!req.app.locals.discordClient) {
         res.status(503).json({
           success: false,
-          error: 'Bot client not available'
+          error: 'Bot client not available',
         });
       }
 
@@ -197,7 +197,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
   describe('Dashboard Data Routes', () => {
     it('should retrieve guild statistics', async () => {
       const req = createMockRequest({
-        params: { guildId: 'guild-456' }
+        params: { guildId: 'guild-456' },
       });
       const res = createMockResponse();
 
@@ -205,12 +205,12 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
         guildId: req.params.guildId,
         totalQuotes: 42,
         totalReminders: 15,
-        uniqueUsers: 28
+        uniqueUsers: 28,
       };
 
       res.status(200).json({
         success: true,
-        data: stats
+        data: stats,
       });
 
       assert.strictEqual(res.jsonData.success, true);
@@ -219,7 +219,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
 
     it('should retrieve guild configuration', async () => {
       const req = createMockRequest({
-        params: { guildId: 'guild-456' }
+        params: { guildId: 'guild-456' },
       });
       const res = createMockResponse();
 
@@ -227,12 +227,12 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
         guildId: req.params.guildId,
         prefix: '!',
         language: 'en',
-        timezone: 'UTC'
+        timezone: 'UTC',
       };
 
       res.status(200).json({
         success: true,
-        data: config
+        data: config,
       });
 
       assert.ok(res.jsonData.data.prefix);
@@ -242,19 +242,19 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
     it('should retrieve quotes for guild', async () => {
       const req = createMockRequest({
         params: { guildId: 'guild-456' },
-        query: { page: '1', limit: '10' }
+        query: { page: '1', limit: '10' },
       });
       const res = createMockResponse();
 
       const quotes = [
         { id: 1, text: 'Quote 1', author: 'Author 1' },
-        { id: 2, text: 'Quote 2', author: 'Author 2' }
+        { id: 2, text: 'Quote 2', author: 'Author 2' },
       ];
 
       res.status(200).json({
         success: true,
         data: quotes,
-        pagination: { page: 1, limit: 10, total: 42 }
+        pagination: { page: 1, limit: 10, total: 42 },
       });
 
       assert.strictEqual(res.jsonData.data.length, 2);
@@ -264,7 +264,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
     it('should handle pagination parameters', async () => {
       const req = createMockRequest({
         params: { guildId: 'guild-456' },
-        query: { page: '2', limit: '20' }
+        query: { page: '2', limit: '20' },
       });
       const res = createMockResponse();
 
@@ -293,18 +293,18 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
 
     it('should retrieve reminders for guild', async () => {
       const req = createMockRequest({
-        params: { guildId: 'guild-456' }
+        params: { guildId: 'guild-456' },
       });
       const res = createMockResponse();
 
       const reminders = [
         { id: 1, text: 'Reminder 1', dueDate: new Date() },
-        { id: 2, text: 'Reminder 2', dueDate: new Date() }
+        { id: 2, text: 'Reminder 2', dueDate: new Date() },
       ];
 
       res.status(200).json({
         success: true,
-        data: reminders
+        data: reminders,
       });
 
       assert.strictEqual(res.jsonData.data.length, 2);
@@ -312,7 +312,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
 
     it('should handle 404 for missing guild', async () => {
       const req = createMockRequest({
-        params: { guildId: 'nonexistent-guild' }
+        params: { guildId: 'nonexistent-guild' },
       });
       const res = createMockResponse();
 
@@ -320,7 +320,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
       if (!guildExists) {
         res.status(404).json({
           success: false,
-          error: 'Guild not found'
+          error: 'Guild not found',
         });
       }
 
@@ -331,7 +331,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
   describe('Authentication Middleware', () => {
     it('should check authentication token', async () => {
       const req = createMockRequest({
-        headers: { authorization: 'Bearer token-123' }
+        headers: { authorization: 'Bearer token-123' },
       });
       const res = createMockResponse();
 
@@ -343,7 +343,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
 
     it('should reject missing authentication', async () => {
       const req = createMockRequest({
-        headers: {}
+        headers: {},
       });
       const res = createMockResponse();
 
@@ -351,7 +351,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
       if (!token) {
         res.status(401).json({
           success: false,
-          error: 'Authentication required'
+          error: 'Authentication required',
         });
       }
 
@@ -360,7 +360,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
 
     it('should reject invalid token format', async () => {
       const req = createMockRequest({
-        headers: { authorization: 'InvalidToken' }
+        headers: { authorization: 'InvalidToken' },
       });
       const res = createMockResponse();
 
@@ -368,7 +368,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
       if (!req.headers.authorization?.startsWith('Bearer ')) {
         res.status(401).json({
           success: false,
-          error: 'Invalid token format'
+          error: 'Invalid token format',
         });
       }
 
@@ -391,7 +391,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
     it('should enforce permissions on protected routes', async () => {
       const req = createMockRequest({
         body: { userId: 'user-123' },
-        user: { id: 'user-123', role: 'member' }
+        user: { id: 'user-123', role: 'member' },
       });
       const res = createMockResponse();
 
@@ -399,7 +399,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
       if (req.user.role !== requiredRole) {
         res.status(403).json({
           success: false,
-          error: 'Insufficient permissions'
+          error: 'Insufficient permissions',
         });
       }
 
@@ -408,7 +408,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
 
     it('should allow authorized requests', async () => {
       const req = createMockRequest({
-        user: { id: 'user-123', role: 'admin' }
+        user: { id: 'user-123', role: 'admin' },
       });
       const res = createMockResponse();
 
@@ -509,7 +509,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
       res.status(400).json({
         success: false,
         error: 'Bad Request',
-        statusCode: 400
+        statusCode: 400,
       });
 
       assert.strictEqual(res.statusCode, 400);
@@ -521,7 +521,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
       res.status(401).json({
         success: false,
         error: 'Unauthorized',
-        statusCode: 401
+        statusCode: 401,
       });
 
       assert.strictEqual(res.statusCode, 401);
@@ -532,7 +532,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
       res.status(403).json({
         success: false,
         error: 'Forbidden',
-        statusCode: 403
+        statusCode: 403,
       });
 
       assert.strictEqual(res.statusCode, 403);
@@ -543,7 +543,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
       res.status(404).json({
         success: false,
         error: 'Not Found',
-        statusCode: 404
+        statusCode: 404,
       });
 
       assert.strictEqual(res.statusCode, 404);
@@ -554,7 +554,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
       res.status(500).json({
         success: false,
         error: 'Internal Server Error',
-        statusCode: 500
+        statusCode: 500,
       });
 
       assert.strictEqual(res.statusCode, 500);
@@ -565,7 +565,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
       res.status(503).json({
         success: false,
         error: 'Service Unavailable',
-        statusCode: 503
+        statusCode: 503,
       });
 
       assert.strictEqual(res.statusCode, 503);
@@ -578,7 +578,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
       res.status(500).json({
         success: false,
         error: 'Internal Server Error',
-        details: error.message
+        details: error.message,
       });
 
       assert.ok(res.jsonData.details);
@@ -597,7 +597,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
             mockSocket.handlers[event](data);
           }
         },
-        handlers: {}
+        handlers: {},
       };
 
       mockSocket.on('connect', (socket) => {
@@ -617,7 +617,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
             handler({ type: 'quote', data: 'test' });
             messageReceived = true;
           }
-        }
+        },
       };
 
       mockSocket.on('message', (msg) => {
@@ -636,7 +636,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
             handler();
             disconnected = true;
           }
-        }
+        },
       };
 
       mockSocket.on('disconnect', () => {
@@ -658,7 +658,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
           }
 
           const userRequests = rateLimiter.requests.get(userId);
-          const recentRequests = userRequests.filter(time => now - time < window);
+          const recentRequests = userRequests.filter((time) => now - time < window);
 
           if (recentRequests.length >= limit) {
             return { allowed: false, error: 'Rate limit exceeded' };
@@ -667,7 +667,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
           recentRequests.push(now);
           rateLimiter.requests.set(userId, recentRequests);
           return { allowed: true };
-        }
+        },
       };
 
       const result1 = rateLimiter.check('user-123', 3);
@@ -689,19 +689,19 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
           }
 
           const userRequests = rateLimiter.requests.get(userId);
-          const recentRequests = userRequests.filter(time => now - time < window);
+          const recentRequests = userRequests.filter((time) => now - time < window);
 
           recentRequests.push(now);
           rateLimiter.requests.set(userId, recentRequests);
           return recentRequests.length;
-        }
+        },
       };
 
       const countBefore = rateLimiter.check('user-456', 10, 50);
       assert.strictEqual(countBefore, 1);
 
       // Wait for window to expire
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       const countAfter = rateLimiter.check('user-456', 10, 50);
       // After window expiry, old requests should be filtered out, so count resets to 1
@@ -713,20 +713,20 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
     it('should handle complete authentication flow', async () => {
       // Step 1: User requests auth
       const authReq = createMockRequest({
-        body: { userId: 'user-123', guilds: ['guild-1'] }
+        body: { userId: 'user-123', guilds: ['guild-1'] },
       });
       const authRes = createMockResponse();
 
       authRes.status(200).json({
         success: true,
         isAdmin: true,
-        token: 'auth-token-123'
+        token: 'auth-token-123',
       });
 
       // Step 2: User uses token for protected route
       const dataReq = createMockRequest({
         headers: { authorization: 'Bearer auth-token-123' },
-        params: { guildId: 'guild-1' }
+        params: { guildId: 'guild-1' },
       });
       const dataRes = createMockResponse();
 
@@ -734,7 +734,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
       if (token === 'auth-token-123') {
         dataRes.status(200).json({
           success: true,
-          data: { guildId: 'guild-1' }
+          data: { guildId: 'guild-1' },
         });
       }
 
@@ -744,20 +744,20 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
 
     it('should handle bulk data retrieval', async () => {
       const req = createMockRequest({
-        query: { guildIds: 'guild-1,guild-2,guild-3' }
+        query: { guildIds: 'guild-1,guild-2,guild-3' },
       });
       const res = createMockResponse();
 
       const guildIds = req.query.guildIds.split(',');
-      const data = guildIds.map(id => ({
+      const data = guildIds.map((id) => ({
         guildId: id,
         quotes: 10,
-        reminders: 5
+        reminders: 5,
       }));
 
       res.status(200).json({
         success: true,
-        data
+        data,
       });
 
       assert.strictEqual(res.jsonData.data.length, 3);
@@ -765,7 +765,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
 
     it('should handle cascading errors', async () => {
       const req = createMockRequest({
-        params: { guildId: 'invalid' }
+        params: { guildId: 'invalid' },
       });
       const res = createMockResponse();
 
@@ -776,7 +776,7 @@ describe('Phase 6C: Dashboard Routes & Authentication', () => {
       } catch (err) {
         res.status(400).json({
           success: false,
-          error: err.message
+          error: err.message,
         });
       }
 

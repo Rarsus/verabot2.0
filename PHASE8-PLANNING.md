@@ -15,6 +15,7 @@ Phase 8 focuses on testing command implementations and library modules that rema
 ### Coverage Gaps Identified
 
 **Zero-Coverage Modules (0% - CRITICAL)**:
+
 1. Quote Discovery Commands (search, random, stats) - 0%
 2. Quote Management Commands (add, delete, update, list) - 0%
 3. Quote Social Commands (rate, tag) - 0%
@@ -25,6 +26,7 @@ Phase 8 focuses on testing command implementations and library modules that rema
 8. Types (type definitions) - 0%
 
 **Ultra-Low Coverage Modules (< 22%)**:
+
 1. Reminder Management Commands (21%) - create, list, search, get, delete, update (NOTE: partially done in Phase 7C, but admin commands missing)
 2. Misc Commands (5.57%) - hi, ping, help, poem
 3. Admin Commands (6.13%) - admin-specific functionality
@@ -35,6 +37,7 @@ Phase 8 focuses on testing command implementations and library modules that rema
 ## Phase 8 Breakdown
 
 ### Phase 8A: Quote Commands (68 tests)
+
 **Target**: All quote-related commands (discovery, management, social, export)
 **Modules**: 5 command categories
 
@@ -65,6 +68,7 @@ Phase 8 focuses on testing command implementations and library modules that rema
 ---
 
 ### Phase 8B: User Preference & Admin Commands (45 tests)
+
 **Target**: User preferences and administrative commands
 **Modules**: 2 command categories
 
@@ -87,14 +91,16 @@ Phase 8 focuses on testing command implementations and library modules that rema
    - `poem`: AI poem generation (HuggingFace)
 
 **Integration Tests** (5 tests)
-   - Admin workflow scenarios
-   - Permission enforcement
+
+- Admin workflow scenarios
+- Permission enforcement
 
 **Expected Coverage**: 0-6% → 65%
 
 ---
 
 ### Phase 8C: Library Utilities & Helpers (52 tests)
+
 **Target**: Low-level utilities, schema, migrations, and helpers
 **Modules**: 4 library categories
 
@@ -121,14 +127,16 @@ Phase 8 focuses on testing command implementations and library modules that rema
    - Export validation
 
 **Integration Tests** (5 tests)
-   - Full initialization workflow
-   - Schema creation with migrations
+
+- Full initialization workflow
+- Schema creation with migrations
 
 **Expected Coverage**: 0-2% → 70%
 
 ---
 
 ### Phase 8D: Error Scenarios & Edge Cases (85 tests)
+
 **Target**: Comprehensive error handling and edge cases across all Phase 8 modules
 **Focus**: Services + commands integration
 
@@ -173,6 +181,7 @@ Phase 8 focuses on testing command implementations and library modules that rema
 ## Test File Structure
 
 ### Phase 8 Test Files
+
 ```
 tests/
 ├── jest-phase8a-quote-commands.test.js         (1,100 lines, 68 tests)
@@ -182,6 +191,7 @@ tests/
 ```
 
 ### Implementation Order
+
 1. **Phase 8A**: Quote commands (most commonly used)
 2. **Phase 8B**: User/admin commands (permission-based)
 3. **Phase 8C**: Library utilities (foundation layer)
@@ -192,51 +202,58 @@ tests/
 ## Coverage Targets
 
 ### Baseline (Phase 7 Completion)
+
 - **Statements**: ~31-32% (actual TBD)
 - **Branches**: ~25-26%
 - **Functions**: ~37-38%
 - **Lines**: ~31-32%
 
 ### Phase 8 Goals
+
 - **Statements**: 45-55%
 - **Branches**: 40-50%
 - **Functions**: 50-60%
 - **Lines**: 45-55%
 
 ### Module-Specific Targets
-| Module | Current | Phase 8 Target |
-|--------|---------|----------------|
-| quote-discovery | 0% | 75% |
-| quote-management | 0% | 75% |
-| quote-social | 0% | 75% |
-| quote-export | 0% | 75% |
-| user-preferences | 0% | 70% |
-| admin | 6% | 70% |
-| misc | 6% | 70% |
-| reminder-management | 21% | 75% |
-| lib | 2% | 65% |
-| routes | 0% | 60% |
-| migrations | 0% | 70% |
-| types | 0% | 100% |
+
+| Module              | Current | Phase 8 Target |
+| ------------------- | ------- | -------------- |
+| quote-discovery     | 0%      | 75%            |
+| quote-management    | 0%      | 75%            |
+| quote-social        | 0%      | 75%            |
+| quote-export        | 0%      | 75%            |
+| user-preferences    | 0%      | 70%            |
+| admin               | 6%      | 70%            |
+| misc                | 6%      | 70%            |
+| reminder-management | 21%     | 75%            |
+| lib                 | 2%      | 65%            |
+| routes              | 0%      | 60%            |
+| migrations          | 0%      | 70%            |
+| types               | 0%      | 100%           |
 
 ---
 
 ## Test Design Patterns
 
 ### Command Test Pattern
+
 Each command test follows:
+
 1. **Happy Path**: Valid input, successful execution
 2. **Error Paths**: Missing args, invalid types, permissions
 3. **Edge Cases**: Boundary values, special characters, encoding
 4. **Integration**: Multi-command workflows
 
 ### Mock Strategy
+
 - **Discord.js mocking**: Consistent with Phase 7
 - **Database mocking**: In-memory SQLite for isolation
 - **Service mocking**: Mock external services (HuggingFace, etc.)
 - **Guild isolation**: All multi-tenant tests validate isolation
 
 ### Validation Focus
+
 - Input validation (types, limits, format)
 - Permission checks (admin, moderator, user)
 - Guild isolation (data not leaking between guilds)
@@ -248,30 +265,35 @@ Each command test follows:
 ## Success Criteria
 
 ### Phase 8A Success
+
 - ✅ 68/68 tests passing
 - ✅ All 5 quote command categories fully tested
 - ✅ Export functionality working correctly
 - ✅ Tag system integration validated
 
 ### Phase 8B Success
+
 - ✅ 45/45 tests passing
 - ✅ User preference system tested
 - ✅ Admin commands secured
 - ✅ Misc commands functional
 
 ### Phase 8C Success
+
 - ✅ 52/52 tests passing
 - ✅ Library initialization validated
 - ✅ Schema creation tested
 - ✅ Migrations runnable
 
 ### Phase 8D Success
+
 - ✅ 85/85 tests passing
 - ✅ Error scenarios comprehensive
 - ✅ Edge cases identified and tested
 - ✅ Performance validated
 
 ### Overall Phase 8 Success
+
 - ✅ 250/250 tests created (estimated)
 - ✅ 100% pass rate maintained
 - ✅ 45-55% overall coverage achieved
@@ -282,18 +304,22 @@ Each command test follows:
 ## Timeline
 
 **Phase 8A**: Quote Commands (68 tests)
+
 - Duration: ~2-3 hours
 - Priority: HIGH (most used features)
 
 **Phase 8B**: User/Admin Commands (45 tests)
+
 - Duration: ~1.5-2 hours
 - Priority: HIGH (permission-critical)
 
 **Phase 8C**: Library Utilities (52 tests)
+
 - Duration: ~2 hours
 - Priority: MEDIUM (foundation layer)
 
 **Phase 8D**: Error/Edge Cases (85 tests)
+
 - Duration: ~3-4 hours
 - Priority: HIGH (quality gate)
 
@@ -305,6 +331,7 @@ Each command test follows:
 ## Phase 8 Launch
 
 Starting Phase 8A: Quote Commands test implementation
+
 - Create jest-phase8a-quote-commands.test.js
 - Implement 68 comprehensive tests
 - Execute and verify all passing

@@ -32,7 +32,7 @@ const ALLOWED_COMMANDS = {
   'npm install': 'Install dependencies',
   'npm audit': 'Security audit',
   'node --version': 'Check Node.js version',
-  'npm --version': 'Check npm version'
+  'npm --version': 'Check npm version',
 };
 
 class ShellMCPServer {
@@ -40,9 +40,7 @@ class ShellMCPServer {
    * Validate if a command is allowed
    */
   static isCommandAllowed(command) {
-    return Object.keys(ALLOWED_COMMANDS).some(allowed =>
-      command.startsWith(allowed) || allowed.startsWith(command)
-    );
+    return Object.keys(ALLOWED_COMMANDS).some((allowed) => command.startsWith(allowed) || allowed.startsWith(command));
   }
 
   /**
@@ -59,14 +57,14 @@ class ShellMCPServer {
         encoding: 'utf-8',
         stdio: 'pipe',
         maxBuffer: 10 * 1024 * 1024, // 10MB buffer
-        ...options
+        ...options,
       });
 
       return {
         command,
         success: true,
         output: result,
-        exitCode: 0
+        exitCode: 0,
       };
     } catch (error) {
       return {
@@ -74,7 +72,7 @@ class ShellMCPServer {
         success: false,
         output: error.stdout ? error.stdout.toString() : '',
         error: error.message,
-        exitCode: error.status || 1
+        exitCode: error.status || 1,
       };
     }
   }
@@ -147,7 +145,7 @@ class ShellMCPServer {
         npmVersion,
         cwd: CWD,
         hasEnv: fs.existsSync(path.join(CWD, '.env')),
-        hasGit: fs.existsSync(path.join(CWD, '.git'))
+        hasGit: fs.existsSync(path.join(CWD, '.git')),
       };
     } catch (error) {
       throw new Error(`Failed to get project info: ${error.message}`);
@@ -164,7 +162,7 @@ class ShellMCPServer {
 
       return {
         scripts: packageJson.scripts || {},
-        allowedCommands: ALLOWED_COMMANDS
+        allowedCommands: ALLOWED_COMMANDS,
       };
     } catch (error) {
       throw new Error(`Failed to get scripts: ${error.message}`);
@@ -206,14 +204,14 @@ class ShellMCPServer {
           dependencies: {
             sqlite3,
             'discord.js': discordJs,
-            dotenv
-          }
+            dotenv,
+          },
         };
       }
 
       return {
         nodeModulesInstalled: false,
-        dependencies: {}
+        dependencies: {},
       };
     } catch (error) {
       throw new Error(`Failed to check dependencies: ${error.message}`);

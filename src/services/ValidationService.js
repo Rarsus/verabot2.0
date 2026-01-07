@@ -69,5 +69,5 @@ function validateQuoteNumber(number) {
 module.exports = {
   validateQuoteText,
   validateAuthor,
-  validateQuoteNumber
+  validateQuoteNumber,
 };

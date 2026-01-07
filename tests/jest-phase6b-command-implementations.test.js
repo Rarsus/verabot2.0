@@ -35,7 +35,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
     deferReply: async () => ({}),
     editReply: async (msg) => ({ id: 'reply-001', ...msg }),
     followUp: async (msg) => ({ id: 'follow-001', ...msg }),
-    ...overrides
+    ...overrides,
   });
 
   // Mock message (legacy prefix commands)
@@ -46,7 +46,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
     channel: { id: 'channel-789' },
     content: '!test',
     reply: async (msg) => ({ id: 'reply-001', content: msg }),
-    ...overrides
+    ...overrides,
   });
 
   describe('Quote Management Commands', () => {
@@ -109,14 +109,10 @@ describe('Phase 6B: Command Implementation Layer', () => {
           if (!guildId) throw new Error('Guild ID required');
           if (!text) throw new Error('Quote text required');
           return { id: 1, text, author, guildId };
-        }
+        },
       };
 
-      const quote = await mockQuoteService.addQuote(
-        interaction.guildId,
-        'Test quote',
-        'Test Author'
-      );
+      const quote = await mockQuoteService.addQuote(interaction.guildId, 'Test quote', 'Test Author');
 
       assert.ok(quote.id);
       assert.strictEqual(quote.text, 'Test quote');
@@ -129,7 +125,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
           if (!guildId) throw new Error('Guild ID required');
           if (!quoteId) throw new Error('Quote ID required');
           return true;
-        }
+        },
       };
 
       const result = await mockQuoteService.deleteQuote('guild-456', 1);
@@ -141,15 +137,10 @@ describe('Phase 6B: Command Implementation Layer', () => {
         updateQuote: async (guildId, quoteId, text, author) => {
           if (!guildId || !quoteId || !text) throw new Error('Missing required fields');
           return { id: quoteId, text, author };
-        }
+        },
       };
 
-      const result = await mockQuoteService.updateQuote(
-        'guild-456',
-        1,
-        'Updated quote',
-        'New Author'
-      );
+      const result = await mockQuoteService.updateQuote('guild-456', 1, 'Updated quote', 'New Author');
 
       assert.strictEqual(result.text, 'Updated quote');
       assert.strictEqual(result.author, 'New Author');
@@ -162,14 +153,14 @@ describe('Phase 6B: Command Implementation Layer', () => {
           return [
             { id: 1, text: 'Quote 1', author: 'Author 1' },
             { id: 2, text: 'Quote 2', author: 'Author 2' },
-            { id: 3, text: 'Quote 3', author: 'Author 3' }
+            { id: 3, text: 'Quote 3', author: 'Author 3' },
           ];
-        }
+        },
       };
 
       const quotes = await mockQuoteService.getAllQuotes('guild-456');
       assert.strictEqual(quotes.length, 3);
-      assert.ok(quotes.every(q => q.id && q.text && q.author));
+      assert.ok(quotes.every((q) => q.id && q.text && q.author));
     });
 
     it('should handle pagination for large quote lists', async () => {
@@ -180,7 +171,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
             quotes.push({ id: i, text: `Quote ${i}`, author: 'Author' });
           }
           return quotes;
-        }
+        },
       };
 
       const quotes = await mockQuoteService.getAllQuotes('guild-456');
@@ -196,7 +187,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
       const mockQuoteService = {
         addQuote: async (guildId, text, author) => {
           return { id: 1, text, author };
-        }
+        },
       };
 
       const specialQuote = 'Quote with "quotes", \'apostrophes\', and $pecial @chars!';
@@ -214,18 +205,19 @@ describe('Phase 6B: Command Implementation Layer', () => {
           const allQuotes = [
             { id: 1, text: 'The quick brown fox', author: 'Author 1' },
             { id: 2, text: 'A lazy dog', author: 'Author 2' },
-            { id: 3, text: 'The quick cat', author: 'Author 3' }
+            { id: 3, text: 'The quick cat', author: 'Author 3' },
           ];
-          return allQuotes.filter(q =>
-            q.text.toLowerCase().includes(keyword.toLowerCase()) ||
-            q.author.toLowerCase().includes(keyword.toLowerCase())
+          return allQuotes.filter(
+            (q) =>
+              q.text.toLowerCase().includes(keyword.toLowerCase()) ||
+              q.author.toLowerCase().includes(keyword.toLowerCase())
           );
-        }
+        },
       };
 
       const results = await mockQuoteService.searchQuotes('guild-456', 'quick');
       assert.strictEqual(results.length, 2);
-      assert.ok(results.every(q => q.text.includes('quick')));
+      assert.ok(results.every((q) => q.text.includes('quick')));
     });
 
     it('should handle case-insensitive search', async () => {
@@ -233,12 +225,10 @@ describe('Phase 6B: Command Implementation Layer', () => {
         searchQuotes: async (guildId, keyword) => {
           const allQuotes = [
             { id: 1, text: 'UPPERCASE Quote', author: 'Author' },
-            { id: 2, text: 'lowercase quote', author: 'Author' }
+            { id: 2, text: 'lowercase quote', author: 'Author' },
           ];
-          return allQuotes.filter(q =>
-            q.text.toLowerCase().includes(keyword.toLowerCase())
-          );
-        }
+          return allQuotes.filter((q) => q.text.toLowerCase().includes(keyword.toLowerCase()));
+        },
       };
 
       const results = await mockQuoteService.searchQuotes('guild-456', 'QUOTE');
@@ -249,7 +239,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
       const mockQuoteService = {
         searchQuotes: async (guildId, keyword) => {
           return [];
-        }
+        },
       };
 
       const results = await mockQuoteService.searchQuotes('guild-456', 'nonexistent');
@@ -262,11 +252,11 @@ describe('Phase 6B: Command Implementation Layer', () => {
           const allQuotes = [
             { id: 1, text: 'Quote 1', author: 'Author 1' },
             { id: 2, text: 'Quote 2', author: 'Author 2' },
-            { id: 3, text: 'Quote 3', author: 'Author 3' }
+            { id: 3, text: 'Quote 3', author: 'Author 3' },
           ];
           const random = Math.floor(Math.random() * allQuotes.length);
           return allQuotes[random];
-        }
+        },
       };
 
       const quote = await mockQuoteService.getRandomQuote('guild-456');
@@ -281,16 +271,16 @@ describe('Phase 6B: Command Implementation Layer', () => {
           const quotes = [
             { id: 1, author: 'Author 1', rating: 10 },
             { id: 2, author: 'Author 1', rating: 5 },
-            { id: 3, author: 'Author 2', rating: 8 }
+            { id: 3, author: 'Author 2', rating: 8 },
           ];
 
           return {
             totalQuotes: quotes.length,
-            uniqueAuthors: new Set(quotes.map(q => q.author)).size,
+            uniqueAuthors: new Set(quotes.map((q) => q.author)).size,
             averageRating: quotes.reduce((sum, q) => sum + q.rating, 0) / quotes.length,
-            topAuthor: 'Author 1'
+            topAuthor: 'Author 1',
           };
-        }
+        },
       };
 
       const stats = await mockQuoteService.getQuoteStats('guild-456');
@@ -306,22 +296,22 @@ describe('Phase 6B: Command Implementation Layer', () => {
           const allQuotes = [
             { id: 1, text: 'Quote 1', author: 'Shakespeare' },
             { id: 2, text: 'Quote 2', author: 'Shakespeare' },
-            { id: 3, text: 'Quote 3', author: 'Newton' }
+            { id: 3, text: 'Quote 3', author: 'Newton' },
           ];
-          return allQuotes.filter(q => q.author === author);
-        }
+          return allQuotes.filter((q) => q.author === author);
+        },
       };
 
       const results = await mockQuoteService.searchByAuthor('guild-456', 'Shakespeare');
       assert.strictEqual(results.length, 2);
-      assert.ok(results.every(q => q.author === 'Shakespeare'));
+      assert.ok(results.every((q) => q.author === 'Shakespeare'));
     });
 
     it('should handle empty guild quotes', async () => {
       const mockQuoteService = {
         getRandomQuote: async (guildId) => {
           return null; // No quotes in guild
-        }
+        },
       };
 
       const quote = await mockQuoteService.getRandomQuote('guild-456');
@@ -335,7 +325,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
         rateQuote: async (guildId, quoteId, rating) => {
           if (rating < 1 || rating > 5) throw new Error('Rating must be 1-5');
           return { id: quoteId, rating };
-        }
+        },
       };
 
       const result = await mockQuoteService.rateQuote('guild-456', 1, 5);
@@ -347,7 +337,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
         rateQuote: async (guildId, quoteId, rating) => {
           if (rating < 1 || rating > 5) throw new Error('Rating must be 1-5');
           return { id: quoteId, rating };
-        }
+        },
       };
 
       try {
@@ -363,7 +353,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
         addTag: async (guildId, quoteId, tag) => {
           if (!tag) throw new Error('Tag required');
           return { id: quoteId, tag };
-        }
+        },
       };
 
       const result = await mockQuoteService.addTag('guild-456', 1, 'motivational');
@@ -376,20 +366,20 @@ describe('Phase 6B: Command Implementation Layer', () => {
           if (!tag) throw new Error('Tag required');
           return [
             { id: 1, text: 'Quote 1', tags: ['motivational'] },
-            { id: 2, text: 'Quote 2', tags: ['motivational', 'inspirational'] }
+            { id: 2, text: 'Quote 2', tags: ['motivational', 'inspirational'] },
           ];
-        }
+        },
       };
 
       const quotes = await mockQuoteService.getQuotesByTag('guild-456', 'motivational');
-      assert.ok(quotes.every(q => q.tags.includes('motivational')));
+      assert.ok(quotes.every((q) => q.tags.includes('motivational')));
     });
 
     it('should get quote rating average', async () => {
       const mockQuoteService = {
         getQuoteRating: async (guildId, quoteId) => {
           return { id: quoteId, averageRating: 4.2, ratingCount: 15 };
-        }
+        },
       };
 
       const result = await mockQuoteService.getQuoteRating('guild-456', 1);
@@ -409,9 +399,9 @@ describe('Phase 6B: Command Implementation Layer', () => {
             userId,
             text,
             dueDate,
-            created: new Date()
+            created: new Date(),
           };
-        }
+        },
       };
 
       const result = await mockReminderService.createReminder(
@@ -431,14 +421,14 @@ describe('Phase 6B: Command Implementation Layer', () => {
           if (!guildId || !userId) throw new Error('Guild ID and User ID required');
           return [
             { id: 1, text: 'Reminder 1', dueDate: new Date() },
-            { id: 2, text: 'Reminder 2', dueDate: new Date() }
+            { id: 2, text: 'Reminder 2', dueDate: new Date() },
           ];
-        }
+        },
       };
 
       const reminders = await mockReminderService.listReminders('guild-456', 'user-123');
       assert.strictEqual(reminders.length, 2);
-      assert.ok(reminders.every(r => r.id && r.text));
+      assert.ok(reminders.every((r) => r.id && r.text));
     });
 
     it('should delete reminder', async () => {
@@ -446,7 +436,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
         deleteReminder: async (guildId, reminderId) => {
           if (!guildId || !reminderId) throw new Error('Missing required fields');
           return true;
-        }
+        },
       };
 
       const result = await mockReminderService.deleteReminder('guild-456', 1);
@@ -458,15 +448,10 @@ describe('Phase 6B: Command Implementation Layer', () => {
         updateReminder: async (guildId, reminderId, text, dueDate) => {
           if (!reminderId) throw new Error('Reminder ID required');
           return { id: reminderId, text, dueDate };
-        }
+        },
       };
 
-      const result = await mockReminderService.updateReminder(
-        'guild-456',
-        1,
-        'Updated text',
-        new Date()
-      );
+      const result = await mockReminderService.updateReminder('guild-456', 1, 'Updated text', new Date());
 
       assert.strictEqual(result.text, 'Updated text');
     });
@@ -477,18 +462,14 @@ describe('Phase 6B: Command Implementation Layer', () => {
           if (!query) throw new Error('Query required');
           return [
             { id: 1, text: 'Remember to call mom', userId },
-            { id: 2, text: 'Remember to buy groceries', userId }
+            { id: 2, text: 'Remember to buy groceries', userId },
           ];
-        }
+        },
       };
 
-      const results = await mockReminderService.searchReminders(
-        'guild-456',
-        'user-123',
-        'remember'
-      );
+      const results = await mockReminderService.searchReminders('guild-456', 'user-123', 'remember');
 
-      assert.ok(results.every(r => r.text.toLowerCase().includes('remember')));
+      assert.ok(results.every((r) => r.text.toLowerCase().includes('remember')));
     });
 
     it('should handle reminder pagination', async () => {
@@ -499,7 +480,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
             reminders.push({ id: i, text: `Reminder ${i}`, userId });
           }
           return reminders;
-        }
+        },
       };
 
       const reminders = await mockReminderService.listReminders('guild-456', 'user-123');
@@ -517,9 +498,9 @@ describe('Phase 6B: Command Implementation Layer', () => {
           return {
             enabled: true,
             webhookUrl: 'https://example.com/webhook',
-            port: 3000
+            port: 3000,
           };
-        }
+        },
       };
 
       const config = await mockProxyService.getConfig('guild-456');
@@ -531,7 +512,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
       const mockProxyService = {
         enableProxy: async (guildId) => {
           return { enabled: true };
-        }
+        },
       };
 
       const result = await mockProxyService.enableProxy('guild-456');
@@ -542,7 +523,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
       const mockProxyService = {
         disableProxy: async (guildId) => {
           return { enabled: false };
-        }
+        },
       };
 
       const result = await mockProxyService.disableProxy('guild-456');
@@ -580,7 +561,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
       const mockPrefService = {
         optIn: async (guildId, userId) => {
           return { userId, optedIn: true };
-        }
+        },
       };
 
       const result = await mockPrefService.optIn('guild-456', 'user-123');
@@ -591,7 +572,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
       const mockPrefService = {
         optOut: async (guildId, userId) => {
           return { userId, optedIn: false };
-        }
+        },
       };
 
       const result = await mockPrefService.optOut('guild-456', 'user-123');
@@ -602,7 +583,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
       const mockPrefService = {
         getCommStatus: async (guildId, userId) => {
           return { userId, optedIn: true, preferences: {} };
-        }
+        },
       };
 
       const status = await mockPrefService.getCommStatus('guild-456', 'user-123');
@@ -614,7 +595,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
       const mockPrefService = {
         setPreferences: async (guildId, userId, prefs) => {
           return { userId, preferences: prefs };
-        }
+        },
       };
 
       const prefs = { notifications: true, reminders: false };
@@ -627,7 +608,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
       const mockPrefService = {
         getPreferences: async (guildId, userId) => {
           return { userId, notifications: true, reminders: false };
-        }
+        },
       };
 
       const prefs = await mockPrefService.getPreferences('guild-456', 'user-123');
@@ -657,7 +638,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
           } catch (err) {
             return { error: 'Database error', message: err.message };
           }
-        }
+        },
       };
 
       const result = await mockService.getQuote('guild-456', 1);
@@ -683,7 +664,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
           return new Promise((resolve) => {
             setTimeout(() => resolve('success'), 100);
           });
-        }
+        },
       };
 
       const promise = mockService.slowOperation();
@@ -696,13 +677,11 @@ describe('Phase 6B: Command Implementation Layer', () => {
           return new Promise((resolve) => {
             setTimeout(() => resolve({ command: commandName }), Math.random() * 10);
           });
-        }
+        },
       };
 
       const commands = ['add-quote', 'search-quotes', 'rate-quote'];
-      const results = await Promise.all(
-        commands.map(cmd => mockService.execute(cmd))
-      );
+      const results = await Promise.all(commands.map((cmd) => mockService.execute(cmd)));
 
       assert.strictEqual(results.length, 3);
     });
@@ -726,7 +705,7 @@ describe('Phase 6B: Command Implementation Layer', () => {
       const service = {
         addQuote: async (guildId, text, author) => ({ id: 1, text, author }),
         searchQuotes: async (guildId, keyword) => [{ id: 1, text: keyword }],
-        rateQuote: async (guildId, quoteId, rating) => ({ id: quoteId, rating })
+        rateQuote: async (guildId, quoteId, rating) => ({ id: quoteId, rating }),
       };
 
       // Chain operations
@@ -744,15 +723,15 @@ describe('Phase 6B: Command Implementation Layer', () => {
         addQuotes: async (guildId, quotes) => {
           return quotes.map((q, idx) => ({
             id: idx + 1,
-            ...q
+            ...q,
           }));
-        }
+        },
       };
 
       const newQuotes = [
         { text: 'Quote 1', author: 'Author 1' },
         { text: 'Quote 2', author: 'Author 2' },
-        { text: 'Quote 3', author: 'Author 3' }
+        { text: 'Quote 3', author: 'Author 3' },
       ];
 
       const result = await service.addQuotes('guild-456', newQuotes);

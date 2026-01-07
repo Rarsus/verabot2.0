@@ -26,46 +26,67 @@ async function up(db) {
       };
 
       // Index on quotes.author for author searches
-      db.run(`
+      db.run(
+        `
         CREATE INDEX IF NOT EXISTS idx_quotes_author
         ON quotes(author)
-      `, checkComplete);
+      `,
+        checkComplete
+      );
 
       // Index on quotes.category for category filtering
-      db.run(`
+      db.run(
+        `
         CREATE INDEX IF NOT EXISTS idx_quotes_category
         ON quotes(category)
-      `, checkComplete);
+      `,
+        checkComplete
+      );
 
       // Index on quotes.addedAt for chronological queries
-      db.run(`
+      db.run(
+        `
         CREATE INDEX IF NOT EXISTS idx_quotes_addedAt
         ON quotes(addedAt)
-      `, checkComplete);
+      `,
+        checkComplete
+      );
 
       // Index on quote_ratings.userId for user rating lookups
-      db.run(`
+      db.run(
+        `
         CREATE INDEX IF NOT EXISTS idx_ratings_userId
         ON quote_ratings(userId)
-      `, checkComplete);
+      `,
+        checkComplete
+      );
 
       // Index on quote_ratings.quoteId for quote rating aggregation
-      db.run(`
+      db.run(
+        `
         CREATE INDEX IF NOT EXISTS idx_ratings_quoteId
         ON quote_ratings(quoteId)
-      `, checkComplete);
+      `,
+        checkComplete
+      );
 
       // Composite index on quote_tags for join queries
-      db.run(`
+      db.run(
+        `
         CREATE INDEX IF NOT EXISTS idx_quote_tags_quoteId_tagId
         ON quote_tags(quoteId, tagId)
-      `, checkComplete);
+      `,
+        checkComplete
+      );
 
       // Index on tags.name for tag lookups
-      db.run(`
+      db.run(
+        `
         CREATE INDEX IF NOT EXISTS idx_tags_name
         ON tags(name)
-      `, checkComplete);
+      `,
+        checkComplete
+      );
     });
   });
 }

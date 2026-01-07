@@ -14,5 +14,5 @@ module.exports = {
   QuoteService,
   ValidationService,
   DiscordService,
-  RolePermissionService
+  RolePermissionService,
 };

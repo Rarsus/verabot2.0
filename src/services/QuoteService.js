@@ -189,7 +189,7 @@ async function exportGuildData(guildId) {
 async function exportAsJson(guildId, quotes = null) {
   if (!guildId) throw new Error('Guild ID required');
 
-  const quotesToExport = quotes || await guildAwareDb.getAllQuotes(guildId);
+  const quotesToExport = quotes || (await guildAwareDb.getAllQuotes(guildId));
   return Promise.resolve(JSON.stringify(quotesToExport, null, 2));
 }
 
@@ -203,21 +203,21 @@ async function exportAsJson(guildId, quotes = null) {
 async function exportAsCSV(guildId, quotes = null) {
   if (!guildId) throw new Error('Guild ID required');
 
-  const quotesToExport = quotes || await guildAwareDb.getAllQuotes(guildId);
+  const quotesToExport = quotes || (await guildAwareDb.getAllQuotes(guildId));
 
   if (!quotesToExport || quotesToExport.length === 0) {
     return 'id,text,author,addedAt';
   }
 
   const headers = ['id', 'text', 'author', 'addedAt'];
-  const rows = quotesToExport.map(q => [
+  const rows = quotesToExport.map((q) => [
     q.id,
     `"${(q.text || '').replace(/"/g, '""')}"`,
     `"${(q.author || '').replace(/"/g, '""')}"`,
-    q.addedAt || ''
+    q.addedAt || '',
   ]);
 
-  return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  return [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
 }
 
 /**
@@ -268,5 +268,5 @@ module.exports = {
 
   // Statistics and GDPR
   getGuildStatistics,
-  deleteGuildData
+  deleteGuildData,
 };

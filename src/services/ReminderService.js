@@ -87,13 +87,15 @@ function validateDatetime(whenDatetime) {
     // Provide more helpful error message
     return {
       valid: false,
-      error: parseResult.error || 'Invalid date/time format. Try formats like: "1 day", "tomorrow", "3:30 PM", "2025-12-31", or "tomorrow at 3 PM"'
+      error:
+        parseResult.error ||
+        'Invalid date/time format. Try formats like: "1 day", "tomorrow", "3:30 PM", "2025-12-31", or "tomorrow at 3 PM"',
     };
   }
 
   return {
     valid: true,
-    sanitized: parseResult.isoString
+    sanitized: parseResult.isoString,
   };
 }
 
@@ -232,9 +234,9 @@ async function createReminder(reminderData) {
         linkValidation.sanitized,
         imageValidation.sanitized,
         notificationTime,
-        REMINDER_STATUS.ACTIVE
+        REMINDER_STATUS.ACTIVE,
       ],
-      function(err) {
+      function (err) {
         if (err) {
           logError('ReminderService.createReminder', err, ERROR_LEVELS.MEDIUM);
           reject(err);
@@ -264,7 +266,7 @@ async function addReminderAssignment(reminderId, assigneeType, assigneeId) {
     db.run(
       'INSERT INTO reminder_assignments (reminderId, assigneeType, assigneeId) VALUES (?, ?, ?)',
       [reminderId, assigneeType, assigneeId],
-      function(err) {
+      function (err) {
         if (err) {
           logError('ReminderService.addReminderAssignment', err, ERROR_LEVELS.MEDIUM);
           reject(err);
@@ -285,33 +287,25 @@ async function getReminderById(id) {
   const db = getDatabase();
 
   return new Promise((resolve, reject) => {
-    db.get(
-      'SELECT * FROM reminders WHERE id = ?',
-      [id],
-      (err, reminder) => {
-        if (err) {
-          logError('ReminderService.getReminderById', err, ERROR_LEVELS.MEDIUM);
-          reject(err);
-        } else if (!reminder) {
-          resolve(null);
-        } else {
-          // Get assignments
-          db.all(
-            'SELECT * FROM reminder_assignments WHERE reminderId = ?',
-            [id],
-            (err, assignments) => {
-              if (err) {
-                logError('ReminderService.getReminderById.assignments', err, ERROR_LEVELS.LOW);
-                reminder.assignments = [];
-              } else {
-                reminder.assignments = assignments || [];
-              }
-              resolve(reminder);
-            }
-          );
-        }
+    db.get('SELECT * FROM reminders WHERE id = ?', [id], (err, reminder) => {
+      if (err) {
+        logError('ReminderService.getReminderById', err, ERROR_LEVELS.MEDIUM);
+        reject(err);
+      } else if (!reminder) {
+        resolve(null);
+      } else {
+        // Get assignments
+        db.all('SELECT * FROM reminder_assignments WHERE reminderId = ?', [id], (err, assignments) => {
+          if (err) {
+            logError('ReminderService.getReminderById.assignments', err, ERROR_LEVELS.LOW);
+            reminder.assignments = [];
+          } else {
+            reminder.assignments = assignments || [];
+          }
+          resolve(reminder);
+        });
       }
-    );
+    });
   });
 }
 
@@ -392,18 +386,14 @@ async function updateReminder(id, updateData) {
   values.push(id);
 
   return new Promise((resolve, reject) => {
-    db.run(
-      `UPDATE reminders SET ${fields.join(', ')} WHERE id = ?`,
-      values,
-      function(err) {
-        if (err) {
-          logError('ReminderService.updateReminder', err, ERROR_LEVELS.MEDIUM);
-          reject(err);
-        } else {
-          resolve(this.changes > 0);
-        }
+    db.run(`UPDATE reminders SET ${fields.join(', ')} WHERE id = ?`, values, function (err) {
+      if (err) {
+        logError('ReminderService.updateReminder', err, ERROR_LEVELS.MEDIUM);
+        reject(err);
+      } else {
+        resolve(this.changes > 0);
       }
-    );
+    });
   });
 }
 
@@ -419,7 +409,7 @@ async function deleteReminder(id, hard = false) {
   if (hard) {
     // Hard delete
     return new Promise((resolve, reject) => {
-      db.run('DELETE FROM reminders WHERE id = ?', [id], function(err) {
+      db.run('DELETE FROM reminders WHERE id = ?', [id], function (err) {
         if (err) {
           logError('ReminderService.deleteReminder', err, ERROR_LEVELS.MEDIUM);
           reject(err);
@@ -566,7 +556,7 @@ async function recordNotification(reminderId, success, errorMessage = null) {
     db.run(
       'INSERT INTO reminder_notifications (reminderId, success, errorMessage) VALUES (?, ?, ?)',
       [reminderId, success ? 1 : 0, errorMessage],
-      function(err) {
+      function (err) {
         if (err) {
           logError('ReminderService.recordNotification', err, ERROR_LEVELS.LOW);
           reject(err);
@@ -611,7 +601,7 @@ async function getReminderRecipients(reminderId) {
             const recipients = await Promise.all(
               (rows || []).map(async (row) => ({
                 userId: row.assigneeId,
-                optedIn: await CommunicationService.isOptedIn(row.assigneeId)
+                optedIn: await CommunicationService.isOptedIn(row.assigneeId),
               }))
             );
             resolve(recipients);
@@ -677,5 +667,5 @@ module.exports = {
   recordNotification,
   isRecipientOptedIn,
   getReminderRecipients,
-  updateNotificationMethod
+  updateNotificationMethod,
 };

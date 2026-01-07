@@ -8,7 +8,7 @@ function authMiddleware(req, res, next) {
   try {
     // Get token from Authorization header or cookie
     let token = null;
-    
+
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
       token = authHeader.substring(7);
@@ -51,7 +51,7 @@ function authMiddleware(req, res, next) {
 function optionalAuth(req, res, next) {
   try {
     let token = null;
-    
+
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
       token = authHeader.substring(7);
@@ -65,7 +65,7 @@ function optionalAuth(req, res, next) {
         req.user = decoded;
       }
     }
-    
+
     next();
   } catch (error) {
     // Continue without authentication

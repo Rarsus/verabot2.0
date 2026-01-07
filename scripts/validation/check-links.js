@@ -11,18 +11,14 @@ const http = require('http');
 // Configuration
 const DOCS_DIR = path.join(__dirname, '../../docs');
 const ROOT_DIR = path.join(__dirname, '../..');
-const IGNORE_PATTERNS = [
-  'node_modules',
-  '.git',
-  'package-lock.json'
-];
+const IGNORE_PATTERNS = ['node_modules', '.git', 'package-lock.json'];
 
 // Track results
 const results = {
   totalFiles: 0,
   totalLinks: 0,
   brokenLinks: [],
-  warnings: []
+  warnings: [],
 };
 
 /**
@@ -39,7 +35,7 @@ function extractLinks(content) {
     links.push({
       text: match[1],
       url: match[2],
-      type: 'markdown'
+      type: 'markdown',
     });
   }
 
@@ -49,7 +45,7 @@ function extractLinks(content) {
     links.push({
       text: 'HTML link',
       url: match[1],
-      type: 'html'
+      type: 'html',
     });
   }
 
@@ -104,8 +100,8 @@ function checkExternalLink(url) {
       method: 'HEAD',
       timeout: 5000,
       headers: {
-        'User-Agent': 'VeraBot-Link-Checker/1.0'
-      }
+        'User-Agent': 'VeraBot-Link-Checker/1.0',
+      },
     };
 
     const req = protocol.request(url, options, (res) => {
@@ -169,7 +165,7 @@ async function processFile(filePath) {
           link: url,
           text: link.text,
           error: result.error || 'Inaccessible',
-          type: 'external'
+          type: 'external',
         });
       } else if (result.warning) {
         results.warnings.push({
@@ -177,7 +173,7 @@ async function processFile(filePath) {
           link: url,
           text: link.text,
           error: result.error || 'Network issue (CI)',
-          type: 'external'
+          type: 'external',
         });
       }
     } else {
@@ -189,7 +185,7 @@ async function processFile(filePath) {
           link: url,
           text: link.text,
           error: 'File not found',
-          type: 'internal'
+          type: 'internal',
         });
       }
     }
@@ -208,7 +204,7 @@ function findMarkdownFiles(dir) {
     const fullPath = path.join(dir, entry.name);
 
     // Skip ignored patterns
-    if (IGNORE_PATTERNS.some(pattern => fullPath.includes(pattern))) {
+    if (IGNORE_PATTERNS.some((pattern) => fullPath.includes(pattern))) {
       continue;
     }
 
@@ -303,5 +299,5 @@ module.exports = {
   checkInternalLink,
   checkExternalLink,
   processFile,
-  findMarkdownFiles
+  findMarkdownFiles,
 };

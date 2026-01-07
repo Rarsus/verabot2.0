@@ -7,6 +7,7 @@
 ## 🚀 Quick Start: Write a New Feature with TDD
 
 ### Step 1: Create Test File FIRST ❌→✅
+
 ```bash
 # DON'T: Start writing implementation code
 # DO: Create test file first
@@ -14,6 +15,7 @@ touch tests/unit/test-my-feature.js
 ```
 
 ### Step 2: Write Tests (RED Phase)
+
 ```javascript
 // tests/unit/test-my-feature.js
 const assert = require('assert');
@@ -41,12 +43,14 @@ describe('MyFeature', () => {
 ```
 
 Run test (should FAIL):
+
 ```bash
 npm test -- tests/unit/test-my-feature.js
 # Expected: Tests fail ❌
 ```
 
 ### Step 3: Implement Code (GREEN Phase)
+
 ```javascript
 // src/path/to/my-feature.js
 class MyFeature {
@@ -65,12 +69,14 @@ module.exports = MyFeature;
 ```
 
 Run test (should PASS):
+
 ```bash
 npm test -- tests/unit/test-my-feature.js
 # Expected: All tests pass ✅
 ```
 
 ### Step 4: Refactor (REFACTOR Phase)
+
 ```javascript
 // Improve code quality while keeping tests passing
 class MyFeature {
@@ -92,18 +98,21 @@ class MyFeature {
 ```
 
 Verify tests still pass:
+
 ```bash
 npm test -- tests/unit/test-my-feature.js
 # Expected: All tests still pass ✅
 ```
 
 ### Step 5: Check Coverage
+
 ```bash
 npm run test:coverage
 # Verify your module meets coverage thresholds
 ```
 
 ### Step 6: Pre-commit Checks
+
 ```bash
 # 1. Run all tests
 npm test
@@ -134,6 +143,7 @@ Feature Modules:        Lines: 90%  |  Functions: 95%  |  Branches: 85%
 ```
 
 **Check your module:**
+
 ```bash
 npm run test:coverage
 # Open coverage/lcov-report/index.html
@@ -147,6 +157,7 @@ npm run test:coverage
 **Every public method MUST have tests for:**
 
 ### Happy Path ✅
+
 ```javascript
 it('should return correct result for valid input', () => {
   const result = module.method('valid');
@@ -155,6 +166,7 @@ it('should return correct result for valid input', () => {
 ```
 
 ### Error Scenarios ❌
+
 ```javascript
 it('should throw specific error for invalid input', () => {
   assert.throws(() => {
@@ -164,6 +176,7 @@ it('should throw specific error for invalid input', () => {
 ```
 
 ### Edge Cases 🔧
+
 ```javascript
 it('should handle edge case: empty string', () => {
   const result = module.method('');
@@ -183,6 +196,7 @@ it('should handle edge case: special characters', () => {
 ```
 
 ### Boundary Conditions 📏
+
 ```javascript
 it('should handle minimum value', () => {
   const result = module.method(1);
@@ -196,6 +210,7 @@ it('should handle maximum value', () => {
 ```
 
 ### Async Operations ⏱️
+
 ```javascript
 it('should handle async operation successfully', async () => {
   const result = await module.asyncMethod('input');
@@ -203,10 +218,7 @@ it('should handle async operation successfully', async () => {
 });
 
 it('should handle async error', async () => {
-  await assert.rejects(
-    () => module.asyncMethod(null),
-    /Expected error/
-  );
+  await assert.rejects(() => module.asyncMethod(null), /Expected error/);
 });
 ```
 
@@ -215,6 +227,7 @@ it('should handle async error', async () => {
 ## 🎯 Mocking Patterns
 
 ### Discord.js Mocking
+
 ```javascript
 const mockInteraction = {
   user: { id: 'user-123', username: 'TestUser' },
@@ -231,6 +244,7 @@ const result = await command.executeInteraction(mockInteraction);
 ```
 
 ### Database Mocking
+
 ```javascript
 const Database = require('better-sqlite3');
 const db = new Database(':memory:'); // In-memory SQLite
@@ -243,12 +257,13 @@ db.close();
 ```
 
 ### Service Mocking
+
 ```javascript
 const mockService = {
   getQuote: async (id) => ({
     id,
     text: 'Test quote',
-    author: 'Test Author'
+    author: 'Test Author',
   }),
   addQuote: async (text, author) => ({ success: true }),
 };
@@ -262,6 +277,7 @@ const result = await command.executeWithService(mockService);
 ## ❌ Common Mistakes (DON'T DO THESE)
 
 ### ❌ Writing code first
+
 ```javascript
 // WRONG - Code before tests
 class MyFeature {
@@ -272,6 +288,7 @@ class MyFeature {
 ```
 
 ### ❌ Testing only happy path
+
 ```javascript
 // WRONG - Only one test case
 it('should work', () => {
@@ -281,6 +298,7 @@ it('should work', () => {
 ```
 
 ### ❌ No error testing
+
 ```javascript
 // WRONG - Doesn't test error scenarios
 describe('MyModule', () => {
@@ -291,6 +309,7 @@ describe('MyModule', () => {
 ```
 
 ### ❌ Forgetting cleanup
+
 ```javascript
 // WRONG - No cleanup between tests
 afterEach(() => {
@@ -299,6 +318,7 @@ afterEach(() => {
 ```
 
 ### ❌ Committing without tests passing
+
 ```bash
 # WRONG
 npm run lint  # Passes
@@ -316,37 +336,40 @@ git commit -m "Add feature"
 ## ✅ DO THIS INSTEAD
 
 ### ✅ Write tests first
+
 ```javascript
 // RIGHT - Tests before code
 describe('MyFeature', () => {
-  it('should...', () => { });
-  it('should handle error...', () => { });
-  it('should handle edge case...', () => { });
+  it('should...', () => {});
+  it('should handle error...', () => {});
+  it('should handle edge case...', () => {});
 });
 // THEN implement code to pass tests
 ```
 
 ### ✅ Test all scenarios
+
 ```javascript
 // RIGHT - Complete test coverage
 describe('MyFeature', () => {
   describe('happy path', () => {
-    it('should return expected', () => { });
+    it('should return expected', () => {});
   });
 
   describe('error scenarios', () => {
-    it('should throw for null', () => { });
-    it('should throw for invalid type', () => { });
+    it('should throw for null', () => {});
+    it('should throw for invalid type', () => {});
   });
 
   describe('edge cases', () => {
-    it('should handle empty string', () => { });
-    it('should handle very long input', () => { });
+    it('should handle empty string', () => {});
+    it('should handle very long input', () => {});
   });
 });
 ```
 
 ### ✅ Test error paths
+
 ```javascript
 // RIGHT - All error scenarios tested
 it('should throw error for invalid input', () => {
@@ -363,21 +386,23 @@ it('should throw error for wrong type', () => {
 ```
 
 ### ✅ Cleanup properly
+
 ```javascript
 // RIGHT - Proper cleanup
 afterEach(() => {
   // Close connections
   db.close();
-  
+
   // Clear mocks
   mockService.reset();
-  
+
   // Clean up files
   fs.rmSync(testDir, { recursive: true });
 });
 ```
 
 ### ✅ Full pre-commit checklist
+
 ```bash
 # RIGHT - Run all checks before commit
 npm test              # All tests pass ✅
@@ -398,7 +423,7 @@ Copy-paste template for new test files:
 // tests/unit/test-{module-name}.js
 /**
  * Test suite for {ModuleName}
- * 
+ *
  * Covers:
  * - Happy path scenarios
  * - Error handling
@@ -458,6 +483,7 @@ describe('ModuleName', () => {
 ## 🔍 Verify Coverage
 
 ### View Coverage Report
+
 ```bash
 # Generate coverage report
 npm run test:coverage
@@ -474,12 +500,14 @@ start coverage/lcov-report/index.html
 ```
 
 ### Check Specific Module
+
 ```bash
 # View coverage for one module
 cat coverage/coverage-final.json | jq '.["C:\\repo\\verabot2.0\\src\\path\\to\\module.js"]'
 ```
 
 ### Get Summary
+
 ```bash
 # Quick coverage summary
 cat coverage/coverage-summary.json | jq '.total'
@@ -497,6 +525,7 @@ cat coverage/coverage-summary.json | jq '.total'
 ## 📚 Detailed Guides
 
 For more information, see:
+
 - 📄 **CODE-COVERAGE-ANALYSIS-PLAN.md** - Detailed coverage roadmap
 - 📄 **.github/copilot-instructions.md** - Full TDD framework (Test-Driven Development section)
 - 📁 **tests/unit/** - Real examples of test structure
@@ -505,37 +534,38 @@ For more information, see:
 
 ## 🚨 TDD Non-Negotiables
 
-| Rule | Must? | Consequence |
-|------|-------|------------|
-| Write tests BEFORE code | ✅ YES | PR rejected |
-| Test happy path | ✅ YES | PR rejected |
-| Test error paths | ✅ YES | PR rejected |
-| Test edge cases | ✅ YES | PR rejected |
-| Meet coverage thresholds | ✅ YES | PR rejected |
-| Pass npm test | ✅ YES | Cannot merge |
-| Pass npm run lint | ✅ YES | Cannot merge |
-| Pre-commit checks | ✅ YES | No exceptions |
+| Rule                     | Must?  | Consequence   |
+| ------------------------ | ------ | ------------- |
+| Write tests BEFORE code  | ✅ YES | PR rejected   |
+| Test happy path          | ✅ YES | PR rejected   |
+| Test error paths         | ✅ YES | PR rejected   |
+| Test edge cases          | ✅ YES | PR rejected   |
+| Meet coverage thresholds | ✅ YES | PR rejected   |
+| Pass npm test            | ✅ YES | Cannot merge  |
+| Pass npm run lint        | ✅ YES | Cannot merge  |
+| Pre-commit checks        | ✅ YES | No exceptions |
 
 ---
 
 ## ⏱️ Time Estimates
 
-| Task | Time |
-|------|------|
-| Write test file | 15-30 min |
-| Write tests (3-5 cases) | 30-60 min |
-| Implement code | 30-60 min |
-| Refactor & optimize | 20-40 min |
-| Verify coverage | 10-15 min |
-| Pre-commit checks | 5-10 min |
-| **Total per feature** | **2-4 hours** |
+| Task                    | Time          |
+| ----------------------- | ------------- |
+| Write test file         | 15-30 min     |
+| Write tests (3-5 cases) | 30-60 min     |
+| Implement code          | 30-60 min     |
+| Refactor & optimize     | 20-40 min     |
+| Verify coverage         | 10-15 min     |
+| Pre-commit checks       | 5-10 min      |
+| **Total per feature**   | **2-4 hours** |
 
 ---
 
 **Remember: Tests first, code second, quality always.** ✅
 
 npm run test:integration:refactor
-```
+
+````
 
 ### Run Specific Test Groups:
 
@@ -548,7 +578,7 @@ npm run test:quotes && npm run test:quotes-advanced
 
 # Everything
 npm run test:all
-```
+````
 
 ---
 

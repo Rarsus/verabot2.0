@@ -13,25 +13,25 @@ class PerformanceMonitor {
         totalDuration: 0,
         minDuration: Infinity,
         maxDuration: 0,
-        byType: {} // { select: {...}, insert: {...}, update: {...}, delete: {...} }
+        byType: {}, // { select: {...}, insert: {...}, update: {...}, delete: {...} }
       },
       cache: {
         hits: 0,
         misses: 0,
-        size: 0
+        size: 0,
       },
       pool: {
         acquired: 0,
         released: 0,
         queued: 0,
-        utilization: 0
+        utilization: 0,
       },
       memory: {
         heapUsed: 0,
         heapTotal: 0,
-        external: 0
+        external: 0,
       },
-      startTime: Date.now()
+      startTime: Date.now(),
     };
 
     this.queryHistory = [];
@@ -65,7 +65,7 @@ class PerformanceMonitor {
         totalDuration: 0,
         minDuration: Infinity,
         maxDuration: 0,
-        cached: 0
+        cached: 0,
       };
     }
 
@@ -84,7 +84,7 @@ class PerformanceMonitor {
       duration,
       cached,
       type,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     // Trim history if too large
@@ -103,7 +103,7 @@ class PerformanceMonitor {
       misses: cacheStats.misses || 0,
       size: cacheStats.size || 0,
       hitRate: cacheStats.hitRate || 0,
-      memoryUsage: cacheStats.memoryUsage || 0
+      memoryUsage: cacheStats.memoryUsage || 0,
     };
   }
 
@@ -119,7 +119,7 @@ class PerformanceMonitor {
       totalConnections: poolStats.totalConnections || 0,
       availableConnections: poolStats.availableConnections || 0,
       inUseConnections: poolStats.inUseConnections || 0,
-      utilization: poolStats.utilization || 0
+      utilization: poolStats.utilization || 0,
     };
   }
 
@@ -132,7 +132,7 @@ class PerformanceMonitor {
       heapUsed: mem.heapUsed,
       heapTotal: mem.heapTotal,
       external: mem.external,
-      rss: mem.rss
+      rss: mem.rss,
     };
   }
 
@@ -152,15 +152,11 @@ class PerformanceMonitor {
         total: queries.total,
         cached: queries.cached,
         uncached: queries.uncached,
-        averageDuration: queries.total > 0
-          ? (queries.totalDuration / queries.total).toFixed(2)
-          : 0,
+        averageDuration: queries.total > 0 ? (queries.totalDuration / queries.total).toFixed(2) : 0,
         minDuration: queries.minDuration === Infinity ? 0 : queries.minDuration,
         maxDuration: queries.maxDuration,
-        cacheHitRate: queries.total > 0
-          ? ((queries.cached / queries.total) * 100).toFixed(2)
-          : 0,
-        byType: this._formatTypeMetrics(queries.byType)
+        cacheHitRate: queries.total > 0 ? ((queries.cached / queries.total) * 100).toFixed(2) : 0,
+        byType: this._formatTypeMetrics(queries.byType),
       },
       cache: this.metrics.cache,
       pool: this.metrics.pool,
@@ -168,9 +164,9 @@ class PerformanceMonitor {
         heapUsed: this._formatBytes(this.metrics.memory.heapUsed),
         heapTotal: this._formatBytes(this.metrics.memory.heapTotal),
         external: this._formatBytes(this.metrics.memory.external),
-        rss: this._formatBytes(this.metrics.memory.rss)
+        rss: this._formatBytes(this.metrics.memory.rss),
       },
-      recentQueries: this.queryHistory.slice(-10)
+      recentQueries: this.queryHistory.slice(-10),
     };
   }
 
@@ -181,7 +177,7 @@ class PerformanceMonitor {
    */
   getSlowQueries(threshold = 100) {
     return this.queryHistory
-      .filter(q => q.duration > threshold)
+      .filter((q) => q.duration > threshold)
       .sort((a, b) => b.duration - a.duration)
       .slice(0, 20);
   }
@@ -198,25 +194,25 @@ class PerformanceMonitor {
         totalDuration: 0,
         minDuration: Infinity,
         maxDuration: 0,
-        byType: {}
+        byType: {},
       },
       cache: {
         hits: 0,
         misses: 0,
-        size: 0
+        size: 0,
       },
       pool: {
         acquired: 0,
         released: 0,
         queued: 0,
-        utilization: 0
+        utilization: 0,
       },
       memory: {
         heapUsed: 0,
         heapTotal: 0,
-        external: 0
+        external: 0,
       },
-      startTime: Date.now()
+      startTime: Date.now(),
     };
 
     this.queryHistory = [];
@@ -300,7 +296,7 @@ class PerformanceMonitor {
         averageDuration: (metrics.totalDuration / metrics.count).toFixed(2),
         minDuration: metrics.minDuration === Infinity ? 0 : metrics.minDuration,
         maxDuration: metrics.maxDuration,
-        cacheHitRate: ((metrics.cached / metrics.count) * 100).toFixed(2)
+        cacheHitRate: ((metrics.cached / metrics.count) * 100).toFixed(2),
       };
     }
     return formatted;

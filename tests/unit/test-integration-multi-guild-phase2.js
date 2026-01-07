@@ -88,7 +88,7 @@ async function runTests() {
     await db.deleteQuote(guilds[0], quotes[guilds[0]][1]);
     const afterDelete1 = await db.getQuoteCount(guilds[0]);
     const afterDelete2 = await db.getQuoteCount(guilds[1]);
-    assert(afterDelete1 === 1 && afterDelete2 === 2, 'Test 4: Deletion doesn\'t cross guilds');
+    assert(afterDelete1 === 1 && afterDelete2 === 2, "Test 4: Deletion doesn't cross guilds");
 
     // ========================================================================
     // CATEGORY 2: Concurrent Guild Operations (4 tests)
@@ -135,9 +135,7 @@ async function runTests() {
     const concurrentUpdates = [];
     for (const guildId of guilds) {
       if (allQuotes[guildId].length > 0) {
-        concurrentUpdates.push(
-          db.updateQuote(guildId, allQuotes[guildId][0].id, 'Concurrently Updated', 'Bot')
-        );
+        concurrentUpdates.push(db.updateQuote(guildId, allQuotes[guildId][0].id, 'Concurrently Updated', 'Bot'));
       }
     }
     await Promise.all(concurrentUpdates);
@@ -154,7 +152,7 @@ async function runTests() {
         }
       }
     }
-    assert(!dataMixed, 'Test 8: Concurrent operations don\'t mix data');
+    assert(!dataMixed, "Test 8: Concurrent operations don't mix data");
 
     // ========================================================================
     // CATEGORY 3: Guild Data Consistency (3 tests)
@@ -293,7 +291,7 @@ async function runTests() {
       const count = await db.getQuoteCount(guilds[0]);
       errorRecovered = count > 0;
     }
-    assert(errorRecovered, 'Test 16: Error in one guild doesn\'t affect others');
+    assert(errorRecovered, "Test 16: Error in one guild doesn't affect others");
 
     // Cascade prevention: delete in one guild
     await db.getQuoteCount(guilds[0]);
@@ -304,7 +302,7 @@ async function runTests() {
     const g0CountAfter = await db.getQuoteCount(guilds[0]);
     const g1CountAfter = await db.getQuoteCount(guilds[1]);
 
-    assert(g0CountAfter === 0 && g1CountAfter === g1Count, 'Test 17: Deletion doesn\'t cascade');
+    assert(g0CountAfter === 0 && g1CountAfter === g1Count, "Test 17: Deletion doesn't cascade");
 
     // Recovery after data loss
     await db.addQuote(guilds[0], 'Recovered quote', 'Author');

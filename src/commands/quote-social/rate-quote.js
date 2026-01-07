@@ -5,7 +5,7 @@ const quoteService = require('../../services/QuoteService');
 
 const { data, options } = buildCommandOptions('rate-quote', 'Rate a quote (1-5 stars)', [
   { name: 'id', type: 'integer', description: 'Quote ID to rate', required: true },
-  { name: 'rating', type: 'integer', description: 'Your rating (1-5)', required: true }
+  { name: 'rating', type: 'integer', description: 'Your rating (1-5)', required: true },
 ]);
 
 class RateQuoteCommand extends Command {
@@ -17,8 +17,8 @@ class RateQuoteCommand extends Command {
       options,
       permissions: {
         minTier: 1,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 

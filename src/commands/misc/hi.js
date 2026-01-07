@@ -2,7 +2,7 @@ const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 
 const { data, options } = buildCommandOptions('hi', 'Say hi to someone', [
-  { name: 'name', type: 'string', description: 'Name to say hi to', required: false }
+  { name: 'name', type: 'string', description: 'Name to say hi to', required: false },
 ]);
 
 class HiCommand extends Command {
@@ -14,8 +14,8 @@ class HiCommand extends Command {
       options,
       permissions: {
         minTier: 0,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 

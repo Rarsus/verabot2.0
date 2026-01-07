@@ -14,14 +14,18 @@ const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess } = require('../../utils/helpers/response-helpers');
 const WebSocketService = require('../../services/WebSocketService');
 
-const { data, options } = buildCommandOptions('external-action-status', 'Check status of external WebSocket connections', [
-  {
-    name: 'service',
-    type: 'string',
-    required: false,
-    description: 'Specific service name (omit to show all)'
-  }
-]);
+const { data, options } = buildCommandOptions(
+  'external-action-status',
+  'Check status of external WebSocket connections',
+  [
+    {
+      name: 'service',
+      type: 'string',
+      required: false,
+      description: 'Specific service name (omit to show all)',
+    },
+  ]
+);
 
 class ExternalActionStatusCommand extends Command {
   constructor() {
@@ -31,7 +35,7 @@ class ExternalActionStatusCommand extends Command {
       category: 'admin',
       permissions: ['ADMINISTRATOR'],
       data,
-      options
+      options,
     });
   }
 
@@ -62,47 +66,45 @@ class ExternalActionStatusCommand extends Command {
         return {
           title: '❌ Service Not Found',
           description: `No WebSocket connection found for: **${serviceName}**`,
-          color: 0xFF6B6B,
-          fields: []
+          color: 0xff6b6b,
+          fields: [],
         };
       }
 
       return {
         title: `📡 WebSocket Status: ${serviceName}`,
         description: status.connected ? '✅ Connected' : '❌ Disconnected',
-        color: status.connected ? 0x51CF66 : 0xFF6B6B,
+        color: status.connected ? 0x51cf66 : 0xff6b6b,
         fields: [
           {
             name: 'Webhook URL',
             value: this._maskUrl(status.webhookUrl),
-            inline: false
+            inline: false,
           },
           {
             name: 'Status',
             value: status.connected ? '✅ **Connected**' : '❌ **Disconnected**',
-            inline: true
+            inline: true,
           },
           {
             name: 'Messages Received',
             value: String(status.messageCount || 0),
-            inline: true
+            inline: true,
           },
           {
             name: 'Errors',
             value: String(status.errorCount || 0),
-            inline: true
+            inline: true,
           },
           {
             name: 'Allowed Actions',
-            value: status.allowedActions.length > 0
-              ? `\`${status.allowedActions.join('`, `')}\``
-              : '*None configured*',
-            inline: false
-          }
+            value: status.allowedActions.length > 0 ? `\`${status.allowedActions.join('`, `')}\`` : '*None configured*',
+            inline: false,
+          },
         ],
         footer: {
-          text: `Last updated: ${new Date().toISOString()}`
-        }
+          text: `Last updated: ${new Date().toISOString()}`,
+        },
       };
     }
 
@@ -114,12 +116,14 @@ class ExternalActionStatusCommand extends Command {
       return {
         title: '📡 External WebSocket Services',
         description: 'No external services configured',
-        color: 0xFFA500,
-        fields: [{
-          name: 'Configuration',
-          value: 'Configure services in `src/config/external-actions.js`',
-          inline: false
-        }]
+        color: 0xffa500,
+        fields: [
+          {
+            name: 'Configuration',
+            value: 'Configure services in `src/config/external-actions.js`',
+            inline: false,
+          },
+        ],
       };
     }
 
@@ -129,27 +133,25 @@ class ExternalActionStatusCommand extends Command {
       return {
         name: `${connected ? '✅' : '❌'} ${name}`,
         value: `Messages: **${svc.messageCount}** | Errors: **${svc.errorCount}**`,
-        inline: true
+        inline: true,
       };
     });
 
     return {
       title: '📡 External WebSocket Services',
       description: `**${connectedServices.length}** of **${allServices.length}** connected`,
-      color: connectedServices.length > 0 ? 0x51CF66 : 0xFF6B6B,
+      color: connectedServices.length > 0 ? 0x51cf66 : 0xff6b6b,
       fields: [
         {
           name: 'Connected Services',
-          value: connectedServices.length > 0
-            ? connectedServices.map((s) => `\`${s}\``).join(', ')
-            : '*None*',
-          inline: false
+          value: connectedServices.length > 0 ? connectedServices.map((s) => `\`${s}\``).join(', ') : '*None*',
+          inline: false,
         },
-        ...serviceFields
+        ...serviceFields,
       ],
       footer: {
-        text: 'Run /external-action-status <service> for details'
-      }
+        text: 'Run /external-action-status <service> for details',
+      },
     };
   }
 

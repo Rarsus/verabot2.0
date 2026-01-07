@@ -29,9 +29,8 @@ class DatabaseMCPServer {
       return this.databases.get(guildId);
     }
 
-    const dbPath = guildId === 'root'
-      ? path.join(DB_ROOT, 'quotes.db')
-      : path.join(DB_ROOT, 'guilds', guildId, 'quotes.db');
+    const dbPath =
+      guildId === 'root' ? path.join(DB_ROOT, 'quotes.db') : path.join(DB_ROOT, 'guilds', guildId, 'quotes.db');
 
     return new Promise((resolve, reject) => {
       const db = new sqlite3.Database(dbPath, (err) => {
@@ -68,19 +67,11 @@ class DatabaseMCPServer {
    */
   async getSchema(guildId = 'root') {
     try {
-      const tables = await this.query(
-        "SELECT name FROM sqlite_master WHERE type='table'",
-        [],
-        guildId
-      );
+      const tables = await this.query("SELECT name FROM sqlite_master WHERE type='table'", [], guildId);
 
       const schema = {};
       for (const table of tables) {
-        const columns = await this.query(
-          `PRAGMA table_info(${table.name})`,
-          [],
-          guildId
-        );
+        const columns = await this.query(`PRAGMA table_info(${table.name})`, [], guildId);
         schema[table.name] = columns;
       }
 
@@ -125,7 +116,7 @@ class DatabaseMCPServer {
       }
 
       const guildDirs = fs.readdirSync(guildsDir);
-      return guildDirs.filter(dir => !dir.startsWith('.')).sort();
+      return guildDirs.filter((dir) => !dir.startsWith('.')).sort();
     } catch (err) {
       throw new Error(`Failed to list guild databases: ${err.message}`);
     }
@@ -142,7 +133,7 @@ class DatabaseMCPServer {
         tables: Object.keys(tables),
         tableCount: Object.keys(tables).length,
         purpose: 'Bot infrastructure (proxy_config, schema_versions)',
-        path: path.join(DB_ROOT, 'quotes.db')
+        path: path.join(DB_ROOT, 'quotes.db'),
       };
 
       return stats;
@@ -162,7 +153,7 @@ class DatabaseMCPServer {
         return {
           guildId,
           exists: false,
-          error: 'Database not found'
+          error: 'Database not found',
         };
       }
 
@@ -177,13 +168,13 @@ class DatabaseMCPServer {
         tableCount: Object.keys(tables).length,
         quoteCount,
         reminderCount,
-        path: dbPath
+        path: dbPath,
       };
     } catch (error) {
       return {
         guildId,
         exists: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -202,7 +193,7 @@ class DatabaseMCPServer {
 
     return {
       totalGuilds: guilds.length,
-      guilds: stats
+      guilds: stats,
     };
   }
 
@@ -256,8 +247,8 @@ class DatabaseMCPServer {
         databases: {
           root: 1,
           guild: guilds.totalGuilds,
-          total: 1 + guilds.totalGuilds
-        }
+          total: 1 + guilds.totalGuilds,
+        },
       };
     } catch (error) {
       throw new Error(`Failed to get summary: ${error.message}`);
@@ -268,7 +259,7 @@ class DatabaseMCPServer {
    * Close all database connections
    */
   closeAll() {
-    this.databases.forEach(db => {
+    this.databases.forEach((db) => {
       db.close();
     });
     this.databases.clear();

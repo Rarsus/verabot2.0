@@ -9,25 +9,21 @@ const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers
 const { checkAdminPermission } = require('../../utils/proxy-helpers');
 const { resolveChannel } = require('../../utils/helpers/resolution-helpers');
 
-const { data, options } = buildCommandOptions(
-  'say',
-  'Make the bot send a message in a channel (Admin only)',
-  [
-    {
-      name: 'channel',
-      type: 'string',
-      required: true,
-      description: 'Channel name, ID, or mention'
-    },
-    {
-      name: 'message',
-      type: 'string',
-      required: true,
-      description: 'Message content to send',
-      maxLength: 2000
-    }
-  ]
-);
+const { data, options } = buildCommandOptions('say', 'Make the bot send a message in a channel (Admin only)', [
+  {
+    name: 'channel',
+    type: 'string',
+    required: true,
+    description: 'Channel name, ID, or mention',
+  },
+  {
+    name: 'message',
+    type: 'string',
+    required: true,
+    description: 'Message content to send',
+    maxLength: 2000,
+  },
+]);
 
 class SayCommand extends Command {
   constructor() {
@@ -38,8 +34,8 @@ class SayCommand extends Command {
       options,
       permissions: {
         minTier: 3,
-        visible: false
-      }
+        visible: false,
+      },
     });
   }
 
@@ -62,7 +58,11 @@ class SayCommand extends Command {
       const channel = await resolveChannel(channelInput, interaction.guild);
 
       if (!channel) {
-        return sendError(interaction, `Could not find channel: ${channelInput}. Try using the channel name or ID.`, true);
+        return sendError(
+          interaction,
+          `Could not find channel: ${channelInput}. Try using the channel name or ID.`,
+          true
+        );
       }
 
       if (!channel.isTextBased()) {
@@ -71,7 +71,7 @@ class SayCommand extends Command {
 
       // Check bot permissions
       if (channel.guild && !channel.permissionsFor(interaction.client.user).has('SendMessages')) {
-        return sendError(interaction, 'I don\'t have permission to send messages in that channel', true);
+        return sendError(interaction, "I don't have permission to send messages in that channel", true);
       }
 
       // Send the message

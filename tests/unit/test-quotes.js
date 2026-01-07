@@ -36,7 +36,8 @@ function setupTestDb() {
       if (err) reject(err);
 
       // Create table
-      db.run(`
+      db.run(
+        `
         CREATE TABLE quotes (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           text TEXT NOT NULL,
@@ -45,10 +46,12 @@ function setupTestDb() {
           createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
           updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
-      `, (err) => {
-        if (err) reject(err);
-        resolve(db);
-      });
+      `,
+        (err) => {
+          if (err) reject(err);
+          resolve(db);
+        }
+      );
     });
   });
 }
@@ -58,8 +61,8 @@ function insertTestData(db) {
     const quotes = [
       { text: 'The only way to do great work is to love what you do.', author: 'Steve Jobs' },
       { text: 'Innovation distinguishes between a leader and a follower.', author: 'Steve Jobs' },
-      { text: 'Life is what happens when you\'re busy making other plans.', author: 'John Lennon' },
-      { text: 'The future belongs to those who believe in the beauty of their dreams.', author: 'Eleanor Roosevelt' }
+      { text: "Life is what happens when you're busy making other plans.", author: 'John Lennon' },
+      { text: 'The future belongs to those who believe in the beauty of their dreams.', author: 'Eleanor Roosevelt' },
     ];
 
     let inserted = 0;
@@ -217,7 +220,7 @@ async function runTests() {
       'random-quote.js',
       'search-quotes.js',
       'quote-stats.js',
-      'delete-quote.js'
+      'delete-quote.js',
     ];
 
     for (const cmdFile of quoteCommands) {
@@ -250,7 +253,6 @@ async function runTests() {
     console.log(`✅ Passed: ${passed}`);
     console.log(`❌ Failed: ${failed}`);
     console.log(`Total: ${passed + failed}`);
-
   } catch (err) {
     console.error('Test suite error:', err);
   }

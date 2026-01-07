@@ -16,7 +16,7 @@ function createMockInteraction(overrides = {}) {
     editReply: jest.fn(async (msg) => ({ id: 'msg-123', ...msg })),
     followUp: jest.fn(async (msg) => ({ id: 'msg-456', ...msg })),
     isRepliable: () => true,
-    ...overrides
+    ...overrides,
   };
 }
 
@@ -31,7 +31,7 @@ function createMockMessage(overrides = {}) {
     guild: { id: 'guild-456' },
     channel: { id: 'channel-789', send: jest.fn(async (msg) => ({ id: 'reply-123', ...msg })) },
     reply: jest.fn(async (msg) => ({ id: 'reply-123', ...msg })),
-    ...overrides
+    ...overrides,
   };
 }
 
@@ -56,12 +56,12 @@ function createMockDatabase(overrides = {}) {
       run: jest.fn(),
       get: jest.fn(),
       all: jest.fn(),
-      bind: jest.fn()
+      bind: jest.fn(),
     })),
     close: jest.fn((callback) => {
       if (callback) callback();
     }),
-    ...overrides
+    ...overrides,
   };
 }
 
@@ -117,7 +117,7 @@ function captureConsoleOutput(fn) {
  * Sleep for specified milliseconds
  */
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -127,7 +127,7 @@ function createGuildContext(guildId = 'test-guild-123') {
   return {
     guildId,
     userId: 'test-user-456',
-    channelId: 'test-channel-789'
+    channelId: 'test-channel-789',
   };
 }
 
@@ -139,5 +139,5 @@ module.exports = {
   expectAsync,
   captureConsoleOutput,
   sleep,
-  createGuildContext
+  createGuildContext,
 };

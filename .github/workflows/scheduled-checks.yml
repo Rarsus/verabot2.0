@@ -39,7 +39,7 @@ jobs:
           echo "" >> dependency-report.md
           echo "## Security Audit" >> dependency-report.md
           npm audit --json > audit-report.json 2>&1 || true
-          
+
       - name: 📤 Upload dependency report
         uses: actions/upload-artifact@v4
         with:

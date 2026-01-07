@@ -9,9 +9,10 @@ const path = require('path');
 const { spawn } = require('child_process');
 
 const testsDir = path.join(__dirname);
-const testFiles = fs.readdirSync(testsDir)
-  .filter(file => file.startsWith('test-') && file.endsWith('.js') && file !== 'test-all.js')
-  .map(file => path.join(testsDir, file));
+const testFiles = fs
+  .readdirSync(testsDir)
+  .filter((file) => file.startsWith('test-') && file.endsWith('.js') && file !== 'test-all.js')
+  .map((file) => path.join(testsDir, file));
 
 console.log(`\n📝 Running ${testFiles.length} test suites...\n`);
 
@@ -27,7 +28,7 @@ async function runTest(testFile) {
 
     const proc = spawn('node', [testFile], {
       cwd: path.join(__dirname, '..'),
-      stdio: 'inherit'
+      stdio: 'inherit',
     });
 
     proc.on('close', (code) => {
@@ -63,6 +64,6 @@ async function runAllTests() {
   }
 }
 
-runAllTests().catch(err => {
+runAllTests().catch((err) => {
   console.error('Error running tests:', err);
 });

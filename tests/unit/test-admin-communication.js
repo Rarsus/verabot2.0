@@ -67,7 +67,6 @@ async function testWhisperCommand() {
       throw new Error('Status should return user communication status');
     }
     console.log('  ✓ Returns communication status for users');
-
   } catch (err) {
     console.error('  ❌ Whisper opt-in test failed:', err.message);
     throw err;

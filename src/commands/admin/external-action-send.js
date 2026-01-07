@@ -20,20 +20,20 @@ const { data, options } = buildCommandOptions('external-action-send', 'Send appr
     name: 'service',
     type: 'string',
     required: true,
-    description: 'Target service name'
+    description: 'Target service name',
   },
   {
     name: 'action',
     type: 'string',
     required: true,
-    description: 'Action to send (must be approved)'
+    description: 'Action to send (must be approved)',
   },
   {
     name: 'data',
     type: 'string',
     required: false,
-    description: 'JSON payload (optional)'
-  }
+    description: 'JSON payload (optional)',
+  },
 ]);
 
 class ExternalActionSendCommand extends Command {
@@ -44,7 +44,7 @@ class ExternalActionSendCommand extends Command {
       category: 'admin',
       permissions: ['ADMINISTRATOR'],
       data,
-      options
+      options,
     });
   }
 
@@ -71,7 +71,11 @@ class ExternalActionSendCommand extends Command {
   async _handleSend(target, serviceName, actionName, dataStr) {
     // Validate service exists and is enabled
     if (!externalActionsConfig[serviceName]) {
-      return sendError(target, `Unknown service: \`${serviceName}\`\n\nRun \`/external-action-status\` to see available services.`, true);
+      return sendError(
+        target,
+        `Unknown service: \`${serviceName}\`\n\nRun \`/external-action-status\` to see available services.`,
+        true
+      );
     }
 
     const serviceConfig = externalActionsConfig[serviceName];
@@ -90,7 +94,11 @@ class ExternalActionSendCommand extends Command {
 
     // Validate service is connected
     if (!WebSocketService.isConnected(serviceName)) {
-      return sendError(target, `Service not connected: \`${serviceName}\`\n\nUnable to send action at this time.`, true);
+      return sendError(
+        target,
+        `Service not connected: \`${serviceName}\`\n\nUnable to send action at this time.`,
+        true
+      );
     }
 
     // Parse optional JSON payload
@@ -111,30 +119,34 @@ class ExternalActionSendCommand extends Command {
     // Send action
     const success = WebSocketService.send(serviceName, payload);
     if (!success) {
-      return sendError(target, `Failed to send action to \`${serviceName}\`\n\nPlease try again or contact an admin.`, true);
+      return sendError(
+        target,
+        `Failed to send action to \`${serviceName}\`\n\nPlease try again or contact an admin.`,
+        true
+      );
     }
 
     await sendSuccess(target, {
       title: '✅ Action Sent',
       description: `Successfully sent **${actionName}** to **${serviceName}**`,
-      color: 0x51CF66,
+      color: 0x51cf66,
       fields: [
         {
           name: 'Service',
           value: `\`${serviceName}\``,
-          inline: true
+          inline: true,
         },
         {
           name: 'Action',
           value: `\`${actionName}\``,
-          inline: true
+          inline: true,
         },
         {
           name: 'Payload',
           value: `\`\`\`json\n${JSON.stringify(payload, null, 2)}\n\`\`\``,
-          inline: false
-        }
-      ]
+          inline: false,
+        },
+      ],
     });
   }
 }

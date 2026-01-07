@@ -15,7 +15,7 @@ function createMockReq(token = null) {
   return {
     headers: token ? { authorization: `Bearer ${token}` } : {},
     dashboardUser: null,
-    isAdmin: false
+    isAdmin: false,
   };
 }
 
@@ -24,16 +24,16 @@ function createMockRes() {
   let jsonData = null;
 
   return {
-    status: function(code) {
+    status: function (code) {
       statusCode = code;
       return this;
     },
-    json: function(data) {
+    json: function (data) {
       jsonData = data;
       return this;
     },
     getStatus: () => statusCode,
-    getData: () => jsonData
+    getData: () => jsonData,
   };
 }
 
@@ -41,8 +41,8 @@ function createMockRes() {
 function createMockClient(guilds = []) {
   return {
     guilds: {
-      cache: new Map(guilds.map(g => [g.id, g]))
-    }
+      cache: new Map(guilds.map((g) => [g.id, g])),
+    },
   };
 }
 
@@ -91,7 +91,9 @@ try {
   const res = createMockRes();
   let nextCalled = false;
 
-  dashboardAuth.verifyToken(req, res, () => { nextCalled = true; });
+  dashboardAuth.verifyToken(req, res, () => {
+    nextCalled = true;
+  });
 
   if (res.getStatus() === 401 && !nextCalled) {
     console.log('✅ Requests without token rejected');
@@ -113,7 +115,9 @@ try {
   let nextCalled = false;
 
   const middleware = dashboardAuth.checkAdminPermission(mockClient);
-  middleware(req, res, () => { nextCalled = true; });
+  middleware(req, res, () => {
+    nextCalled = true;
+  });
 
   if (res.getStatus() === 401 && !nextCalled) {
     console.log('✅ Admin check requires authenticated user');
@@ -140,9 +144,13 @@ try {
   // Capture console output
   const originalLog = console.log;
   let logMessage = '';
-  console.log = (msg) => { logMessage = msg; };
+  console.log = (msg) => {
+    logMessage = msg;
+  };
 
-  dashboardAuth.logAccess(req, res, () => { nextCalled = true; });
+  dashboardAuth.logAccess(req, res, () => {
+    nextCalled = true;
+  });
 
   console.log = originalLog;
 
@@ -165,7 +173,9 @@ try {
   const res = createMockRes();
   let nextCalled = false;
 
-  dashboardAuth.verifyBotToken(req, res, () => { nextCalled = true; });
+  dashboardAuth.verifyBotToken(req, res, () => {
+    nextCalled = true;
+  });
 
   // Should reject without token
   if (res.getStatus() === 401 && !nextCalled) {

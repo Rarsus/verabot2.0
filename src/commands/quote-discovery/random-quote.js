@@ -14,8 +14,8 @@ class RandomQuoteCommand extends Command {
       options,
       permissions: {
         minTier: 0,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 
@@ -38,7 +38,7 @@ class RandomQuoteCommand extends Command {
         .setTitle('Random Quote')
         .setDescription(`"${randomQuote.text}"`)
         .setFooter({ text: `— ${randomQuote.author} | #${randomQuote.id}` })
-        .setColor(0x5865F2);
+        .setColor(0x5865f2);
 
       if (message.channel && typeof message.channel.send === 'function') {
         await message.channel.send({ embeds: [embed] });

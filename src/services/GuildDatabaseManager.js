@@ -130,7 +130,9 @@ class GuildDatabaseManager {
   async _initializeSchema(db, _guildId) {
     try {
       // Create quotes table
-      await this._runAsync(db, `
+      await this._runAsync(
+        db,
+        `
         CREATE TABLE IF NOT EXISTS quotes (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           text TEXT NOT NULL,
@@ -142,7 +144,8 @@ class GuildDatabaseManager {
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
           updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-      `);
+      `
+      );
 
       // Create indexes
       await this._runAsync(db, 'CREATE INDEX IF NOT EXISTS idx_quotes_addedAt ON quotes(addedAt)');
@@ -150,17 +153,22 @@ class GuildDatabaseManager {
       await this._runAsync(db, 'CREATE INDEX IF NOT EXISTS idx_quotes_author ON quotes(author)');
 
       // Create tags table
-      await this._runAsync(db, `
+      await this._runAsync(
+        db,
+        `
         CREATE TABLE IF NOT EXISTS tags (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT NOT NULL UNIQUE,
           description TEXT,
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-      `);
+      `
+      );
 
       // Create quote_tags junction table
-      await this._runAsync(db, `
+      await this._runAsync(
+        db,
+        `
         CREATE TABLE IF NOT EXISTS quote_tags (
           quoteId INTEGER NOT NULL,
           tagId INTEGER NOT NULL,
@@ -168,10 +176,13 @@ class GuildDatabaseManager {
           FOREIGN KEY (quoteId) REFERENCES quotes(id) ON DELETE CASCADE,
           FOREIGN KEY (tagId) REFERENCES tags(id) ON DELETE CASCADE
         )
-      `);
+      `
+      );
 
       // Create ratings table
-      await this._runAsync(db, `
+      await this._runAsync(
+        db,
+        `
         CREATE TABLE IF NOT EXISTS quote_ratings (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           quoteId INTEGER NOT NULL,
@@ -181,10 +192,13 @@ class GuildDatabaseManager {
           UNIQUE(quoteId, userId),
           FOREIGN KEY (quoteId) REFERENCES quotes(id) ON DELETE CASCADE
         )
-      `);
+      `
+      );
 
       // Create reminders table (Phase 1: Guild Isolation)
-      await this._runAsync(db, `
+      await this._runAsync(
+        db,
+        `
         CREATE TABLE IF NOT EXISTS reminders (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           subject TEXT NOT NULL,
@@ -199,10 +213,13 @@ class GuildDatabaseManager {
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
           updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-      `);
+      `
+      );
 
       // Create reminder_assignments table (Phase 1: Guild Isolation)
-      await this._runAsync(db, `
+      await this._runAsync(
+        db,
+        `
         CREATE TABLE IF NOT EXISTS reminder_assignments (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           reminderId INTEGER NOT NULL,
@@ -212,10 +229,13 @@ class GuildDatabaseManager {
           FOREIGN KEY (reminderId) REFERENCES reminders(id) ON DELETE CASCADE,
           UNIQUE(reminderId, assigneeType, assigneeId)
         )
-      `);
+      `
+      );
 
       // Create reminder_notifications table (Phase 1: Guild Isolation)
-      await this._runAsync(db, `
+      await this._runAsync(
+        db,
+        `
         CREATE TABLE IF NOT EXISTS reminder_notifications (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           reminderId INTEGER NOT NULL,
@@ -226,17 +246,29 @@ class GuildDatabaseManager {
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
           FOREIGN KEY (reminderId) REFERENCES reminders(id) ON DELETE CASCADE
         )
-      `);
+      `
+      );
 
       // Create performance indexes for reminders (Phase 1: Guild Isolation - 5 indexes)
       await this._runAsync(db, 'CREATE INDEX IF NOT EXISTS idx_reminders_status ON reminders(status)');
       await this._runAsync(db, 'CREATE INDEX IF NOT EXISTS idx_reminders_when ON reminders(when_datetime)');
-      await this._runAsync(db, 'CREATE INDEX IF NOT EXISTS idx_reminder_assignments_reminderId ON reminder_assignments(reminderId)');
-      await this._runAsync(db, 'CREATE INDEX IF NOT EXISTS idx_reminder_notifications_reminderId ON reminder_notifications(reminderId)');
-      await this._runAsync(db, 'CREATE INDEX IF NOT EXISTS idx_reminder_notifications_assigneeId ON reminder_notifications(assigneeId)');
+      await this._runAsync(
+        db,
+        'CREATE INDEX IF NOT EXISTS idx_reminder_assignments_reminderId ON reminder_assignments(reminderId)'
+      );
+      await this._runAsync(
+        db,
+        'CREATE INDEX IF NOT EXISTS idx_reminder_notifications_reminderId ON reminder_notifications(reminderId)'
+      );
+      await this._runAsync(
+        db,
+        'CREATE INDEX IF NOT EXISTS idx_reminder_notifications_assigneeId ON reminder_notifications(assigneeId)'
+      );
 
       // Create user_communications table
-      await this._runAsync(db, `
+      await this._runAsync(
+        db,
+        `
         CREATE TABLE IF NOT EXISTS user_communications (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           userId TEXT NOT NULL,
@@ -246,20 +278,23 @@ class GuildDatabaseManager {
           updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
           UNIQUE(userId)
         )
-      `);
+      `
+      );
 
       // Create schema_versions table for tracking migrations
-      await this._runAsync(db, `
+      await this._runAsync(
+        db,
+        `
         CREATE TABLE IF NOT EXISTS schema_versions (
           version INTEGER PRIMARY KEY,
           description TEXT,
           executedAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-      `);
+      `
+      );
 
       // Checkpoint to flush to disk
       await this._runAsync(db, 'PRAGMA wal_checkpoint(TRUNCATE)');
-
     } catch (error) {
       logError('GuildDatabaseManager._initializeSchema', error, ERROR_LEVELS.CRITICAL);
       throw error;
@@ -326,9 +361,7 @@ class GuildDatabaseManager {
    * @returns {Promise<void>}
    */
   async closeAllDatabases() {
-    const promises = Array.from(this.connections.keys()).map((guildId) =>
-      this.closeGuildDatabase(guildId)
-    );
+    const promises = Array.from(this.connections.keys()).map((guildId) => this.closeGuildDatabase(guildId));
     await Promise.all(promises);
   }
 

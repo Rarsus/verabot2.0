@@ -117,12 +117,8 @@ export default function WebSocketConfig() {
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex-grow">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {service.name}
-                </h3>
-                <p className="text-sm text-gray-600 mt-1">
-                  {service.description || 'External WebSocket service'}
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900">{service.name}</h3>
+                <p className="text-sm text-gray-600 mt-1">{service.description || 'External WebSocket service'}</p>
               </div>
 
               <div className="flex items-center gap-2">
@@ -140,9 +136,7 @@ export default function WebSocketConfig() {
             {editingService === service.name ? (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Webhook URL
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Webhook URL</label>
                   <input
                     type="url"
                     value={formData.webhookUrl}
@@ -170,9 +164,7 @@ export default function WebSocketConfig() {
                       }
                       className="w-4 h-4 rounded border-gray-300"
                     />
-                    <span className="text-sm font-medium text-gray-700">
-                      Enabled
-                    </span>
+                    <span className="text-sm font-medium text-gray-700">Enabled</span>
                   </label>
                 </div>
 
@@ -195,20 +187,14 @@ export default function WebSocketConfig() {
               <div className="space-y-3">
                 <div className="text-sm">
                   <span className="text-gray-600">Status: </span>
-                  <span
-                    className={`font-medium ${
-                      service.enabled ? 'text-green-600' : 'text-gray-500'
-                    }`}
-                  >
+                  <span className={`font-medium ${service.enabled ? 'text-green-600' : 'text-gray-500'}`}>
                     {service.enabled ? 'Enabled' : 'Disabled'}
                   </span>
                 </div>
 
                 <div className="text-sm">
                   <span className="text-gray-600">Allowed Actions: </span>
-                  <span className="font-medium">
-                    {service.allowedActions?.length || 0} actions
-                  </span>
+                  <span className="font-medium">{service.allowedActions?.length || 0} actions</span>
                 </div>
 
                 <div className="flex gap-2">
@@ -225,9 +211,7 @@ export default function WebSocketConfig() {
                     Test Connection
                   </button>
                   <button
-                    onClick={() =>
-                      handleToggle(service.name, service.enabled)
-                    }
+                    onClick={() => handleToggle(service.name, service.enabled)}
                     className={`px-4 py-2 border rounded-lg transition font-medium text-sm ${
                       service.enabled
                         ? 'text-orange-600 border-orange-600 hover:bg-orange-50'
@@ -246,9 +230,7 @@ export default function WebSocketConfig() {
       {services.length === 0 && (
         <div className="text-center py-12">
           <p className="text-gray-500">No WebSocket services configured.</p>
-          <p className="text-sm text-gray-400 mt-1">
-            Add services in src/config/external-actions.js
-          </p>
+          <p className="text-sm text-gray-400 mt-1">Add services in src/config/external-actions.js</p>
         </div>
       )}
     </div>

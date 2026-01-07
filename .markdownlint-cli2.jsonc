@@ -10,7 +10,7 @@
   "table-columns": false,
   "no-trailing-spaces": true,
   "no-multiple-blanks": {
-    "maximum": 1
+    "maximum": 1,
   },
   "no-hard-tabs": true,
   "no-bare-urls": true,
@@ -18,5 +18,5 @@
   "list-item-indent": "consistent",
   "list-marker-space": true,
   "proper-names": false,
-  "commands-show-output": false
+  "commands-show-output": false,
 }

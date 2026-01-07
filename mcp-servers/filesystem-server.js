@@ -38,7 +38,7 @@ class FileSystemMCPServer {
         path: filepath,
         content,
         size: content.length,
-        lines: content.split('\n').length
+        lines: content.split('\n').length,
       };
     } catch (error) {
       throw new Error(`Failed to read ${filepath}: ${error.message}`);
@@ -53,14 +53,16 @@ class FileSystemMCPServer {
       const fullPath = this.validatePath(dirpath);
       const files = await fs.readdir(fullPath, { withFileTypes: true });
 
-      return files.map(f => ({
-        name: f.name,
-        isDirectory: f.isDirectory(),
-        path: path.join(dirpath, f.name)
-      })).sort((a, b) => {
-        if (a.isDirectory !== b.isDirectory) return b.isDirectory - a.isDirectory;
-        return a.name.localeCompare(b.name);
-      });
+      return files
+        .map((f) => ({
+          name: f.name,
+          isDirectory: f.isDirectory(),
+          path: path.join(dirpath, f.name),
+        }))
+        .sort((a, b) => {
+          if (a.isDirectory !== b.isDirectory) return b.isDirectory - a.isDirectory;
+          return a.name.localeCompare(b.name);
+        });
     } catch (error) {
       throw new Error(`Failed to list ${dirpath}: ${error.message}`);
     }
@@ -72,7 +74,7 @@ class FileSystemMCPServer {
   static async getProjectStructure() {
     const structure = {
       root: ROOT,
-      directories: {}
+      directories: {},
     };
 
     const dirs = ['src/commands', 'src/services', 'tests/unit', 'docs', 'mcp-servers'];
@@ -135,7 +137,7 @@ class FileSystemMCPServer {
         size: stats.size,
         created: stats.birthtime,
         modified: stats.mtime,
-        isSymlink: stats.isSymbolicLink()
+        isSymlink: stats.isSymbolicLink(),
       };
     } catch (error) {
       throw new Error(`Failed to get metadata for ${filepath}: ${error.message}`);
@@ -156,7 +158,7 @@ class FileSystemMCPServer {
           results.push({
             lineNumber: index + 1,
             line: line.trim(),
-            column: line.indexOf(searchText) + 1
+            column: line.indexOf(searchText) + 1,
           });
         }
       });
@@ -165,7 +167,7 @@ class FileSystemMCPServer {
         path: filepath,
         searchText,
         results,
-        matchCount: results.length
+        matchCount: results.length,
       };
     } catch (error) {
       throw new Error(`Failed to search ${filepath}: ${error.message}`);

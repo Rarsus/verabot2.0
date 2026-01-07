@@ -44,9 +44,9 @@ describe('Phase 5A: GuildAwareReminderService', () => {
           'updateReminder',
           'deleteReminder',
           'getAllReminders',
-          'deleteGuild'
+          'deleteGuild',
         ];
-        expectedMethods.forEach(method => {
+        expectedMethods.forEach((method) => {
           if (GuildAwareReminderService[method]) {
             assert(typeof GuildAwareReminderService[method] === 'function');
           }
@@ -73,7 +73,7 @@ describe('Phase 5A: GuildAwareReminderService', () => {
             guildId: 'guild-123',
             userId: 'user-456',
             text: 'Guild-specific reminder',
-            dueDate: new Date()
+            dueDate: new Date(),
           };
           const result = await Promise.resolve(GuildAwareReminderService.createReminder(reminder));
           assert(true);
@@ -142,9 +142,7 @@ describe('Phase 5A: GuildAwareReminderService', () => {
     test('should get reminders for specific user in guild', async () => {
       try {
         if (GuildAwareReminderService && GuildAwareReminderService.getAllReminders) {
-          const result = await Promise.resolve(
-            GuildAwareReminderService.getAllReminders('guild-123', 'user-456')
-          );
+          const result = await Promise.resolve(GuildAwareReminderService.getAllReminders('guild-123', 'user-456'));
           assert(Array.isArray(result) || result === undefined || result === null);
         } else {
           assert(true);
@@ -161,12 +159,14 @@ describe('Phase 5A: GuildAwareReminderService', () => {
         if (GuildAwareReminderService && GuildAwareReminderService.getReminder) {
           // Create in guild-123
           if (GuildAwareReminderService.createReminder) {
-            await Promise.resolve(GuildAwareReminderService.createReminder({
-              guildId: 'guild-123',
-              userId: 'user-456',
-              text: 'Private reminder',
-              dueDate: new Date()
-            }));
+            await Promise.resolve(
+              GuildAwareReminderService.createReminder({
+                guildId: 'guild-123',
+                userId: 'user-456',
+                text: 'Private reminder',
+                dueDate: new Date(),
+              })
+            );
           }
 
           // Try to retrieve from guild-789
@@ -258,12 +258,14 @@ describe('Phase 5A: GuildAwareReminderService', () => {
       try {
         if (GuildAwareReminderService) {
           if (GuildAwareReminderService.createReminder) {
-            await Promise.resolve(GuildAwareReminderService.createReminder({
-              guildId: 'cleanup-test-guild',
-              userId: 'user-456',
-              text: 'To be cleaned',
-              dueDate: new Date()
-            }));
+            await Promise.resolve(
+              GuildAwareReminderService.createReminder({
+                guildId: 'cleanup-test-guild',
+                userId: 'user-456',
+                text: 'To be cleaned',
+                dueDate: new Date(),
+              })
+            );
           }
 
           if (GuildAwareReminderService.deleteGuild) {
@@ -292,7 +294,7 @@ describe('Phase 5A: GuildAwareReminderService', () => {
               guildId: 'guild-123',
               userId: `user-${i}`,
               text: `Bulk reminder ${i}`,
-              dueDate: new Date()
+              dueDate: new Date(),
             });
           }
 
@@ -328,12 +330,14 @@ describe('Phase 5A: GuildAwareReminderService', () => {
 
           for (const guildId of guildIds) {
             promises.push(
-              Promise.resolve(GuildAwareReminderService.createReminder({
-                guildId: guildId,
-                userId: 'user-123',
-                text: 'Concurrent guild reminder',
-                dueDate: new Date()
-              }))
+              Promise.resolve(
+                GuildAwareReminderService.createReminder({
+                  guildId: guildId,
+                  userId: 'user-123',
+                  text: 'Concurrent guild reminder',
+                  dueDate: new Date(),
+                })
+              )
             );
           }
 
@@ -380,7 +384,7 @@ describe('Phase 5A: GuildAwareReminderService', () => {
             userId: 'user-456',
             text: 'Timezone test',
             dueDate: new Date(),
-            timezone: 'America/New_York'
+            timezone: 'America/New_York',
           };
           const result = await Promise.resolve(GuildAwareReminderService.createReminder(reminder));
           assert(true);
@@ -400,7 +404,7 @@ describe('Phase 5A: GuildAwareReminderService', () => {
           const reminder = {
             userId: 'user-456',
             text: 'No guild',
-            dueDate: new Date()
+            dueDate: new Date(),
           };
           const result = await Promise.resolve(GuildAwareReminderService.createReminder(reminder));
           assert(true);
@@ -445,7 +449,7 @@ describe('Phase 5A: GuildAwareReminderService', () => {
             guildId: null,
             userId: 'user-456',
             text: 'Test',
-            dueDate: new Date()
+            dueDate: new Date(),
           };
           const result = await Promise.resolve(GuildAwareReminderService.createReminder(reminder));
           assert(true);
@@ -482,12 +486,14 @@ describe('Phase 5A: GuildAwareReminderService', () => {
           const start = Date.now();
           for (let g = 0; g < 10; g++) {
             for (let u = 0; u < 10; u++) {
-              await Promise.resolve(GuildAwareReminderService.createReminder({
-                guildId: `guild-${g}`,
-                userId: `user-${u}`,
-                text: `Reminder ${g}-${u}`,
-                dueDate: new Date()
-              }));
+              await Promise.resolve(
+                GuildAwareReminderService.createReminder({
+                  guildId: `guild-${g}`,
+                  userId: `user-${u}`,
+                  text: `Reminder ${g}-${u}`,
+                  dueDate: new Date(),
+                })
+              );
             }
           }
           const duration = Date.now() - start;
@@ -540,12 +546,14 @@ describe('Phase 5A: GuildAwareReminderService', () => {
           const guildId = 'test-cleanup-guild-' + Date.now();
 
           if (GuildAwareReminderService.createReminder) {
-            await Promise.resolve(GuildAwareReminderService.createReminder({
-              guildId: guildId,
-              userId: 'user-123',
-              text: 'Will be cleaned',
-              dueDate: new Date()
-            }));
+            await Promise.resolve(
+              GuildAwareReminderService.createReminder({
+                guildId: guildId,
+                userId: 'user-123',
+                text: 'Will be cleaned',
+                dueDate: new Date(),
+              })
+            );
           }
 
           await Promise.resolve(GuildAwareReminderService.deleteGuild(guildId));

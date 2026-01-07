@@ -16,7 +16,7 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
     mockUser = {
       id: 'user-123',
       username: 'TestUser',
-      send: jest.fn().mockResolvedValue({ id: 'msg-123' })
+      send: jest.fn().mockResolvedValue({ id: 'msg-123' }),
     };
 
     mockGuild = {
@@ -24,8 +24,8 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
       name: 'Test Guild',
       owner: { id: 'owner-123' },
       members: {
-        fetch: jest.fn().mockResolvedValue({ user: mockUser })
-      }
+        fetch: jest.fn().mockResolvedValue({ user: mockUser }),
+      },
     };
 
     mockInteraction = {
@@ -36,7 +36,7 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
       reply: jest.fn().mockResolvedValue({ id: 'reply-123' }),
       deferReply: jest.fn().mockResolvedValue({}),
       editReply: jest.fn().mockResolvedValue({ id: 'reply-123' }),
-      ephemeral: true
+      ephemeral: true,
     };
   });
 
@@ -56,12 +56,10 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
       });
 
       it('should handle already opted-in user', async () => {
-        const preferences = [
-          { userId: 'user-123', guildId: 'guild-456', optedIn: true }
-        ];
+        const preferences = [{ userId: 'user-123', guildId: 'guild-456', optedIn: true }];
 
         const optIn = async (userId, guildId) => {
-          const existing = preferences.find(p => p.userId === userId && p.guildId === guildId);
+          const existing = preferences.find((p) => p.userId === userId && p.guildId === guildId);
           if (existing && existing.optedIn) {
             return { already: true, message: 'Already opted in' };
           }
@@ -76,7 +74,7 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
         const preferences = [];
 
         const optIn = async (userId, guildId) => {
-          let pref = preferences.find(p => p.userId === userId && p.guildId === guildId);
+          let pref = preferences.find((p) => p.userId === userId && p.guildId === guildId);
           if (!pref) {
             pref = { userId, guildId, optedIn: true };
             preferences.push(pref);
@@ -95,7 +93,7 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
         const optIn = async (userId, guildId) => {
           return {
             optedIn: true,
-            message: `You've been opted in to communications in guild ${guildId}`
+            message: `You've been opted in to communications in guild ${guildId}`,
           };
         };
 
@@ -125,12 +123,10 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
       });
 
       it('should handle already opted-out user', async () => {
-        const preferences = [
-          { userId: 'user-123', guildId: 'guild-456', optedIn: false }
-        ];
+        const preferences = [{ userId: 'user-123', guildId: 'guild-456', optedIn: false }];
 
         const optOut = async (userId, guildId) => {
-          const existing = preferences.find(p => p.userId === userId && p.guildId === guildId);
+          const existing = preferences.find((p) => p.userId === userId && p.guildId === guildId);
           if (existing && !existing.optedIn) {
             return { already: true, message: 'Already opted out' };
           }
@@ -142,12 +138,10 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
       });
 
       it('should mark user as opted out in preferences', async () => {
-        const preferences = [
-          { userId: 'user-123', guildId: 'guild-456', optedIn: true }
-        ];
+        const preferences = [{ userId: 'user-123', guildId: 'guild-456', optedIn: true }];
 
         const optOut = async (userId, guildId) => {
-          const pref = preferences.find(p => p.userId === userId && p.guildId === guildId);
+          const pref = preferences.find((p) => p.userId === userId && p.guildId === guildId);
           if (pref) {
             pref.optedIn = false;
             pref.optedOutAt = new Date();
@@ -164,7 +158,7 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
         const optOut = async (userId, guildId) => {
           return {
             optedIn: false,
-            message: `You've been opted out of communications in guild ${guildId}`
+            message: `You've been opted out of communications in guild ${guildId}`,
           };
         };
 
@@ -175,16 +169,14 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
 
     describe('comm-status command', () => {
       it('should return opt-in status', async () => {
-        const preferences = [
-          { userId: 'user-123', guildId: 'guild-456', optedIn: true }
-        ];
+        const preferences = [{ userId: 'user-123', guildId: 'guild-456', optedIn: true }];
 
         const getStatus = async (userId, guildId) => {
-          const pref = preferences.find(p => p.userId === userId && p.guildId === guildId);
+          const pref = preferences.find((p) => p.userId === userId && p.guildId === guildId);
           return {
             userId,
             guildId,
-            status: pref ? (pref.optedIn ? 'opted-in' : 'opted-out') : 'no-preference'
+            status: pref ? (pref.optedIn ? 'opted-in' : 'opted-out') : 'no-preference',
           };
         };
 
@@ -198,7 +190,7 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
             userId,
             guildId,
             status: 'no-preference',
-            message: 'No preference set - you can opt in or out'
+            message: 'No preference set - you can opt in or out',
           };
         };
 
@@ -208,14 +200,14 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
 
       it('should show last update timestamp', async () => {
         const preferences = [
-          { userId: 'user-123', guildId: 'guild-456', optedIn: true, lastUpdate: new Date('2024-01-01') }
+          { userId: 'user-123', guildId: 'guild-456', optedIn: true, lastUpdate: new Date('2024-01-01') },
         ];
 
         const getStatus = async (userId, guildId) => {
-          const pref = preferences.find(p => p.userId === userId && p.guildId === guildId);
+          const pref = preferences.find((p) => p.userId === userId && p.guildId === guildId);
           return {
             status: pref?.optedIn ? 'opted-in' : 'opted-out',
-            lastUpdate: pref?.lastUpdate
+            lastUpdate: pref?.lastUpdate,
           };
         };
 
@@ -226,11 +218,11 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
       it('should list all guild preferences for user', async () => {
         const preferences = [
           { userId: 'user-123', guildId: 'guild-456', optedIn: true },
-          { userId: 'user-123', guildId: 'guild-789', optedIn: false }
+          { userId: 'user-123', guildId: 'guild-789', optedIn: false },
         ];
 
         const getAllStatuses = async (userId) => {
-          return preferences.filter(p => p.userId === userId);
+          return preferences.filter((p) => p.userId === userId);
         };
 
         const statuses = await getAllStatuses('user-123');
@@ -253,7 +245,7 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
           return {
             requestId: 'req-123',
             status: 'sent-to-admins',
-            message: 'Admins have been notified'
+            message: 'Admins have been notified',
           };
         };
 
@@ -262,12 +254,10 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
       });
 
       it('should track request approval', async () => {
-        const requests = [
-          { id: 'req-123', userId: 'user-123', status: 'pending', approvedBy: null }
-        ];
+        const requests = [{ id: 'req-123', userId: 'user-123', status: 'pending', approvedBy: null }];
 
         const approveRequest = async (requestId, approverUserId) => {
-          const req = requests.find(r => r.id === requestId);
+          const req = requests.find((r) => r.id === requestId);
           if (req) {
             req.status = 'approved';
             req.approvedBy = approverUserId;
@@ -281,12 +271,10 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
       });
 
       it('should reject opt-in requests', async () => {
-        const requests = [
-          { id: 'req-123', userId: 'user-123', status: 'pending' }
-        ];
+        const requests = [{ id: 'req-123', userId: 'user-123', status: 'pending' }];
 
         const rejectRequest = async (requestId, reason) => {
-          const req = requests.find(r => r.id === requestId);
+          const req = requests.find((r) => r.id === requestId);
           if (req) {
             req.status = 'rejected';
             req.rejectionReason = reason;
@@ -349,11 +337,11 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
         const admins = [
           { userId: 'owner-123', guildId: 'guild-456', level: 3 }, // Owner
           { userId: 'admin-456', guildId: 'guild-456', level: 2 }, // Admin
-          { userId: 'mod-789', guildId: 'guild-456', level: 1 }   // Moderator
+          { userId: 'mod-789', guildId: 'guild-456', level: 1 }, // Moderator
         ];
 
         const getAdminLevel = async (userId, guildId) => {
-          const admin = admins.find(a => a.userId === userId && a.guildId === guildId);
+          const admin = admins.find((a) => a.userId === userId && a.guildId === guildId);
           return admin ? admin.level : 0;
         };
 
@@ -364,12 +352,10 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
 
     describe('Guild configuration', () => {
       it('should update guild prefix', async () => {
-        const configs = [
-          { guildId: 'guild-456', prefix: '!' }
-        ];
+        const configs = [{ guildId: 'guild-456', prefix: '!' }];
 
         const updatePrefix = async (guildId, prefix) => {
-          const config = configs.find(c => c.guildId === guildId);
+          const config = configs.find((c) => c.guildId === guildId);
           if (config) {
             config.prefix = prefix;
           }
@@ -381,12 +367,10 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
       });
 
       it('should get guild configuration', async () => {
-        const configs = [
-          { guildId: 'guild-456', prefix: '!', language: 'en', timezone: 'UTC' }
-        ];
+        const configs = [{ guildId: 'guild-456', prefix: '!', language: 'en', timezone: 'UTC' }];
 
         const getConfig = async (guildId) => {
-          return configs.find(c => c.guildId === guildId);
+          return configs.find((c) => c.guildId === guildId);
         };
 
         const config = await getConfig('guild-456');
@@ -394,12 +378,10 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
       });
 
       it('should set guild language', async () => {
-        const configs = [
-          { guildId: 'guild-456', language: 'en' }
-        ];
+        const configs = [{ guildId: 'guild-456', language: 'en' }];
 
         const setLanguage = async (guildId, language) => {
-          const config = configs.find(c => c.guildId === guildId);
+          const config = configs.find((c) => c.guildId === guildId);
           if (config) config.language = language;
           return { guildId, language };
         };
@@ -454,12 +436,10 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
       });
 
       it('should unban user from guild', async () => {
-        const bans = [
-          { guildId: 'guild-456', userId: 'user-123', reason: 'Spam' }
-        ];
+        const bans = [{ guildId: 'guild-456', userId: 'user-123', reason: 'Spam' }];
 
         const unbanUser = async (guildId, userId) => {
-          const index = bans.findIndex(b => b.guildId === guildId && b.userId === userId);
+          const index = bans.findIndex((b) => b.guildId === guildId && b.userId === userId);
           if (index !== -1) bans.splice(index, 1);
           return { success: true, userId };
         };
@@ -471,11 +451,11 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
       it('should list banned users', async () => {
         const bans = [
           { guildId: 'guild-456', userId: 'user-123', reason: 'Spam' },
-          { guildId: 'guild-456', userId: 'user-456', reason: 'Harassment' }
+          { guildId: 'guild-456', userId: 'user-456', reason: 'Harassment' },
         ];
 
         const getBans = (guildId) => {
-          return bans.filter(b => b.guildId === guildId);
+          return bans.filter((b) => b.guildId === guildId);
         };
 
         const guildBans = getBans('guild-456');
@@ -487,7 +467,7 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
 
         const warnUser = async (guildId, userId, reason) => {
           warnings.push({ guildId, userId, reason, warnedAt: new Date() });
-          return { userId, warningCount: warnings.filter(w => w.userId === userId).length };
+          return { userId, warningCount: warnings.filter((w) => w.userId === userId).length };
         };
 
         const w1 = await warnUser('guild-456', 'user-123', 'Spam');
@@ -525,12 +505,7 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
       });
 
       it('should vary greeting messages', async () => {
-        const greetings = [
-          'Hello, {user}!',
-          'Hey, {user}!',
-          'Hi, {user}!',
-          'Greetings, {user}!'
-        ];
+        const greetings = ['Hello, {user}!', 'Hey, {user}!', 'Hi, {user}!', 'Greetings, {user}!'];
 
         const greet = (username) => {
           const greeting = greetings[Math.floor(Math.random() * greetings.length)];
@@ -568,11 +543,11 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
         const commands = [
           { name: 'hi', description: 'Greeting' },
           { name: 'ping', description: 'Ping/pong' },
-          { name: 'help', description: 'Show help' }
+          { name: 'help', description: 'Show help' },
         ];
 
         const getHelp = () => {
-          return commands.map(c => `**${c.name}** - ${c.description}`).join('\n');
+          return commands.map((c) => `**${c.name}** - ${c.description}`).join('\n');
         };
 
         const help = getHelp();
@@ -583,7 +558,7 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
       it('should show help for specific command', async () => {
         const commands = {
           ping: { description: 'Responds with pong', usage: '/ping' },
-          hi: { description: 'Says hello', usage: '/hi' }
+          hi: { description: 'Says hello', usage: '/hi' },
         };
 
         const getCommandHelp = (cmd) => {
@@ -599,8 +574,8 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
         const help = {
           'quote-search': {
             usage: '/quote-search [text]',
-            examples: ['/quote-search love', '/quote-search author:shakespeare']
-          }
+            examples: ['/quote-search love', '/quote-search author:shakespeare'],
+          },
         };
 
         const getExamples = (cmd) => {
@@ -618,7 +593,7 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
           // Mock HuggingFace API
           const poems = {
             love: 'Love is a gentle breeze\nThat touches the soul\nAnd brings us peace',
-            nature: "Nature's beauty surrounds\nGreen fields and blue skies\nHarmony"
+            nature: "Nature's beauty surrounds\nGreen fields and blue skies\nHarmony",
           };
           return poems[prompt] || 'A poem of wonder\nUnfolds in the mind\nWith endless possibility';
         };
@@ -644,7 +619,7 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
           const styles = {
             haiku: '5-7-5 syllable structure',
             modern: 'free verse style',
-            sonnet: '14 lines with rhyme scheme'
+            sonnet: '14 lines with rhyme scheme',
           };
           return { prompt, style, description: styles[style] };
         };
@@ -695,12 +670,12 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
     it('should respect user preferences in admin notifications', async () => {
       const prefs = [
         { userId: 'user-123', optedIn: false },
-        { userId: 'user-456', optedIn: true }
+        { userId: 'user-456', optedIn: true },
       ];
 
       const notifyUsers = async (userIds, message) => {
-        const notified = userIds.filter(id => {
-          const pref = prefs.find(p => p.userId === id);
+        const notified = userIds.filter((id) => {
+          const pref = prefs.find((p) => p.userId === id);
           return pref?.optedIn !== false;
         });
         return { notified, count: notified.length };
@@ -727,11 +702,11 @@ describe('Phase 8B: User Preference & Admin Commands', () => {
       const users = [];
 
       const bulkBanUsers = async (guildId, userIds, reason) => {
-        const banned = userIds.map(userId => ({
+        const banned = userIds.map((userId) => ({
           guildId,
           userId,
           reason,
-          bannedAt: new Date()
+          bannedAt: new Date(),
         }));
         users.push(...banned);
         return { success: true, count: banned.length };

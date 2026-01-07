@@ -50,9 +50,7 @@ assert(params4.length === 1 && params4[0] === 1, 'Where parameters set');
 // Test 5: Multiple where clauses
 console.log('\n=== Test 5: Multiple Where Clauses ===');
 const qb5 = new QueryBuilder();
-qb5.from('users')
-  .where('age > ?', 18)
-  .where('status = ?', 'active');
+qb5.from('users').where('age > ?', 18).where('status = ?', 'active');
 const sql5 = qb5.build();
 const params5 = qb5.getParams();
 assert(sql5.includes('WHERE age > ? AND status = ?'), 'Multiple where clauses combined with AND');
@@ -73,7 +71,8 @@ assert(sql7 === 'SELECT * FROM users LIMIT 10', 'Query with limit');
 // Test 8: Complex query
 console.log('\n=== Test 8: Complex Query ===');
 const qb8 = new QueryBuilder();
-qb8.select(['id', 'name', 'email'])
+qb8
+  .select(['id', 'name', 'email'])
   .from('users')
   .where('age > ?', 18)
   .where('status = ?', 'active')
@@ -156,7 +155,7 @@ assert(sql15 === 'SELECT * FROM users', 'Explicit select * works');
 // Print results asynchronously to avoid async leak
 (async () => {
   // Ensure all pending operations are complete
-  await new Promise(resolve => setImmediate(resolve));
+  await new Promise((resolve) => setImmediate(resolve));
 
   console.log('\n==================================================');
   console.log(`Results: ${passedTests} passed, ${failedTests} failed`);
@@ -166,6 +165,6 @@ assert(sql15 === 'SELECT * FROM users', 'Explicit select * works');
   } else {
     console.log(`❌ ${failedTests} test(s) failed`);
   }
-})().catch(err => {
+})().catch((err) => {
   console.error('Error in test summary:', err);
 });

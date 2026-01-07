@@ -18,16 +18,13 @@ class MigrationManager {
    */
   async getVersion() {
     return new Promise((resolve) => {
-      this.db.get(
-        'SELECT MAX(version) as version FROM schema_versions',
-        (err, row) => {
-          if (err) {
-            resolve(0); // No migrations table yet
-          } else {
-            resolve(row?.version || 0);
-          }
+      this.db.get('SELECT MAX(version) as version FROM schema_versions', (err, row) => {
+        if (err) {
+          resolve(0); // No migrations table yet
+        } else {
+          resolve(row?.version || 0);
         }
-      );
+      });
     });
   }
 
@@ -40,22 +37,25 @@ class MigrationManager {
       return [];
     }
 
-    const files = fs.readdirSync(this.migrationsPath)
-      .filter(f => f.endsWith('.js'))
+    const files = fs
+      .readdirSync(this.migrationsPath)
+      .filter((f) => f.endsWith('.js'))
       .sort();
 
-    return files.map(file => {
-      const match = file.match(/^(\d+)_(.+)\.js$/);
-      if (match) {
-        return {
-          version: parseInt(match[1], 10),
-          name: match[2],
-          file: file,
-          path: path.join(this.migrationsPath, file)
-        };
-      }
-      return null;
-    }).filter(Boolean);
+    return files
+      .map((file) => {
+        const match = file.match(/^(\d+)_(.+)\.js$/);
+        if (match) {
+          return {
+            version: parseInt(match[1], 10),
+            name: match[2],
+            file: file,
+            path: path.join(this.migrationsPath, file),
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
   }
 
   /**
@@ -69,9 +69,7 @@ class MigrationManager {
 
     let target = targetVersion;
     if (target === null) {
-      target = migrations.length > 0
-        ? Math.max(...migrations.map(m => m.version))
-        : 0;
+      target = migrations.length > 0 ? Math.max(...migrations.map((m) => m.version)) : 0;
     }
 
     if (currentVersion >= target) {
@@ -79,15 +77,12 @@ class MigrationManager {
       return 0;
     }
 
-    const toRun = migrations.filter(m =>
-      m.version > currentVersion && m.version <= target
-    );
+    const toRun = migrations.filter((m) => m.version > currentVersion && m.version <= target);
 
     let executed = 0;
     for (const migration of toRun) {
       try {
         console.log(`Running migration ${migration.version}: ${migration.name}...`);
-
 
         const migrationModule = require(migration.path);
 
@@ -125,14 +120,13 @@ class MigrationManager {
     }
 
     const migrations = await this.listMigrations();
-    const executed = migrations.filter(m => m.version <= currentVersion);
+    const executed = migrations.filter((m) => m.version <= currentVersion);
     const toRollback = executed.slice(-steps).reverse();
 
     let rolledBack = 0;
     for (const migration of toRollback) {
       try {
         console.log(`Rolling back migration ${migration.version}: ${migration.name}...`);
-
 
         const migrationModule = require(migration.path);
 
@@ -164,10 +158,10 @@ class MigrationManager {
     const currentVersion = await this.getVersion();
     const migrations = await this.listMigrations();
 
-    return migrations.map(m => ({
+    return migrations.map((m) => ({
       version: m.version,
       name: m.name,
-      status: m.version <= currentVersion ? 'applied' : 'pending'
+      status: m.version <= currentVersion ? 'applied' : 'pending',
     }));
   }
 
@@ -180,14 +174,10 @@ class MigrationManager {
    */
   _recordMigration(version, description) {
     return new Promise((resolve, reject) => {
-      this.db.run(
-        'INSERT INTO schema_versions (version, description) VALUES (?, ?)',
-        [version, description],
-        (err) => {
-          if (err) reject(err);
-          else resolve();
-        }
-      );
+      this.db.run('INSERT INTO schema_versions (version, description) VALUES (?, ?)', [version, description], (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
     });
   }
 
@@ -199,14 +189,10 @@ class MigrationManager {
    */
   _removeMigration(version) {
     return new Promise((resolve, reject) => {
-      this.db.run(
-        'DELETE FROM schema_versions WHERE version = ?',
-        [version],
-        (err) => {
-          if (err) reject(err);
-          else resolve();
-        }
-      );
+      this.db.run('DELETE FROM schema_versions WHERE version = ?', [version], (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
     });
   }
 }

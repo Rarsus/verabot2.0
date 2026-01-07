@@ -14,8 +14,8 @@ class ListQuotesCommand extends Command {
       options,
       permissions: {
         minTier: 1,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 

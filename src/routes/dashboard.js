@@ -17,7 +17,7 @@ router.post('/auth/verify-admin', async (req, res) => {
     if (!userId || !Array.isArray(guilds)) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid request body'
+        error: 'Invalid request body',
       });
     }
 
@@ -25,7 +25,7 @@ router.post('/auth/verify-admin', async (req, res) => {
     if (!client) {
       return res.status(503).json({
         success: false,
-        error: 'Bot client not available'
+        error: 'Bot client not available',
       });
     }
 
@@ -35,7 +35,7 @@ router.post('/auth/verify-admin', async (req, res) => {
       return res.json({
         success: true,
         isAdmin: true,
-        reason: 'bot_owner'
+        reason: 'bot_owner',
       });
     }
 
@@ -57,19 +57,19 @@ router.post('/auth/verify-admin', async (req, res) => {
     });
 
     const results = await Promise.all(guildChecks);
-    const adminGuilds = results.filter(g => g !== null);
+    const adminGuilds = results.filter((g) => g !== null);
     const isAdmin = adminGuilds.length > 0;
 
     res.json({
       success: true,
       isAdmin,
-      adminGuilds
+      adminGuilds,
     });
   } catch (error) {
     console.error('Admin verification error:', error.message);
     res.status(500).json({
       success: false,
-      error: 'Failed to verify admin access'
+      error: 'Failed to verify admin access',
     });
   }
 });
@@ -88,13 +88,13 @@ router.get('/bot/status', (req, res) => {
       uptime: client.uptime,
       latency: client.ws.ping,
       memory: process.memoryUsage().heapUsed,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   } catch (error) {
     console.error('Bot status error:', error.message);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -114,13 +114,13 @@ router.get('/bot/info', (req, res) => {
       avatar: client.user.displayAvatarURL(),
       version: require('../../package.json').version,
       prefix: process.env.PREFIX || '!',
-      ready: client.isReady()
+      ready: client.isReady(),
     });
   } catch (error) {
     console.error('Bot info error:', error.message);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -138,13 +138,13 @@ router.get('/bot/stats', (req, res) => {
       guildCount: client.guilds.cache.size,
       userCount: client.users.cache.size,
       channelCount: client.channels.cache.size,
-      commandCount: client.application?.commands?.cache?.size || 0
+      commandCount: client.application?.commands?.cache?.size || 0,
     });
   } catch (error) {
     console.error('Bot stats error:', error.message);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -158,23 +158,23 @@ router.get('/bot/guilds', (req, res) => {
     const client = req.app.locals.discordClient;
     const guilds = client.guilds.cache;
 
-    const guildList = Array.from(guilds.values()).map(guild => ({
+    const guildList = Array.from(guilds.values()).map((guild) => ({
       id: guild.id,
       name: guild.name,
       icon: guild.iconURL(),
       memberCount: guild.memberCount,
-      owner: guild.ownerId
+      owner: guild.ownerId,
     }));
 
     res.json({
       success: true,
-      guilds: guildList
+      guilds: guildList,
     });
   } catch (error) {
     console.error('Bot guilds error:', error.message);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });

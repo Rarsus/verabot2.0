@@ -33,8 +33,12 @@ describe('Phase 5B: ErrorHandler', () => {
     mockConsole = {
       logs: [],
       errors: [],
-      log: function(...args) { this.logs.push(args); },
-      error: function(...args) { this.errors.push(args); }
+      log: function (...args) {
+        this.logs.push(args);
+      },
+      error: function (...args) {
+        this.errors.push(args);
+      },
     };
   });
 

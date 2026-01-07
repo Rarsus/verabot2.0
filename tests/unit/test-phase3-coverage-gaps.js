@@ -135,7 +135,8 @@ async function runTests() {
     }
 
     try {
-      const processed = WebhookListenerService.processIncomingMessage &&
+      const processed =
+        WebhookListenerService.processIncomingMessage &&
         WebhookListenerService.processIncomingMessage({ channel: 'test' });
       assert(processed !== null, 'Test 13: Process incoming message');
     } catch (_e) {
@@ -143,14 +144,16 @@ async function runTests() {
     }
 
     try {
-      const invalid = WebhookListenerService.processIncomingMessage && WebhookListenerService.processIncomingMessage(null);
+      const invalid =
+        WebhookListenerService.processIncomingMessage && WebhookListenerService.processIncomingMessage(null);
       assert(invalid === undefined || invalid === null, 'Test 14: Handle null message');
     } catch (_e) {
       assert(true, 'Test 14: Handle null - error expected');
     }
 
     try {
-      const invalid = WebhookListenerService.processIncomingMessage && WebhookListenerService.processIncomingMessage({});
+      const invalid =
+        WebhookListenerService.processIncomingMessage && WebhookListenerService.processIncomingMessage({});
       assert(invalid === undefined || invalid === null, 'Test 15: Handle empty message');
     } catch (_e) {
       assert(true, 'Test 15: Handle empty - error expected');

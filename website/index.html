@@ -1,113 +1,121 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="VeraBot2.0 - Advanced Discord bot with organized commands, quote management system, and modern architecture">
-    <meta name="keywords" content="Discord Bot, VeraBot, Documentation, API, Commands">
-    <meta name="author" content="Rarsus">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="VeraBot2.0 - Advanced Discord bot with organized commands, quote management system, and modern architecture"
+    />
+    <meta name="keywords" content="Discord Bot, VeraBot, Documentation, API, Commands" />
+    <meta name="author" content="Rarsus" />
     <title>VeraBot2.0 Documentation</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
     <!-- Marked.js for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- Highlight.js for syntax highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Header -->
     <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <h1>🤖 VeraBot2.0</h1>
-                </div>
-                <nav class="nav">
-                    <button class="mobile-menu-toggle" aria-label="Toggle menu">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-                    <ul class="nav-list">
-                        <li><a href="#home" data-page="home" class="nav-link active">Home</a></li>
-                        <li><a href="#installation" data-page="installation" class="nav-link">Installation</a></li>
-                        <li><a href="#usage" data-page="usage" class="nav-link">Usage</a></li>
-                        <li><a href="#api" data-page="api" class="nav-link">API</a></li>
-                        <li><a href="#contributing" data-page="contributing" class="nav-link">Contributing</a></li>
-                        <li><a href="#faq" data-page="faq" class="nav-link">FAQ</a></li>
-                        <li><a href="https://github.com/Rarsus/verabot2.0" target="_blank" class="nav-link github-link">GitHub</a></li>
-                    </ul>
-                </nav>
-            </div>
+      <div class="container">
+        <div class="header-content">
+          <div class="logo">
+            <h1>🤖 VeraBot2.0</h1>
+          </div>
+          <nav class="nav">
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+            <ul class="nav-list">
+              <li><a href="#home" data-page="home" class="nav-link active">Home</a></li>
+              <li><a href="#installation" data-page="installation" class="nav-link">Installation</a></li>
+              <li><a href="#usage" data-page="usage" class="nav-link">Usage</a></li>
+              <li><a href="#api" data-page="api" class="nav-link">API</a></li>
+              <li><a href="#contributing" data-page="contributing" class="nav-link">Contributing</a></li>
+              <li><a href="#faq" data-page="faq" class="nav-link">FAQ</a></li>
+              <li>
+                <a href="https://github.com/Rarsus/verabot2.0" target="_blank" class="nav-link github-link">GitHub</a>
+              </li>
+            </ul>
+          </nav>
         </div>
+      </div>
     </header>
 
     <!-- Sidebar Navigation -->
     <aside class="sidebar" id="sidebar">
-        <div class="sidebar-content">
-            <h3>Quick Navigation</h3>
-            <div class="sidebar-nav" id="sidebarNav">
-                <!-- Dynamically populated -->
-            </div>
+      <div class="sidebar-content">
+        <h3>Quick Navigation</h3>
+        <div class="sidebar-nav" id="sidebarNav">
+          <!-- Dynamically populated -->
         </div>
+      </div>
     </aside>
 
     <!-- Main Content -->
     <main class="main-content">
-        <div class="container">
-            <div class="content-wrapper">
-                <!-- Breadcrumb -->
-                <nav class="breadcrumb" id="breadcrumb">
-                    <span>Home</span>
-                </nav>
+      <div class="container">
+        <div class="content-wrapper">
+          <!-- Breadcrumb -->
+          <nav class="breadcrumb" id="breadcrumb">
+            <span>Home</span>
+          </nav>
 
-                <!-- Content Area -->
-                <article class="content" id="content">
-                    <div class="loading">Loading...</div>
-                </article>
+          <!-- Content Area -->
+          <article class="content" id="content">
+            <div class="loading">Loading...</div>
+          </article>
 
-                <!-- Table of Contents -->
-                <aside class="toc" id="toc">
-                    <h3>On This Page</h3>
-                    <nav class="toc-nav" id="tocNav">
-                        <!-- Dynamically populated -->
-                    </nav>
-                </aside>
-            </div>
+          <!-- Table of Contents -->
+          <aside class="toc" id="toc">
+            <h3>On This Page</h3>
+            <nav class="toc-nav" id="tocNav">
+              <!-- Dynamically populated -->
+            </nav>
+          </aside>
         </div>
+      </div>
     </main>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>VeraBot2.0</h4>
-                    <p>Advanced Discord bot with modern architecture</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li><a href="https://github.com/Rarsus/verabot2.0" target="_blank">GitHub Repository</a></li>
-                        <li><a href="https://discord.js.org/" target="_blank">Discord.js Docs</a></li>
-                        <li><a href="#contributing">Contributing Guide</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Community</h4>
-                    <ul>
-                        <li><a href="#faq">FAQ</a></li>
-                        <li><a href="https://github.com/Rarsus/verabot2.0/issues" target="_blank">Issue Tracker</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 VeraBot2.0. Licensed under MIT License.</p>
-            </div>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h4>VeraBot2.0</h4>
+            <p>Advanced Discord bot with modern architecture</p>
+          </div>
+          <div class="footer-section">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="https://github.com/Rarsus/verabot2.0" target="_blank">GitHub Repository</a></li>
+              <li><a href="https://discord.js.org/" target="_blank">Discord.js Docs</a></li>
+              <li><a href="#contributing">Contributing Guide</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4>Community</h4>
+            <ul>
+              <li><a href="#faq">FAQ</a></li>
+              <li><a href="https://github.com/Rarsus/verabot2.0/issues" target="_blank">Issue Tracker</a></li>
+            </ul>
+          </div>
         </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 VeraBot2.0. Licensed under MIT License.</p>
+        </div>
+      </div>
     </footer>
 
     <!-- App Script -->
     <script src="app.js"></script>
-</body>
+  </body>
 </html>

@@ -95,7 +95,7 @@ for (const file of commandFiles) {
   const data = {
     name: cmd.name,
     description: cmd.description || 'No description',
-    options: Array.isArray(cmd.options) ? cmd.options : []
+    options: Array.isArray(cmd.options) ? cmd.options : [],
   };
   seenNames.add(cmd.name);
   commands.push(data);

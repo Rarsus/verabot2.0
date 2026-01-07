@@ -41,16 +41,14 @@ async function resolveChannel(input, guild) {
   // Try as channel name
   const cleanName = trimmedInput.replace(/^#/, '').toLowerCase();
   const foundChannel = guild.channels.cache.find(
-    channel => channel.name?.toLowerCase() === cleanName && channel.isTextBased?.()
+    (channel) => channel.name?.toLowerCase() === cleanName && channel.isTextBased?.()
   );
 
   if (foundChannel) return foundChannel;
 
   // Try fuzzy match (partial name)
   const fuzzyMatches = guild.channels.cache.filter(
-    channel =>
-      channel.name?.toLowerCase().includes(cleanName) &&
-      channel.isTextBased?.()
+    (channel) => channel.name?.toLowerCase().includes(cleanName) && channel.isTextBased?.()
   );
 
   if (fuzzyMatches.size === 1) {
@@ -94,18 +92,14 @@ async function resolveUser(input, client) {
   // Try as username from cached users
   const cleanName = trimmedInput.replace(/^@/, '').toLowerCase();
   const foundUser = client.users.cache.find(
-    user =>
-      user.username?.toLowerCase() === cleanName ||
-      user.globalName?.toLowerCase() === cleanName
+    (user) => user.username?.toLowerCase() === cleanName || user.globalName?.toLowerCase() === cleanName
   );
 
   if (foundUser) return foundUser;
 
   // Try fuzzy match in cache
   const fuzzyMatches = client.users.cache.filter(
-    user =>
-      user.username?.toLowerCase().includes(cleanName) ||
-      user.globalName?.toLowerCase().includes(cleanName)
+    (user) => user.username?.toLowerCase().includes(cleanName) || user.globalName?.toLowerCase().includes(cleanName)
   );
 
   if (fuzzyMatches.size === 1) {
@@ -148,16 +142,12 @@ async function resolveRole(input, guild) {
 
   // Try as role name
   const cleanName = trimmedInput.replace(/^@/, '').toLowerCase();
-  const foundRole = guild.roles.cache.find(
-    role => role.name?.toLowerCase() === cleanName
-  );
+  const foundRole = guild.roles.cache.find((role) => role.name?.toLowerCase() === cleanName);
 
   if (foundRole) return foundRole;
 
   // Try fuzzy match (partial name)
-  const fuzzyMatches = guild.roles.cache.filter(
-    role => role.name?.toLowerCase().includes(cleanName)
-  );
+  const fuzzyMatches = guild.roles.cache.filter((role) => role.name?.toLowerCase().includes(cleanName));
 
   if (fuzzyMatches.size === 1) {
     return fuzzyMatches.first();
@@ -175,7 +165,7 @@ async function resolveRole(input, guild) {
 async function resolveChannels(inputs, guild) {
   const results = {
     resolved: [],
-    failed: []
+    failed: [],
   };
 
   for (const input of inputs) {
@@ -199,7 +189,7 @@ async function resolveChannels(inputs, guild) {
 async function resolveUsers(inputs, client) {
   const results = {
     resolved: [],
-    failed: []
+    failed: [],
   };
 
   for (const input of inputs) {
@@ -223,7 +213,7 @@ async function resolveUsers(inputs, client) {
 async function resolveRoles(inputs, guild) {
   const results = {
     resolved: [],
-    failed: []
+    failed: [],
   };
 
   for (const input of inputs) {
@@ -244,5 +234,5 @@ module.exports = {
   resolveRole,
   resolveChannels,
   resolveUsers,
-  resolveRoles
+  resolveRoles,
 };

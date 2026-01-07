@@ -8,7 +8,7 @@ class BotService {
   constructor() {
     this.botApiUrl = process.env.BOT_API_URL || 'http://verabot2:3000';
     this.botApiToken = process.env.BOT_API_TOKEN;
-    
+
     // Create axios instance for bot API
     this.api = axios.create({
       baseURL: this.botApiUrl,
@@ -43,10 +43,12 @@ class BotService {
 
       // Check if user has admin role in any guild the bot is in
       // This would require bot API endpoint to verify
-      const response = await this.api.post('/api/auth/verify-admin', {
-        userId,
-        guilds: guilds.map(g => g.id),
-      }).catch(() => null);
+      const response = await this.api
+        .post('/api/auth/verify-admin', {
+          userId,
+          guilds: guilds.map((g) => g.id),
+        })
+        .catch(() => null);
 
       return response?.data?.isAdmin || false;
     } catch (error) {

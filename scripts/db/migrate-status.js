@@ -36,8 +36,8 @@ async function showStatus() {
 
     console.log('━'.repeat(60));
 
-    const applied = status.filter(m => m.status === 'applied').length;
-    const pending = status.filter(m => m.status === 'pending').length;
+    const applied = status.filter((m) => m.status === 'applied').length;
+    const pending = status.filter((m) => m.status === 'pending').length;
 
     console.log(`\nApplied: ${applied} | Pending: ${pending} | Total: ${status.length}\n`);
 

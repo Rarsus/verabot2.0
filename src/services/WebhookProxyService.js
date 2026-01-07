@@ -36,9 +36,9 @@ class WebhookProxyService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -49,26 +49,21 @@ class WebhookProxyService {
           {
             status: response.status,
             messageId: message.id,
-            channel: sanitizeForLogging(message.channel?.id)
+            channel: sanitizeForLogging(message.channel?.id),
           }
         );
         return {
           success: false,
-          error: `Webhook request failed with status ${response.status}`
+          error: `Webhook request failed with status ${response.status}`,
         };
       }
 
       return { success: true, error: null };
     } catch (err) {
-      logError(
-        'WebhookProxyService.forwardMessage',
-        err,
-        ERROR_LEVELS.MEDIUM,
-        { messageId: message.id }
-      );
+      logError('WebhookProxyService.forwardMessage', err, ERROR_LEVELS.MEDIUM, { messageId: message.id });
       return {
         success: false,
-        error: err.message || 'Failed to forward message'
+        error: err.message || 'Failed to forward message',
       };
     }
   }
@@ -104,7 +99,7 @@ class WebhookProxyService {
 
       // Wait before retry (except on last attempt)
       if (attempts < maxRetries) {
-        await new Promise(resolve => setTimeout(resolve, retryDelay * attempts));
+        await new Promise((resolve) => setTimeout(resolve, retryDelay * attempts));
       }
     }
 
@@ -118,7 +113,7 @@ class WebhookProxyService {
     return {
       success: false,
       error: lastError || 'Max retries exceeded',
-      attempts
+      attempts,
     };
   }
 
@@ -172,7 +167,7 @@ class WebhookProxyService {
         failed++;
         errors.push({
           messageId: message.id,
-          error: result.error
+          error: result.error,
         });
       }
     }

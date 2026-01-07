@@ -12,10 +12,7 @@ let failed = 0;
 // Test 1: Basic option building
 console.log('\n=== Test 1: Basic Option Building ===');
 try {
-  const { data, options } = buildCommandOptions(
-    'test-cmd',
-    'Test command'
-  );
+  const { data, options } = buildCommandOptions('test-cmd', 'Test command');
 
   if (data && options && Array.isArray(options)) {
     console.log('✅ Test 1 Passed: Returns data and options array');
@@ -36,14 +33,10 @@ try {
     name: 'text',
     type: 'string',
     description: 'Text input',
-    required: true
+    required: true,
   };
 
-  const { data, options } = buildCommandOptions(
-    'test',
-    'Test',
-    [optDef]
-  );
+  const { data, options } = buildCommandOptions('test', 'Test', [optDef]);
 
   if (options.length === 1 && options[0].name === 'text' && options[0].type === 'string') {
     console.log('✅ Test 2 Passed: String option created correctly');
@@ -66,14 +59,10 @@ try {
     description: 'Number input',
     required: false,
     minValue: 1,
-    maxValue: 100
+    maxValue: 100,
   };
 
-  const { data, options } = buildCommandOptions(
-    'test',
-    'Test',
-    [optDef]
-  );
+  const { data, options } = buildCommandOptions('test', 'Test', [optDef]);
 
   if (options[0].type === 'integer' && options[0].minValue === 1 && options[0].maxValue === 100) {
     console.log('✅ Test 3 Passed: Integer option with constraints created');
@@ -94,14 +83,10 @@ try {
     name: 'enabled',
     type: 'boolean',
     description: 'Enable feature',
-    required: false
+    required: false,
   };
 
-  const { data, options } = buildCommandOptions(
-    'test',
-    'Test',
-    [optDef]
-  );
+  const { data, options } = buildCommandOptions('test', 'Test', [optDef]);
 
   if (options[0].type === 'boolean' && options[0].name === 'enabled') {
     console.log('✅ Test 4 Passed: Boolean option created correctly');
@@ -121,19 +106,17 @@ try {
   const optDefs = [
     { name: 'name', type: 'string', description: 'Name', required: true },
     { name: 'count', type: 'integer', description: 'Count', required: false },
-    { name: 'active', type: 'boolean', description: 'Active', required: false }
+    { name: 'active', type: 'boolean', description: 'Active', required: false },
   ];
 
-  const { data, options } = buildCommandOptions(
-    'test',
-    'Test',
-    optDefs
-  );
+  const { data, options } = buildCommandOptions('test', 'Test', optDefs);
 
-  if (options.length === 3 &&
-      options[0].name === 'name' &&
-      options[1].name === 'count' &&
-      options[2].name === 'active') {
+  if (
+    options.length === 3 &&
+    options[0].name === 'name' &&
+    options[1].name === 'count' &&
+    options[2].name === 'active'
+  ) {
     console.log('✅ Test 5 Passed: Multiple options created correctly');
     passed++;
   } else {
@@ -151,14 +134,10 @@ try {
   const optDef = {
     name: 'optional',
     type: 'string',
-    description: 'Optional field'
+    description: 'Optional field',
   };
 
-  const { options } = buildCommandOptions(
-    'test',
-    'Test',
-    [optDef]
-  );
+  const { options } = buildCommandOptions('test', 'Test', [optDef]);
 
   if (options[0].required === false) {
     console.log('✅ Test 6 Passed: Optional defaults to false');
@@ -175,11 +154,7 @@ try {
 // Test 7: Empty options array
 console.log('\n=== Test 7: Empty Options Array ===');
 try {
-  const { data, options } = buildCommandOptions(
-    'simple-cmd',
-    'Command with no options',
-    []
-  );
+  const { data, options } = buildCommandOptions('simple-cmd', 'Command with no options', []);
 
   if (options.length === 0 && data) {
     console.log('✅ Test 7 Passed: Empty options handled');
@@ -196,10 +171,7 @@ try {
 // Test 8: No options parameter (undefined)
 console.log('\n=== Test 8: Undefined Options Parameter ===');
 try {
-  const { data: _data5, options } = buildCommandOptions(
-    'simple-cmd',
-    'Command with no options'
-  );
+  const { data: _data5, options } = buildCommandOptions('simple-cmd', 'Command with no options');
 
   if (Array.isArray(options) && options.length === 0) {
     console.log('✅ Test 8 Passed: Undefined options defaults to empty array');
@@ -216,10 +188,7 @@ try {
 // Test 9: Command name and description in data
 console.log('\n=== Test 9: Command Name and Description ===');
 try {
-  const { data } = buildCommandOptions(
-    'my-command',
-    'My command description'
-  );
+  const { data } = buildCommandOptions('my-command', 'My command description');
 
   // Try to get JSON to verify builder was configured
   if (data && typeof data.toJSON === 'function') {
@@ -246,14 +215,10 @@ try {
     type: 'string',
     description: 'Text with length',
     minLength: 3,
-    maxLength: 50
+    maxLength: 50,
   };
 
-  const { options } = buildCommandOptions(
-    'test',
-    'Test',
-    [optDef]
-  );
+  const { options } = buildCommandOptions('test', 'Test', [optDef]);
 
   if (options[0].minLength === 3 && options[0].maxLength === 50) {
     console.log('✅ Test 10 Passed: String constraints applied');

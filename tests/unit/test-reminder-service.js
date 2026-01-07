@@ -41,7 +41,7 @@ const {
   listReminders,
   searchReminders,
   getRemindersForNotification,
-  recordNotification
+  recordNotification,
 } = require('../../src/services/ReminderService');
 
 let passed = 0;
@@ -233,7 +233,7 @@ async function runTests() {
       when: futureDate.toISOString(),
       content: 'This is a test reminder',
       link: 'https://example.com',
-      image: null
+      image: null,
     });
     if (typeof reminderId === 'number' && reminderId > 0) {
       createdReminderId = reminderId; // Save for later tests
@@ -258,7 +258,7 @@ async function runTests() {
     await createReminder({
       subject: 'AB',
       category: 'Meeting',
-      when: futureDate.toISOString()
+      when: futureDate.toISOString(),
     });
     console.error('❌ Test 12 Failed: Invalid subject not rejected');
     failed++;
@@ -394,7 +394,7 @@ async function runTests() {
   console.log('\n=== Test 20: List Reminders (Status Filter) ===');
   try {
     const reminders = await listReminders({ status: 'active' });
-    if (Array.isArray(reminders) && reminders.every(r => r.status === 'active')) {
+    if (Array.isArray(reminders) && reminders.every((r) => r.status === 'active')) {
       console.log('✅ Test 20 Passed: Status filter works');
       passed++;
     } else {
@@ -416,10 +416,10 @@ async function runTests() {
     await createReminder({
       subject: 'Searchable Reminder',
       category: 'Task',
-      when: futureDate.toISOString()
+      when: futureDate.toISOString(),
     });
     const results = await searchReminders('Searchable');
-    if (Array.isArray(results) && results.some(r => r.subject.includes('Searchable'))) {
+    if (Array.isArray(results) && results.some((r) => r.subject.includes('Searchable'))) {
       console.log('✅ Test 21 Passed: Search works');
       passed++;
     } else {
@@ -463,7 +463,7 @@ async function runTests() {
       subject: 'Soon Reminder',
       category: 'Task',
       when: soonDate.toISOString(),
-      notificationTime: soonDate.toISOString()
+      notificationTime: soonDate.toISOString(),
     });
 
     // Check for reminders due in 5 minutes
@@ -525,6 +525,6 @@ async function runTests() {
 }
 
 // Run tests
-runTests().catch(err => {
+runTests().catch((err) => {
   console.error('Test runner error:', err);
 });

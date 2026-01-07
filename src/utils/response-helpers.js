@@ -17,7 +17,7 @@ async function sendQuoteEmbed(interaction, quote, title = 'Quote') {
     .setTitle(title)
     .setDescription(`"${quote.text}"`)
     .setFooter({ text: `— ${quote.author} | #${quote.id}` })
-    .setColor(0x5865F2);
+    .setColor(0x5865f2);
 
   if (interaction.deferred || interaction.replied) {
     await interaction.editReply({ embeds: [embed] });
@@ -87,5 +87,5 @@ module.exports = {
   sendSuccess,
   sendError,
   sendDM,
-  deferReply
+  deferReply,
 };

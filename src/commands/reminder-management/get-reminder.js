@@ -5,7 +5,7 @@ const { EmbedBuilder } = require('discord.js');
 const { getReminderById } = require('../../services/GuildAwareReminderService');
 
 const { data, options } = buildCommandOptions('get-reminder', 'Get a specific reminder by ID', [
-  { name: 'id', type: 'integer', description: 'Reminder ID', required: true, minValue: 1 }
+  { name: 'id', type: 'integer', description: 'Reminder ID', required: true, minValue: 1 },
 ]);
 
 class GetReminderCommand extends Command {
@@ -17,8 +17,8 @@ class GetReminderCommand extends Command {
       options,
       permissions: {
         minTier: 1,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 
@@ -46,12 +46,16 @@ class GetReminderCommand extends Command {
 
     const embed = new EmbedBuilder()
       .setTitle(`📋 Reminder #${reminder.id}: ${reminder.subject}`)
-      .setColor(reminder.status === 'active' ? 0x5865F2 : reminder.status === 'completed' ? 0x57F287 : 0x99AAB5)
+      .setColor(reminder.status === 'active' ? 0x5865f2 : reminder.status === 'completed' ? 0x57f287 : 0x99aab5)
       .addFields([
         { name: '📂 Category', value: reminder.category, inline: true },
         { name: '📊 Status', value: reminder.status.toUpperCase(), inline: true },
         { name: '📅 Event Time', value: `<t:${Math.floor(whenDate.getTime() / 1000)}:F>`, inline: false },
-        { name: '🔔 Notification Time', value: `<t:${Math.floor(notificationDate.getTime() / 1000)}:F>`, inline: false }
+        {
+          name: '🔔 Notification Time',
+          value: `<t:${Math.floor(notificationDate.getTime() / 1000)}:F>`,
+          inline: false,
+        },
       ])
       .setTimestamp(new Date(reminder.createdAt))
       .setFooter({ text: 'Created' });
@@ -70,13 +74,15 @@ class GetReminderCommand extends Command {
 
     // Add assignments
     if (reminder.assignments && reminder.assignments.length > 0) {
-      const assigneeList = reminder.assignments.map(a => {
-        if (a.assigneeType === 'user') {
-          return `👤 <@${a.assigneeId}>`;
-        } else {
-          return `👥 <@&${a.assigneeId}>`;
-        }
-      }).join('\n');
+      const assigneeList = reminder.assignments
+        .map((a) => {
+          if (a.assigneeType === 'user') {
+            return `👤 <@${a.assigneeId}>`;
+          } else {
+            return `👥 <@&${a.assigneeId}>`;
+          }
+        })
+        .join('\n');
 
       embed.addFields({ name: '👥 Assigned To', value: assigneeList });
     }

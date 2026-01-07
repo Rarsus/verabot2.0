@@ -5,7 +5,7 @@ const quoteService = require('../../services/QuoteService');
 const { AttachmentBuilder } = require('discord.js');
 
 const { data, options } = buildCommandOptions('export-quotes', 'Export quotes as JSON or CSV file', [
-  { name: 'format', type: 'string', description: 'Export format (json or csv)', required: true }
+  { name: 'format', type: 'string', description: 'Export format (json or csv)', required: true },
 ]);
 
 class ExportQuotesCommand extends Command {
@@ -17,8 +17,8 @@ class ExportQuotesCommand extends Command {
       options,
       permissions: {
         minTier: 1,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 
@@ -63,12 +63,12 @@ class ExportQuotesCommand extends Command {
       if (message.channel && typeof message.channel.send === 'function') {
         await message.channel.send({
           content: `✅ Exported ${quotes.length} quotes as ${extension.toUpperCase()}`,
-          files: [attachment]
+          files: [attachment],
         });
       } else if (message.reply) {
         await message.reply({
           content: `✅ Exported ${quotes.length} quotes as ${extension.toUpperCase()}`,
-          files: [attachment]
+          files: [attachment],
         });
       }
     } catch (err) {
@@ -108,7 +108,7 @@ class ExportQuotesCommand extends Command {
 
     await interaction.editReply({
       content: `✅ Exported ${quotes.length} quotes as ${extension.toUpperCase()}`,
-      files: [attachment]
+      files: [attachment],
     });
   }
 }

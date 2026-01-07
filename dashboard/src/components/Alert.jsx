@@ -26,9 +26,7 @@ export default function Alert({ type = 'info', title, message, onDismiss }) {
   };
 
   return (
-    <div
-      className={`border rounded-lg p-4 ${styles[type]} mb-4 flex items-start gap-3`}
-    >
+    <div className={`border rounded-lg p-4 ${styles[type]} mb-4 flex items-start gap-3`}>
       {type === 'success' && <CheckCircle className={`w-5 h-5 flex-shrink-0 mt-0.5 ${iconStyles[type]}`} />}
       {type === 'error' && <AlertCircle className={`w-5 h-5 flex-shrink-0 mt-0.5 ${iconStyles[type]}`} />}
       {type === 'warning' && <AlertCircle className={`w-5 h-5 flex-shrink-0 mt-0.5 ${iconStyles[type]}`} />}
@@ -39,10 +37,7 @@ export default function Alert({ type = 'info', title, message, onDismiss }) {
         <p className="text-sm">{message}</p>
       </div>
 
-      <button
-        onClick={handleDismiss}
-        className="text-gray-400 hover:text-gray-600 flex-shrink-0"
-      >
+      <button onClick={handleDismiss} className="text-gray-400 hover:text-gray-600 flex-shrink-0">
         ✕
       </button>
     </div>

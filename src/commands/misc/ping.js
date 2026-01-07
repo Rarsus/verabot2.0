@@ -12,9 +12,9 @@ class PingCommand extends Command {
       data,
       options,
       permissions: {
-        minTier: 0,        // Guest tier (everyone can use)
-        visible: true      // Visible to everyone
-      }
+        minTier: 0, // Guest tier (everyone can use)
+        visible: true, // Visible to everyone
+      },
     });
   }
 

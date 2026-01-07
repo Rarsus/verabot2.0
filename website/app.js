@@ -2,248 +2,246 @@
 // Configuration
 // ========================================
 const CONFIG = {
-    basePath: '/Verabot',  // GitHub Pages sub-path
-    docsPath: '../docs',    // Relative path to docs folder
-    docsBaseURL: 'https://raw.githubusercontent.com/Rarsus/verabot2.0/main/files/docs/',
-    readmeURL: 'https://raw.githubusercontent.com/Rarsus/verabot2.0/main/README.md',
-    defaultPage: 'home'
+  basePath: '/Verabot', // GitHub Pages sub-path
+  docsPath: '../docs', // Relative path to docs folder
+  docsBaseURL: 'https://raw.githubusercontent.com/Rarsus/verabot2.0/main/files/docs/',
+  readmeURL: 'https://raw.githubusercontent.com/Rarsus/verabot2.0/main/README.md',
+  defaultPage: 'home',
 };
 
 // Page content mapping - maps page IDs to content sources
 const PAGE_CONTENT = {
-    home: {
-        title: 'Home',
-        source: 'custom',
-        content: generateHomeContent
-    },
-    installation: {
-        title: 'Installation',
-        source: 'markdown',
-        file: CONFIG.readmeURL,
-        section: 'installation'
-    },
-    usage: {
-        title: 'Usage',
-        source: 'markdown',
-        file: CONFIG.readmeURL,
-        section: 'usage'
-    },
-    api: {
-        title: 'API Documentation',
-        source: 'markdown',
-        file: CONFIG.docsBaseURL + 'api.md'
-    },
-    contributing: {
-        title: 'Contributing',
-        source: 'markdown',
-        file: CONFIG.docsBaseURL + 'contributing.md'
-    },
-    faq: {
-        title: 'FAQ & Support',
-        source: 'markdown',
-        file: CONFIG.docsBaseURL + 'faq.md'
-    }
+  home: {
+    title: 'Home',
+    source: 'custom',
+    content: generateHomeContent,
+  },
+  installation: {
+    title: 'Installation',
+    source: 'markdown',
+    file: CONFIG.readmeURL,
+    section: 'installation',
+  },
+  usage: {
+    title: 'Usage',
+    source: 'markdown',
+    file: CONFIG.readmeURL,
+    section: 'usage',
+  },
+  api: {
+    title: 'API Documentation',
+    source: 'markdown',
+    file: CONFIG.docsBaseURL + 'api.md',
+  },
+  contributing: {
+    title: 'Contributing',
+    source: 'markdown',
+    file: CONFIG.docsBaseURL + 'contributing.md',
+  },
+  faq: {
+    title: 'FAQ & Support',
+    source: 'markdown',
+    file: CONFIG.docsBaseURL + 'faq.md',
+  },
 };
 
 // ========================================
 // State Management
 // ========================================
 const state = {
-    currentPage: CONFIG.defaultPage,
-    sidebarOpen: false,
-    mobileMenuOpen: false
+  currentPage: CONFIG.defaultPage,
+  sidebarOpen: false,
+  mobileMenuOpen: false,
 };
 
 // ========================================
 // Initialize App
 // ========================================
 document.addEventListener('DOMContentLoaded', () => {
-    initializeRouter();
-    initializeNavigation();
-    initializeMobileMenu();
-    loadInitialPage();
+  initializeRouter();
+  initializeNavigation();
+  initializeMobileMenu();
+  loadInitialPage();
 });
 
 // ========================================
 // Router
 // ========================================
 function initializeRouter() {
-    // Handle initial hash
-    const hash = window.location.hash.slice(1) || CONFIG.defaultPage;
-    navigateToPage(hash);
-    
-    // Handle hash changes
-    window.addEventListener('hashchange', () => {
-        const page = window.location.hash.slice(1) || CONFIG.defaultPage;
-        navigateToPage(page);
-    });
+  // Handle initial hash
+  const hash = window.location.hash.slice(1) || CONFIG.defaultPage;
+  navigateToPage(hash);
+
+  // Handle hash changes
+  window.addEventListener('hashchange', () => {
+    const page = window.location.hash.slice(1) || CONFIG.defaultPage;
+    navigateToPage(page);
+  });
 }
 
 function navigateToPage(pageId) {
-    if (!PAGE_CONTENT[pageId]) {
-        pageId = CONFIG.defaultPage;
-    }
-    
-    state.currentPage = pageId;
-    loadPage(pageId);
-    updateActiveNav(pageId);
-    updateBreadcrumb(pageId);
+  if (!PAGE_CONTENT[pageId]) {
+    pageId = CONFIG.defaultPage;
+  }
+
+  state.currentPage = pageId;
+  loadPage(pageId);
+  updateActiveNav(pageId);
+  updateBreadcrumb(pageId);
 }
 
 // ========================================
 // Navigation
 // ========================================
 function initializeNavigation() {
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            const page = link.dataset.page;
-            if (page) {
-                e.preventDefault();
-                window.location.hash = page;
-                closeMobileMenu();
-            }
-        });
+  const navLinks = document.querySelectorAll('.nav-link');
+  navLinks.forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const page = link.dataset.page;
+      if (page) {
+        e.preventDefault();
+        window.location.hash = page;
+        closeMobileMenu();
+      }
     });
+  });
 }
 
 function updateActiveNav(pageId) {
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        if (link.dataset.page === pageId) {
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
-        }
-    });
+  const navLinks = document.querySelectorAll('.nav-link');
+  navLinks.forEach((link) => {
+    if (link.dataset.page === pageId) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
 }
 
 function updateBreadcrumb(pageId) {
-    const breadcrumb = document.getElementById('breadcrumb');
-    const pageInfo = PAGE_CONTENT[pageId];
-    breadcrumb.innerHTML = `<span>Home</span><span>${pageInfo.title}</span>`;
+  const breadcrumb = document.getElementById('breadcrumb');
+  const pageInfo = PAGE_CONTENT[pageId];
+  breadcrumb.innerHTML = `<span>Home</span><span>${pageInfo.title}</span>`;
 }
 
 // ========================================
 // Mobile Menu
 // ========================================
 function initializeMobileMenu() {
-    const toggle = document.querySelector('.mobile-menu-toggle');
-    const navList = document.querySelector('.nav-list');
-    
-    if (toggle) {
-        toggle.addEventListener('click', () => {
-            state.mobileMenuOpen = !state.mobileMenuOpen;
-            navList.classList.toggle('open', state.mobileMenuOpen);
-        });
-    }
+  const toggle = document.querySelector('.mobile-menu-toggle');
+  const navList = document.querySelector('.nav-list');
+
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      state.mobileMenuOpen = !state.mobileMenuOpen;
+      navList.classList.toggle('open', state.mobileMenuOpen);
+    });
+  }
 }
 
 function closeMobileMenu() {
-    const navList = document.querySelector('.nav-list');
-    state.mobileMenuOpen = false;
-    navList.classList.remove('open');
+  const navList = document.querySelector('.nav-list');
+  state.mobileMenuOpen = false;
+  navList.classList.remove('open');
 }
 
 // ========================================
 // Page Loading
 // ========================================
 function loadInitialPage() {
-    const hash = window.location.hash.slice(1) || CONFIG.defaultPage;
-    navigateToPage(hash);
+  const hash = window.location.hash.slice(1) || CONFIG.defaultPage;
+  navigateToPage(hash);
 }
 
 async function loadPage(pageId) {
-    const contentEl = document.getElementById('content');
-    const pageInfo = PAGE_CONTENT[pageId];
-    
-    // Show loading
-    contentEl.innerHTML = '<div class="loading">Loading...</div>';
-    
-    try {
-        let html = '';
-        
-        if (pageInfo.source === 'custom') {
-            html = pageInfo.content();
-        } else if (pageInfo.source === 'markdown') {
-            html = await loadMarkdownFile(pageInfo.file, pageInfo.section);
-        }
-        
-        contentEl.innerHTML = html;
-        contentEl.classList.add('fade-in');
-        
-        // Highlight code blocks
-        highlightCodeBlocks();
-        
-        // Generate table of contents
-        generateTableOfContents();
-        
-        // Scroll to top
-        window.scrollTo(0, 0);
-        
-    } catch (error) {
-        console.error('Error loading page:', error);
-        contentEl.innerHTML = `
+  const contentEl = document.getElementById('content');
+  const pageInfo = PAGE_CONTENT[pageId];
+
+  // Show loading
+  contentEl.innerHTML = '<div class="loading">Loading...</div>';
+
+  try {
+    let html = '';
+
+    if (pageInfo.source === 'custom') {
+      html = pageInfo.content();
+    } else if (pageInfo.source === 'markdown') {
+      html = await loadMarkdownFile(pageInfo.file, pageInfo.section);
+    }
+
+    contentEl.innerHTML = html;
+    contentEl.classList.add('fade-in');
+
+    // Highlight code blocks
+    highlightCodeBlocks();
+
+    // Generate table of contents
+    generateTableOfContents();
+
+    // Scroll to top
+    window.scrollTo(0, 0);
+  } catch (error) {
+    console.error('Error loading page:', error);
+    contentEl.innerHTML = `
             <div class="error">
                 <h2>⚠️ Error Loading Content</h2>
                 <p>Sorry, we couldn't load this page. Please try again later.</p>
                 <p class="text-muted">${error.message}</p>
             </div>
         `;
-    }
+  }
 }
 
 async function loadMarkdownFile(filePath, section) {
-    try {
-        const response = await fetch(filePath);
-        if (!response.ok) {
-            throw new Error(`Failed to load ${filePath}`);
-        }
-        
-        const markdown = await response.text();
-        let content = markdown;
-        
-        // Extract specific section if needed
-        if (section) {
-            content = extractSection(markdown, section);
-        }
-        
-        // Convert markdown to HTML
-        const html = marked.parse(content);
-        return html;
-        
-    } catch (error) {
-        console.error('Error loading markdown:', error);
-        throw error;
+  try {
+    const response = await fetch(filePath);
+    if (!response.ok) {
+      throw new Error(`Failed to load ${filePath}`);
     }
+
+    const markdown = await response.text();
+    let content = markdown;
+
+    // Extract specific section if needed
+    if (section) {
+      content = extractSection(markdown, section);
+    }
+
+    // Convert markdown to HTML
+    const html = marked.parse(content);
+    return html;
+  } catch (error) {
+    console.error('Error loading markdown:', error);
+    throw error;
+  }
 }
 
 function extractSection(markdown, sectionName) {
-    // Simple section extraction - finds heading and content until next same-level heading
-    const lines = markdown.split('\n');
-    const sectionRegex = new RegExp(`^##\\s+.*${sectionName}`, 'i');
-    
-    let inSection = false;
-    let sectionContent = [];
-    let sectionLevel = 0;
-    
-    for (const line of lines) {
-        if (inSection) {
-            // Check if we hit another section of same or higher level
-            const headingMatch = line.match(/^(#{1,6})\s/);
-            if (headingMatch && headingMatch[1].length <= sectionLevel) {
-                break;
-            }
-            sectionContent.push(line);
-        } else if (sectionRegex.test(line)) {
-            inSection = true;
-            const match = line.match(/^(#{1,6})\s/);
-            sectionLevel = match ? match[1].length : 2;
-            sectionContent.push(line);
-        }
+  // Simple section extraction - finds heading and content until next same-level heading
+  const lines = markdown.split('\n');
+  const sectionRegex = new RegExp(`^##\\s+.*${sectionName}`, 'i');
+
+  let inSection = false;
+  let sectionContent = [];
+  let sectionLevel = 0;
+
+  for (const line of lines) {
+    if (inSection) {
+      // Check if we hit another section of same or higher level
+      const headingMatch = line.match(/^(#{1,6})\s/);
+      if (headingMatch && headingMatch[1].length <= sectionLevel) {
+        break;
+      }
+      sectionContent.push(line);
+    } else if (sectionRegex.test(line)) {
+      inSection = true;
+      const match = line.match(/^(#{1,6})\s/);
+      sectionLevel = match ? match[1].length : 2;
+      sectionContent.push(line);
     }
-    
-    return sectionContent.length > 0 ? sectionContent.join('\n') : markdown;
+  }
+
+  return sectionContent.length > 0 ? sectionContent.join('\n') : markdown;
 }
 
 // ========================================
@@ -251,74 +249,74 @@ function extractSection(markdown, sectionName) {
 // ========================================
 // Safely escape text for inclusion in HTML.
 function escapeHtml(str) {
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function generateTableOfContents() {
-    const content = document.getElementById('content');
-    const tocNav = document.getElementById('tocNav');
-    const headings = content.querySelectorAll('h2, h3, h4');
-    
-    if (headings.length === 0) {
-        tocNav.innerHTML = '<p class="text-muted">No sections</p>';
-        return;
-    }
-    
-    const tocItems = Array.from(headings).map(heading => {
-        const id = heading.id || generateId(heading.textContent);
-        heading.id = id;
-        
-        const level = parseInt(heading.tagName.substring(1));
-        const text = heading.textContent;
-        
-        return `<a href="#${id}" class="toc-level-${level}">${escapeHtml(text)}</a>`;
+  const content = document.getElementById('content');
+  const tocNav = document.getElementById('tocNav');
+  const headings = content.querySelectorAll('h2, h3, h4');
+
+  if (headings.length === 0) {
+    tocNav.innerHTML = '<p class="text-muted">No sections</p>';
+    return;
+  }
+
+  const tocItems = Array.from(headings).map((heading) => {
+    const id = heading.id || generateId(heading.textContent);
+    heading.id = id;
+
+    const level = parseInt(heading.tagName.substring(1));
+    const text = heading.textContent;
+
+    return `<a href="#${id}" class="toc-level-${level}">${escapeHtml(text)}</a>`;
+  });
+
+  tocNav.innerHTML = tocItems.join('');
+
+  // Add click handlers
+  tocNav.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = link.getAttribute('href').substring(1);
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     });
-    
-    tocNav.innerHTML = tocItems.join('');
-    
-    // Add click handlers
-    tocNav.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetId = link.getAttribute('href').substring(1);
-            const target = document.getElementById(targetId);
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
-    });
+  });
 }
 
 function generateId(text) {
-    return text
-        .toLowerCase()
-        .replace(/[^\w\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .trim();
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim();
 }
 
 // ========================================
 // Code Highlighting
 // ========================================
 function highlightCodeBlocks() {
-    if (typeof hljs !== 'undefined') {
-        document.querySelectorAll('pre code').forEach((block) => {
-            hljs.highlightBlock(block);
-        });
-    }
+  if (typeof hljs !== 'undefined') {
+    document.querySelectorAll('pre code').forEach((block) => {
+      hljs.highlightBlock(block);
+    });
+  }
 }
 
 // ========================================
 // Custom Page Content Generators
 // ========================================
 function generateHomeContent() {
-    return `
+  return `
         <div class="home-hero">
             <h1>🤖 Welcome to VeraBot2.0 Documentation</h1>
             <p class="text-lg">Advanced Discord bot with organized commands, quote management system, and modern architecture.</p>
@@ -388,7 +386,7 @@ function generateHomeContent() {
 }
 
 function generateAPIContent() {
-    return `
+  return `
         <h1>📖 API Documentation</h1>
         <p>Complete reference for all commands and APIs available in VeraBot2.0.</p>
         
@@ -525,7 +523,7 @@ await sendError(interaction, 'Something went wrong', true);</code></pre>
 }
 
 function generateContributingContent() {
-    return `
+  return `
         <h1>🤝 Contributing to VeraBot2.0</h1>
         <p>Thank you for your interest in contributing to VeraBot2.0! This guide will help you get started.</p>
         
@@ -682,7 +680,7 @@ module.exports = new CommandName().register();</code></pre>
 }
 
 function generateFAQContent() {
-    return `
+  return `
         <h1>❓ FAQ & Support</h1>
         <p>Frequently asked questions and troubleshooting guide for VeraBot2.0.</p>
         

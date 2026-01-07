@@ -14,7 +14,7 @@ console.log('\n=== Dashboard Error Handler Tests ===\n');
 function createMockReq(method = 'GET', path = '/test') {
   return {
     method,
-    path
+    path,
   };
 }
 
@@ -23,16 +23,16 @@ function createMockRes() {
   let jsonData = null;
 
   return {
-    status: function(code) {
+    status: function (code) {
       statusCode = code;
       return this;
     },
-    json: function(data) {
+    json: function (data) {
       jsonData = data;
       return this;
     },
     getStatus: () => statusCode,
-    getData: () => jsonData
+    getData: () => jsonData,
   };
 }
 

@@ -19,7 +19,7 @@ try {
     id: '123456789',
     username: 'testuser',
     discriminator: '0001',
-    avatar: 'avatar_hash'
+    avatar: 'avatar_hash',
   };
 
   const jwt = oauthService.generateJWT(mockUser, 'mock_token');
@@ -27,15 +27,21 @@ try {
   // Test middleware with JWT
   const req = {
     headers: { authorization: `Bearer ${jwt}` },
-    cookies: {}
+    cookies: {},
   };
   const res = {
-    status: function() { return this; },
-    json: function() { return this; }
+    status: function () {
+      return this;
+    },
+    json: function () {
+      return this;
+    },
   };
   let nextCalled = false;
 
-  authMiddleware(req, res, () => { nextCalled = true; });
+  authMiddleware(req, res, () => {
+    nextCalled = true;
+  });
 
   if (nextCalled && req.user && req.user.userId === mockUser.id) {
     console.log('✅ OAuth service integrates with auth middleware');
@@ -75,8 +81,13 @@ try {
   const req404 = { method: 'GET', path: '/nonexistent' };
   const res404 = {
     statusCode: 200,
-    status: function(code) { this.statusCode = code; return this; },
-    json: function() { return this; }
+    status: function (code) {
+      this.statusCode = code;
+      return this;
+    },
+    json: function () {
+      return this;
+    },
   };
 
   notFoundHandler(req404, res404);
@@ -86,8 +97,13 @@ try {
   const reqErr = { method: 'GET', path: '/test' };
   const resErr = {
     statusCode: 200,
-    status: function(code) { this.statusCode = code; return this; },
-    json: function() { return this; }
+    status: function (code) {
+      this.statusCode = code;
+      return this;
+    },
+    json: function () {
+      return this;
+    },
   };
 
   errorHandler(error, reqErr, resErr, () => {});
@@ -130,7 +146,7 @@ try {
     id: '987654321',
     username: 'integrationtest',
     discriminator: '9999',
-    avatar: 'test_avatar'
+    avatar: 'test_avatar',
   };
 
   // Step 1: Generate JWT
@@ -140,11 +156,13 @@ try {
   const decoded = oauthService.verifyJWT(jwt);
 
   // Step 3: Check all data preserved
-  if (decoded &&
-      decoded.userId === mockUser.id &&
-      decoded.username === mockUser.username &&
-      decoded.discriminator === mockUser.discriminator &&
-      decoded.avatar === mockUser.avatar) {
+  if (
+    decoded &&
+    decoded.userId === mockUser.id &&
+    decoded.username === mockUser.username &&
+    decoded.discriminator === mockUser.discriminator &&
+    decoded.avatar === mockUser.avatar
+  ) {
     console.log('✅ Complete JWT flow works end-to-end');
     console.log('   Generated → Verified → Data intact');
     passed++;
@@ -169,10 +187,10 @@ try {
     authUrl.includes('authorize'),
     authUrl.includes('client_id'),
     authUrl.includes('redirect_uri'),
-    authUrl.includes('scope')
+    authUrl.includes('scope'),
   ];
 
-  const passedChecks = urlChecks.filter(check => check).length;
+  const passedChecks = urlChecks.filter((check) => check).length;
 
   if (passedChecks === urlChecks.length) {
     console.log('✅ OAuth URL has all required parameters');
@@ -201,10 +219,10 @@ try {
     'DISCORD_CLIENT_SECRET',
     'DISCORD_REDIRECT_URI',
     'SESSION_SECRET',
-    'ENABLE_DASHBOARD_API'
+    'ENABLE_DASHBOARD_API',
   ];
 
-  const missingVars = requiredVars.filter(v => !envContent.includes(v));
+  const missingVars = requiredVars.filter((v) => !envContent.includes(v));
 
   if (missingVars.length === 0) {
     console.log('✅ Environment configuration complete');

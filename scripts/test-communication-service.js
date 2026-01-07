@@ -290,7 +290,7 @@ console.log('\n=== Test 10: Timestamps Update on Changes ===');
     const timestamp1 = status1.updated_at;
 
     // Wait a bit to ensure timestamp difference
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Opt-out
     await CommunicationService.optOut(testUserId);

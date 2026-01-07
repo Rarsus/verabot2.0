@@ -7,19 +7,23 @@
 const crypto = require('crypto');
 
 // Use environment variable - require it in production
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || (() => {
-  const isProduction = process.env.NODE_ENV === 'production';
-  if (isProduction) {
-    throw new Error(
-      'ENCRYPTION_KEY environment variable is required in production. ' +
-      'Generate one with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"'
+const ENCRYPTION_KEY =
+  process.env.ENCRYPTION_KEY ||
+  (() => {
+    const isProduction = process.env.NODE_ENV === 'production';
+    if (isProduction) {
+      throw new Error(
+        'ENCRYPTION_KEY environment variable is required in production. ' +
+          "Generate one with: node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\""
+      );
+    }
+    // Development only: generate a warning and temporary key
+    const tempKey = crypto.randomBytes(32).toString('hex');
+    console.warn(
+      '⚠️  WARNING: Using auto-generated encryption key. Set ENCRYPTION_KEY in .env for persistent encryption.'
     );
-  }
-  // Development only: generate a warning and temporary key
-  const tempKey = crypto.randomBytes(32).toString('hex');
-  console.warn('⚠️  WARNING: Using auto-generated encryption key. Set ENCRYPTION_KEY in .env for persistent encryption.');
-  return tempKey;
-})();
+    return tempKey;
+  })();
 
 const ALGORITHM = 'aes-256-cbc';
 
@@ -106,10 +110,7 @@ function createHmacSignature(payload, secret) {
  */
 function verifyHmacSignature(payload, signature, secret) {
   const expectedSignature = createHmacSignature(payload, secret);
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
 }
 
 module.exports = {
@@ -117,5 +118,5 @@ module.exports = {
   decryptValue,
   generateSecureToken,
   createHmacSignature,
-  verifyHmacSignature
+  verifyHmacSignature,
 };

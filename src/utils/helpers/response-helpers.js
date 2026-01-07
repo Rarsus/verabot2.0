@@ -17,7 +17,7 @@ async function sendQuoteEmbed(interaction, quote, title = 'Quote') {
     .setTitle(title)
     .setDescription(`"${quote.text}"`)
     .setFooter({ text: `— ${quote.author} | #${quote.id}` })
-    .setColor(0x5865F2);
+    .setColor(0x5865f2);
 
   if (interaction.deferred || interaction.replied) {
     await interaction.editReply({ embeds: [embed] });
@@ -88,7 +88,8 @@ async function deferReply(interaction) {
  * @returns {Promise<void>}
  */
 async function sendOptInSuccess(interaction) {
-  const message = 'You\'ve opted in to receive direct messages and use VeraBot commands.\nYou now have access to all VeraBot communication features.\nUse `/opt-out` at any time to disable DMs.';
+  const message =
+    "You've opted in to receive direct messages and use VeraBot commands.\nYou now have access to all VeraBot communication features.\nUse `/opt-out` at any time to disable DMs.";
 
   if (interaction.deferred || interaction.replied) {
     await interaction.editReply({ content: `✅ ${message}`, flags: 64 });
@@ -103,7 +104,8 @@ async function sendOptInSuccess(interaction) {
  * @returns {Promise<void>}
  */
 async function sendOptOutSuccess(interaction) {
-  const message = 'You\'ve opted out of direct messages.\nYou can still use VeraBot commands in servers, but won\'t receive DMs.\nUse `/opt-in` to re-enable.';
+  const message =
+    "You've opted out of direct messages.\nYou can still use VeraBot commands in servers, but won't receive DMs.\nUse `/opt-in` to re-enable.";
 
   if (interaction.deferred || interaction.replied) {
     await interaction.editReply({ content: `⚠️ ${message}`, flags: 64 });
@@ -142,22 +144,21 @@ async function sendOptInDecisionPrompt(interaction, recipient, reminderSubject) 
 
   const message = `⚠️  **${recipient.username}** hasn't opted in to receive direct messages.\n\n**Reminder:** "${reminderSubject}"\n\n**What would you like to do?**`;
 
-  const row = new ActionRowBuilder()
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId(`reminder_cancel_${Date.now()}`)
-        .setLabel('❌ Cancel')
-        .setStyle(ButtonStyle.Danger)
-        .setEmoji('274283534'),
-      new ButtonBuilder()
-        .setCustomId(`reminder_server_${Date.now()}`)
-        .setLabel('📋 Create (Server-Only)')
-        .setStyle(ButtonStyle.Primary),
-      new ButtonBuilder()
-        .setCustomId(`reminder_notify_${Date.now()}`)
-        .setLabel('📢 Notify User')
-        .setStyle(ButtonStyle.Secondary)
-    );
+  const row = new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
+      .setCustomId(`reminder_cancel_${Date.now()}`)
+      .setLabel('❌ Cancel')
+      .setStyle(ButtonStyle.Danger)
+      .setEmoji('274283534'),
+    new ButtonBuilder()
+      .setCustomId(`reminder_server_${Date.now()}`)
+      .setLabel('📋 Create (Server-Only)')
+      .setStyle(ButtonStyle.Primary),
+    new ButtonBuilder()
+      .setCustomId(`reminder_notify_${Date.now()}`)
+      .setLabel('📢 Notify User')
+      .setStyle(ButtonStyle.Secondary)
+  );
 
   if (interaction.deferred || interaction.replied) {
     await interaction.editReply({ content: message, components: [row] });
@@ -193,13 +194,9 @@ async function sendReminderCreatedServerOnly(interaction, recipient, reminderSub
 async function sendOptInRequest(user, sender, reminderSubject) {
   const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
-  const row = new ActionRowBuilder()
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId('optin_reminder_request')
-        .setLabel('✅ Opt In Now')
-        .setStyle(ButtonStyle.Success)
-    );
+  const row = new ActionRowBuilder().addComponents(
+    new ButtonBuilder().setCustomId('optin_reminder_request').setLabel('✅ Opt In Now').setStyle(ButtonStyle.Success)
+  );
 
   const message = `👋 **${sender.username}** tried to create a reminder for you but you haven't opted in to receive DMs.\n\n**Reminder:** "${reminderSubject}"\n\nWould you like to opt in to VeraBot communication features?`;
 
@@ -222,5 +219,5 @@ module.exports = {
   sendOptInStatus,
   sendOptInDecisionPrompt,
   sendReminderCreatedServerOnly,
-  sendOptInRequest
+  sendOptInRequest,
 };

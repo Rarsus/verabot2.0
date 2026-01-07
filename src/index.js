@@ -29,11 +29,14 @@ if (features.proxy.enabled) {
   const ProxyConfigService = require('./services/ProxyConfigService');
   const WebhookProxyService = require('./services/WebhookProxyService');
   // ProxyConfigService still uses root database for global configuration
-  proxyConfig = new ProxyConfigService(database);  webhookProxy = new WebhookProxyService();
+  proxyConfig = new ProxyConfigService(database);
+  webhookProxy = new WebhookProxyService();
 }
 
 // For slash commands we always need `Guilds`. For prefix message handling we add message intents.
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
+});
 
 // Load commands
 const commands = new Map();
@@ -93,7 +96,7 @@ function loadCommands(dirPath) {
     console.log('✓ Skipping JSON migration (deprecated in favor of guild-specific databases)');
 
     // Small delay to ensure all database operations are flushed
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Load commands AFTER database is ready
     console.log('📂 Loading commands...');
@@ -144,7 +147,9 @@ client.once('clientReady', async () => {
         webhookListener = new WebhookListenerService(client);
 
         if (!webhookSecret) {
-          console.warn('⚠️  WARNING: Webhook listener starting without signature verification. Configure a secret with /proxy-config for better security.');
+          console.warn(
+            '⚠️  WARNING: Webhook listener starting without signature verification. Configure a secret with /proxy-config for better security.'
+          );
         }
 
         await webhookListener.startServer(proxyPort, webhookSecret);
@@ -181,10 +186,12 @@ client.once('clientReady', async () => {
 
       // Middleware
       app.use(express.json());
-      app.use(cors({
-        origin: process.env.DASHBOARD_URL || 'http://localhost:5000',
-        credentials: true,
-      }));
+      app.use(
+        cors({
+          origin: process.env.DASHBOARD_URL || 'http://localhost:5000',
+          credentials: true,
+        })
+      );
 
       // Store Discord client for routes
       app.locals.discordClient = client;
@@ -195,7 +202,12 @@ client.once('clientReady', async () => {
       });
 
       // Dashboard routes with authentication
-      app.use('/api', dashboardAuth.verifyToken.bind(dashboardAuth), dashboardAuth.logAccess.bind(dashboardAuth), dashboardRoutes);
+      app.use(
+        '/api',
+        dashboardAuth.verifyToken.bind(dashboardAuth),
+        dashboardAuth.logAccess.bind(dashboardAuth),
+        dashboardRoutes
+      );
 
       // Start server
       app.listen(apiPort, () => {
@@ -250,7 +262,7 @@ client.on('interactionCreate', async (interaction) => {
 
         // Extract reminder ID from stored context
         const context = Object.values(client.reminderContexts || {}).find(
-          _ctx => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
+          (_ctx) => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
         );
 
         if (context && context.reminderId && guildId) {
@@ -265,7 +277,7 @@ client.on('interactionCreate', async (interaction) => {
         await interaction.deferReply({ ephemeral: true });
 
         const context = Object.values(client.reminderContexts || {}).find(
-          _ctx => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
+          (_ctx) => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
         );
 
         if (context && context.reminderId && guildId) {
@@ -280,7 +292,7 @@ client.on('interactionCreate', async (interaction) => {
         await interaction.deferReply({ ephemeral: true });
 
         const context = Object.values(client.reminderContexts || {}).find(
-          _ctx => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
+          (_ctx) => customId.includes(Date.now() - 1000) || customId.includes(Date.now())
         );
 
         if (context && context.recipient && guildId) {
@@ -291,9 +303,13 @@ client.on('interactionCreate', async (interaction) => {
           const { sendOptInRequest } = require('./utils/helpers/response-helpers');
           try {
             await sendOptInRequest(context.recipient, interaction.user.username, context.subject);
-            await interaction.editReply(`📢 Sent opt-in request to ${context.recipient.username}. They can respond with '/opt-in'.`);
+            await interaction.editReply(
+              `📢 Sent opt-in request to ${context.recipient.username}. They can respond with '/opt-in'.`
+            );
           } catch {
-            await interaction.editReply('✅ Reminder set to DM mode. Could not send opt-in request (user may have DMs disabled).');
+            await interaction.editReply(
+              '✅ Reminder set to DM mode. Could not send opt-in request (user may have DMs disabled).'
+            );
           }
         } else {
           await interaction.editReply('❌ Could not send opt-in request.');
@@ -347,10 +363,9 @@ client.on('messageCreate', async (message) => {
 
           if (webhookUrl && webhookToken) {
             // Forward message asynchronously (don't block command processing)
-            webhookProxy.forwardMessageWithRetry(message, webhookUrl, webhookToken, 3, 1000)
-              .catch(err => {
-                console.error('Failed to forward message:', err);
-              });
+            webhookProxy.forwardMessageWithRetry(message, webhookUrl, webhookToken, 3, 1000).catch((err) => {
+              console.error('Failed to forward message:', err);
+            });
           }
         }
       }
@@ -386,7 +401,7 @@ client.on('guildCreate', async (guild) => {
       token: TOKEN,
       clientId: process.env.CLIENT_ID,
       guildId: guild.id,
-      verbose: true
+      verbose: true,
     });
 
     if (result.success) {
@@ -404,11 +419,11 @@ client.on('guildCreate', async (guild) => {
           .addFields(
             {
               name: '🎯 Getting Started',
-              value: 'Type `/` in any channel and select a command to get started.'
+              value: 'Type `/` in any channel and select a command to get started.',
             },
             {
               name: '📖 Need Help?',
-              value: 'Use `/help` to see all available commands and their descriptions.'
+              value: 'Use `/help` to see all available commands and their descriptions.',
             }
           )
           .setFooter({ text: 'Thank you for adding me to your server!' })
@@ -441,27 +456,27 @@ client.on('guildMemberAdd', async (member) => {
       .addFields(
         {
           name: '📢 What is Opt-In?',
-          value: 'The bot can send you reminders and notifications. You control whether you get DMs or just server-only messages.'
+          value:
+            'The bot can send you reminders and notifications. You control whether you get DMs or just server-only messages.',
         },
         {
           name: '✅ Getting Started',
-          value: 'Use `/comm-status` to check your preferences, or `/opt-in` to enable direct messages.'
+          value: 'Use `/comm-status` to check your preferences, or `/opt-in` to enable direct messages.',
         },
         {
           name: '📖 Learn More',
-          value: 'See our full guide with examples and workflows for the opt-in system.'
+          value: 'See our full guide with examples and workflows for the opt-in system.',
         }
       )
       .setFooter({ text: 'You can always change your preferences with /opt-out' })
       .setTimestamp();
 
-    const row = new ActionRowBuilder()
-      .addComponents(
-        new ButtonBuilder()
-          .setCustomId('optin_reminder_request')
-          .setLabel('📖 Learn About Opt-In')
-          .setStyle(ButtonStyle.Primary)
-      );
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId('optin_reminder_request')
+        .setLabel('📖 Learn About Opt-In')
+        .setStyle(ButtonStyle.Primary)
+    );
 
     // Send DM to the new member
     await member.send({ embeds: [embed], components: [row] });

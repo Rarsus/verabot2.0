@@ -12,7 +12,7 @@ const SQL_INJECTION_PATTERNS = [
   /[';]--/gi,
   /\/\*.*?\*\//gi,
   /(0x[0-9a-f]+)/gi,
-  /(\s|^)(or|and)(\s|$).*?[=<>]/gi
+  /(\s|^)(or|and)(\s|$).*?[=<>]/gi,
 ];
 
 // XSS patterns to detect
@@ -23,7 +23,7 @@ const XSS_PATTERNS = [
   /<embed\b[^<]*>/gi,
   /on\w+\s*=\s*["'][^"']*["']/gi,
   /javascript:/gi,
-  /data:text\/html/gi
+  /data:text\/html/gi,
 ];
 
 /**
@@ -40,7 +40,7 @@ function validateTextInput(input, options = {}) {
     checkSQLInjection = true,
     checkXSS = true,
     customPattern = null,
-    fieldName = 'input'
+    fieldName = 'input',
   } = options;
 
   const errors = [];
@@ -73,7 +73,7 @@ function validateTextInput(input, options = {}) {
   if (checkSQLInjection && detectSQLInjection(trimmed)) {
     errors.push(`${fieldName} contains potentially malicious SQL patterns`);
     logError('InputValidator', `SQL injection attempt detected in ${fieldName}`, ERROR_LEVELS.HIGH, {
-      input: trimmed.substring(0, 100)
+      input: trimmed.substring(0, 100),
     });
   }
 
@@ -81,7 +81,7 @@ function validateTextInput(input, options = {}) {
   if (checkXSS && detectXSS(trimmed)) {
     errors.push(`${fieldName} contains potentially malicious script patterns`);
     logError('InputValidator', `XSS attempt detected in ${fieldName}`, ERROR_LEVELS.HIGH, {
-      input: trimmed.substring(0, 100)
+      input: trimmed.substring(0, 100),
     });
   }
 
@@ -93,7 +93,7 @@ function validateTextInput(input, options = {}) {
   return {
     valid: errors.length === 0,
     sanitized: sanitizeString(trimmed),
-    errors
+    errors,
   };
 }
 
@@ -105,7 +105,7 @@ function validateTextInput(input, options = {}) {
 function detectSQLInjection(input) {
   if (!input || typeof input !== 'string') return false;
 
-  return SQL_INJECTION_PATTERNS.some(pattern => pattern.test(input));
+  return SQL_INJECTION_PATTERNS.some((pattern) => pattern.test(input));
 }
 
 /**
@@ -116,7 +116,7 @@ function detectSQLInjection(input) {
 function detectXSS(input) {
   if (!input || typeof input !== 'string') return false;
 
-  return XSS_PATTERNS.some(pattern => pattern.test(input));
+  return XSS_PATTERNS.some((pattern) => pattern.test(input));
 }
 
 /**
@@ -148,7 +148,7 @@ function validateNumericInput(input, options = {}) {
     max = Number.MAX_SAFE_INTEGER,
     integer = false,
     positive = false,
-    fieldName = 'input'
+    fieldName = 'input',
   } = options;
 
   const errors = [];
@@ -183,7 +183,7 @@ function validateNumericInput(input, options = {}) {
   return {
     valid: errors.length === 0,
     value: num,
-    errors
+    errors,
   };
 }
 
@@ -207,7 +207,7 @@ function validateDiscordId(userId) {
 
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   };
 }
 
@@ -231,7 +231,7 @@ class RateLimiter {
     const userRequests = this.requests.get(identifier) || [];
 
     // Remove expired requests
-    const validRequests = userRequests.filter(timestamp => now - timestamp < this.windowMs);
+    const validRequests = userRequests.filter((timestamp) => now - timestamp < this.windowMs);
 
     if (validRequests.length >= this.maxRequests) {
       this.requests.set(identifier, validRequests);
@@ -251,7 +251,7 @@ class RateLimiter {
   getRemaining(identifier) {
     const now = Date.now();
     const userRequests = this.requests.get(identifier) || [];
-    const validRequests = userRequests.filter(timestamp => now - timestamp < this.windowMs);
+    const validRequests = userRequests.filter((timestamp) => now - timestamp < this.windowMs);
 
     return Math.max(0, this.maxRequests - validRequests.length);
   }
@@ -279,5 +279,5 @@ module.exports = {
   detectSQLInjection,
   detectXSS,
   sanitizeString,
-  RateLimiter
+  RateLimiter,
 };

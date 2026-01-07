@@ -21,9 +21,7 @@ module.exports = {
     0: {
       name: 'Guest',
       description: 'Read-only access, cannot execute commands',
-      permissions: [
-        'read:quotes'
-      ]
+      permissions: ['read:quotes'],
     },
 
     1: {
@@ -35,8 +33,8 @@ module.exports = {
         'rate:quotes',
         'tag:quotes',
         'view:own_reminders',
-        'create:reminders'
-      ]
+        'create:reminders',
+      ],
     },
 
     2: {
@@ -51,206 +49,197 @@ module.exports = {
         'tag:quotes',
         'view:all_reminders',
         'create:reminders',
-        'moderate:users'
-      ]
+        'moderate:users',
+      ],
     },
 
     3: {
       name: 'Administrator',
       description: 'Guild administration and all standard features',
-      permissions: [
-        '*:quotes',
-        '*:reminders',
-        '*:moderation',
-        'admin:guild',
-        'config:reminders',
-        'manage:webhook'
-      ]
+      permissions: ['*:quotes', '*:reminders', '*:moderation', 'admin:guild', 'config:reminders', 'manage:webhook'],
     },
 
     4: {
       name: 'Bot Owner',
       description: 'Full bot access and configuration',
-      permissions: [
-        '*'
-      ]
-    }
+      permissions: ['*'],
+    },
   },
 
   // Command-level permission requirements
   commands: {
     // Miscellaneous commands
-    'ping': {
+    ping: {
       minTier: 0,
       visible: true,
-      description: 'Check bot latency'
+      description: 'Check bot latency',
     },
 
-    'help': {
+    help: {
       minTier: 0,
       visible: true,
-      description: 'Show available commands'
+      description: 'Show available commands',
     },
 
     // Quote discovery commands
     'random-quote': {
       minTier: 0,
       visible: true,
-      description: 'Get a random quote'
+      description: 'Get a random quote',
     },
 
     'search-quotes': {
       minTier: 0,
       visible: true,
-      description: 'Search for quotes'
+      description: 'Search for quotes',
     },
 
     'quote-stats': {
       minTier: 1,
       visible: true,
-      description: 'View quote statistics'
+      description: 'View quote statistics',
     },
 
-    'quote': {
+    quote: {
       minTier: 0,
       visible: true,
-      description: 'Get a specific quote'
+      description: 'Get a specific quote',
     },
 
     // Quote management commands
     'add-quote': {
       minTier: 1,
       visible: true,
-      description: 'Add a new quote'
+      description: 'Add a new quote',
     },
 
     'update-quote': {
       minTier: 2,
       visible: true,
-      description: 'Update a quote'
+      description: 'Update a quote',
     },
 
     'delete-quote': {
       minTier: 2,
       visible: true,
-      description: 'Delete a quote'
+      description: 'Delete a quote',
     },
 
     'list-quotes': {
       minTier: 1,
       visible: true,
-      description: 'List quotes with pagination'
+      description: 'List quotes with pagination',
     },
 
     // Quote social commands
     'rate-quote': {
       minTier: 1,
       visible: true,
-      description: 'Rate a quote'
+      description: 'Rate a quote',
     },
 
     'tag-quote': {
       minTier: 1,
       visible: true,
-      description: 'Tag a quote'
+      description: 'Tag a quote',
     },
 
     // Quote export commands
     'export-quotes': {
       minTier: 1,
       visible: true,
-      description: 'Export quotes to file'
+      description: 'Export quotes to file',
     },
 
     // Reminder commands
-    'remind': {
+    remind: {
       minTier: 1,
       visible: true,
-      description: 'Set a reminder'
+      description: 'Set a reminder',
     },
 
     'list-reminders': {
       minTier: 1,
       visible: true,
-      description: 'List your reminders'
+      description: 'List your reminders',
     },
 
     'delete-reminder': {
       minTier: 1,
       visible: true,
-      description: 'Delete a reminder'
+      description: 'Delete a reminder',
     },
 
     'edit-reminder': {
       minTier: 1,
       visible: true,
-      description: 'Edit a reminder'
+      description: 'Edit a reminder',
     },
 
     'remind-list-all': {
       minTier: 3,
       visible: false,
-      description: '[ADMIN] List all server reminders'
+      description: '[ADMIN] List all server reminders',
     },
 
     'remind-delete-other': {
       minTier: 3,
       visible: false,
-      description: '[ADMIN] Delete another user\'s reminder'
+      description: "[ADMIN] Delete another user's reminder",
     },
 
     // Admin commands - whisper
-    'whisper': {
+    whisper: {
       minTier: 3,
       visible: false,
-      description: '[ADMIN] Send DMs to users'
+      description: '[ADMIN] Send DMs to users',
     },
 
     // Admin commands - embed
     'embed-message': {
       minTier: 3,
       visible: false,
-      description: '[ADMIN] Create custom embeds'
+      description: '[ADMIN] Create custom embeds',
     },
 
     // Admin commands - role management
     'manage-roles': {
       minTier: 4,
       visible: false,
-      description: '[OWNER] Configure role permissions'
+      description: '[OWNER] Configure role permissions',
     },
 
     // Proxy commands
     'proxy-config': {
       minTier: 3,
       visible: false,
-      description: '[ADMIN] Configure webhook proxy'
+      description: '[ADMIN] Configure webhook proxy',
     },
 
     'proxy-list': {
       minTier: 3,
       visible: false,
-      description: '[ADMIN] List proxy webhooks'
+      description: '[ADMIN] List proxy webhooks',
     },
 
     'proxy-delete': {
       minTier: 3,
       visible: false,
-      description: '[ADMIN] Delete proxy webhook'
+      description: '[ADMIN] Delete proxy webhook',
     },
 
     'proxy-test': {
       minTier: 3,
       visible: false,
-      description: '[ADMIN] Test proxy connection'
+      description: '[ADMIN] Test proxy connection',
     },
 
     // Poem generation
-    'poem': {
+    poem: {
       minTier: 0,
       visible: true,
-      description: 'Generate an AI poem'
-    }
+      description: 'Generate an AI poem',
+    },
   },
 
   // Guild-specific permission overrides
@@ -279,5 +268,5 @@ module.exports = {
   allowGuildAdminOverride: false,
 
   // Default tier for users with no role mappings
-  defaultTier: 1
+  defaultTier: 1,
 };

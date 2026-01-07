@@ -13,7 +13,7 @@ const {
   generateToken,
   generateSecureString,
   validateToken,
-  hashSHA256
+  hashSHA256,
   // constantTimeCompare // Reserved for future use
 } = require('../../src/utils/security');
 

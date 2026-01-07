@@ -167,10 +167,7 @@
       "tests/unit/test-reminder-notifications.js",
       "tests/unit/test-services-database.js"
     ],
-    "documentation_updated": [
-      ".github/copilot-instructions.md",
-      "docs/reference/TDD-QUICK-REFERENCE.md"
-    ]
+    "documentation_updated": [".github/copilot-instructions.md", "docs/reference/TDD-QUICK-REFERENCE.md"]
   },
   "tdd_implementation": {
     "framework_implemented": true,
@@ -189,12 +186,7 @@
   ],
   "next_phase": {
     "phase": "Phase 2",
-    "target_modules": [
-      "ReminderService.js",
-      "errorHandler.js",
-      "WebhookListenerService.js",
-      "ProxyConfigService.js"
-    ],
+    "target_modules": ["ReminderService.js", "errorHandler.js", "WebhookListenerService.js", "ProxyConfigService.js"],
     "estimated_tests": "60-75",
     "estimated_coverage_target": "75%+",
     "estimated_timeline": "2-3 weeks"

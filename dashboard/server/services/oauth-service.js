@@ -12,7 +12,7 @@ class OAuthService {
     this.redirectUri = process.env.DISCORD_REDIRECT_URI || 'http://localhost:5000/api/auth/callback';
     this.scopes = (process.env.DISCORD_SCOPES || 'identify,guilds').split(',');
     this.jwtSecret = process.env.SESSION_SECRET || 'your-secret-key-change-in-production';
-    
+
     // Validate required configuration
     if (!this.clientId || !this.clientSecret) {
       console.warn('⚠️  Discord OAuth not configured. Set DISCORD_CLIENT_ID and DISCORD_CLIENT_SECRET');
@@ -49,15 +49,11 @@ class OAuthService {
         redirect_uri: this.redirectUri,
       });
 
-      const response = await axios.post(
-        'https://discord.com/api/oauth2/token',
-        params.toString(),
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        }
-      );
+      const response = await axios.post('https://discord.com/api/oauth2/token', params.toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
 
       return response.data;
     } catch (error) {
@@ -154,15 +150,11 @@ class OAuthService {
         refresh_token: refreshToken,
       });
 
-      const response = await axios.post(
-        'https://discord.com/api/oauth2/token',
-        params.toString(),
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        }
-      );
+      const response = await axios.post('https://discord.com/api/oauth2/token', params.toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
 
       return response.data;
     } catch (error) {

@@ -3,12 +3,7 @@
  * Tests input validation functions
  */
 
-
-const {
-  validateQuoteText,
-  validateAuthor,
-  validateQuoteNumber
-} = require('../../src/services/ValidationService');
+const { validateQuoteText, validateAuthor, validateQuoteNumber } = require('../../src/services/ValidationService');
 
 let passed = 0;
 let failed = 0;

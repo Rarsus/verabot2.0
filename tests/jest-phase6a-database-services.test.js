@@ -30,8 +30,8 @@ const mockErrorHandler = {
     LOW: 'LOW',
     MEDIUM: 'MEDIUM',
     HIGH: 'HIGH',
-    CRITICAL: 'CRITICAL'
-  }
+    CRITICAL: 'CRITICAL',
+  },
 };
 
 // Mock encryption utils
@@ -42,7 +42,7 @@ const mockEncryption = {
       return value.substring('encrypted_'.length);
     }
     return value;
-  }
+  },
 };
 
 describe('Phase 6A: Database Services Layer', () => {
@@ -86,7 +86,7 @@ describe('Phase 6A: Database Services Layer', () => {
       },
       initializeDatabase: function () {
         return Promise.resolve(this.db);
-      }
+      },
     });
 
     it('should initialize database successfully', async () => {
@@ -221,14 +221,10 @@ describe('Phase 6A: Database Services Layer', () => {
         if (!guildId) throw new Error('Guild ID is required');
 
         return new Promise((resolve, reject) => {
-          testDb.all(
-            'SELECT * FROM quotes WHERE guildId = ? ORDER BY addedAt DESC',
-            [guildId],
-            (err, rows) => {
-              if (err) reject(err);
-              else resolve(rows || []);
-            }
-          );
+          testDb.all('SELECT * FROM quotes WHERE guildId = ? ORDER BY addedAt DESC', [guildId], (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows || []);
+          });
         });
       },
 
@@ -237,14 +233,10 @@ describe('Phase 6A: Database Services Layer', () => {
         if (!Number.isInteger(id)) throw new Error('Quote ID must be an integer');
 
         return new Promise((resolve, reject) => {
-          testDb.get(
-            'SELECT * FROM quotes WHERE guildId = ? AND id = ?',
-            [guildId, id],
-            (err, row) => {
-              if (err) reject(err);
-              else resolve(row || null);
-            }
-          );
+          testDb.get('SELECT * FROM quotes WHERE guildId = ? AND id = ?', [guildId, id], (err, row) => {
+            if (err) reject(err);
+            else resolve(row || null);
+          });
         });
       },
 
@@ -286,16 +278,12 @@ describe('Phase 6A: Database Services Layer', () => {
         if (!id) throw new Error('Quote ID is required');
 
         return new Promise((resolve, reject) => {
-          testDb.run(
-            'DELETE FROM quotes WHERE guildId = ? AND id = ?',
-            [guildId, id],
-            function (err) {
-              if (err) reject(err);
-              else resolve(this.changes);
-            }
-          );
+          testDb.run('DELETE FROM quotes WHERE guildId = ? AND id = ?', [guildId, id], function (err) {
+            if (err) reject(err);
+            else resolve(this.changes);
+          });
         });
-      }
+      },
     });
 
     beforeEach((done) => {
@@ -397,7 +385,7 @@ describe('Phase 6A: Database Services Layer', () => {
 
       const results = await service.searchQuotes(guildId, 'quick');
       assert.strictEqual(results.length, 2);
-      assert.ok(results.every(q => q.text.includes('quick')));
+      assert.ok(results.every((q) => q.text.includes('quick')));
     });
 
     it('should reject search without keyword', async () => {
@@ -536,7 +524,7 @@ describe('Phase 6A: Database Services Layer', () => {
 
       getListenerPort: async () => {
         return 3000;
-      }
+      },
     });
 
     it('should set webhook URL', async () => {
@@ -727,7 +715,7 @@ describe('Phase 6A: Database Services Layer', () => {
 
         listGuildDatabases: () => {
           return Array.from(guildDatabases.keys());
-        }
+        },
       };
     };
 
@@ -810,7 +798,7 @@ describe('Phase 6A: Database Services Layer', () => {
           return new Promise((resolve) => {
             setTimeout(() => resolve({ guildId, text, author }), Math.random() * 10);
           });
-        }
+        },
       };
 
       // Simulate concurrent operations
@@ -838,7 +826,7 @@ describe('Phase 6A: Database Services Layer', () => {
           return quote.id;
         },
         getQuoteById: async (guildId, id) => {
-          return service.quotes.get(guildId)?.find(q => q.id === id) || null;
+          return service.quotes.get(guildId)?.find((q) => q.id === id) || null;
         },
         updateQuote: async (guildId, id, text, author) => {
           const quote = await service.getQuoteById(guildId, id);
@@ -848,7 +836,7 @@ describe('Phase 6A: Database Services Layer', () => {
             return true;
           }
           return false;
-        }
+        },
       };
 
       // Test consistency
@@ -869,7 +857,7 @@ describe('Phase 6A: Database Services Layer', () => {
             throw new Error('Temporary failure');
           }
           return 'success';
-        }
+        },
       };
 
       // Test retry logic

@@ -41,7 +41,7 @@ const colors = {
   green: '\x1b[32m',
   yellow: '\x1b[33m',
   red: '\x1b[31m',
-  cyan: '\x1b[36m'
+  cyan: '\x1b[36m',
 };
 
 /**
@@ -52,7 +52,7 @@ const log = {
   success: (msg) => console.log(`${colors.green}✅${colors.reset} ${msg}`),
   warning: (msg) => console.log(`${colors.yellow}⚠️${colors.reset} ${msg}`),
   error: (msg) => console.log(`${colors.red}❌${colors.reset} ${msg}`),
-  header: (msg) => console.log(`\n${colors.bright}${colors.cyan}${msg}${colors.reset}\n`)
+  header: (msg) => console.log(`\n${colors.bright}${colors.cyan}${msg}${colors.reset}\n`),
 };
 
 /**
@@ -115,7 +115,14 @@ function getAllData(db) {
       data.quotes = quotes || [];
 
       // Get other tables if they exist
-      const tables = ['tags', 'quote_tags', 'quote_ratings', 'reminders', 'reminder_assignments', 'user_communications'];
+      const tables = [
+        'tags',
+        'quote_tags',
+        'quote_ratings',
+        'reminders',
+        'reminder_assignments',
+        'user_communications',
+      ];
       let completed = 0;
 
       tables.forEach((table) => {
@@ -201,7 +208,7 @@ async function migrateDataToGuild(guildManager, guildId, data) {
               quote.averageRating || 0,
               quote.ratingCount || 0,
               quote.createdAt || new Date().toISOString(),
-              quote.updatedAt || new Date().toISOString()
+              quote.updatedAt || new Date().toISOString(),
             ]
           );
         } catch {
@@ -215,10 +222,11 @@ async function migrateDataToGuild(guildManager, guildId, data) {
     if (data.tags && data.tags.length > 0) {
       for (const tag of data.tags) {
         try {
-          await runAsync(
-            'INSERT INTO tags (name, description, createdAt) VALUES (?, ?, ?)',
-            [tag.name, tag.description || '', tag.createdAt || new Date().toISOString()]
-          );
+          await runAsync('INSERT INTO tags (name, description, createdAt) VALUES (?, ?, ?)', [
+            tag.name,
+            tag.description || '',
+            tag.createdAt || new Date().toISOString(),
+          ]);
         } catch {
           log.warning(`Skipped duplicate tag: ${tag.name}`);
         }
@@ -242,10 +250,12 @@ async function migrateDataToGuild(guildManager, guildId, data) {
     if (data.quote_ratings && data.quote_ratings.length > 0) {
       for (const rating of data.quote_ratings) {
         try {
-          await runAsync(
-            'INSERT INTO quote_ratings (quoteId, userId, rating, createdAt) VALUES (?, ?, ?, ?)',
-            [rating.quoteId, rating.userId, rating.rating, rating.createdAt || new Date().toISOString()]
-          );
+          await runAsync('INSERT INTO quote_ratings (quoteId, userId, rating, createdAt) VALUES (?, ?, ?, ?)', [
+            rating.quoteId,
+            rating.userId,
+            rating.rating,
+            rating.createdAt || new Date().toISOString(),
+          ]);
         } catch {
           log.warning(`Skipped duplicate rating for quote ${rating.quoteId}`);
         }
@@ -255,7 +265,9 @@ async function migrateDataToGuild(guildManager, guildId, data) {
 
     // Migrate reminders (filter by guildId)
     if (data.reminders && data.reminders.length > 0) {
-      const guildReminders = data.reminders.filter((r) => !r.guildId || r.guildId === guildId || r.guildId === 'legacy');
+      const guildReminders = data.reminders.filter(
+        (r) => !r.guildId || r.guildId === guildId || r.guildId === 'legacy'
+      );
 
       for (const reminder of guildReminders) {
         try {
@@ -272,7 +284,7 @@ async function migrateDataToGuild(guildManager, guildId, data) {
               reminder.status || 'active',
               reminder.notification_method || 'dm',
               reminder.createdAt || new Date().toISOString(),
-              reminder.updatedAt || new Date().toISOString()
+              reminder.updatedAt || new Date().toISOString(),
             ]
           );
         } catch {
@@ -284,7 +296,9 @@ async function migrateDataToGuild(guildManager, guildId, data) {
 
     // Migrate user communications (filter by guildId)
     if (data.user_communications && data.user_communications.length > 0) {
-      const guildComms = data.user_communications.filter((c) => !c.guildId || c.guildId === guildId || c.guildId === 'legacy');
+      const guildComms = data.user_communications.filter(
+        (c) => !c.guildId || c.guildId === guildId || c.guildId === 'legacy'
+      );
 
       for (const comm of guildComms) {
         try {
@@ -296,7 +310,7 @@ async function migrateDataToGuild(guildManager, guildId, data) {
               comm.optInTimestamp || null,
               comm.optOutTimestamp || null,
               comm.createdAt || new Date().toISOString(),
-              comm.updatedAt || new Date().toISOString()
+              comm.updatedAt || new Date().toISOString(),
             ]
           );
         } catch {

@@ -5,7 +5,7 @@ const { deleteReminder, getReminderById } = require('../../services/GuildAwareRe
 
 const { data, options } = buildCommandOptions('delete-reminder', 'Delete a reminder', [
   { name: 'id', type: 'integer', description: 'Reminder ID', required: true, minValue: 1 },
-  { name: 'hard', type: 'boolean', description: 'Permanently delete (default: soft delete)', required: false }
+  { name: 'hard', type: 'boolean', description: 'Permanently delete (default: soft delete)', required: false },
 ]);
 
 class DeleteReminderCommand extends Command {
@@ -17,8 +17,8 @@ class DeleteReminderCommand extends Command {
       options,
       permissions: {
         minTier: 1,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 

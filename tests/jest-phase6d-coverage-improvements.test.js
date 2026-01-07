@@ -74,7 +74,7 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
         const maxRange = 90 * 24 * 60 * 60 * 1000; // 90 days
         if (endDate - startDate > maxRange) return { valid: false, error: 'Date range exceeds 90 days' };
         return { valid: true };
-      }
+      },
     });
 
     it('should validate valid guild ID', () => {
@@ -188,7 +188,7 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
         cache: new Map(),
         ttls: new Map(),
 
-        set: function(key, value, ttlMs = null) {
+        set: function (key, value, ttlMs = null) {
           if (!key) throw new Error('Key is required');
 
           this.cache.set(key, value);
@@ -205,35 +205,35 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
           return true;
         },
 
-        get: function(key) {
+        get: function (key) {
           if (!key) throw new Error('Key is required');
           return this.cache.get(key) ?? null;
         },
 
-        has: function(key) {
+        has: function (key) {
           if (!key) throw new Error('Key is required');
           return this.cache.has(key);
         },
 
-        delete: function(key) {
+        delete: function (key) {
           if (!key) throw new Error('Key is required');
           if (this.ttls.has(key)) clearTimeout(this.ttls.get(key));
           return this.cache.delete(key);
         },
 
-        clear: function() {
-          this.ttls.forEach(timeout => clearTimeout(timeout));
+        clear: function () {
+          this.ttls.forEach((timeout) => clearTimeout(timeout));
           this.cache.clear();
           this.ttls.clear();
         },
 
-        size: function() {
+        size: function () {
           return this.cache.size;
         },
 
-        keys: function() {
+        keys: function () {
           return Array.from(this.cache.keys());
-        }
+        },
       };
       return manager;
     };
@@ -306,7 +306,7 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
       const complexObj = {
         id: 1,
         data: { nested: 'value' },
-        array: [1, 2, 3]
+        array: [1, 2, 3],
       };
 
       cache.set('complex', complexObj);
@@ -330,7 +330,7 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
       assert.strictEqual(cache.get('temp'), 'value');
 
       // Wait for expiration
-      await new Promise(resolve => setTimeout(resolve, 150));
+      await new Promise((resolve) => setTimeout(resolve, 150));
 
       assert.strictEqual(cache.get('temp'), null);
     });
@@ -378,18 +378,13 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
       const withTimeout = (promise, timeoutMs) => {
         return Promise.race([
           promise,
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Operation timeout')), timeoutMs)
-          )
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Operation timeout')), timeoutMs)),
         ]);
       };
 
       let timedOut = false;
       try {
-        await withTimeout(
-          new Promise(resolve => setTimeout(resolve, 2000)),
-          100
-        );
+        await withTimeout(new Promise((resolve) => setTimeout(resolve, 2000)), 100);
       } catch (err) {
         timedOut = err.message === 'Operation timeout';
       }
@@ -402,12 +397,12 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
         Promise.resolve('success1'),
         Promise.reject(new Error('failure1')),
         Promise.resolve('success2'),
-        Promise.reject(new Error('failure2'))
+        Promise.reject(new Error('failure2')),
       ];
 
       const results = await Promise.allSettled(operations);
-      const successes = results.filter(r => r.status === 'fulfilled');
-      const failures = results.filter(r => r.status === 'rejected');
+      const successes = results.filter((r) => r.status === 'fulfilled');
+      const failures = results.filter((r) => r.status === 'rejected');
 
       assert.strictEqual(successes.length, 2);
       assert.strictEqual(failures.length, 2);
@@ -507,9 +502,7 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
         return duration;
       };
 
-      const duration = await measureTime(
-        () => new Promise(resolve => setTimeout(resolve, 50))
-      );
+      const duration = await measureTime(() => new Promise((resolve) => setTimeout(resolve, 50)));
 
       assert.ok(duration >= 50);
       assert.ok(duration < 100); // Some tolerance
@@ -531,7 +524,7 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
         active: 0,
         process: async (item) => {
           if (processor.active >= processor.maxConcurrent) {
-            await new Promise(resolve => setTimeout(resolve, 10));
+            await new Promise((resolve) => setTimeout(resolve, 10));
           }
           processor.active++;
           try {
@@ -539,11 +532,11 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
           } finally {
             processor.active--;
           }
-        }
+        },
       };
 
       const items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      const results = await Promise.all(items.map(item => processor.process(item)));
+      const results = await Promise.all(items.map((item) => processor.process(item)));
 
       assert.strictEqual(results.length, 10);
       assert.strictEqual(results[0], 2);

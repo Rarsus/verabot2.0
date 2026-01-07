@@ -33,7 +33,7 @@ describe('Phase 5C: QuoteService', () => {
           const quote = {
             guildId: 'guild-123',
             text: 'This is a test quote',
-            author: 'Test Author'
+            author: 'Test Author',
           };
           const result = await Promise.resolve(QuoteService.createQuote(quote));
           assert(result === undefined || typeof result === 'object' || typeof result === 'number');
@@ -53,7 +53,7 @@ describe('Phase 5C: QuoteService', () => {
             text: 'Metadata quote',
             author: 'Author',
             source: 'Book',
-            date: new Date().toISOString()
+            date: new Date().toISOString(),
           };
           const result = await Promise.resolve(QuoteService.createQuote(quote));
           assert(true);
@@ -71,7 +71,7 @@ describe('Phase 5C: QuoteService', () => {
           const quote = {
             guildId: 'guild-123',
             text: 'Duplicate test',
-            author: 'Author'
+            author: 'Author',
           };
           await Promise.resolve(QuoteService.createQuote(quote));
           const result = await Promise.resolve(QuoteService.createQuote(quote));
@@ -90,7 +90,7 @@ describe('Phase 5C: QuoteService', () => {
           const quote = {
             guildId: 'guild-123',
             text: '',
-            author: ''
+            author: '',
           };
           const result = await Promise.resolve(QuoteService.createQuote(quote));
           assert(true);
@@ -174,9 +174,7 @@ describe('Phase 5C: QuoteService', () => {
     test('should update quote text', async () => {
       try {
         if (QuoteService && QuoteService.updateQuote) {
-          const result = await Promise.resolve(
-            QuoteService.updateQuote('guild-123', 1, { text: 'Updated quote' })
-          );
+          const result = await Promise.resolve(QuoteService.updateQuote('guild-123', 1, { text: 'Updated quote' }));
           assert(true);
         } else {
           assert(true);
@@ -189,9 +187,7 @@ describe('Phase 5C: QuoteService', () => {
     test('should update quote author', async () => {
       try {
         if (QuoteService && QuoteService.updateQuote) {
-          const result = await Promise.resolve(
-            QuoteService.updateQuote('guild-123', 1, { author: 'New Author' })
-          );
+          const result = await Promise.resolve(QuoteService.updateQuote('guild-123', 1, { author: 'New Author' }));
           assert(true);
         } else {
           assert(true);
@@ -232,9 +228,7 @@ describe('Phase 5C: QuoteService', () => {
     test('should search quotes by text', async () => {
       try {
         if (QuoteService && QuoteService.searchQuotes) {
-          const result = await Promise.resolve(
-            QuoteService.searchQuotes('guild-123', 'test')
-          );
+          const result = await Promise.resolve(QuoteService.searchQuotes('guild-123', 'test'));
           assert(Array.isArray(result) || result === undefined || result === null);
         } else {
           assert(true);
@@ -247,9 +241,7 @@ describe('Phase 5C: QuoteService', () => {
     test('should search quotes by author', async () => {
       try {
         if (QuoteService && QuoteService.searchByAuthor) {
-          const result = await Promise.resolve(
-            QuoteService.searchByAuthor('guild-123', 'Author')
-          );
+          const result = await Promise.resolve(QuoteService.searchByAuthor('guild-123', 'Author'));
           assert(Array.isArray(result) || result === undefined || result === null);
         } else {
           assert(true);
@@ -262,9 +254,7 @@ describe('Phase 5C: QuoteService', () => {
     test('should handle case-insensitive search', async () => {
       try {
         if (QuoteService && QuoteService.searchQuotes) {
-          const result = await Promise.resolve(
-            QuoteService.searchQuotes('guild-123', 'TEST')
-          );
+          const result = await Promise.resolve(QuoteService.searchQuotes('guild-123', 'TEST'));
           assert(Array.isArray(result) || result === undefined || result === null);
         } else {
           assert(true);
@@ -277,9 +267,7 @@ describe('Phase 5C: QuoteService', () => {
     test('should return empty results for no matches', async () => {
       try {
         if (QuoteService && QuoteService.searchQuotes) {
-          const result = await Promise.resolve(
-            QuoteService.searchQuotes('guild-123', 'xyzabc123')
-          );
+          const result = await Promise.resolve(QuoteService.searchQuotes('guild-123', 'xyzabc123'));
           assert(Array.isArray(result) || result === undefined || result === null);
         } else {
           assert(true);
@@ -294,9 +282,7 @@ describe('Phase 5C: QuoteService', () => {
     test('should rate quote positively', async () => {
       try {
         if (QuoteService && QuoteService.rateQuote) {
-          const result = await Promise.resolve(
-            QuoteService.rateQuote('guild-123', 1, 'user-456', 'up')
-          );
+          const result = await Promise.resolve(QuoteService.rateQuote('guild-123', 1, 'user-456', 'up'));
           assert(true);
         } else {
           assert(true);
@@ -309,9 +295,7 @@ describe('Phase 5C: QuoteService', () => {
     test('should rate quote negatively', async () => {
       try {
         if (QuoteService && QuoteService.rateQuote) {
-          const result = await Promise.resolve(
-            QuoteService.rateQuote('guild-123', 1, 'user-456', 'down')
-          );
+          const result = await Promise.resolve(QuoteService.rateQuote('guild-123', 1, 'user-456', 'down'));
           assert(true);
         } else {
           assert(true);
@@ -327,9 +311,7 @@ describe('Phase 5C: QuoteService', () => {
           // First rating
           await Promise.resolve(QuoteService.rateQuote('guild-123', 1, 'user-456', 'up'));
           // Update rating
-          const result = await Promise.resolve(
-            QuoteService.rateQuote('guild-123', 1, 'user-456', 'down')
-          );
+          const result = await Promise.resolve(QuoteService.rateQuote('guild-123', 1, 'user-456', 'down'));
           assert(true);
         } else {
           assert(true);
@@ -357,9 +339,7 @@ describe('Phase 5C: QuoteService', () => {
     test('should add tag to quote', async () => {
       try {
         if (QuoteService && QuoteService.addTag) {
-          const result = await Promise.resolve(
-            QuoteService.addTag('guild-123', 1, 'inspirational')
-          );
+          const result = await Promise.resolve(QuoteService.addTag('guild-123', 1, 'inspirational'));
           assert(true);
         } else {
           assert(true);
@@ -372,9 +352,7 @@ describe('Phase 5C: QuoteService', () => {
     test('should remove tag from quote', async () => {
       try {
         if (QuoteService && QuoteService.removeTag) {
-          const result = await Promise.resolve(
-            QuoteService.removeTag('guild-123', 1, 'inspirational')
-          );
+          const result = await Promise.resolve(QuoteService.removeTag('guild-123', 1, 'inspirational'));
           assert(true);
         } else {
           assert(true);
@@ -400,9 +378,7 @@ describe('Phase 5C: QuoteService', () => {
     test('should search by tag', async () => {
       try {
         if (QuoteService && QuoteService.searchByTag) {
-          const result = await Promise.resolve(
-            QuoteService.searchByTag('guild-123', 'inspirational')
-          );
+          const result = await Promise.resolve(QuoteService.searchByTag('guild-123', 'inspirational'));
           assert(Array.isArray(result) || result === undefined || result === null);
         } else {
           assert(true);
@@ -473,11 +449,13 @@ describe('Phase 5C: QuoteService', () => {
       try {
         if (QuoteService && QuoteService.createQuote && QuoteService.getAllQuotes) {
           // Add to guild 1
-          await Promise.resolve(QuoteService.createQuote({
-            guildId: 'guild-1',
-            text: 'Guild 1 quote',
-            author: 'Author'
-          }));
+          await Promise.resolve(
+            QuoteService.createQuote({
+              guildId: 'guild-1',
+              text: 'Guild 1 quote',
+              author: 'Author',
+            })
+          );
 
           // Get guild 2 quotes (should not include guild 1)
           const result = await Promise.resolve(QuoteService.getAllQuotes('guild-2'));
@@ -497,11 +475,13 @@ describe('Phase 5C: QuoteService', () => {
         if (QuoteService && QuoteService.createQuote) {
           const start = Date.now();
           for (let i = 0; i < 100; i++) {
-            await Promise.resolve(QuoteService.createQuote({
-              guildId: 'guild-perf',
-              text: `Quote ${i}`,
-              author: `Author ${i}`
-            }));
+            await Promise.resolve(
+              QuoteService.createQuote({
+                guildId: 'guild-perf',
+                text: `Quote ${i}`,
+                author: `Author ${i}`,
+              })
+            );
           }
           const duration = Date.now() - start;
           assert(duration < 10000); // 100 quotes in under 10 seconds

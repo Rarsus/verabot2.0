@@ -12,7 +12,8 @@ async function up(db) {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
       // Cache statistics table
-      db.run(`
+      db.run(
+        `
         CREATE TABLE IF NOT EXISTS cache_stats (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           cacheKey TEXT NOT NULL,
@@ -21,18 +22,23 @@ async function up(db) {
           lastAccessed DATETIME DEFAULT CURRENT_TIMESTAMP,
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-      `, (err) => {
-        if (err) reject(err);
-      });
+      `,
+        (err) => {
+          if (err) reject(err);
+        }
+      );
 
       // Index on cache_stats.cacheKey
-      db.run(`
+      db.run(
+        `
         CREATE INDEX IF NOT EXISTS idx_cache_stats_key
         ON cache_stats(cacheKey)
-      `, (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
+      `,
+        (err) => {
+          if (err) reject(err);
+          else resolve();
+        }
+      );
     });
   });
 }

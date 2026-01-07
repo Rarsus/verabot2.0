@@ -12,7 +12,8 @@ async function up(db) {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
       // Query performance history table
-      db.run(`
+      db.run(
+        `
         CREATE TABLE IF NOT EXISTS query_performance (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           queryType TEXT NOT NULL,
@@ -20,44 +21,58 @@ async function up(db) {
           cached INTEGER DEFAULT 0,
           executedAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-      `, (err) => {
-        if (err) reject(err);
-      });
+      `,
+        (err) => {
+          if (err) reject(err);
+        }
+      );
 
       // System metrics snapshots
-      db.run(`
+      db.run(
+        `
         CREATE TABLE IF NOT EXISTS system_metrics (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           metricType TEXT NOT NULL,
           metricValue REAL NOT NULL,
           recordedAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-      `, (err) => {
-        if (err) reject(err);
-      });
+      `,
+        (err) => {
+          if (err) reject(err);
+        }
+      );
 
       // Indexes for performance queries
-      db.run(`
+      db.run(
+        `
         CREATE INDEX IF NOT EXISTS idx_query_performance_type
         ON query_performance(queryType)
-      `, (err) => {
-        if (err) reject(err);
-      });
+      `,
+        (err) => {
+          if (err) reject(err);
+        }
+      );
 
-      db.run(`
+      db.run(
+        `
         CREATE INDEX IF NOT EXISTS idx_query_performance_executedAt
         ON query_performance(executedAt)
-      `, (err) => {
-        if (err) reject(err);
-      });
+      `,
+        (err) => {
+          if (err) reject(err);
+        }
+      );
 
-      db.run(`
+      db.run(
+        `
         CREATE INDEX IF NOT EXISTS idx_system_metrics_type
         ON system_metrics(metricType)
-      `, (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
+      `,
+        (err) => {
+          if (err) reject(err);
+          else resolve();
+        }
+      );
     });
   });
 }

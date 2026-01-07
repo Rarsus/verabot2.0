@@ -27,7 +27,7 @@ class WebhookListenerService {
         return {
           success: false,
           error: `Validation failed: ${validation.errors.join(', ')}`,
-          messageId: null
+          messageId: null,
         };
       }
 
@@ -42,7 +42,7 @@ class WebhookListenerService {
         return {
           success: false,
           error: 'Channel not found or bot lacks access',
-          messageId: null
+          messageId: null,
         };
       }
 
@@ -52,19 +52,16 @@ class WebhookListenerService {
       return {
         success: true,
         error: null,
-        messageId: sentMessage.id
+        messageId: sentMessage.id,
       };
     } catch (err) {
-      logError(
-        'WebhookListenerService.processIncomingMessage',
-        err,
-        ERROR_LEVELS.MEDIUM,
-        { channel: payload?.channel }
-      );
+      logError('WebhookListenerService.processIncomingMessage', err, ERROR_LEVELS.MEDIUM, {
+        channel: payload?.channel,
+      });
       return {
         success: false,
         error: err.message || 'Failed to process incoming message',
-        messageId: null
+        messageId: null,
       };
     }
   }
@@ -78,7 +75,7 @@ class WebhookListenerService {
     const result = parseIncomingPayload(payload);
     return {
       valid: result.valid,
-      errors: result.errors || []
+      errors: result.errors || [],
     };
   }
 
@@ -105,11 +102,7 @@ class WebhookListenerService {
       const payloadString = JSON.stringify(payload);
       return verifyHmacSignature(payloadString, signature, secret);
     } catch (err) {
-      logError(
-        'WebhookListenerService.verifySignature',
-        err,
-        ERROR_LEVELS.LOW
-      );
+      logError('WebhookListenerService.verifySignature', err, ERROR_LEVELS.LOW);
       return false;
     }
   }
@@ -143,7 +136,7 @@ class WebhookListenerService {
 
         // Read request body
         let body = '';
-        req.on('data', chunk => {
+        req.on('data', (chunk) => {
           body += chunk.toString();
         });
 
@@ -166,28 +159,30 @@ class WebhookListenerService {
 
             if (result.success) {
               res.writeHead(200, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({
-                success: true,
-                messageId: result.messageId
-              }));
+              res.end(
+                JSON.stringify({
+                  success: true,
+                  messageId: result.messageId,
+                })
+              );
             } else {
               res.writeHead(400, { 'Content-Type': 'application/json' });
-              res.end(JSON.stringify({
-                success: false,
-                error: result.error
-              }));
+              res.end(
+                JSON.stringify({
+                  success: false,
+                  error: result.error,
+                })
+              );
             }
           } catch (err) {
-            logError(
-              'WebhookListenerService.handleRequest',
-              err,
-              ERROR_LEVELS.MEDIUM
-            );
+            logError('WebhookListenerService.handleRequest', err, ERROR_LEVELS.MEDIUM);
             res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({
-              success: false,
-              error: 'Internal server error'
-            }));
+            res.end(
+              JSON.stringify({
+                success: false,
+                error: 'Internal server error',
+              })
+            );
           }
         });
       });

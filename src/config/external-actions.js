@@ -37,7 +37,6 @@ module.exports = {
   //   description: 'XToys webhook integration for notifications',
   //   contactEmail: 'admin@example.com'
   // },
-
   // Example: Custom external service
   // customService: {
   //   enabled: false,
@@ -49,7 +48,6 @@ module.exports = {
   //   description: 'Custom service webhook integration',
   //   contactEmail: 'support@example.com'
   // }
-
   // Add your approved services here
 };
 
@@ -135,7 +133,7 @@ function validateServiceConfig(config) {
 
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   };
 }
 

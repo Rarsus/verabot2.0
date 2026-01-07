@@ -8,7 +8,7 @@ const {
   sendSuccess,
   sendError,
   sendDM,
-  deferReply
+  deferReply,
 } = require('../../src/utils/helpers/response-helpers');
 
 let passed = 0;
@@ -19,29 +19,31 @@ function createMockInteraction(replied = false, deferred = false) {
   return {
     deferred: deferred,
     replied: replied,
-    reply: async function(msg) {
+    reply: async function (msg) {
       this.replied = true;
       this._lastReply = msg;
       return msg;
     },
-    editReply: async function(msg) {
+    editReply: async function (msg) {
       this._lastEdit = msg;
       return msg;
     },
-    followUp: async function(msg) {
+    followUp: async function (msg) {
       this._lastFollowUp = msg;
       return msg;
     },
-    deferReply: async function() {
+    deferReply: async function () {
       this.deferred = true;
     },
-    user: { createDM: async function() {
-      return {
-        send: async function(msg) {
-          return msg;
-        }
-      };
-    }}
+    user: {
+      createDM: async function () {
+        return {
+          send: async function (msg) {
+            return msg;
+          },
+        };
+      },
+    },
   };
 }
 
@@ -67,7 +69,7 @@ console.log('\n=== Test 1: Quote Embed on New Interaction ===');
     const quote = {
       id: 1,
       text: 'The only way to do great work',
-      author: 'Steve Jobs'
+      author: 'Steve Jobs',
     };
 
     await sendQuoteEmbed(interaction, quote, 'Test Quote');
@@ -116,10 +118,12 @@ console.log('\n=== Test 3: Quote Embed Footer with Author ===');
 
     await sendQuoteEmbed(interaction, quote);
 
-    if (interaction._lastReply.embeds &&
-        interaction._lastReply.embeds[0].data.footer &&
-        interaction._lastReply.embeds[0].data.footer.text.includes('Great Person') &&
-        interaction._lastReply.embeds[0].data.footer.text.includes('42')) {
+    if (
+      interaction._lastReply.embeds &&
+      interaction._lastReply.embeds[0].data.footer &&
+      interaction._lastReply.embeds[0].data.footer.text.includes('Great Person') &&
+      interaction._lastReply.embeds[0].data.footer.text.includes('42')
+    ) {
       console.log('✅ Test 3 Passed: Footer includes author and ID');
       passed++;
     } else {
@@ -139,9 +143,11 @@ console.log('\n=== Test 4: Success Message ===');
 
     await sendSuccess(interaction, 'Operation successful');
 
-    if (interaction._lastReply &&
-        interaction._lastReply.content.includes('✅') &&
-        interaction._lastReply.content.includes('Operation successful')) {
+    if (
+      interaction._lastReply &&
+      interaction._lastReply.content.includes('✅') &&
+      interaction._lastReply.content.includes('Operation successful')
+    ) {
       console.log('✅ Test 4 Passed: Success message sent with checkmark');
       passed++;
     } else {
@@ -162,9 +168,11 @@ console.log('\n=== Test 5: Error Message ===');
 
     await sendError(interaction, 'Something went wrong');
 
-    if (interaction._lastReply &&
-        interaction._lastReply.content.includes('❌') &&
-        interaction._lastReply.content.includes('Something went wrong')) {
+    if (
+      interaction._lastReply &&
+      interaction._lastReply.content.includes('❌') &&
+      interaction._lastReply.content.includes('Something went wrong')
+    ) {
       console.log('✅ Test 5 Passed: Error message sent with X mark');
       passed++;
     } else {
@@ -225,8 +233,7 @@ console.log('\n=== Test 8: Send DM ===');
 
     await sendDM(interaction, 'Here is your data');
 
-    if (interaction._lastReply &&
-        interaction._lastReply.content.includes('Check your DMs')) {
+    if (interaction._lastReply && interaction._lastReply.content.includes('Check your DMs')) {
       console.log('✅ Test 8 Passed: DM sent and confirmation message shown');
       passed++;
     } else {
@@ -267,7 +274,7 @@ console.log('\n=== Test 10: Defer Skip if Already Deferred ===');
     const interaction = createMockInteraction(false, true);
     let deferCalled = false;
 
-    interaction.deferReply = async function() {
+    interaction.deferReply = async function () {
       deferCalled = true;
     };
 

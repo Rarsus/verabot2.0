@@ -24,7 +24,7 @@ class DatabasePool {
       released: 0,
       queued: 0,
       timeouts: 0,
-      errors: 0
+      errors: 0,
     };
 
     this._initializePool();
@@ -68,7 +68,7 @@ class DatabasePool {
       id: this.stats.created++,
       inUse: false,
       lastUsed: Date.now(),
-      createdAt: Date.now()
+      createdAt: Date.now(),
     };
 
     this.pool.push(conn);
@@ -202,7 +202,7 @@ class DatabasePool {
 
       try {
         if (method === 'run') {
-          conn.db.run(sql, params, function(err) {
+          conn.db.run(sql, params, function (err) {
             callback(err, { lastID: this.lastID, changes: this.changes });
           });
         } else if (method === 'get') {
@@ -233,7 +233,7 @@ class DatabasePool {
         return;
       }
 
-      connections.forEach(conn => {
+      connections.forEach((conn) => {
         conn.db.close((err) => {
           closed++;
           if (err) {
@@ -244,7 +244,7 @@ class DatabasePool {
           if (closed === connections.length) {
             this.pool = [];
             this.available = [];
-            this.queue.forEach(req => {
+            this.queue.forEach((req) => {
               clearTimeout(req.timeout);
               req.reject(new Error('Pool closed'));
             });
@@ -270,7 +270,7 @@ class DatabasePool {
       poolSize: this.poolSize,
       totalConnections: this.pool.length,
       availableConnections: this.available.length,
-      inUseConnections: this.pool.filter(c => c.inUse).length,
+      inUseConnections: this.pool.filter((c) => c.inUse).length,
       queuedRequests: this.queue.length,
       created: this.stats.created,
       acquired: this.stats.acquired,
@@ -278,9 +278,8 @@ class DatabasePool {
       queued: this.stats.queued,
       timeouts: this.stats.timeouts,
       errors: this.stats.errors,
-      utilization: this.pool.length > 0
-        ? ((this.pool.filter(c => c.inUse).length / this.pool.length) * 100).toFixed(2)
-        : 0
+      utilization:
+        this.pool.length > 0 ? ((this.pool.filter((c) => c.inUse).length / this.pool.length) * 100).toFixed(2) : 0,
     };
   }
 
@@ -295,7 +294,7 @@ class DatabasePool {
       released: 0,
       queued: 0,
       timeouts: 0,
-      errors: 0
+      errors: 0,
     };
   }
 }

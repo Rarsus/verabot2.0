@@ -16,15 +16,15 @@ describe('Phase 8A: Quote Commands', () => {
     mockUser = {
       id: 'user-123',
       username: 'TestUser',
-      send: jest.fn().mockResolvedValue({ id: 'msg-123' })
+      send: jest.fn().mockResolvedValue({ id: 'msg-123' }),
     };
 
     mockGuild = {
       id: 'guild-456',
       name: 'Test Guild',
       members: {
-        fetch: jest.fn().mockResolvedValue({ user: mockUser })
-      }
+        fetch: jest.fn().mockResolvedValue({ user: mockUser }),
+      },
     };
 
     mockInteraction = {
@@ -36,7 +36,7 @@ describe('Phase 8A: Quote Commands', () => {
       deferReply: jest.fn().mockResolvedValue({}),
       editReply: jest.fn().mockResolvedValue({ id: 'reply-123' }),
       followUp: jest.fn().mockResolvedValue({ id: 'follow-456' }),
-      ephemeral: true
+      ephemeral: true,
     };
   });
 
@@ -50,7 +50,7 @@ describe('Phase 8A: Quote Commands', () => {
         const query = 'life';
         const results = [
           { id: 1, text: 'Life is beautiful', author: 'Author1', guildId: 'guild-456' },
-          { id: 2, text: 'Life changes fast', author: 'Author2', guildId: 'guild-456' }
+          { id: 2, text: 'Life changes fast', author: 'Author2', guildId: 'guild-456' },
         ];
 
         // Mock search implementation
@@ -67,13 +67,11 @@ describe('Phase 8A: Quote Commands', () => {
 
       it('should search quotes by author', async () => {
         const authorName = 'Shakespeare';
-        const mockQuotes = [
-          { id: 1, text: 'To be or not to be', author: 'Shakespeare', guildId: 'guild-456' }
-        ];
+        const mockQuotes = [{ id: 1, text: 'To be or not to be', author: 'Shakespeare', guildId: 'guild-456' }];
 
         const searchByAuthor = async (guildId, author) => {
-          return mockQuotes.filter(q =>
-            q.author.toLowerCase().includes(author.toLowerCase()) && q.guildId === guildId
+          return mockQuotes.filter(
+            (q) => q.author.toLowerCase().includes(author.toLowerCase()) && q.guildId === guildId
           );
         };
 
@@ -87,7 +85,7 @@ describe('Phase 8A: Quote Commands', () => {
           id: i + 1,
           text: `Quote ${i + 1}`,
           author: `Author ${i + 1}`,
-          guildId: 'guild-456'
+          guildId: 'guild-456',
         }));
 
         const paginate = (items, page = 1, pageSize = 10) => {
@@ -97,7 +95,7 @@ describe('Phase 8A: Quote Commands', () => {
             items: items.slice(start, end),
             total: items.length,
             page,
-            pages: Math.ceil(items.length / pageSize)
+            pages: Math.ceil(items.length / pageSize),
           };
         };
 
@@ -123,18 +121,16 @@ describe('Phase 8A: Quote Commands', () => {
         const mockQuotes = [
           { id: 1, text: 'Quote 1', author: 'Author1', tags: ['inspiration', 'life'], guildId: 'guild-456' },
           { id: 2, text: 'Quote 2', author: 'Author2', tags: ['wisdom'], guildId: 'guild-456' },
-          { id: 3, text: 'Quote 3', author: 'Author3', tags: ['inspiration', 'success'], guildId: 'guild-456' }
+          { id: 3, text: 'Quote 3', author: 'Author3', tags: ['inspiration', 'success'], guildId: 'guild-456' },
         ];
 
         const searchByTag = async (guildId, tag) => {
-          return mockQuotes.filter(q =>
-            q.tags.includes(tag) && q.guildId === guildId
-          );
+          return mockQuotes.filter((q) => q.tags.includes(tag) && q.guildId === guildId);
         };
 
         const results = await searchByTag('guild-456', 'inspiration');
         assert.strictEqual(results.length, 2);
-        assert(results.every(q => q.tags.includes('inspiration')));
+        assert(results.every((q) => q.tags.includes('inspiration')));
       });
     });
 
@@ -143,11 +139,11 @@ describe('Phase 8A: Quote Commands', () => {
         const mockQuotes = [
           { id: 1, text: 'Quote 1', author: 'Author1', guildId: 'guild-456', rating: 4.5 },
           { id: 2, text: 'Quote 2', author: 'Author2', guildId: 'guild-456', rating: 3.8 },
-          { id: 3, text: 'Quote 3', author: 'Author3', guildId: 'guild-456', rating: 4.2 }
+          { id: 3, text: 'Quote 3', author: 'Author3', guildId: 'guild-456', rating: 4.2 },
         ];
 
         const getRandomQuote = async (guildId) => {
-          const guildQuotes = mockQuotes.filter(q => q.guildId === guildId);
+          const guildQuotes = mockQuotes.filter((q) => q.guildId === guildId);
           if (guildQuotes.length === 0) return null;
           return guildQuotes[Math.floor(Math.random() * guildQuotes.length)];
         };
@@ -160,7 +156,7 @@ describe('Phase 8A: Quote Commands', () => {
       it('should support weighted random selection by rating', async () => {
         const mockQuotes = [
           { id: 1, text: 'Quote 1', author: 'Author1', rating: 5.0 },
-          { id: 2, text: 'Quote 2', author: 'Author2', rating: 1.0 }
+          { id: 2, text: 'Quote 2', author: 'Author2', rating: 1.0 },
         ];
 
         const getWeightedRandom = (quotes) => {
@@ -193,7 +189,7 @@ describe('Phase 8A: Quote Commands', () => {
         const mockQuotes = [{ id: 1, text: 'Only Quote', author: 'Author', guildId: 'guild-456' }];
 
         const getRandomQuote = (guildId) => {
-          const guildQuotes = mockQuotes.filter(q => q.guildId === guildId);
+          const guildQuotes = mockQuotes.filter((q) => q.guildId === guildId);
           return guildQuotes.length > 0 ? guildQuotes[0] : null;
         };
 
@@ -207,11 +203,11 @@ describe('Phase 8A: Quote Commands', () => {
         const mockQuotes = [
           { id: 1, guildId: 'guild-456' },
           { id: 2, guildId: 'guild-456' },
-          { id: 3, guildId: 'guild-456' }
+          { id: 3, guildId: 'guild-456' },
         ];
 
         const getStats = (guildId) => {
-          const guildQuotes = mockQuotes.filter(q => q.guildId === guildId);
+          const guildQuotes = mockQuotes.filter((q) => q.guildId === guildId);
           return { total: guildQuotes.length };
         };
 
@@ -223,11 +219,11 @@ describe('Phase 8A: Quote Commands', () => {
         const mockQuotes = [
           { id: 1, guildId: 'guild-456', rating: 5.0 },
           { id: 2, guildId: 'guild-456', rating: 4.0 },
-          { id: 3, guildId: 'guild-456', rating: 3.0 }
+          { id: 3, guildId: 'guild-456', rating: 3.0 },
         ];
 
         const getStats = (guildId) => {
-          const guildQuotes = mockQuotes.filter(q => q.guildId === guildId);
+          const guildQuotes = mockQuotes.filter((q) => q.guildId === guildId);
           const avgRating = guildQuotes.reduce((sum, q) => sum + q.rating, 0) / guildQuotes.length;
           return { avgRating: parseFloat(avgRating.toFixed(2)) };
         };
@@ -240,12 +236,12 @@ describe('Phase 8A: Quote Commands', () => {
         const mockQuotes = [
           { id: 1, guildId: 'guild-456', author: 'Author A' },
           { id: 2, guildId: 'guild-456', author: 'Author B' },
-          { id: 3, guildId: 'guild-456', author: 'Author A' }
+          { id: 3, guildId: 'guild-456', author: 'Author A' },
         ];
 
         const getStats = (guildId) => {
-          const guildQuotes = mockQuotes.filter(q => q.guildId === guildId);
-          const authors = new Set(guildQuotes.map(q => q.author));
+          const guildQuotes = mockQuotes.filter((q) => q.guildId === guildId);
+          const authors = new Set(guildQuotes.map((q) => q.author));
           return { uniqueAuthors: authors.size };
         };
 
@@ -257,11 +253,11 @@ describe('Phase 8A: Quote Commands', () => {
         const mockQuotes = [];
 
         const getStats = (guildId) => {
-          const guildQuotes = mockQuotes.filter(q => q.guildId === guildId);
+          const guildQuotes = mockQuotes.filter((q) => q.guildId === guildId);
           return {
             total: guildQuotes.length,
             avgRating: 0,
-            uniqueAuthors: 0
+            uniqueAuthors: 0,
           };
         };
 
@@ -340,13 +336,11 @@ describe('Phase 8A: Quote Commands', () => {
       });
 
       it('should handle duplicate detection', async () => {
-        const existingQuotes = [
-          { id: 1, text: 'Duplicate quote', author: 'Author', guildId: 'guild-456' }
-        ];
+        const existingQuotes = [{ id: 1, text: 'Duplicate quote', author: 'Author', guildId: 'guild-456' }];
 
         const addQuote = async (guildId, text, author) => {
-          const isDuplicate = existingQuotes.some(q =>
-            q.guildId === guildId && q.text === text && q.author === author
+          const isDuplicate = existingQuotes.some(
+            (q) => q.guildId === guildId && q.text === text && q.author === author
           );
           if (isDuplicate) {
             return { duplicate: true, id: 1 };
@@ -372,11 +366,11 @@ describe('Phase 8A: Quote Commands', () => {
       it('should delete quote by ID', async () => {
         const quotes = [
           { id: 1, text: 'Quote 1', guildId: 'guild-456' },
-          { id: 2, text: 'Quote 2', guildId: 'guild-456' }
+          { id: 2, text: 'Quote 2', guildId: 'guild-456' },
         ];
 
         const deleteQuote = async (guildId, quoteId) => {
-          const index = quotes.findIndex(q => q.id === quoteId && q.guildId === guildId);
+          const index = quotes.findIndex((q) => q.id === quoteId && q.guildId === guildId);
           if (index === -1) throw new Error('Quote not found');
           quotes.splice(index, 1);
           return { success: true, id: quoteId };
@@ -404,7 +398,7 @@ describe('Phase 8A: Quote Commands', () => {
         const deleteQuote = async (guildId, quoteId) => {
           return {
             success: true,
-            message: `Quote #${quoteId} deleted successfully`
+            message: `Quote #${quoteId} deleted successfully`,
           };
         };
 
@@ -465,11 +459,11 @@ describe('Phase 8A: Quote Commands', () => {
       it('should list all quotes for guild', async () => {
         const mockQuotes = [
           { id: 1, text: 'Quote 1', author: 'Author1', guildId: 'guild-456' },
-          { id: 2, text: 'Quote 2', author: 'Author2', guildId: 'guild-456' }
+          { id: 2, text: 'Quote 2', author: 'Author2', guildId: 'guild-456' },
         ];
 
         const listQuotes = async (guildId) => {
-          return mockQuotes.filter(q => q.guildId === guildId);
+          return mockQuotes.filter((q) => q.guildId === guildId);
         };
 
         const quotes = await listQuotes('guild-456');
@@ -480,17 +474,17 @@ describe('Phase 8A: Quote Commands', () => {
         const mockQuotes = Array.from({ length: 25 }, (_, i) => ({
           id: i + 1,
           text: `Quote ${i + 1}`,
-          guildId: 'guild-456'
+          guildId: 'guild-456',
         }));
 
         const listQuotes = async (guildId, page = 1, pageSize = 10) => {
           const start = (page - 1) * pageSize;
-          const all = mockQuotes.filter(q => q.guildId === guildId);
+          const all = mockQuotes.filter((q) => q.guildId === guildId);
           return {
             items: all.slice(start, start + pageSize),
             page,
             pageSize,
-            total: all.length
+            total: all.length,
           };
         };
 
@@ -512,13 +506,11 @@ describe('Phase 8A: Quote Commands', () => {
         const mockQuotes = [
           { id: 1, text: 'Quote 1', guildId: 'guild-456', createdAt: new Date('2024-01-01') },
           { id: 2, text: 'Quote 2', guildId: 'guild-456', createdAt: new Date('2024-01-03') },
-          { id: 3, text: 'Quote 3', guildId: 'guild-456', createdAt: new Date('2024-01-02') }
+          { id: 3, text: 'Quote 3', guildId: 'guild-456', createdAt: new Date('2024-01-02') },
         ];
 
         const listQuotes = async (guildId) => {
-          return mockQuotes
-            .filter(q => q.guildId === guildId)
-            .sort((a, b) => b.createdAt - a.createdAt);
+          return mockQuotes.filter((q) => q.guildId === guildId).sort((a, b) => b.createdAt - a.createdAt);
         };
 
         const quotes = await listQuotes('guild-456');
@@ -570,12 +562,10 @@ describe('Phase 8A: Quote Commands', () => {
       });
 
       it('should allow user to update their rating', async () => {
-        const ratings = [
-          { quoteId: 1, userId: 'user-123', rating: 3 }
-        ];
+        const ratings = [{ quoteId: 1, userId: 'user-123', rating: 3 }];
 
         const rateQuote = async (guildId, quoteId, userId, rating) => {
-          const existing = ratings.find(r => r.quoteId === quoteId && r.userId === userId);
+          const existing = ratings.find((r) => r.quoteId === quoteId && r.userId === userId);
           if (existing) {
             existing.rating = rating;
           } else {
@@ -597,11 +587,11 @@ describe('Phase 8A: Quote Commands', () => {
         const ratings = [
           { quoteId: 1, rating: 5 },
           { quoteId: 1, rating: 4 },
-          { quoteId: 1, rating: 3 }
+          { quoteId: 1, rating: 3 },
         ];
 
         const getAverageRating = (quoteId) => {
-          const quoteRatings = ratings.filter(r => r.quoteId === quoteId);
+          const quoteRatings = ratings.filter((r) => r.quoteId === quoteId);
           const avg = quoteRatings.reduce((sum, r) => sum + r.rating, 0) / quoteRatings.length;
           return parseFloat(avg.toFixed(2));
         };
@@ -640,11 +630,11 @@ describe('Phase 8A: Quote Commands', () => {
       it('should remove tag from quote', async () => {
         const tags = [
           { quoteId: 1, tag: 'inspiration' },
-          { quoteId: 1, tag: 'wisdom' }
+          { quoteId: 1, tag: 'wisdom' },
         ];
 
         const removeTag = async (guildId, quoteId, tag) => {
-          const index = tags.findIndex(t => t.quoteId === quoteId && t.tag === tag);
+          const index = tags.findIndex((t) => t.quoteId === quoteId && t.tag === tag);
           if (index === -1) throw new Error('Tag not found');
           tags.splice(index, 1);
           return { quoteId, tag, action: 'removed' };
@@ -659,9 +649,7 @@ describe('Phase 8A: Quote Commands', () => {
         const tags = [{ quoteId: 1, tag: 'inspiration', guildId: 'guild-456' }];
 
         const tagQuote = async (guildId, quoteId, tag) => {
-          const exists = tags.some(t =>
-            t.quoteId === quoteId && t.tag === tag && t.guildId === guildId
-          );
+          const exists = tags.some((t) => t.quoteId === quoteId && t.tag === tag && t.guildId === guildId);
           if (exists) return { duplicate: true, tag };
           tags.push({ quoteId, tag, guildId });
           return { quoteId, tag, action: 'added' };
@@ -675,13 +663,11 @@ describe('Phase 8A: Quote Commands', () => {
         const tags = [
           { quoteId: 1, tag: 'inspiration' },
           { quoteId: 1, tag: 'wisdom' },
-          { quoteId: 1, tag: 'life' }
+          { quoteId: 1, tag: 'life' },
         ];
 
         const getQuoteTags = (guildId, quoteId) => {
-          return tags
-            .filter(t => t.quoteId === quoteId)
-            .map(t => t.tag);
+          return tags.filter((t) => t.quoteId === quoteId).map((t) => t.tag);
         };
 
         const quoteTags = getQuoteTags('guild-456', 1);
@@ -699,11 +685,11 @@ describe('Phase 8A: Quote Commands', () => {
       it('should export all quotes as JSON', async () => {
         const mockQuotes = [
           { id: 1, text: 'Quote 1', author: 'Author1', guildId: 'guild-456' },
-          { id: 2, text: 'Quote 2', author: 'Author2', guildId: 'guild-456' }
+          { id: 2, text: 'Quote 2', author: 'Author2', guildId: 'guild-456' },
         ];
 
         const exportAsJSON = (guildId) => {
-          const guildQuotes = mockQuotes.filter(q => q.guildId === guildId);
+          const guildQuotes = mockQuotes.filter((q) => q.guildId === guildId);
           return JSON.stringify(guildQuotes, null, 2);
         };
 
@@ -715,13 +701,13 @@ describe('Phase 8A: Quote Commands', () => {
       it('should export quotes as CSV', async () => {
         const mockQuotes = [
           { id: 1, text: 'Quote 1', author: 'Author1', guildId: 'guild-456' },
-          { id: 2, text: 'Quote 2', author: 'Author2', guildId: 'guild-456' }
+          { id: 2, text: 'Quote 2', author: 'Author2', guildId: 'guild-456' },
         ];
 
         const exportAsCSV = (guildId) => {
-          const guildQuotes = mockQuotes.filter(q => q.guildId === guildId);
+          const guildQuotes = mockQuotes.filter((q) => q.guildId === guildId);
           const header = 'ID,Text,Author\n';
-          const rows = guildQuotes.map(q => `${q.id},"${q.text}","${q.author}"`).join('\n');
+          const rows = guildQuotes.map((q) => `${q.id},"${q.text}","${q.author}"`).join('\n');
           return header + rows;
         };
 
@@ -734,22 +720,14 @@ describe('Phase 8A: Quote Commands', () => {
         const mockQuotes = [
           { id: 1, text: 'Quote 1', createdAt: new Date('2024-01-01'), guildId: 'guild-456' },
           { id: 2, text: 'Quote 2', createdAt: new Date('2024-06-01'), guildId: 'guild-456' },
-          { id: 3, text: 'Quote 3', createdAt: new Date('2024-12-01'), guildId: 'guild-456' }
+          { id: 3, text: 'Quote 3', createdAt: new Date('2024-12-01'), guildId: 'guild-456' },
         ];
 
         const exportFiltered = (guildId, startDate, endDate) => {
-          return mockQuotes.filter(q =>
-            q.guildId === guildId &&
-            q.createdAt >= startDate &&
-            q.createdAt <= endDate
-          );
+          return mockQuotes.filter((q) => q.guildId === guildId && q.createdAt >= startDate && q.createdAt <= endDate);
         };
 
-        const results = exportFiltered(
-          'guild-456',
-          new Date('2024-01-01'),
-          new Date('2024-06-30')
-        );
+        const results = exportFiltered('guild-456', new Date('2024-01-01'), new Date('2024-06-30'));
         assert.strictEqual(results.length, 2);
       });
 
@@ -764,19 +742,17 @@ describe('Phase 8A: Quote Commands', () => {
       });
 
       it('should include metadata in export', async () => {
-        const mockQuotes = [
-          { id: 1, text: 'Quote 1', author: 'Author1', rating: 4.5, guildId: 'guild-456' }
-        ];
+        const mockQuotes = [{ id: 1, text: 'Quote 1', author: 'Author1', rating: 4.5, guildId: 'guild-456' }];
 
         const exportWithMetadata = (guildId) => {
-          const guildQuotes = mockQuotes.filter(q => q.guildId === guildId);
+          const guildQuotes = mockQuotes.filter((q) => q.guildId === guildId);
           return {
             metadata: {
               exportDate: new Date().toISOString(),
               totalQuotes: guildQuotes.length,
-              guildId
+              guildId,
             },
-            quotes: guildQuotes
+            quotes: guildQuotes,
           };
         };
 
@@ -804,12 +780,12 @@ describe('Phase 8A: Quote Commands', () => {
 
       // Search quote
       const search = async (guildId, text) => {
-        return quotes.filter(q => q.guildId === guildId && q.text.includes(text));
+        return quotes.filter((q) => q.guildId === guildId && q.text.includes(text));
       };
 
       // Rate quote
       const rate = async (guildId, quoteId, userId, rating) => {
-        const quote = quotes.find(q => q.id === quoteId);
+        const quote = quotes.find((q) => q.id === quoteId);
         if (quote) quote.rating = rating;
         return quote;
       };
@@ -830,13 +806,11 @@ describe('Phase 8A: Quote Commands', () => {
     it('should enforce guild isolation between quote searches', async () => {
       const quotes = [
         { id: 1, text: 'Guild A Quote', guildId: 'guild-a' },
-        { id: 2, text: 'Guild B Quote', guildId: 'guild-b' }
+        { id: 2, text: 'Guild B Quote', guildId: 'guild-b' },
       ];
 
       const search = (guildId, text) => {
-        return quotes.filter(q =>
-          q.guildId === guildId && q.text.toLowerCase().includes(text.toLowerCase())
-        );
+        return quotes.filter((q) => q.guildId === guildId && q.text.toLowerCase().includes(text.toLowerCase()));
       };
 
       const resultA = search('guild-a', 'quote');
@@ -860,7 +834,7 @@ describe('Phase 8A: Quote Commands', () => {
       const promises = [
         add('guild-456', 'Quote 1', 'Author1'),
         add('guild-456', 'Quote 2', 'Author2'),
-        add('guild-456', 'Quote 3', 'Author3')
+        add('guild-456', 'Quote 3', 'Author3'),
       ];
 
       const results = await Promise.all(promises);
@@ -872,7 +846,7 @@ describe('Phase 8A: Quote Commands', () => {
       const quotes = [{ id: 1, text: 'Quote', guildId: 'guild-456', tags: ['inspiration'] }];
 
       const addTag = async (guildId, quoteId, tag) => {
-        const quote = quotes.find(q => q.id === quoteId);
+        const quote = quotes.find((q) => q.id === quoteId);
         if (quote && !quote.tags.includes(tag)) {
           quote.tags.push(tag);
         }
@@ -880,7 +854,7 @@ describe('Phase 8A: Quote Commands', () => {
       };
 
       const searchByTag = (guildId, tag) => {
-        return quotes.filter(q => q.guildId === guildId && q.tags.includes(tag));
+        return quotes.filter((q) => q.guildId === guildId && q.tags.includes(tag));
       };
 
       // Add tag
@@ -897,12 +871,12 @@ describe('Phase 8A: Quote Commands', () => {
         id: i + 1,
         text: `Quote ${i + 1}`,
         guildId: 'guild-456',
-        rating: Math.random() * 5
+        rating: Math.random() * 5,
       }));
 
       const batchRate = async (guildId, quoteIds, rating) => {
-        return quoteIds.map(id => {
-          const quote = quotes.find(q => q.id === id && q.guildId === guildId);
+        return quoteIds.map((id) => {
+          const quote = quotes.find((q) => q.id === id && q.guildId === guildId);
           if (quote) quote.rating = rating;
           return quote;
         });
@@ -910,7 +884,7 @@ describe('Phase 8A: Quote Commands', () => {
 
       const updated = await batchRate('guild-456', [1, 2, 3, 4, 5], 5);
       assert.strictEqual(updated.length, 5);
-      assert(updated.every(q => q.rating === 5));
+      assert(updated.every((q) => q.rating === 5));
     });
   });
 });

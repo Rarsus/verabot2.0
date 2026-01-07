@@ -21,7 +21,7 @@ async function autoRegisterCommands(options = {}) {
     guildId = process.env.GUILD_ID || null,
     commandsPath = path.join(__dirname, '../commands'),
     features = require('../config/features'),
-    verbose = true
+    verbose = true,
   } = options;
 
   if (!token || !clientId) {
@@ -102,7 +102,7 @@ async function autoRegisterCommands(options = {}) {
     const data = {
       name: cmd.name,
       description: cmd.description || 'No description',
-      options: Array.isArray(cmd.options) ? cmd.options : []
+      options: Array.isArray(cmd.options) ? cmd.options : [],
     };
     seenNames.add(cmd.name);
     return data;
@@ -163,7 +163,7 @@ async function autoRegisterCommands(options = {}) {
     return {
       success: true,
       commandCount: commands.length,
-      skippedCommands
+      skippedCommands,
     };
   } catch (err) {
     if (verbose) {
@@ -173,7 +173,7 @@ async function autoRegisterCommands(options = {}) {
       success: false,
       commandCount: 0,
       skippedCommands,
-      error: err.message
+      error: err.message,
     };
   }
 }

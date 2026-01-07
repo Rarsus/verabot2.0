@@ -14,8 +14,8 @@ class MockInteraction {
     this.user = { id: '123', username: 'TestUser', tag: 'TestUser#1234' };
     this.member = {
       permissions: {
-        has: (_permission) => isAdmin
-      }
+        has: (_permission) => isAdmin,
+      },
     };
     this._options = new Map();
     this.options = {
@@ -26,7 +26,7 @@ class MockInteraction {
       getBoolean: (name) => {
         const value = this._options.get(name);
         return typeof value === 'boolean' ? value : null;
-      }
+      },
     };
     this.replied = false;
     this.deferred = false;
@@ -93,9 +93,9 @@ async function testProxyConfigCommand() {
     const nonAdminResponse = nonAdminInteraction.responses[nonAdminInteraction.responses.length - 1];
     assert(
       nonAdminResponse.content.includes('permission') ||
-      nonAdminResponse.content.includes('admin') ||
-      nonAdminResponse.includes('permission') ||
-      nonAdminResponse.includes('admin'),
+        nonAdminResponse.content.includes('admin') ||
+        nonAdminResponse.includes('permission') ||
+        nonAdminResponse.includes('admin'),
       'Should reject non-admin users'
     );
 
@@ -108,9 +108,9 @@ async function testProxyConfigCommand() {
     const errorResponse = invalidInteraction.responses[invalidInteraction.responses.length - 1];
     assert(
       errorResponse.content.includes('❌') ||
-      errorResponse.content.includes('invalid') ||
-      errorResponse.includes('❌') ||
-      errorResponse.includes('invalid'),
+        errorResponse.content.includes('invalid') ||
+        errorResponse.includes('❌') ||
+        errorResponse.includes('invalid'),
       'Should reject invalid URLs'
     );
 
@@ -170,8 +170,7 @@ async function testProxyEnableCommand() {
 
     const nonAdminResponse = nonAdminInteraction.responses[nonAdminInteraction.responses.length - 1];
     assert(
-      nonAdminResponse.content.includes('permission') ||
-      nonAdminResponse.includes('permission'),
+      nonAdminResponse.content.includes('permission') || nonAdminResponse.includes('permission'),
       'Should reject non-admin users'
     );
 
@@ -216,10 +215,7 @@ async function testProxyStatusCommand() {
 
     await command.executeInteraction(nonAdminInteraction);
 
-    assert(
-      nonAdminInteraction.replied || nonAdminInteraction.deferred,
-      'Should respond to non-admin'
-    );
+    assert(nonAdminInteraction.replied || nonAdminInteraction.deferred, 'Should respond to non-admin');
 
     console.log('✅ proxy-status command tests passed');
   } catch {
@@ -243,19 +239,11 @@ async function testAdminPermissionChecks() {
 
     // Test 1: Admin user
     const adminInteraction = new MockInteraction(true);
-    assert.strictEqual(
-      checkAdminPermission(adminInteraction),
-      true,
-      'Should allow admin users'
-    );
+    assert.strictEqual(checkAdminPermission(adminInteraction), true, 'Should allow admin users');
 
     // Test 2: Non-admin user
     const nonAdminInteraction = new MockInteraction(false);
-    assert.strictEqual(
-      checkAdminPermission(nonAdminInteraction),
-      false,
-      'Should deny non-admin users'
-    );
+    assert.strictEqual(checkAdminPermission(nonAdminInteraction), false, 'Should deny non-admin users');
 
     console.log('✅ Admin Permission Checks tests passed');
   } catch {

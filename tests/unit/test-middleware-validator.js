@@ -3,7 +3,6 @@
  * Tests command validation before execution
  */
 
-
 const { validateCommand } = require('../../src/middleware/commandValidator');
 
 let passed = 0;
@@ -12,17 +11,25 @@ let failed = 0;
 // Mock interaction helpers
 function createValidInteraction() {
   return {
-    isCommand: function() { return true; },
-    isChatInputCommand: function() { return true; },
+    isCommand: function () {
+      return true;
+    },
+    isChatInputCommand: function () {
+      return true;
+    },
     commandName: 'test-command',
-    user: { id: '123', username: 'testuser' }
+    user: { id: '123', username: 'testuser' },
   };
 }
 
 function createInvalidInteraction() {
   return {
-    isCommand: function() { return false; },
-    isChatInputCommand: function() { return false; }
+    isCommand: function () {
+      return false;
+    },
+    isChatInputCommand: function () {
+      return false;
+    },
   };
 }
 
@@ -128,8 +135,12 @@ try {
 console.log('\n=== Test 7: isCommand True Is Valid ===');
 try {
   const interaction = {
-    isCommand: function() { return true; },
-    isChatInputCommand: function() { return false; }
+    isCommand: function () {
+      return true;
+    },
+    isChatInputCommand: function () {
+      return false;
+    },
   };
   const result = validateCommand(interaction);
   if (result === true) {
@@ -148,8 +159,12 @@ try {
 console.log('\n=== Test 8: isChatInputCommand True Is Valid ===');
 try {
   const interaction = {
-    isCommand: function() { return false; },
-    isChatInputCommand: function() { return true; }
+    isCommand: function () {
+      return false;
+    },
+    isChatInputCommand: function () {
+      return true;
+    },
   };
   const result = validateCommand(interaction);
   if (result === true) {
@@ -168,8 +183,12 @@ try {
 console.log('\n=== Test 9: Both Methods False Returns False ===');
 try {
   const interaction = {
-    isCommand: function() { return false; },
-    isChatInputCommand: function() { return false; }
+    isCommand: function () {
+      return false;
+    },
+    isChatInputCommand: function () {
+      return false;
+    },
   };
   const result = validateCommand(interaction);
   if (result === false) {

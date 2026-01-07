@@ -14,48 +14,44 @@ const database = require('../../services/DatabaseService');
 const proxyConfig = new ProxyConfigService(database);
 
 // Define command options
-const { data, options } = buildCommandOptions(
-  'proxy-config',
-  'Configure webhook proxy settings (Admin only)',
-  [
-    {
-      name: 'webhook-url',
-      type: 'string',
-      required: false,
-      description: 'Webhook URL to forward messages to'
-    },
-    {
-      name: 'webhook-token',
-      type: 'string',
-      required: false,
-      description: 'Authentication token for webhook'
-    },
-    {
-      name: 'webhook-secret',
-      type: 'string',
-      required: false,
-      description: 'Secret for incoming webhook signature verification'
-    },
-    {
-      name: 'add-channel',
-      type: 'string',
-      required: false,
-      description: 'Add a channel ID to monitor'
-    },
-    {
-      name: 'remove-channel',
-      type: 'string',
-      required: false,
-      description: 'Remove a channel ID from monitoring'
-    },
-    {
-      name: 'clear-channels',
-      type: 'boolean',
-      required: false,
-      description: 'Clear all monitored channels'
-    }
-  ]
-);
+const { data, options } = buildCommandOptions('proxy-config', 'Configure webhook proxy settings (Admin only)', [
+  {
+    name: 'webhook-url',
+    type: 'string',
+    required: false,
+    description: 'Webhook URL to forward messages to',
+  },
+  {
+    name: 'webhook-token',
+    type: 'string',
+    required: false,
+    description: 'Authentication token for webhook',
+  },
+  {
+    name: 'webhook-secret',
+    type: 'string',
+    required: false,
+    description: 'Secret for incoming webhook signature verification',
+  },
+  {
+    name: 'add-channel',
+    type: 'string',
+    required: false,
+    description: 'Add a channel ID to monitor',
+  },
+  {
+    name: 'remove-channel',
+    type: 'string',
+    required: false,
+    description: 'Remove a channel ID from monitoring',
+  },
+  {
+    name: 'clear-channels',
+    type: 'boolean',
+    required: false,
+    description: 'Clear all monitored channels',
+  },
+]);
 
 class ProxyConfigCommand extends Command {
   constructor() {
@@ -66,8 +62,8 @@ class ProxyConfigCommand extends Command {
       options,
       permissions: {
         minTier: 3,
-        visible: false
-      }
+        visible: false,
+      },
     });
   }
 
@@ -143,7 +139,7 @@ class ProxyConfigCommand extends Command {
       // Remove channel from monitoring
       if (removeChannel) {
         const channels = await proxyConfig.getMonitoredChannels();
-        const filtered = channels.filter(ch => ch !== removeChannel);
+        const filtered = channels.filter((ch) => ch !== removeChannel);
 
         if (filtered.length < channels.length) {
           await proxyConfig.setMonitoredChannels(filtered);
@@ -165,17 +161,9 @@ class ProxyConfigCommand extends Command {
         return;
       }
 
-      await sendSuccess(
-        interaction,
-        `Configuration updated:\n${updates.map(u => `• ${u}`).join('\n')}`,
-        true
-      );
+      await sendSuccess(interaction, `Configuration updated:\n${updates.map((u) => `• ${u}`).join('\n')}`, true);
     } catch (err) {
-      await sendError(
-        interaction,
-        `Failed to update configuration: ${err.message}`,
-        true
-      );
+      await sendError(interaction, `Failed to update configuration: ${err.message}`, true);
     }
   }
 }

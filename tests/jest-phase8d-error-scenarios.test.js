@@ -83,7 +83,7 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
       it('should handle special characters in arguments', async () => {
         const sanitize = (input) => {
           const dangerous = ['<script>', 'javascript:', 'onload='];
-          const hasDangerous = dangerous.some(d => input.includes(d));
+          const hasDangerous = dangerous.some((d) => input.includes(d));
           if (hasDangerous) throw new Error('Dangerous characters detected');
           return true;
         };
@@ -236,7 +236,7 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
           throw new Error('Transaction failed');
         };
 
-        return executeTransaction().catch(e => {
+        return executeTransaction().catch((e) => {
           assert.strictEqual(tx.committed, false);
         });
       });
@@ -266,10 +266,7 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
           data.version++;
         };
 
-        return Promise.all([
-          update(1, { text: 'update1' }),
-          update(1, { text: 'update2' })
-        ]).catch(e => {
+        return Promise.all([update(1, { text: 'update1' }), update(1, { text: 'update2' })]).catch((e) => {
           assert(e.message.includes('Concurrent'));
         });
       });
@@ -282,7 +279,11 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
             throw new Error('Connection pool exhausted');
           }
           pool.available--;
-          return { close: () => { pool.available++; } };
+          return {
+            close: () => {
+              pool.available++;
+            },
+          };
         };
 
         try {
@@ -458,7 +459,7 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
       it('should prevent SQL injection in text field', () => {
         const validateQuote = (text) => {
           const dangerous = ["'; DROP TABLE", 'UNION SELECT', 'OR 1=1'];
-          if (dangerous.some(d => text.includes(d))) {
+          if (dangerous.some((d) => text.includes(d))) {
             throw new Error('Potential SQL injection detected');
           }
           return true;
@@ -475,7 +476,7 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
       it('should prevent XSS in Discord embed text', () => {
         const validateEmbed = (text) => {
           const xssTags = ['<script>', '<iframe', 'javascript:'];
-          if (xssTags.some(tag => text.includes(tag))) {
+          if (xssTags.some((tag) => text.includes(tag))) {
             throw new Error('XSS attempt detected');
           }
           return true;
@@ -492,7 +493,7 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
       it('should prevent command injection', () => {
         const validateInput = (input) => {
           const shellChars = [';', '|', '&', '$', '`', '$('];
-          if (shellChars.some(c => input.includes(c))) {
+          if (shellChars.some((c) => input.includes(c))) {
             throw new Error('Command injection attempt detected');
           }
           return true;
@@ -633,7 +634,7 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
         const quotes = [{ id: 1, text: 'Hello world', author: 'Test' }];
 
         const addQuote = async (text, author) => {
-          const exists = quotes.some(q => q.text === text && q.author === author);
+          const exists = quotes.some((q) => q.text === text && q.author === author);
           if (exists) throw new Error('Quote already exists');
           quotes.push({ id: quotes.length + 1, text, author });
           return { success: true };
@@ -669,7 +670,7 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
         const guilds = [{ id: 'guild-123', name: 'Test' }];
 
         const addQuoteToGuild = (guildId, quote) => {
-          if (!guilds.find(g => g.id === guildId)) {
+          if (!guilds.find((g) => g.id === guildId)) {
             throw new Error(`Guild ${guildId} not found`);
           }
           return { success: true };
@@ -740,7 +741,9 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
     });
 
     it('should handle pagination with large datasets', () => {
-      const items = Array(10000).fill(null).map((_, i) => ({ id: i }));
+      const items = Array(10000)
+        .fill(null)
+        .map((_, i) => ({ id: i }));
 
       const paginate = (page, pageSize) => {
         if (page < 1) throw new Error('Invalid page');
@@ -779,12 +782,14 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
         if (activeRequests > requestLimit) {
           throw new Error('Request limit exceeded');
         }
-        await new Promise(r => setTimeout(r, 10));
+        await new Promise((r) => setTimeout(r, 10));
         activeRequests--;
         return { success: true };
       };
 
-      const requests = Array(5).fill(null).map(() => execute());
+      const requests = Array(5)
+        .fill(null)
+        .map(() => execute());
       return Promise.all(requests).then(() => {
         assert.strictEqual(activeRequests, 0);
       });
@@ -808,9 +813,7 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
       const processWithTimeout = (fn, timeout) => {
         return Promise.race([
           fn(),
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Execution timeout')), timeout)
-          )
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Execution timeout')), timeout)),
         ]);
       };
 
@@ -909,7 +912,7 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
           } catch (e) {
             attempts++;
             if (i === maxAttempts - 1) throw e;
-            await new Promise(r => setTimeout(r, 100 * Math.pow(2, i)));
+            await new Promise((r) => setTimeout(r, 100 * Math.pow(2, i)));
           }
         }
       };
@@ -1043,7 +1046,7 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
       const error = createError('Operation failed', {
         userId: 'user-123',
         guildId: 'guild-456',
-        action: 'add-quote'
+        action: 'add-quote',
       });
 
       assert.strictEqual(error.context.userId, 'user-123');
@@ -1074,11 +1077,7 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
       const recovered = JSON.parse(JSON.stringify(original));
 
       const verify = (data) => {
-        return (
-          data.id &&
-          data.text &&
-          typeof data.rating === 'number'
-        );
+        return data.id && data.text && typeof data.rating === 'number';
       };
 
       assert.strictEqual(verify(recovered), true);

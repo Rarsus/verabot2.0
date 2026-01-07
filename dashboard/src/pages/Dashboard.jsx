@@ -81,32 +81,21 @@ export default function Dashboard() {
       <div className="flex-grow flex flex-col">
         {/* Top Bar */}
         <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="text-gray-600 hover:text-gray-900 transition"
-          >
-            {sidebarOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-gray-600 hover:text-gray-900 transition">
+            {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
 
           <h2 className="text-2xl font-semibold text-gray-900">
-            {menuItems.find((item) => item.id === currentPage)?.label ||
-              'Dashboard'}
+            {menuItems.find((item) => item.id === currentPage)?.label || 'Dashboard'}
           </h2>
 
           <div className="text-sm text-gray-600">
-            {new Date().toLocaleDateString()} at{' '}
-            {new Date().toLocaleTimeString()}
+            {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}
           </div>
         </div>
 
         {/* Page Content */}
-        <div className="flex-grow overflow-auto p-6">
-          {renderPage()}
-        </div>
+        <div className="flex-grow overflow-auto p-6">{renderPage()}</div>
       </div>
     </div>
   );

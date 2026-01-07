@@ -30,8 +30,8 @@ class ProxyStatusCommand extends Command {
       options,
       permissions: {
         minTier: 3,
-        visible: false
-      }
+        visible: false,
+      },
     });
   }
 
@@ -57,34 +57,35 @@ class ProxyStatusCommand extends Command {
 
       const embed = new EmbedBuilder()
         .setTitle('🔗 Webhook Proxy Status')
-        .setColor(config.enabled ? 0x00FF00 : 0xFF0000)
+        .setColor(config.enabled ? 0x00ff00 : 0xff0000)
         .addFields(
           {
             name: 'Status',
             value: config.enabled ? '✅ Enabled' : '⏸️ Disabled',
-            inline: true
+            inline: true,
           },
           {
             name: 'Webhook URL',
             value: config.webhookUrl || '❌ Not configured',
-            inline: false
+            inline: false,
           },
           {
             name: 'Authentication',
             value: config.hasToken ? '✅ Token configured' : '❌ No token',
-            inline: true
+            inline: true,
           },
           {
             name: 'Signature Verification',
             value: config.hasSecret ? '✅ Secret configured' : '❌ No secret',
-            inline: true
+            inline: true,
           },
           {
             name: 'Monitored Channels',
-            value: config.monitoredChannels.length > 0
-              ? config.monitoredChannels.map(ch => `<#${ch}>`).join(', ')
-              : '❌ No channels configured',
-            inline: false
+            value:
+              config.monitoredChannels.length > 0
+                ? config.monitoredChannels.map((ch) => `<#${ch}>`).join(', ')
+                : '❌ No channels configured',
+            inline: false,
           }
         )
         .setFooter({ text: 'Use /proxy-config to modify settings' })
@@ -92,11 +93,7 @@ class ProxyStatusCommand extends Command {
 
       await interaction.reply({ embeds: [embed], flags: 64 });
     } catch (err) {
-      await sendError(
-        interaction,
-        `Failed to retrieve status: ${err.message}`,
-        true
-      );
+      await sendError(interaction, `Failed to retrieve status: ${err.message}`, true);
     }
   }
 }

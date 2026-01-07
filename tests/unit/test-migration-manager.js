@@ -111,7 +111,7 @@ console.log('\n=== Setup: Initialize Database Schema ===');
     const status = await manager.getStatus();
     assert(Array.isArray(status), 'Status is an array');
     assert(status.length > 0, 'Status contains migrations');
-    const hasValidStatus = status.every(m => ['applied', 'pending'].includes(m.status));
+    const hasValidStatus = status.every((m) => ['applied', 'pending'].includes(m.status));
     assert(hasValidStatus, 'All migrations have valid status');
   } catch (err) {
     assert(false, `Get status failed: ${err.message}`);
@@ -132,7 +132,7 @@ console.log('\n=== Setup: Initialize Database Schema ===');
   console.log('\n=== Test 6: Status After Migration ===');
   try {
     const status = await manager.getStatus();
-    const applied = status.filter(m => m.status === 'applied');
+    const applied = status.filter((m) => m.status === 'applied');
     assert(applied.length > 0, 'Some migrations applied');
   } catch (err) {
     assert(false, `Status check failed: ${err.message}`);
@@ -243,8 +243,8 @@ console.log('\n=== Setup: Initialize Database Schema ===');
   console.log('\n=== Test 14: Migration Name Parsing ===');
   try {
     const migrations = await manager.listMigrations();
-    const hasInitialSchema = migrations.some(m => m.name.includes('initial_schema'));
-    const hasIndexes = migrations.some(m => m.name.includes('add_indexes'));
+    const hasInitialSchema = migrations.some((m) => m.name.includes('initial_schema'));
+    const hasIndexes = migrations.some((m) => m.name.includes('add_indexes'));
     assert(hasInitialSchema, 'Initial schema migration found');
     assert(hasIndexes, 'Add indexes migration found');
   } catch (err) {

@@ -10,6 +10,7 @@
 ### Completed Work (✅ 100% Done)
 
 #### Jest Migration (Phase 1-2)
+
 - ✅ Installed Jest 30.1.3 with full configuration
 - ✅ Created `jest.config.js` with coverage instrumentation
 - ✅ Created `jest-setup-hook.js` to handle process.exit() calls
@@ -19,6 +20,7 @@
 - ✅ All 42 existing tests passing with proper Jest instrumentation
 
 #### Coverage Measurement (Phase 3)
+
 - ✅ Generated accurate Jest-measured baseline (proper instrumentation):
   - **Lines:** 28.82% (1426/4947)
   - **Functions:** 30.73% (272/885)
@@ -26,6 +28,7 @@
   - **Statements:** 28.15% (1454/5164)
 
 #### Phase 4 Gap Testing (Phase 4)
+
 - ✅ Created `jest-phase4-gaps.test.js` (22 tests)
 - ✅ Targeted 9 uncovered modules (0% coverage)
 - ✅ Targeted 8 low-coverage modules (<50% coverage)
@@ -34,16 +37,17 @@
 
 ### Current Coverage Status
 
-| Metric | Current | Target | Gap |
-|--------|---------|--------|-----|
-| **Lines** | 28.82% | 90%+ | 61.18% |
-| **Functions** | 30.73% | 95%+ | 64.27% |
-| **Branches** | 23.47% | 85%+ | 61.53% |
-| **Statements** | 28.15% | 90%+ | 61.85% |
+| Metric         | Current | Target | Gap    |
+| -------------- | ------- | ------ | ------ |
+| **Lines**      | 28.82%  | 90%+   | 61.18% |
+| **Functions**  | 30.73%  | 95%+   | 64.27% |
+| **Branches**   | 23.47%  | 85%+   | 61.53% |
+| **Statements** | 28.15%  | 90%+   | 61.85% |
 
 ### Modules Requiring Work
 
 #### Uncovered Modules (0% Coverage)
+
 1. **CommunicationService** - Complex communication logic, needs implementation tests
 2. **ExternalActionHandler** - External API integration, needs mocking and testing
 3. **WebSocketService** - Real-time communication, needs WebSocket mocking
@@ -55,6 +59,7 @@
 9. **Resolution Helpers** - Utility functions, needs comprehensive tests
 
 #### Low Coverage Modules (<50%)
+
 1. **RolePermissionService** - 6.45% (needs 43+ more tests)
 2. **WebhookListenerService** - 33.78% (needs 26+ more tests)
 3. **ErrorHandler** - 44.68% (needs 25+ more tests)
@@ -69,6 +74,7 @@
 ### What Was Done
 
 **Phase 1-2: Infrastructure Setup**
+
 ```bash
 # Installed Jest
 npm install --save-dev jest@30.1.3
@@ -90,11 +96,13 @@ Added test scripts:
 ```
 
 **Phase 3: Coverage Measurement**
+
 - Generated accurate coverage report with Jest instrumentation
 - Baseline: 28.82% lines (vs 70.33% custom runner - different metrics)
 - Jest measures actual code execution, custom runner had gaps
 
 **Phase 4: Gap Testing Implementation**
+
 - Created comprehensive test file for uncovered/low-coverage modules
 - 22 tests targeting 9 uncovered + 8 low-coverage modules
 - All 22 tests passing
@@ -112,24 +120,26 @@ Time:        9.079 seconds
 ### Key Configuration Files
 
 **jest.config.js (94 lines)**
+
 ```javascript
 module.exports = {
   testEnvironment: 'node',
   testMatch: ['**/tests/**/*.test.js'],
   collectCoverageFrom: ['src/**/*.js', '!src/index.js', '!src/config/**'],
-  forceExit: true,  // Critical for handling process.exit() calls
+  forceExit: true, // Critical for handling process.exit() calls
   setupFilesAfterEnv: ['tests/jest-setup-hook.js'],
   coverageThresholds: {
     global: {
       lines: 15,
       functions: 20,
-      branches: 15
-    }
-  }
+      branches: 15,
+    },
+  },
 };
 ```
 
 **jest-setup-hook.js (13 lines)**
+
 ```javascript
 // Intercepts process.exit() calls from custom tests
 // Allows Jest to continue instead of exiting
@@ -148,6 +158,7 @@ jest.setTimeout(60000);
 ### Phase 5A: High-Impact Service Tests (Week 1)
 
 **Priority 1: RolePermissionService (Currently 6.45%)**
+
 - Target: 50+ tests bringing to 85%+ coverage
 - Key areas:
   - Role validation methods (hasAdminRole, hasModRole, etc.)
@@ -158,6 +169,7 @@ jest.setTimeout(60000);
   - Edge cases (null users, invalid guilds, etc.)
 
 **Priority 2: ReminderService (Currently 3.67%)**
+
 - Target: 90+ tests bringing to 70%+ coverage
 - Key areas:
   - Create/read/update/delete reminders
@@ -168,6 +180,7 @@ jest.setTimeout(60000);
   - Error recovery
 
 **Priority 3: GuildAwareReminderService (Currently 3.57%)**
+
 - Target: 80+ tests bringing to 60%+ coverage
 - Key areas:
   - Guild-aware reminder operations
@@ -178,6 +191,7 @@ jest.setTimeout(60000);
 ### Phase 5B: Error Handling & Edge Cases (Week 2)
 
 **Priority 4: ErrorHandler (Currently 44.68%)**
+
 - Target: 25+ tests bringing to 85%+ coverage
 - Key areas:
   - Error logging at different levels
@@ -187,6 +201,7 @@ jest.setTimeout(60000);
   - Recovery strategies
 
 **Priority 5: WebhookListenerService (Currently 33.78%)**
+
 - Target: 26+ tests bringing to 75%+ coverage
 - Key areas:
   - Webhook message parsing
@@ -197,6 +212,7 @@ jest.setTimeout(60000);
 ### Phase 5C: Core Services (Week 3)
 
 **Priority 6: CommandBase (Currently 56.86%)**
+
 - Target: 13+ tests bringing to 85%+ coverage
 - Key areas:
   - Command execution flow
@@ -206,6 +222,7 @@ jest.setTimeout(60000);
   - Response building
 
 **Priority 7: QuoteService (Currently 25%)**
+
 - Target: 40+ tests bringing to 75%+ coverage
 - Key areas:
   - CRUD operations (create, read, update, delete)
@@ -218,6 +235,7 @@ jest.setTimeout(60000);
 ### Phase 5D: Integration Tests (Week 4)
 
 **Priority 8: Integration Test Suite**
+
 - End-to-end command flows
 - Multi-service interactions
 - Database transaction chains
@@ -225,6 +243,7 @@ jest.setTimeout(60000);
 - Error recovery scenarios
 
 **Priority 9: Dashboard Features (Currently 0%)**
+
 - Dashboard routes (0% coverage)
 - Dashboard auth middleware (0% coverage)
 - Target: 80+ tests for dashboard features
@@ -352,6 +371,7 @@ describe('ServiceName', () => {
 ## Testing Best Practices (Mandatory)
 
 ### 1. Mock Management
+
 ```javascript
 // ✅ GOOD: Proper mock setup and cleanup
 beforeEach(() => {
@@ -368,6 +388,7 @@ const globalMock = createMockDatabase(); // Don't do this
 ```
 
 ### 2. Assertion Specificity
+
 ```javascript
 // ✅ GOOD: Specific, meaningful assertions
 expect(result).toEqual({ id: '123', name: 'Test' });
@@ -379,6 +400,7 @@ expect(mockFn).toHaveBeenCalled();
 ```
 
 ### 3. Error Testing Patterns
+
 ```javascript
 // ✅ GOOD: Test specific error scenarios
 describe('error handling', () => {
@@ -399,6 +421,7 @@ it('should handle errors', () => {
 ```
 
 ### 4. Async/Await Patterns
+
 ```javascript
 // ✅ GOOD: Proper async testing
 it('should resolve with expected value', async () => {
@@ -414,7 +437,7 @@ it('should reject on error', async () => {
 
 // ❌ AVOID: Not returning promises
 it('should work', () => {
-  return service.asyncMethod().then(result => {
+  return service.asyncMethod().then((result) => {
     expect(result).toBeDefined();
   });
 });
@@ -423,6 +446,7 @@ it('should work', () => {
 ## Coverage Metrics & Targets
 
 ### Current State (After Phase 4)
+
 ```
 Statements: 28.15% (1454/5164)
 Branches:   23.47% (674/2871)
@@ -431,6 +455,7 @@ Lines:      28.82% (1426/4947)
 ```
 
 ### Phase 5 Target (60%+ lines)
+
 ```
 Statements: 60%+ (3098/5164)
 Branches:   30%+ (858/2871)
@@ -439,6 +464,7 @@ Lines:      60%+ (2968/4947)
 ```
 
 ### End Goal (90%+ lines)
+
 ```
 Statements: 90%+ (4647/5164)
 Branches:   85%+ (2440/2871)
@@ -448,22 +474,23 @@ Lines:      90%+ (4452/4947)
 
 ## Module Priority Matrix
 
-| Module | Current | Gap | Tests Needed | Effort | Priority |
-|--------|---------|-----|--------------|--------|----------|
-| RolePermissionService | 6.45% | 78.55% | 50+ | High | 1 |
-| ReminderService | 3.67% | 86.33% | 90+ | Very High | 1 |
-| WebhookListenerService | 33.78% | 41.22% | 26+ | Medium | 2 |
-| CommandBase | 56.86% | 28.14% | 13+ | Low | 3 |
-| QuoteService | 25% | 65% | 40+ | Medium | 2 |
-| ErrorHandler | 44.68% | 40.32% | 25+ | Medium | 2 |
-| Dashboard routes | 0% | 100% | 80+ | Very High | 1 |
-| Dashboard auth | 0% | 100% | 30+ | Very High | 1 |
-| WebSocketService | 0% | 100% | 40+ | High | 2 |
-| ExternalActionHandler | 0% | 100% | 35+ | High | 2 |
+| Module                 | Current | Gap    | Tests Needed | Effort    | Priority |
+| ---------------------- | ------- | ------ | ------------ | --------- | -------- |
+| RolePermissionService  | 6.45%   | 78.55% | 50+          | High      | 1        |
+| ReminderService        | 3.67%   | 86.33% | 90+          | Very High | 1        |
+| WebhookListenerService | 33.78%  | 41.22% | 26+          | Medium    | 2        |
+| CommandBase            | 56.86%  | 28.14% | 13+          | Low       | 3        |
+| QuoteService           | 25%     | 65%    | 40+          | Medium    | 2        |
+| ErrorHandler           | 44.68%  | 40.32% | 25+          | Medium    | 2        |
+| Dashboard routes       | 0%      | 100%   | 80+          | Very High | 1        |
+| Dashboard auth         | 0%      | 100%   | 30+          | Very High | 1        |
+| WebSocketService       | 0%      | 100%   | 40+          | High      | 2        |
+| ExternalActionHandler  | 0%      | 100%   | 35+          | High      | 2        |
 
 ## Git Workflow
 
 ### Before Each Phase
+
 ```bash
 # Ensure clean working directory
 git status
@@ -475,6 +502,7 @@ git checkout -b feature/phase5a-role-permissions
 ```
 
 ### After Each Phase
+
 ```bash
 # Run full test suite
 npm test
@@ -489,6 +517,7 @@ git commit -m "test(phase5a): Add 50+ RolePermissionService tests"
 ## Success Criteria
 
 ### Phase 5 Completion
+
 - [ ] All Phase 5 tests created and passing
 - [ ] Overall coverage: 60%+ lines
 - [ ] Function coverage: 40%+ functions
@@ -499,6 +528,7 @@ git commit -m "test(phase5a): Add 50+ RolePermissionService tests"
 - [ ] Zero ESLint errors
 
 ### End Goal Achievement
+
 - [ ] Overall coverage: 90%+ lines
 - [ ] Function coverage: 95%+ functions
 - [ ] Branch coverage: 85%+ branches
@@ -532,21 +562,25 @@ git commit -m "test(phase5a): Add 50+ RolePermissionService tests"
 ## References
 
 **Configuration Files:**
+
 - [jest.config.js](jest.config.js) - Jest configuration
 - [jest-setup-hook.js](tests/jest-setup-hook.js) - Process.exit handling
 - [jest-setup.js](tests/jest-setup.js) - Test utilities
 
 **Test Files:**
+
 - [jest-master.test.js](tests/unit/jest-master.test.js) - Custom test bridge
 - [jest-phase4-gaps.test.js](tests/unit/jest-phase4-gaps.test.js) - Phase 4 tests
 
 **Documentation:**
+
 - [CODE-COVERAGE-ANALYSIS-PLAN.md](CODE-COVERAGE-ANALYSIS-PLAN.md) - Historical analysis
 - [README.md](README.md) - Project overview
 
 ## Questions & Support
 
 For questions about:
+
 - **Jest configuration:** See jest.config.js comments
 - **Test patterns:** Review jest-phase4-gaps.test.js examples
 - **Coverage metrics:** Check `npm test -- --coverage` output

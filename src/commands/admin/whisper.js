@@ -16,15 +16,15 @@ const { data, options } = buildCommandOptions(
       name: 'targets',
       type: 'string',
       required: true,
-      description: 'User IDs or Role IDs (prefix roles with "role:", comma-separated)'
+      description: 'User IDs or Role IDs (prefix roles with "role:", comma-separated)',
     },
     {
       name: 'message',
       type: 'string',
       required: true,
       description: 'Message to send',
-      maxLength: 2000
-    }
+      maxLength: 2000,
+    },
   ]
 );
 
@@ -36,9 +36,9 @@ class WhisperCommand extends Command {
       data,
       options,
       permissions: {
-        minTier: 3,      // Administrator tier
-        visible: false   // Hidden from non-admins
-      }
+        minTier: 3, // Administrator tier
+        visible: false, // Hidden from non-admins
+      },
     });
   }
 
@@ -62,7 +62,7 @@ class WhisperCommand extends Command {
     }
 
     const members = await interaction.guild.members.fetch();
-    const users = members.filter(m => m.roles.has(roleId)).map(m => m.user);
+    const users = members.filter((m) => m.roles.has(roleId)).map((m) => m.user);
 
     if (users.length === 0) {
       return { users: [], error: `${target} (no members in role)` };
@@ -98,11 +98,9 @@ class WhisperCommand extends Command {
       // Try to resolve by username from guild members
       try {
         const members = await interaction.guild.members.fetch();
-        const member = members.find(m =>
-          m.user.username === target ||
-          m.user.tag === target ||
-          m.displayName === target ||
-          m.nickname === target
+        const member = members.find(
+          (m) =>
+            m.user.username === target || m.user.tag === target || m.displayName === target || m.nickname === target
         );
 
         if (member) {
@@ -145,7 +143,7 @@ class WhisperCommand extends Command {
       {
         userId: interaction.user.id,
         guildId: interaction.guildId,
-        commandName: 'whisper'
+        commandName: 'whisper',
       },
       interaction.client
     );
@@ -158,10 +156,9 @@ class WhisperCommand extends Command {
     await interaction.deferReply({ flags: 64 });
 
     try {
-
       const targetsInput = interaction.options.getString('targets');
       const messageContent = interaction.options.getString('message');
-      const targetList = targetsInput.split(',').map(t => t.trim());
+      const targetList = targetsInput.split(',').map((t) => t.trim());
 
       const results = { success: [], failed: [] };
 
@@ -185,7 +182,7 @@ class WhisperCommand extends Command {
       if (failedCount > 0) {
         resultMessage += `\n⚠️ Failed for ${failedCount} target(s)`;
         if (failedCount <= 5) {
-          resultMessage += `:\n${results.failed.map(f => `  • ${f}`).join('\n')}`;
+          resultMessage += `:\n${results.failed.map((f) => `  • ${f}`).join('\n')}`;
         }
       }
 

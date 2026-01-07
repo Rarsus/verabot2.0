@@ -4,7 +4,7 @@ const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers
 const quoteService = require('../../services/QuoteService');
 
 const { data, options } = buildCommandOptions('delete-quote', 'Delete a quote (admin only)', [
-  { name: 'id', type: 'integer', description: 'Quote ID to delete', required: true }
+  { name: 'id', type: 'integer', description: 'Quote ID to delete', required: true },
 ]);
 
 class DeleteQuoteCommand extends Command {
@@ -16,8 +16,8 @@ class DeleteQuoteCommand extends Command {
       options,
       permissions: {
         minTier: 2,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 

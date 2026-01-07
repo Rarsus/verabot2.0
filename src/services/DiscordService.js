@@ -31,5 +31,5 @@ async function sendEphemeral(interaction, content) {
 
 module.exports = {
   sendEmbed,
-  sendEphemeral
+  sendEphemeral,
 };

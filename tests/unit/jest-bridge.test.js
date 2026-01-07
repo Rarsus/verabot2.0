@@ -22,12 +22,12 @@ const testFiles = [
   'test-response-helpers',
   'test-services-quote',
   'test-services-validation',
-  'test-webhook-proxy'
+  'test-webhook-proxy',
 ];
 
 describe('VeraBot Custom Tests Bridge - DEPRECATED', () => {
   // These legacy tests are skipped in Jest - migrate to Jest format instead
-  testFiles.forEach(testName => {
+  testFiles.forEach((testName) => {
     test.skip(`${testName} - SKIPPED (legacy standalone test)`, () => {
       // Run standalone tests separately using:
       // node tests/unit/test-filename.js

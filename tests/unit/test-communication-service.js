@@ -268,7 +268,7 @@ async function cleanupGuild() {
       const timestamp1 = status1.updatedAt;
 
       // Wait a bit to ensure timestamp difference
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       // Opt-out
       await GuildAwareCommunicationService.optOut(TEST_GUILD_ID, testUserId);

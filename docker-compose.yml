@@ -7,7 +7,7 @@
     volumes:
       - verabot_data:/app/data
     ports:
-      - "3000:3000"  # Internal API for dashboard communication
+      - '3000:3000' # Internal API for dashboard communication
     networks:
       - verabot-network
     environment:
@@ -20,7 +20,7 @@
       - .env
     restart: unless-stopped
     ports:
-      - "5000:5000"  # Dashboard server
+      - '5000:5000' # Dashboard server
     depends_on:
       - verabot2
     networks:

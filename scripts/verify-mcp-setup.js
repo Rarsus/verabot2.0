@@ -20,7 +20,7 @@ const colors = {
   red: '\x1b[31m',
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
-  cyan: '\x1b[36m'
+  cyan: '\x1b[36m',
 };
 
 function log(msg, color = 'reset') {
@@ -53,7 +53,7 @@ function testMCPServer(serverPath, testCmd, description) {
     execSync(`node ${serverPath} ${testCmd}`, {
       cwd: PROJECT_ROOT,
       timeout: 5000,
-      stdio: 'pipe'
+      stdio: 'pipe',
     });
     log(`✅ ${description}`, 'green');
     return true;
@@ -82,14 +82,11 @@ async function main() {
     { file: 'git-server.js', name: 'Git Server' },
     { file: 'shell-server.js', name: 'Shell Server' },
     { file: 'database-server.js', name: 'Database Server' },
-    { file: 'npm-server.js', name: 'NPM Server' }
+    { file: 'npm-server.js', name: 'NPM Server' },
   ];
 
   for (const server of servers) {
-    allChecks &= checkFile(
-      path.join(SERVERS_DIR, server.file),
-      `${server.name} (mcp-servers/${server.file})`
-    );
+    allChecks &= checkFile(path.join(SERVERS_DIR, server.file), `${server.name} (mcp-servers/${server.file})`);
   }
   log('');
 
@@ -102,16 +99,13 @@ async function main() {
 
   // Section 4: Database Files
   log('💾 Database Files:', 'blue');
-  allChecks &= checkFile(
-    path.join(PROJECT_ROOT, 'data/db/quotes.db'),
-    'Root Database (data/db/quotes.db)'
-  );
+  allChecks &= checkFile(path.join(PROJECT_ROOT, 'data/db/quotes.db'), 'Root Database (data/db/quotes.db)');
 
   // Check if guild databases exist
   const guildsDir = path.join(PROJECT_ROOT, 'data/db/guilds');
   let guildCount = 0;
   if (fs.existsSync(guildsDir)) {
-    guildCount = fs.readdirSync(guildsDir).filter(f => !f.startsWith('.')).length;
+    guildCount = fs.readdirSync(guildsDir).filter((f) => !f.startsWith('.')).length;
     log(`✅ Guild Databases Found (${guildCount} guilds)`, 'green');
   } else {
     log('⚠️  Guild Databases Directory Not Found - This is OK for new installations', 'yellow');
@@ -122,42 +116,22 @@ async function main() {
   log('🧪 MCP Server Tests:', 'blue');
 
   // Test filesystem server
-  testMCPServer(
-    'mcp-servers/filesystem-server.js',
-    'structure',
-    'Filesystem Server - Get Structure'
-  );
+  testMCPServer('mcp-servers/filesystem-server.js', 'structure', 'Filesystem Server - Get Structure');
 
   // Test git server
-  testMCPServer(
-    'mcp-servers/git-server.js',
-    'status',
-    'Git Server - Get Status'
-  );
+  testMCPServer('mcp-servers/git-server.js', 'status', 'Git Server - Get Status');
 
   // Test shell server
-  testMCPServer(
-    'mcp-servers/shell-server.js',
-    'info',
-    'Shell Server - Get Info'
-  );
+  testMCPServer('mcp-servers/shell-server.js', 'info', 'Shell Server - Get Info');
 
   // Test database server
-  const dbTestResult = testMCPServer(
-    'mcp-servers/database-server.js',
-    'summary',
-    'Database Server - Get Summary'
-  );
+  const dbTestResult = testMCPServer('mcp-servers/database-server.js', 'summary', 'Database Server - Get Summary');
   if (!dbTestResult) {
     log('  💡 Tip: Rebuild sqlite3 with: npm rebuild sqlite3', 'yellow');
   }
 
   // Test npm server
-  testMCPServer(
-    'mcp-servers/npm-server.js',
-    'version',
-    'NPM Server - Get Version'
-  );
+  testMCPServer('mcp-servers/npm-server.js', 'version', 'NPM Server - Get Version');
   log('');
 
   // Section 6: Node.js & npm Versions
@@ -232,7 +206,7 @@ async function main() {
 }
 
 // Run verification
-main().catch(error => {
+main().catch((error) => {
   log(`\nFatal Error: ${error.message}`, 'red');
   process.exit(1);
 });

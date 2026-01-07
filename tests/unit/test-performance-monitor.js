@@ -123,10 +123,10 @@ const testCases = [
   { sql: 'DELETE FROM table', expected: 'delete' },
   { sql: 'CREATE TABLE test', expected: 'create' },
   { sql: 'DROP TABLE test', expected: 'drop' },
-  { sql: 'ALTER TABLE test', expected: 'alter' }
+  { sql: 'ALTER TABLE test', expected: 'alter' },
 ];
 
-testCases.forEach(tc => {
+testCases.forEach((tc) => {
   monitor.recordQuery(tc.sql, 10, false);
 });
 const metrics8 = monitor.getMetrics();
@@ -157,7 +157,7 @@ const poolStats = {
   acquired: 10,
   released: 8,
   queued: 2,
-  utilization: 40
+  utilization: 40,
 };
 monitor.updatePoolMetrics(poolStats);
 const metrics10 = monitor.getMetrics();

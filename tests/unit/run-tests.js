@@ -31,13 +31,19 @@ let ok = true;
 for (const file of files) {
   const cmd = require(file);
   if (!cmd || typeof cmd !== 'object') {
-    console.error(path.basename(file), 'does not export an object'); ok = false; continue;
+    console.error(path.basename(file), 'does not export an object');
+    ok = false;
+    continue;
   }
   if (!cmd.name || typeof cmd.name !== 'string') {
-    console.error(path.basename(file), 'missing string `name` export'); ok = false; continue;
+    console.error(path.basename(file), 'missing string `name` export');
+    ok = false;
+    continue;
   }
   if (!(typeof cmd.execute === 'function' || typeof cmd.executeInteraction === 'function')) {
-    console.error(path.basename(file), 'must export `execute` or `executeInteraction` function'); ok = false; continue;
+    console.error(path.basename(file), 'must export `execute` or `executeInteraction` function');
+    ok = false;
+    continue;
   }
 }
 

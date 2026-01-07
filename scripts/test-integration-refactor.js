@@ -15,18 +15,43 @@ const _mockDiscord = {
       this.name_val = '';
       this.desc_val = '';
     }
-    setName(n) { this.name_val = n; return this; }
-    setDescription(d) { this.desc_val = d; return this; }
-    addStringOption(fn) { fn({ setName: () => ({ setDescription: () => ({ setRequired: () => this })})}); return this; }
-    toJSON() { return { name: this.name_val, description: this.desc_val, options: [] }; }
+    setName(n) {
+      this.name_val = n;
+      return this;
+    }
+    setDescription(d) {
+      this.desc_val = d;
+      return this;
+    }
+    addStringOption(fn) {
+      fn({ setName: () => ({ setDescription: () => ({ setRequired: () => this }) }) });
+      return this;
+    }
+    toJSON() {
+      return { name: this.name_val, description: this.desc_val, options: [] };
+    }
   },
   EmbedBuilder: class {
-    constructor() { this.data = {}; }
-    setTitle(t) { this.data.title = t; return this; }
-    setDescription(d) { this.data.description = d; return this; }
-    setFooter(f) { this.data.footer = f; return this; }
-    setColor(c) { this.data.color = c; return this; }
-  }
+    constructor() {
+      this.data = {};
+    }
+    setTitle(t) {
+      this.data.title = t;
+      return this;
+    }
+    setDescription(d) {
+      this.data.description = d;
+      return this;
+    }
+    setFooter(f) {
+      this.data.footer = f;
+      return this;
+    }
+    setColor(c) {
+      this.data.color = c;
+      return this;
+    }
+  },
 };
 
 // Create mock interaction
@@ -34,12 +59,25 @@ function createMockInteraction() {
   return {
     deferred: false,
     replied: false,
-    reply: async function(msg) { this.replied = true; this._reply = msg; return msg; },
-    editReply: async function(msg) { this._edit = msg; return msg; },
-    followUp: async function(msg) { return msg; },
-    isCommand: function() { return true; },
-    isChatInputCommand: function() { return true; },
-    options: { getString: (_name) => 'test_value', getInteger: (_name) => 1 }
+    reply: async function (msg) {
+      this.replied = true;
+      this._reply = msg;
+      return msg;
+    },
+    editReply: async function (msg) {
+      this._edit = msg;
+      return msg;
+    },
+    followUp: async function (msg) {
+      return msg;
+    },
+    isCommand: function () {
+      return true;
+    },
+    isChatInputCommand: function () {
+      return true;
+    },
+    options: { getString: (_name) => 'test_value', getInteger: (_name) => 1 },
   };
 }
 
@@ -80,7 +118,7 @@ console.log('\n=== Test 3: Response Helpers Loadable ===');
 try {
   const helpers = require('../../src/utils/helpers/response-helpers');
   const required = ['sendQuoteEmbed', 'sendSuccess', 'sendError', 'sendDM', 'deferReply'];
-  const missing = required.filter(h => typeof helpers[h] !== 'function');
+  const missing = required.filter((h) => typeof helpers[h] !== 'function');
 
   if (missing.length === 0) {
     console.log('✅ Test 3 Passed: All response helpers load');
@@ -104,7 +142,7 @@ try {
       super({
         name: 'simple',
         description: 'Simple test command',
-        data: { toJSON: () => ({}) }
+        data: { toJSON: () => ({}) },
       });
     }
 
@@ -119,9 +157,7 @@ try {
 
   const cmd = new SimpleCommand().register();
 
-  if (cmd.name === 'simple' &&
-      typeof cmd.execute === 'function' &&
-      typeof cmd.executeInteraction === 'function') {
+  if (cmd.name === 'simple' && typeof cmd.execute === 'function' && typeof cmd.executeInteraction === 'function') {
     console.log('✅ Test 4 Passed: Basic command structure valid');
     passed++;
   } else {
@@ -139,11 +175,9 @@ try {
   const Command = require('../../src/core/CommandBase');
   const buildCommandOptions = require('../../src/core/CommandOptions');
 
-  const { data, options } = buildCommandOptions(
-    'test-cmd',
-    'Test command',
-    [{ name: 'text', type: 'string', description: 'Text', required: true }]
-  );
+  const { data, options } = buildCommandOptions('test-cmd', 'Test command', [
+    { name: 'text', type: 'string', description: 'Text', required: true },
+  ]);
 
   class TestCommand extends Command {
     constructor() {
@@ -269,15 +303,11 @@ console.log('\n=== Test 9: Multiple Options Builder ===');
 try {
   const buildCommandOptions = require('../../src/core/CommandOptions');
 
-  const { data, options } = buildCommandOptions(
-    'multi',
-    'Multiple options test',
-    [
-      { name: 'name', type: 'string', description: 'Name' },
-      { name: 'count', type: 'integer', description: 'Count' },
-      { name: 'active', type: 'boolean', description: 'Active' }
-    ]
-  );
+  const { data, options } = buildCommandOptions('multi', 'Multiple options test', [
+    { name: 'name', type: 'string', description: 'Name' },
+    { name: 'count', type: 'integer', description: 'Count' },
+    { name: 'active', type: 'boolean', description: 'Active' },
+  ]);
 
   if (options.length === 3 && data) {
     console.log('✅ Test 9 Passed: Multiple options builder works');

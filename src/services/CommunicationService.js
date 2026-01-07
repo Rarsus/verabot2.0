@@ -15,19 +15,15 @@ function isOptedIn(userId) {
   return new Promise((resolve, reject) => {
     const db = getDatabase();
 
-    db.get(
-      'SELECT opted_in FROM user_communications WHERE user_id = ? LIMIT 1',
-      [userId],
-      (err, row) => {
-        if (err) {
-          logError('CommunicationService.isOptedIn', err, ERROR_LEVELS.MEDIUM, { userId });
-          reject(err);
-        } else {
-          // If user doesn't exist, they haven't opted in (default: opt-out)
-          resolve(row ? row.opted_in === 1 : false);
-        }
+    db.get('SELECT opted_in FROM user_communications WHERE user_id = ? LIMIT 1', [userId], (err, row) => {
+      if (err) {
+        logError('CommunicationService.isOptedIn', err, ERROR_LEVELS.MEDIUM, { userId });
+        reject(err);
+      } else {
+        // If user doesn't exist, they haven't opted in (default: opt-out)
+        resolve(row ? row.opted_in === 1 : false);
       }
-    );
+    });
   });
 }
 
@@ -106,14 +102,14 @@ function getStatus(userId) {
             resolve({
               opted_in: row.opted_in === 1,
               created_at: row.created_at,
-              updated_at: row.updated_at
+              updated_at: row.updated_at,
             });
           } else {
             // User doesn't exist, return default opt-out status
             resolve({
               opted_in: false,
               created_at: null,
-              updated_at: null
+              updated_at: null,
             });
           }
         }
@@ -126,5 +122,5 @@ module.exports = {
   isOptedIn,
   optIn,
   optOut,
-  getStatus
+  getStatus,
 };

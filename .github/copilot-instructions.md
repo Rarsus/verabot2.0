@@ -260,13 +260,13 @@ See `docs/reference/DB-DEPRECATION-TIMELINE.md` for detailed migration guide.
 
 #### Coverage Requirements by Module Type
 
-| Module Type | Lines | Functions | Branches | Test Count |
-|------------|-------|-----------|----------|-----------|
-| Core Services | **85%+** | **90%+** | **80%+** | 20-30 |
-| Utilities | **90%+** | **95%+** | **85%+** | 15-25 |
-| Commands | **80%+** | **85%+** | **75%+** | 15-20 |
-| Middleware | **95%+** | **100%** | **90%+** | 20-25 |
-| New Features | **90%+** | **95%+** | **85%+** | 20-30 |
+| Module Type   | Lines    | Functions | Branches | Test Count |
+| ------------- | -------- | --------- | -------- | ---------- |
+| Core Services | **85%+** | **90%+**  | **80%+** | 20-30      |
+| Utilities     | **90%+** | **95%+**  | **85%+** | 15-25      |
+| Commands      | **80%+** | **85%+**  | **75%+** | 15-20      |
+| Middleware    | **95%+** | **100%**  | **90%+** | 20-25      |
+| New Features  | **90%+** | **95%+**  | **85%+** | 20-30      |
 
 #### Test Requirements Checklist
 
@@ -297,7 +297,9 @@ describe('ModuleName', () => {
 
   beforeEach(() => {
     // Initialize test data
-    testData = { /* ... */ };
+    testData = {
+      /* ... */
+    };
   });
 
   afterEach(() => {
@@ -331,6 +333,7 @@ describe('ModuleName', () => {
 #### Mocking Standards
 
 **Discord.js Mocking:**
+
 ```javascript
 const mockInteraction = {
   user: { id: 'test-user-123', username: 'TestUser' },
@@ -344,6 +347,7 @@ const mockInteraction = {
 ```
 
 **Database Mocking:**
+
 ```javascript
 // Use in-memory SQLite for isolated tests
 const sqlite3 = require('sqlite3').verbose();
@@ -354,12 +358,13 @@ const db = new sqlite3.Database(':memory:');
 ```
 
 **Service Mocking:**
+
 ```javascript
 // Mock external services to avoid dependencies
 const mockService = {
   method: async (param) => {
     return { success: true, data: {} };
-  }
+  },
 };
 ```
 
@@ -518,6 +523,7 @@ npm run lint                   # Code style checks
 
 **Coverage Priority Roadmap:**
 See `CODE-COVERAGE-ANALYSIS-PLAN.md` for detailed implementation roadmap:
+
 - Phase 1: Critical foundation (response-helpers, ReminderNotificationService, DatabaseService)
 - Phase 2: Service completeness (ReminderService, errorHandler, WebhookListenerService, ProxyConfigService)
 - Phase 3: New features (resolution-helpers, features.js)
@@ -650,7 +656,7 @@ HUGGINGFACE_API_KEY=optional_key          # For AI poem generation
 - **Node.js:** 18+ required
 - **Discord.js:** 14.11.0
 - **Major Refactoring:** Completed (27% code reduction, Guild Isolation)
-- **Test Coverage:** 
+- **Test Coverage:**
   - Current: 79.5% (lines) | 82.7% (functions) | 74.7% (branches)
   - Target: 90%+ (lines) | 95%+ (functions) | 85%+ (branches)
   - Tests: 500+ passing across 32 test suites (100% pass rate)

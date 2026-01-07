@@ -2,9 +2,9 @@ name: Test Coverage & Reporting
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
@@ -13,7 +13,7 @@ permissions:
 jobs:
   coverage:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -70,7 +70,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-            
+
             // Read coverage summary
             let coverageSummary = '';
             try {
@@ -79,26 +79,26 @@ jobs:
               
               coverageSummary = `
             ## 📊 Code Coverage Report
-            
+
             | Metric | Coverage | Status |
             |--------|----------|--------|
             | **Statements** | ${total.statements.pct}% | ${total.statements.pct >= 70 ? '✅' : '⚠️'} |
             | **Branches** | ${total.branches.pct}% | ${total.branches.pct >= 65 ? '✅' : '⚠️'} |
             | **Functions** | ${total.functions.pct}% | ${total.functions.pct >= 70 ? '✅' : '⚠️'} |
             | **Lines** | ${total.lines.pct}% | ${total.lines.pct >= 70 ? '✅' : '⚠️'} |
-            
+
             **Coverage Threshold:** 70% for statements, functions, and lines; 65% for branches
-            
+
             ${total.statements.pct >= 70 && total.branches.pct >= 65 && total.functions.pct >= 70 && total.lines.pct >= 70 
               ? '✅ Coverage thresholds met!' 
               : '⚠️ Some coverage thresholds not met. Please add more tests.'}
-            
+
             📁 Detailed coverage report available in artifacts.
               `;
             } catch (error) {
               coverageSummary = '⚠️ Could not read coverage summary. Check artifacts for detailed report.';
             }
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

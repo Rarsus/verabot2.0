@@ -22,7 +22,7 @@ class GitMCPServer {
       const result = execSync(`cd "${REPO}" && ${command}`, {
         encoding: 'utf-8',
         stdio: ['pipe', 'pipe', 'pipe'],
-        ...options
+        ...options,
       });
       return result.trim();
     } catch (error) {
@@ -40,10 +40,10 @@ class GitMCPServer {
       const commit = this.exec('git rev-parse HEAD').slice(0, 7);
       const remote = this.exec('git remote get-url origin');
 
-      const modified = porcelain.split('\n').filter(l => l.startsWith(' M')).length;
-      const added = porcelain.split('\n').filter(l => l.startsWith('A')).length;
-      const deleted = porcelain.split('\n').filter(l => l.startsWith(' D')).length;
-      const untracked = porcelain.split('\n').filter(l => l.startsWith('??')).length;
+      const modified = porcelain.split('\n').filter((l) => l.startsWith(' M')).length;
+      const added = porcelain.split('\n').filter((l) => l.startsWith('A')).length;
+      const deleted = porcelain.split('\n').filter((l) => l.startsWith(' D')).length;
+      const untracked = porcelain.split('\n').filter((l) => l.startsWith('??')).length;
 
       return {
         branch,
@@ -54,10 +54,10 @@ class GitMCPServer {
           added,
           deleted,
           untracked,
-          total: modified + added + deleted + untracked
+          total: modified + added + deleted + untracked,
         },
         hasChanges: modified + added + deleted + untracked > 0,
-        porcelain
+        porcelain,
       };
     } catch (error) {
       throw new Error(`Failed to get git status: ${error.message}`);
@@ -70,7 +70,7 @@ class GitMCPServer {
   static getLog(count = 10, format = 'oneline') {
     try {
       const output = this.exec(`git log --${format} -${count}`);
-      return output.split('\n').filter(line => line.trim());
+      return output.split('\n').filter((line) => line.trim());
     } catch (error) {
       throw new Error(`Failed to get git log: ${error.message}`);
     }
@@ -91,7 +91,7 @@ class GitMCPServer {
         email,
         date,
         subject,
-        url: `${this.exec('git remote get-url origin')}/commit/${hash}`
+        url: `${this.exec('git remote get-url origin')}/commit/${hash}`,
       };
     } catch (error) {
       throw new Error(`Failed to get commit details: ${error.message}`);
@@ -103,13 +103,15 @@ class GitMCPServer {
    */
   static getBranches() {
     try {
-      const local = this.exec('git branch --list').split('\n').filter(l => l.trim());
+      const local = this.exec('git branch --list')
+        .split('\n')
+        .filter((l) => l.trim());
       const current = this.exec('git rev-parse --abbrev-ref HEAD');
 
       return {
         current,
         local,
-        count: local.length
+        count: local.length,
       };
     } catch (error) {
       throw new Error(`Failed to get branches: ${error.message}`);
@@ -127,7 +129,7 @@ class GitMCPServer {
       return {
         filepath: filepath || 'all',
         diff: output,
-        hasChanges: output.length > 0
+        hasChanges: output.length > 0,
       };
     } catch (error) {
       throw new Error(`Failed to get diff: ${error.message}`);
@@ -140,13 +142,15 @@ class GitMCPServer {
   static getStagedChanges() {
     try {
       const diff = this.exec('git diff --cached');
-      const files = this.exec('git diff --cached --name-only').split('\n').filter(l => l.trim());
+      const files = this.exec('git diff --cached --name-only')
+        .split('\n')
+        .filter((l) => l.trim());
 
       return {
         files,
         fileCount: files.length,
         diff,
-        hasStagedChanges: files.length > 0
+        hasStagedChanges: files.length > 0,
       };
     } catch (error) {
       throw new Error(`Failed to get staged changes: ${error.message}`);
@@ -159,11 +163,11 @@ class GitMCPServer {
   static getChangedFiles() {
     try {
       const output = this.exec('git diff --name-only');
-      const files = output.split('\n').filter(l => l.trim());
+      const files = output.split('\n').filter((l) => l.trim());
 
       return {
         files,
-        count: files.length
+        count: files.length,
       };
     } catch (error) {
       throw new Error(`Failed to get changed files: ${error.message}`);
@@ -178,7 +182,7 @@ class GitMCPServer {
       const output = this.exec('git status --porcelain');
       const files = {};
 
-      output.split('\n').forEach(line => {
+      output.split('\n').forEach((line) => {
         if (!line.trim()) return;
         const status = line.slice(0, 2);
         const filepath = line.slice(3);
@@ -189,7 +193,7 @@ class GitMCPServer {
           isAdded: status === 'A ',
           isDeleted: status === ' D' || status === 'D',
           isUntracked: status === '??',
-          isRenamed: status === 'R'
+          isRenamed: status === 'R',
         };
       });
 
@@ -204,13 +208,15 @@ class GitMCPServer {
    */
   static getTags() {
     try {
-      const tags = this.exec('git tag -l --sort=-version:refname').split('\n').filter(l => l.trim());
+      const tags = this.exec('git tag -l --sort=-version:refname')
+        .split('\n')
+        .filter((l) => l.trim());
       const latest = tags[0] || null;
 
       return {
         tags,
         count: tags.length,
-        latest
+        latest,
       };
     } catch (error) {
       throw new Error(`Failed to get tags: ${error.message}`);

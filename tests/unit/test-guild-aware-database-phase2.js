@@ -137,12 +137,12 @@ async function runTests() {
     const bulkQuotes = await Promise.all([
       db.addQuote(guildA, 'Bulk 1', 'A'),
       db.addQuote(guildA, 'Bulk 2', 'B'),
-      db.addQuote(guildA, 'Bulk 3', 'C')
+      db.addQuote(guildA, 'Bulk 3', 'C'),
     ]);
     assert(bulkQuotes.length === 3, 'Test 18: Handle concurrent adds');
 
     const finalA = await db.getQuoteCount(guildA);
-    assert(finalA === 5, 'Test 19: Bulk adds don\'t cross guilds');
+    assert(finalA === 5, "Test 19: Bulk adds don't cross guilds");
 
     // ========================================================================
     // RESULTS

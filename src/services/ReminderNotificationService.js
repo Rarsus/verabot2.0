@@ -58,7 +58,7 @@ async function checkAndSendNotifications() {
         }
       } catch (err) {
         logError('ReminderNotificationService.sendNotification', err, ERROR_LEVELS.MEDIUM, {
-          reminderId: reminder.id
+          reminderId: reminder.id,
         });
         await recordNotification(reminder.id, false, err.message);
       }
@@ -76,10 +76,10 @@ async function checkAndSendNotifications() {
 function createReminderEmbed(reminder) {
   const embed = new EmbedBuilder()
     .setTitle(`🔔 Reminder: ${reminder.subject}`)
-    .setColor(0xFFD700)
+    .setColor(0xffd700)
     .addFields([
       { name: '📅 When', value: formatDateTime(reminder.when_datetime), inline: true },
-      { name: '📂 Category', value: reminder.category, inline: true }
+      { name: '📂 Category', value: reminder.category, inline: true },
     ])
     .setTimestamp()
     .setFooter({ text: `Reminder ID: ${reminder.id}` });
@@ -126,7 +126,7 @@ async function sendReminderNotification(reminder) {
   const sent = {
     users: [],
     roles: [],
-    errors: []
+    errors: [],
   };
 
   for (const assignee of assignees) {
@@ -141,7 +141,8 @@ async function sendReminderNotification(reminder) {
 
     // Validate ID format
     if (!id || !/^\d+$/.test(id)) {
-      logError('ReminderNotificationService.sendReminderNotification.malformedId',
+      logError(
+        'ReminderNotificationService.sendReminderNotification.malformedId',
         new Error(`Invalid ID format: ${rawId}`),
         ERROR_LEVELS.LOW,
         { assigneeType: type, assigneeId: rawId }
@@ -161,7 +162,7 @@ async function sendReminderNotification(reminder) {
     } catch (err) {
       logError('ReminderNotificationService.sendReminderNotification.assignee', err, ERROR_LEVELS.LOW, {
         assigneeType: type,
-        assigneeId: id
+        assigneeId: id,
       });
       sent.errors.push({ type, id, error: err.message });
     }
@@ -214,7 +215,7 @@ async function sendRoleNotification(roleId, embed) {
 
     await channel.send({
       content: `<@&${roleId}>`,
-      embeds: [embed]
+      embeds: [embed],
     });
   } catch (err) {
     throw new Error(`Failed to send role notification: ${err.message}`);
@@ -234,5 +235,5 @@ module.exports = {
   checkAndSendNotifications,
   triggerNotificationCheck,
   createReminderEmbed,
-  sendReminderNotification
+  sendReminderNotification,
 };

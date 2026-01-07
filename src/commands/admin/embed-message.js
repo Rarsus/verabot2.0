@@ -10,57 +10,53 @@ const { checkAdminPermission } = require('../../utils/proxy-helpers');
 const { resolveChannel } = require('../../utils/helpers/resolution-helpers');
 const { EmbedBuilder } = require('discord.js');
 
-const { data, options } = buildCommandOptions(
-  'embed',
-  'Send a formatted embed message as the bot (Admin only)',
-  [
-    {
-      name: 'channel',
-      type: 'string',
-      required: true,
-      description: 'Channel name, ID, or mention'
-    },
-    {
-      name: 'title',
-      type: 'string',
-      required: true,
-      description: 'Embed title',
-      maxLength: 256
-    },
-    {
-      name: 'description',
-      type: 'string',
-      required: true,
-      description: 'Embed description',
-      maxLength: 2048
-    },
-    {
-      name: 'color',
-      type: 'string',
-      required: false,
-      description: 'Hex color code (e.g., #FF5733 or just FF5733)'
-    },
-    {
-      name: 'footer',
-      type: 'string',
-      required: false,
-      description: 'Footer text',
-      maxLength: 2048
-    },
-    {
-      name: 'thumbnail',
-      type: 'string',
-      required: false,
-      description: 'Thumbnail image URL'
-    },
-    {
-      name: 'image',
-      type: 'string',
-      required: false,
-      description: 'Large image URL'
-    }
-  ]
-);
+const { data, options } = buildCommandOptions('embed', 'Send a formatted embed message as the bot (Admin only)', [
+  {
+    name: 'channel',
+    type: 'string',
+    required: true,
+    description: 'Channel name, ID, or mention',
+  },
+  {
+    name: 'title',
+    type: 'string',
+    required: true,
+    description: 'Embed title',
+    maxLength: 256,
+  },
+  {
+    name: 'description',
+    type: 'string',
+    required: true,
+    description: 'Embed description',
+    maxLength: 2048,
+  },
+  {
+    name: 'color',
+    type: 'string',
+    required: false,
+    description: 'Hex color code (e.g., #FF5733 or just FF5733)',
+  },
+  {
+    name: 'footer',
+    type: 'string',
+    required: false,
+    description: 'Footer text',
+    maxLength: 2048,
+  },
+  {
+    name: 'thumbnail',
+    type: 'string',
+    required: false,
+    description: 'Thumbnail image URL',
+  },
+  {
+    name: 'image',
+    type: 'string',
+    required: false,
+    description: 'Large image URL',
+  },
+]);
 
 class EmbedCommand extends Command {
   constructor() {
@@ -71,8 +67,8 @@ class EmbedCommand extends Command {
       options,
       permissions: {
         minTier: 3,
-        visible: false
-      }
+        visible: false,
+      },
     });
   }
 
@@ -100,7 +96,11 @@ class EmbedCommand extends Command {
       const channel = await resolveChannel(channelInput, interaction.guild);
 
       if (!channel) {
-        return sendError(interaction, `Could not find channel: ${channelInput}. Try using the channel name or ID.`, true);
+        return sendError(
+          interaction,
+          `Could not find channel: ${channelInput}. Try using the channel name or ID.`,
+          true
+        );
       }
 
       if (!channel.isTextBased()) {
@@ -109,7 +109,7 @@ class EmbedCommand extends Command {
 
       // Check bot permissions
       if (channel.guild && !channel.permissionsFor(interaction.client.user).has('SendMessages')) {
-        return sendError(interaction, 'I don\'t have permission to send messages in that channel', true);
+        return sendError(interaction, "I don't have permission to send messages in that channel", true);
       }
 
       // Create embed
@@ -158,7 +158,10 @@ class EmbedCommand extends Command {
 
       // Pad with leading zeros if needed
       if (hex.length === 3) {
-        hex = hex.split('').map(char => char + char).join('');
+        hex = hex
+          .split('')
+          .map((char) => char + char)
+          .join('');
       }
 
       // Convert to number

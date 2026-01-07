@@ -1,11 +1,5 @@
 {
-  "reporter": [
-    "text",
-    "html",
-    "lcov",
-    "json-summary",
-    "json"
-  ],
+  "reporter": ["text", "html", "lcov", "json-summary", "json"],
   "report-dir": "./coverage",
   "exclude": [
     "tests/**",
@@ -39,7 +33,5 @@
   "statements": 70,
   "per-file": false,
   "all": true,
-  "include": [
-    "src/**/*.js"
-  ]
+  "include": ["src/**/*.js"]
 }

@@ -15,11 +15,22 @@ function createMockInteraction(isReply = false, isDeferred = false) {
     commandName: 'test-command',
     replied: isReply,
     deferred: isDeferred,
-    reply: async function(msg) { this.replied = true; return msg; },
-    editReply: async function(msg) { return msg; },
-    followUp: async function(msg) { return msg; },
-    isCommand: function() { return true; },
-    isChatInputCommand: function() { return true; }
+    reply: async function (msg) {
+      this.replied = true;
+      return msg;
+    },
+    editReply: async function (msg) {
+      return msg;
+    },
+    followUp: async function (msg) {
+      return msg;
+    },
+    isCommand: function () {
+      return true;
+    },
+    isChatInputCommand: function () {
+      return true;
+    },
   };
 }
 
@@ -40,7 +51,7 @@ try {
   const testCmd = new Command({
     name: 'test-cmd',
     description: 'Test command',
-    data: { toJSON: () => ({}) }
+    data: { toJSON: () => ({}) },
   });
 
   if (testCmd.name === 'test-cmd' && testCmd.description === 'Test command') {
@@ -187,7 +198,7 @@ console.log('\n=== Test 7: Error Message Includes Details ===');
     let errorSent = false;
 
     // Override reply to capture message
-    mockInteraction.reply = async function(msg) {
+    mockInteraction.reply = async function (msg) {
       errorSent = msg && msg.content && msg.content.includes('Specific error detail');
       return msg;
     };

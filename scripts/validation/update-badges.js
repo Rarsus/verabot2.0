@@ -35,7 +35,7 @@ function getTestResults() {
         total: 0,
         passed: 0,
         failed: 0,
-        status: 'unknown'
+        status: 'unknown',
       };
     }
 
@@ -51,7 +51,7 @@ function getTestResults() {
       total: totalMatch ? parseInt(totalMatch[1]) : 0,
       passed: passedMatch ? parseInt(passedMatch[1]) : 0,
       failed: failedMatch ? parseInt(failedMatch[1]) : 0,
-      status: statusMatch ? statusMatch[1].trim() : 'unknown'
+      status: statusMatch ? statusMatch[1].trim() : 'unknown',
     };
   } catch (err) {
     console.error('Failed to read test results:', err.message);
@@ -59,7 +59,7 @@ function getTestResults() {
       total: 0,
       passed: 0,
       failed: 0,
-      status: 'unknown'
+      status: 'unknown',
     };
   }
 }
@@ -121,7 +121,8 @@ function updateReadme() {
 ![Node Version](${nodeBadge})`;
 
   // Replace existing badges or add new ones
-  const badgeRegex = /!\[.*?\]\(https:\/\/img\.shields\.io\/badge\/.*?\)(\s*!\[.*?\]\(https:\/\/img\.shields\.io\/badge\/.*?\))*/g;
+  const badgeRegex =
+    /!\[.*?\]\(https:\/\/img\.shields\.io\/badge\/.*?\)(\s*!\[.*?\]\(https:\/\/img\.shields\.io\/badge\/.*?\))*/g;
 
   if (badgeRegex.test(content)) {
     // Replace existing badges
@@ -170,5 +171,5 @@ module.exports = {
   getTestResults,
   getCodeCoverage,
   generateBadge,
-  updateReadme
+  updateReadme,
 };

@@ -5,7 +5,7 @@ const quoteService = require('../../services/QuoteService');
 const { EmbedBuilder } = require('discord.js');
 
 const { data, options } = buildCommandOptions('search-quotes', 'Search quotes by text or author', [
-  { name: 'query', type: 'string', description: 'Search term (text or author)', required: true }
+  { name: 'query', type: 'string', description: 'Search term (text or author)', required: true },
 ]);
 
 class SearchQuotesCommand extends Command {
@@ -17,8 +17,8 @@ class SearchQuotesCommand extends Command {
       options,
       permissions: {
         minTier: 0,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 
@@ -36,9 +36,8 @@ class SearchQuotesCommand extends Command {
       }
 
       const quotes = await quoteService.getAllQuotes(guildId);
-      const results = quotes.filter(q =>
-        q.text.toLowerCase().includes(query) ||
-        q.author.toLowerCase().includes(query)
+      const results = quotes.filter(
+        (q) => q.text.toLowerCase().includes(query) || q.author.toLowerCase().includes(query)
       );
 
       if (results.length === 0) {
@@ -52,9 +51,14 @@ class SearchQuotesCommand extends Command {
 
       const embed = new EmbedBuilder()
         .setTitle(`Search Results (${results.length} found)`)
-        .setDescription(results.slice(0, 5).map(q => `**#${q.id}**: "${q.text}" — ${q.author}`).join('\n\n'))
+        .setDescription(
+          results
+            .slice(0, 5)
+            .map((q) => `**#${q.id}**: "${q.text}" — ${q.author}`)
+            .join('\n\n')
+        )
         .setFooter({ text: results.length > 5 ? `... and ${results.length - 5} more` : '' })
-        .setColor(0x5865F2);
+        .setColor(0x5865f2);
 
       if (message.channel && typeof message.channel.send === 'function') {
         await message.channel.send({ embeds: [embed] });
@@ -77,9 +81,8 @@ class SearchQuotesCommand extends Command {
     const query = interaction.options.getString('query').toLowerCase();
 
     const quotes = await quoteService.getAllQuotes(guildId);
-    const results = quotes.filter(q =>
-      q.text.toLowerCase().includes(query) ||
-      q.author.toLowerCase().includes(query)
+    const results = quotes.filter(
+      (q) => q.text.toLowerCase().includes(query) || q.author.toLowerCase().includes(query)
     );
 
     if (results.length === 0) {
@@ -89,9 +92,14 @@ class SearchQuotesCommand extends Command {
 
     const embed = new EmbedBuilder()
       .setTitle(`Search Results (${results.length} found)`)
-      .setDescription(results.slice(0, 5).map(q => `**#${q.id}**: "${q.text}" — ${q.author}`).join('\n\n'))
+      .setDescription(
+        results
+          .slice(0, 5)
+          .map((q) => `**#${q.id}**: "${q.text}" — ${q.author}`)
+          .join('\n\n')
+      )
       .setFooter({ text: results.length > 5 ? `... and ${results.length - 5} more` : '' })
-      .setColor(0x5865F2);
+      .setColor(0x5865f2);
 
     await interaction.editReply({ embeds: [embed] });
   }

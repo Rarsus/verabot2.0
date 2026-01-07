@@ -13,15 +13,13 @@ const { SlashCommandBuilder } = require('discord.js');
  * @returns {Object} { data: SlashCommandBuilder, options: Array }
  */
 function buildCommandOptions(name, description, optionDefinitions = []) {
-  const builder = new SlashCommandBuilder()
-    .setName(name)
-    .setDescription(description);
+  const builder = new SlashCommandBuilder().setName(name).setDescription(description);
 
   // Build options array and add to builder
-  const options = optionDefinitions.map(opt => {
+  const options = optionDefinitions.map((opt) => {
     // Add to builder
     if (opt.type === 'string') {
-      builder.addStringOption(o => {
+      builder.addStringOption((o) => {
         o.setName(opt.name).setDescription(opt.description);
         if (opt.required !== undefined) o.setRequired(opt.required);
         if (opt.choices) o.addChoices(...opt.choices);
@@ -30,7 +28,7 @@ function buildCommandOptions(name, description, optionDefinitions = []) {
         return o;
       });
     } else if (opt.type === 'integer') {
-      builder.addIntegerOption(o => {
+      builder.addIntegerOption((o) => {
         o.setName(opt.name).setDescription(opt.description);
         if (opt.required !== undefined) o.setRequired(opt.required);
         if (opt.minValue !== undefined) o.setMinValue(opt.minValue);
@@ -38,7 +36,7 @@ function buildCommandOptions(name, description, optionDefinitions = []) {
         return o;
       });
     } else if (opt.type === 'boolean') {
-      builder.addBooleanOption(o => {
+      builder.addBooleanOption((o) => {
         o.setName(opt.name).setDescription(opt.description);
         if (opt.required !== undefined) o.setRequired(opt.required);
         return o;
@@ -51,7 +49,7 @@ function buildCommandOptions(name, description, optionDefinitions = []) {
       type: opt.type,
       description: opt.description,
       required: opt.required ?? false,
-      ...opt
+      ...opt,
     };
   });
 

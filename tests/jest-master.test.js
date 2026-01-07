@@ -40,7 +40,7 @@ const customTestFiles = [
   'test-quotes',
   'test-misc-commands',
   'test-performance-monitor',
-  'test-security-validation'
+  'test-security-validation',
 ];
 
 describe('VeraBot Legacy Tests - Jest Bridge (Deprecated)', () => {

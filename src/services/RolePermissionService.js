@@ -30,7 +30,7 @@ class RolePermissionService {
     let maxTier = this.roleConfig.defaultTier || 1;
 
     for (const [roleName, tier] of Object.entries(this.roleConfig.roleMapping || {})) {
-      if (member.roles.cache.some(role => role.name === roleName)) {
+      if (member.roles.cache.some((role) => role.name === roleName)) {
         maxTier = Math.max(maxTier, tier);
       }
     }
@@ -82,7 +82,7 @@ class RolePermissionService {
     } catch (err) {
       logError('RolePermissionService.getUserTier', err, ERROR_LEVELS.MEDIUM);
       this.setCacheEntry(cacheKey, 1);
-      return 1;  // Default to member tier on error
+      return 1; // Default to member tier on error
     }
   }
 
@@ -101,7 +101,7 @@ class RolePermissionService {
       const userTier = await this.getUserTier(userId, guildId, client);
       const commandConfig = this.getCommandConfig(commandName, guildId);
 
-      if (!commandConfig) return true;  // No restrictions
+      if (!commandConfig) return true; // No restrictions
 
       const canExecute = userTier >= commandConfig.minTier;
 
@@ -112,14 +112,14 @@ class RolePermissionService {
           commandName,
           result: canExecute ? 'EXECUTED' : 'PERMISSION_DENIED',
           userTier,
-          requiredTier: commandConfig.minTier
+          requiredTier: commandConfig.minTier,
         });
       }
 
       return canExecute;
     } catch (err) {
       logError('RolePermissionService.canExecuteCommand', err, ERROR_LEVELS.MEDIUM);
-      return true;  // Allow on error
+      return true; // Allow on error
     }
   }
 
@@ -137,12 +137,7 @@ class RolePermissionService {
 
     try {
       // Check permission first
-      const hasPermission = await this.canExecuteCommand(
-        userId,
-        guildId,
-        commandName,
-        client
-      );
+      const hasPermission = await this.canExecuteCommand(userId, guildId, commandName, client);
 
       if (!hasPermission) {
         if (this.auditLogsEnabled) {
@@ -150,7 +145,7 @@ class RolePermissionService {
             userId,
             guildId,
             commandName,
-            result: 'HIDDEN_NO_PERMISSION'
+            result: 'HIDDEN_NO_PERMISSION',
           });
         }
         return false;
@@ -164,7 +159,7 @@ class RolePermissionService {
             userId,
             guildId,
             commandName,
-            result: 'HIDDEN_BY_CONFIG'
+            result: 'HIDDEN_BY_CONFIG',
           });
         }
         return false;
@@ -173,7 +168,7 @@ class RolePermissionService {
       return true;
     } catch (err) {
       logError('RolePermissionService.isCommandVisible', err, ERROR_LEVELS.MEDIUM);
-      return true;  // Show on error
+      return true; // Show on error
     }
   }
 
@@ -274,7 +269,7 @@ class RolePermissionService {
     if (this.roleConfig.cacheRoleChecks) {
       this.cache.set(key, {
         tier,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     }
   }
@@ -308,7 +303,8 @@ class RolePermissionService {
 
       // Create table if it doesn't exist
       await new Promise((resolve, reject) => {
-        db.run(`
+        db.run(
+          `
           CREATE TABLE IF NOT EXISTS permission_audit_log (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id TEXT NOT NULL,
@@ -319,29 +315,35 @@ class RolePermissionService {
             required_tier INTEGER,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
           )
-        `, (err) => {
-          if (err) reject(err);
-          else resolve();
-        });
+        `,
+          (err) => {
+            if (err) reject(err);
+            else resolve();
+          }
+        );
       });
 
       // Insert log entry
       await new Promise((resolve, reject) => {
-        db.run(`
+        db.run(
+          `
           INSERT INTO permission_audit_log
           (user_id, guild_id, command_name, result, user_tier, required_tier)
           VALUES (?, ?, ?, ?, ?, ?)
-        `, [
-          entry.userId,
-          entry.guildId,
-          entry.commandName,
-          entry.result,
-          entry.userTier || null,
-          entry.requiredTier || null
-        ], (err) => {
-          if (err) reject(err);
-          else resolve();
-        });
+        `,
+          [
+            entry.userId,
+            entry.guildId,
+            entry.commandName,
+            entry.result,
+            entry.userTier || null,
+            entry.requiredTier || null,
+          ],
+          (err) => {
+            if (err) reject(err);
+            else resolve();
+          }
+        );
       });
     } catch (err) {
       logError('RolePermissionService.auditLog', err, ERROR_LEVELS.LOW);
@@ -360,15 +362,19 @@ class RolePermissionService {
       const db = await this.guildManager.getGuildDatabase(guildId);
 
       return new Promise((resolve, reject) => {
-        db.all(`
+        db.all(
+          `
           SELECT * FROM permission_audit_log
           WHERE user_id = ? AND guild_id = ?
           ORDER BY timestamp DESC
           LIMIT ?
-        `, [userId, guildId, limit], (err, rows) => {
-          if (err) reject(err);
-          else resolve(rows || []);
-        });
+        `,
+          [userId, guildId, limit],
+          (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows || []);
+          }
+        );
       });
     } catch (err) {
       logError('RolePermissionService.getAuditLogs', err, ERROR_LEVELS.MEDIUM);
@@ -387,15 +393,19 @@ class RolePermissionService {
       const db = await this.guildManager.getGuildDatabase(guildId);
 
       return new Promise((resolve, reject) => {
-        db.all(`
+        db.all(
+          `
           SELECT * FROM permission_audit_log
           WHERE guild_id = ?
           ORDER BY timestamp DESC
           LIMIT ?
-        `, [guildId, limit], (err, rows) => {
-          if (err) reject(err);
-          else resolve(rows || []);
-        });
+        `,
+          [guildId, limit],
+          (err, rows) => {
+            if (err) reject(err);
+            else resolve(rows || []);
+          }
+        );
       });
     } catch (err) {
       logError('RolePermissionService.getGuildAuditLogs', err, ERROR_LEVELS.MEDIUM);

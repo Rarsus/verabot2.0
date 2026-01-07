@@ -17,13 +17,13 @@ function createMockInteraction() {
     commandName: 'test-command',
     replied: false,
     deferred: false,
-    reply: async function(msg) {
+    reply: async function (msg) {
       this.replied = true;
       return msg;
     },
-    followUp: async function(msg) {
+    followUp: async function (msg) {
       return msg;
-    }
+    },
   };
 }
 
@@ -70,7 +70,7 @@ console.log('\n=== Test 4: Log With Metadata ===');
 try {
   logError('test.context', 'Error with metadata', ERROR_LEVELS.HIGH, {
     userId: '123456',
-    commandName: 'test-cmd'
+    commandName: 'test-cmd',
   });
   console.log('✅ Test 4 Passed: Error with metadata logged');
   passed++;
@@ -102,18 +102,20 @@ try {
   const interaction = createMockInteraction();
   const error = new Error('Interaction error');
 
-  handleInteractionError(interaction, error, 'test.command').then(() => {
-    if (interaction.replied) {
-      console.log('✅ Test 6 Passed: Error handled on new interaction');
-      passed++;
-    } else {
-      console.error('❌ Test 6 Failed: Interaction not replied');
+  handleInteractionError(interaction, error, 'test.command')
+    .then(() => {
+      if (interaction.replied) {
+        console.log('✅ Test 6 Passed: Error handled on new interaction');
+        passed++;
+      } else {
+        console.error('❌ Test 6 Failed: Interaction not replied');
+        failed++;
+      }
+    })
+    .catch((err) => {
+      console.error('❌ Test 6 Failed:', err.message);
       failed++;
-    }
-  }).catch(err => {
-    console.error('❌ Test 6 Failed:', err.message);
-    failed++;
-  });
+    });
 } catch (err) {
   console.error('❌ Test 6 Failed:', err.message);
   failed++;
@@ -126,13 +128,15 @@ try {
   interaction.replied = true;
   const error = new Error('Already replied error');
 
-  handleInteractionError(interaction, error, 'test.command').then(() => {
-    console.log('✅ Test 7 Passed: Error handled on replied interaction');
-    passed++;
-  }).catch(err => {
-    console.error('❌ Test 7 Failed:', err.message);
-    failed++;
-  });
+  handleInteractionError(interaction, error, 'test.command')
+    .then(() => {
+      console.log('✅ Test 7 Passed: Error handled on replied interaction');
+      passed++;
+    })
+    .catch((err) => {
+      console.error('❌ Test 7 Failed:', err.message);
+      failed++;
+    });
 } catch (err) {
   console.error('❌ Test 7 Failed:', err.message);
   failed++;
@@ -145,13 +149,15 @@ try {
   interaction.deferred = true;
   const error = new Error('Deferred error');
 
-  handleInteractionError(interaction, error, 'test.command').then(() => {
-    console.log('✅ Test 8 Passed: Error handled on deferred interaction');
-    passed++;
-  }).catch(err => {
-    console.error('❌ Test 8 Failed:', err.message);
-    failed++;
-  });
+  handleInteractionError(interaction, error, 'test.command')
+    .then(() => {
+      console.log('✅ Test 8 Passed: Error handled on deferred interaction');
+      passed++;
+    })
+    .catch((err) => {
+      console.error('❌ Test 8 Failed:', err.message);
+      failed++;
+    });
 } catch (err) {
   console.error('❌ Test 8 Failed:', err.message);
   failed++;
@@ -172,7 +178,7 @@ try {
 console.log('\n=== Test 10: All Error Levels ===');
 try {
   let allWork = true;
-  Object.keys(ERROR_LEVELS).forEach(level => {
+  Object.keys(ERROR_LEVELS).forEach((level) => {
     try {
       logError('test.context', 'Testing level: ' + level, ERROR_LEVELS[level]);
     } catch (e) {

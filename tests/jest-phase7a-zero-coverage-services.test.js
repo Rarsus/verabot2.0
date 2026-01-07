@@ -31,21 +31,21 @@ describe('DiscordService', () => {
         description,
         color,
         timestamp: new Date(),
-        footer: { text: 'VeraBot' }
+        footer: { text: 'VeraBot' },
       }),
 
       createErrorEmbed: (title, message) => ({
         title,
         description: message,
         color: 0xff0000,
-        timestamp: new Date()
+        timestamp: new Date(),
       }),
 
       createSuccessEmbed: (title, message) => ({
         title,
         description: message,
         color: 0x00ff00,
-        timestamp: new Date()
+        timestamp: new Date(),
       }),
 
       formatUser: (user) => {
@@ -66,7 +66,7 @@ describe('DiscordService', () => {
 
       isBotOwner: (userId, ownerId) => {
         return userId === ownerId;
-      }
+      },
     };
   });
 
@@ -142,7 +142,7 @@ describe('ExternalActionHandler', () => {
           action,
           success: true,
           data,
-          timestamp: new Date()
+          timestamp: new Date(),
         };
       },
 
@@ -169,7 +169,7 @@ describe('ExternalActionHandler', () => {
 
       cancelAction: (actionId) => {
         return { id: actionId, cancelled: true, cancelledAt: new Date() };
-      }
+      },
     };
   });
 
@@ -242,21 +242,21 @@ describe('WebSocketService', () => {
     mockSocket = {
       connected: false,
       listeners: {},
-      on: function(event, callback) {
+      on: function (event, callback) {
         if (!this.listeners[event]) this.listeners[event] = [];
         this.listeners[event].push(callback);
       },
-      emit: function(event, data) {
+      emit: function (event, data) {
         if (this.listeners[event]) {
-          this.listeners[event].forEach(cb => cb(data));
+          this.listeners[event].forEach((cb) => cb(data));
         }
       },
-      send: function(message) {
+      send: function (message) {
         return { sent: true, message };
       },
-      disconnect: function() {
+      disconnect: function () {
         this.connected = false;
-      }
+      },
     };
 
     service = {
@@ -297,7 +297,7 @@ describe('WebSocketService', () => {
       removeEventListener: (event) => {
         delete mockSocket.listeners[event];
         return { removed: true };
-      }
+      },
     };
   });
 
@@ -395,7 +395,7 @@ describe('CommunicationService', () => {
           notificationId: Math.random(),
           sent: true,
           userId,
-          type: notification.type
+          type: notification.type,
         };
       },
 
@@ -404,7 +404,7 @@ describe('CommunicationService', () => {
           type,
           timestamp: new Date(),
           data,
-          logged: true
+          logged: true,
         };
       },
 
@@ -412,13 +412,15 @@ describe('CommunicationService', () => {
         return {
           channelId,
           limit,
-          messages: Array(Math.min(limit, 5)).fill(null).map((_, i) => ({
-            id: `msg-${i}`,
-            content: `Message ${i}`,
-            timestamp: new Date()
-          }))
+          messages: Array(Math.min(limit, 5))
+            .fill(null)
+            .map((_, i) => ({
+              id: `msg-${i}`,
+              content: `Message ${i}`,
+              timestamp: new Date(),
+            })),
         };
-      }
+      },
     };
   });
 
@@ -499,7 +501,7 @@ describe('Dashboard Auth Middleware', () => {
         return {
           valid: true,
           userId: 'user-123',
-          guildId: 'guild-456'
+          guildId: 'guild-456',
         };
       },
 
@@ -512,7 +514,7 @@ describe('Dashboard Auth Middleware', () => {
       },
 
       verifyGuildAccess: (userId, guildId, userGuilds) => {
-        return userGuilds.some(g => g.id === guildId);
+        return userGuilds.some((g) => g.id === guildId);
       },
 
       createToken: (userId, expiresIn = 3600) => {
@@ -520,7 +522,7 @@ describe('Dashboard Auth Middleware', () => {
         return {
           token,
           expiresIn,
-          expiresAt: new Date(Date.now() + expiresIn * 1000)
+          expiresAt: new Date(Date.now() + expiresIn * 1000),
         };
       },
 
@@ -538,9 +540,9 @@ describe('Dashboard Auth Middleware', () => {
         return {
           token: `Bearer refreshed-${Date.now()}`,
           expiresIn,
-          expiresAt: new Date(Date.now() + expiresIn * 1000)
+          expiresAt: new Date(Date.now() + expiresIn * 1000),
         };
-      }
+      },
     };
   });
 
@@ -577,7 +579,7 @@ describe('Dashboard Auth Middleware', () => {
   it('should verify guild access from user guilds', () => {
     const guilds = [
       { id: 'guild-456', name: 'My Guild' },
-      { id: 'guild-789', name: 'Other Guild' }
+      { id: 'guild-789', name: 'Other Guild' },
     ];
     assert.strictEqual(middleware.verifyGuildAccess('user-123', 'guild-456', guilds), true);
     assert.strictEqual(middleware.verifyGuildAccess('user-123', 'guild-999', guilds), false);
@@ -598,14 +600,14 @@ describe('Dashboard Auth Middleware', () => {
 
   it('should validate active session', () => {
     const session = {
-      expiresAt: new Date(Date.now() + 3600000)
+      expiresAt: new Date(Date.now() + 3600000),
     };
     assert.strictEqual(middleware.validateSession(session), true);
   });
 
   it('should invalidate expired session', () => {
     const session = {
-      expiresAt: new Date(Date.now() - 1000)
+      expiresAt: new Date(Date.now() - 1000),
     };
     assert.strictEqual(middleware.validateSession(session), false);
   });
@@ -663,7 +665,7 @@ describe('Resolution Helpers', () => {
       resolveMention: (mention) => {
         if (!mention.startsWith('<@')) return null;
         return mention.replace(/[<@!>]/g, '');
-      }
+      },
     };
   });
 
@@ -724,7 +726,7 @@ describe('Dashboard Routes', () => {
         if (!guildId) throw new Error('Guild ID required');
         return {
           guildId,
-          stats: { quotes: 42, reminders: 15, users: 8 }
+          stats: { quotes: 42, reminders: 15, users: 8 },
         };
       },
 
@@ -732,7 +734,7 @@ describe('Dashboard Routes', () => {
         return {
           quotes: Math.floor(Math.random() * 100),
           reminders: Math.floor(Math.random() * 50),
-          users: Math.floor(Math.random() * 20)
+          users: Math.floor(Math.random() * 20),
         };
       },
 
@@ -741,7 +743,7 @@ describe('Dashboard Routes', () => {
           guildId,
           prefix: '!',
           language: 'en',
-          timezone: 'UTC'
+          timezone: 'UTC',
         };
       },
 
@@ -749,7 +751,7 @@ describe('Dashboard Routes', () => {
         return {
           guildId,
           updated: true,
-          config
+          config,
         };
       },
 
@@ -757,16 +759,16 @@ describe('Dashboard Routes', () => {
         if (!userId) throw new Error('User ID required');
         return [
           { id: 'guild-1', name: 'Guild 1', owner: false },
-          { id: 'guild-2', name: 'Guild 2', owner: true }
+          { id: 'guild-2', name: 'Guild 2', owner: true },
         ];
       },
 
       getNotFound: async (path) => {
         return {
           status: 404,
-          message: `Route not found: ${path}`
+          message: `Route not found: ${path}`,
         };
-      }
+      },
     };
   });
 
@@ -825,7 +827,7 @@ describe('Phase 7A Integration Tests', () => {
   it('should coordinate Discord service and communication service', () => {
     const message = {
       title: 'Test',
-      content: 'Message'
+      content: 'Message',
     };
     // Verify both services can work together
     assert(message.title);
@@ -864,7 +866,7 @@ describe('Phase 7A Integration Tests', () => {
       'CommunicationService',
       'DashboardAuth',
       'ResolutionHelpers',
-      'DashboardRoutes'
+      'DashboardRoutes',
     ];
     assert.strictEqual(services.length, 7);
   });

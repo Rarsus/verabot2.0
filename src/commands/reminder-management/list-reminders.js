@@ -8,7 +8,7 @@ const { data, options } = buildCommandOptions('list-reminders', 'List reminders 
   { name: 'status', type: 'string', description: 'Filter by status (active, completed, cancelled)', required: false },
   { name: 'category', type: 'string', description: 'Filter by category', required: false },
   { name: 'assignee', type: 'string', description: 'Filter by assignee ID', required: false },
-  { name: 'page', type: 'integer', description: 'Page number (default: 1)', required: false, minValue: 1 }
+  { name: 'page', type: 'integer', description: 'Page number (default: 1)', required: false, minValue: 1 },
 ]);
 
 class ListRemindersCommand extends Command {
@@ -20,8 +20,8 @@ class ListRemindersCommand extends Command {
       options,
       permissions: {
         minTier: 1,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 
@@ -52,7 +52,7 @@ class ListRemindersCommand extends Command {
 
     const embed = new EmbedBuilder()
       .setTitle('📋 Reminders List')
-      .setColor(0x5865F2)
+      .setColor(0x5865f2)
       .setFooter({ text: `Page ${page} • ${reminders.length} results` });
 
     // Add filter info
@@ -74,7 +74,7 @@ class ListRemindersCommand extends Command {
       embed.addFields({
         name: `${statusEmoji} #${reminder.id} - ${reminder.subject}`,
         value: `📂 ${reminder.category} • 📅 ${timeStr}`,
-        inline: false
+        inline: false,
       });
     }
 

@@ -40,7 +40,7 @@ class NPMMCPServer {
     const pkg = this.loadPackage();
     return {
       scripts: pkg.scripts || {},
-      count: Object.keys(pkg.scripts || {}).length
+      count: Object.keys(pkg.scripts || {}).length,
     };
   }
 
@@ -71,7 +71,7 @@ class NPMMCPServer {
 
     const devKeywords = ['dev', 'build', 'start', 'watch', 'lint', 'format'];
     for (const [name, cmd] of Object.entries(scripts)) {
-      if (devKeywords.some(kw => name.includes(kw))) {
+      if (devKeywords.some((kw) => name.includes(kw))) {
         devScripts[name] = cmd;
       }
     }
@@ -91,7 +91,7 @@ class NPMMCPServer {
       main: pkg.main,
       keywords: pkg.keywords || [],
       author: pkg.author,
-      license: pkg.license
+      license: pkg.license,
     };
   }
 
@@ -104,7 +104,7 @@ class NPMMCPServer {
       dependencies: pkg.dependencies || {},
       devDependencies: pkg.devDependencies || {},
       optionalDependencies: pkg.optionalDependencies || {},
-      peerDependencies: pkg.peerDependencies || {}
+      peerDependencies: pkg.peerDependencies || {},
     };
   }
 
@@ -122,12 +122,15 @@ class NPMMCPServer {
     return {
       name: depName,
       version: version || 'not found',
-      type:
-        pkg.dependencies?.[depName] ? 'dependencies' :
-          pkg.devDependencies?.[depName] ? 'devDependencies' :
-            pkg.optionalDependencies?.[depName] ? 'optionalDependencies' :
-              pkg.peerDependencies?.[depName] ? 'peerDependencies' :
-                'not found'
+      type: pkg.dependencies?.[depName]
+        ? 'dependencies'
+        : pkg.devDependencies?.[depName]
+          ? 'devDependencies'
+          : pkg.optionalDependencies?.[depName]
+            ? 'optionalDependencies'
+            : pkg.peerDependencies?.[depName]
+              ? 'peerDependencies'
+              : 'not found',
     };
   }
 
@@ -150,7 +153,7 @@ class NPMMCPServer {
       main: pkg.main,
       bin: pkg.bin || {},
       files: pkg.files || [],
-      directories: pkg.directories || {}
+      directories: pkg.directories || {},
     };
   }
 
@@ -175,7 +178,7 @@ class NPMMCPServer {
 
     return {
       script: scriptName,
-      command: cmd
+      command: cmd,
     };
   }
 
@@ -191,7 +194,7 @@ class NPMMCPServer {
       bin: pkg.bin || {},
       exports: pkg.exports || null,
       preferGlobal: pkg.preferGlobal || false,
-      workspaces: pkg.workspaces || []
+      workspaces: pkg.workspaces || [],
     };
   }
 
@@ -208,7 +211,7 @@ class NPMMCPServer {
       dependencies: Object.keys(pkg.dependencies || {}),
       devDependencies: Object.keys(pkg.devDependencies || {}),
       engines: pkg.engines || {},
-      license: pkg.license
+      license: pkg.license,
     };
   }
 }

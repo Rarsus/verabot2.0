@@ -26,7 +26,7 @@ const {
   getProxyConfig,
   setProxyConfig,
   deleteProxyConfig,
-  getAllProxyConfig
+  getAllProxyConfig,
 } = require('../../src/services/DatabaseService');
 
 let passed = 0;
@@ -635,13 +635,13 @@ console.log('\n=== Test 30: Get Quote with Invalid ID ===');
 // Print results after all async tests complete using proper async handling
 (async () => {
   // Wait for all microtasks to process
-  await new Promise(resolve => setImmediate(resolve));
+  await new Promise((resolve) => setImmediate(resolve));
 
   console.log(`\n${'='.repeat(50)}`);
   console.log(`Results: ${passed} passed, ${failed} failed`);
   if (failed === 0) {
     console.log('✅ All database service tests passed!');
   }
-})().catch(err => {
+})().catch((err) => {
   console.error('Error in test completion:', err);
 });

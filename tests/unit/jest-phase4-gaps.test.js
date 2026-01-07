@@ -275,7 +275,7 @@ describe('Phase 4: Coverage Gap Tests', () => {
             name: 'test',
             description: 'Test command',
             data: {},
-            options: []
+            options: [],
           });
           expect(cmd.name).toBe('test');
         } else {

@@ -11,19 +11,14 @@ const ROOT_DIR = path.join(__dirname, '../..');
 const PACKAGE_JSON = path.join(ROOT_DIR, 'package.json');
 
 // Files to check for version consistency
-const VERSION_FILES = [
-  'README.md',
-  'CHANGELOG.md',
-  'docs/README.md',
-  'docs/INDEX.md'
-];
+const VERSION_FILES = ['README.md', 'CHANGELOG.md', 'docs/README.md', 'docs/INDEX.md'];
 
 // Track results
 const results = {
   packageVersion: null,
   filesChecked: 0,
   inconsistencies: [],
-  warnings: []
+  warnings: [],
 };
 
 /**
@@ -49,7 +44,7 @@ function extractVersions(content, _filePath) {
     /version[:\s]+v?(\d+\.\d+\.\d+)/gi,
     /v(\d+\.\d+\.\d+)/g,
     /\*\*Version:\*\*\s*v?(\d+\.\d+\.\d+)/gi,
-    /Current Version[:\s]+v?(\d+\.\d+\.\d+)/gi
+    /Current Version[:\s]+v?(\d+\.\d+\.\d+)/gi,
   ];
 
   for (const pattern of patterns) {
@@ -58,7 +53,7 @@ function extractVersions(content, _filePath) {
       versions.push({
         version: match[1],
         pattern: match[0],
-        index: match.index
+        index: match.index,
       });
     }
   }
@@ -75,7 +70,7 @@ function checkFile(filePath, expectedVersion) {
   if (!fs.existsSync(fullPath)) {
     results.warnings.push({
       file: filePath,
-      message: 'File not found'
+      message: 'File not found',
     });
     return;
   }
@@ -92,7 +87,7 @@ function checkFile(filePath, expectedVersion) {
         file: filePath,
         expected: expectedVersion,
         found: versionInfo.version,
-        context: versionInfo.pattern
+        context: versionInfo.pattern,
       });
     }
   }
@@ -171,5 +166,5 @@ module.exports = {
   getPackageVersion,
   extractVersions,
   checkFile,
-  generateReport
+  generateReport,
 };

@@ -25,9 +25,10 @@ const TEST_SUMMARY_DOC = path.join(DOCS_DIR, 'TEST-SUMMARY-LATEST.md');
  */
 function getAllTestFiles() {
   try {
-    const files = fs.readdirSync(TESTS_DIR)
-      .filter(file => file.startsWith('test-') && file.endsWith('.js'))
-      .filter(file => !['test-all.js', 'run-tests.js'].includes(file))
+    const files = fs
+      .readdirSync(TESTS_DIR)
+      .filter((file) => file.startsWith('test-') && file.endsWith('.js'))
+      .filter((file) => !['test-all.js', 'run-tests.js'].includes(file))
       .sort();
     return files;
   } catch (err) {
@@ -69,7 +70,7 @@ function extractTestDescriptions(filePath) {
     while ((match = regex.exec(content)) !== null) {
       descriptions.push({
         number: parseInt(match[1]),
-        description: match[2].trim()
+        description: match[2].trim(),
       });
     }
 
@@ -94,7 +95,10 @@ function extractFileDescription(filePath) {
 
     // Fallback: convert filename to description
     const filename = path.basename(filePath, '.js');
-    return filename.replace(/^test-/, '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    return filename
+      .replace(/^test-/, '')
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, (l) => l.toUpperCase());
   } catch {
     return 'No description';
   }
@@ -110,7 +114,7 @@ function runTestFile(filePath) {
       cwd: path.join(__dirname, '..'),
       encoding: 'utf8',
       timeout: 30000, // 30 second timeout
-      stdio: ['pipe', 'pipe', 'pipe']
+      stdio: ['pipe', 'pipe', 'pipe'],
     });
     const duration = Date.now() - startTime;
 
@@ -120,7 +124,9 @@ function runTestFile(filePath) {
     let total = 0;
 
     // Look for "=== Test Summary ===" section with explicit counts
-    const summaryMatch = output.match(/=== Test Summary ===[\s\S]*?Passed: (\d+)[\s\S]*?Failed: (\d+)[\s\S]*?Total: (\d+)/i);
+    const summaryMatch = output.match(
+      /=== Test Summary ===[\s\S]*?Passed: (\d+)[\s\S]*?Failed: (\d+)[\s\S]*?Total: (\d+)/i
+    );
     if (summaryMatch) {
       passed = parseInt(summaryMatch[1]);
       failed = parseInt(summaryMatch[2]);
@@ -151,7 +157,7 @@ function runTestFile(filePath) {
       failed,
       total,
       duration,
-      error: null
+      error: null,
     };
   } catch (err) {
     // Test failed to run or had errors - try to extract any info from stderr
@@ -176,7 +182,7 @@ function runTestFile(filePath) {
       failed: actualFailed,
       total,
       duration: 0,
-      error: err.message ? err.message.split('\n')[0] : 'Test execution failed'
+      error: err.message ? err.message.split('\n')[0] : 'Test execution failed',
     };
   }
 }
@@ -215,7 +221,7 @@ function analyzeAllTests() {
       fileDescription,
       testCount,
       descriptions,
-      runResult
+      runResult,
     });
 
     const status = runResult.success ? '✅' : '❌';
@@ -232,8 +238,8 @@ function analyzeAllTests() {
       totalPassed,
       totalFailed,
       totalDuration,
-      passRate: totalTests > 0 ? ((totalPassed / totalTests) * 100).toFixed(1) : 0
-    }
+      passRate: totalTests > 0 ? ((totalPassed / totalTests) * 100).toFixed(1) : 0,
+    },
   };
 }
 
@@ -286,7 +292,8 @@ function generateCoverageOverview(analysis) {
   content += `with a **${summary.passRate}% pass rate**. `;
   content += 'The test suite covers core framework components, commands, services, and utilities.\n\n';
 
-  content += '> **Note:** This documentation is automatically generated. Last run: ' + new Date().toISOString() + '\n\n';
+  content +=
+    '> **Note:** This documentation is automatically generated. Last run: ' + new Date().toISOString() + '\n\n';
 
   content += '## Test Files Overview\n\n';
   content += '| Test File | Tests | Passed | Status | Description |\n';
@@ -411,5 +418,5 @@ module.exports = {
   runTestFile,
   analyzeAllTests,
   generateTestSummary,
-  generateCoverageOverview
+  generateCoverageOverview,
 };

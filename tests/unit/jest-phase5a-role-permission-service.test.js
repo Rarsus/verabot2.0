@@ -45,9 +45,9 @@ describe('Phase 5A: RolePermissionService', () => {
           'checkUserPermission',
           'validateRole',
           'cacheRoles',
-          'clearRoleCache'
+          'clearRoleCache',
         ];
-        requiredMethods.forEach(method => {
+        requiredMethods.forEach((method) => {
           if (RolePermissionService[method]) {
             assert(typeof RolePermissionService[method] === 'function');
           }
@@ -171,7 +171,7 @@ describe('Phase 5A: RolePermissionService', () => {
       try {
         if (RolePermissionService && RolePermissionService.checkUserPermission) {
           const perms = ['admin', 'mod', 'user'];
-          perms.forEach(perm => {
+          perms.forEach((perm) => {
             const result = RolePermissionService.checkUserPermission('user-123', perm);
             assert(typeof result === 'boolean');
           });
@@ -205,7 +205,7 @@ describe('Phase 5A: RolePermissionService', () => {
       try {
         if (RolePermissionService && RolePermissionService.checkUserPermission) {
           const guilds = ['guild-1', 'guild-2', 'guild-3'];
-          guilds.forEach(guildId => {
+          guilds.forEach((guildId) => {
             const result = RolePermissionService.checkUserPermission('user-123', 'admin', guildId);
             assert(typeof result === 'boolean');
           });
@@ -296,7 +296,7 @@ describe('Phase 5A: RolePermissionService', () => {
       try {
         if (RolePermissionService && RolePermissionService.validateRole) {
           const specialRoles = ['admin!', '@mod', '#user', 'role-with-dashes'];
-          specialRoles.forEach(role => {
+          specialRoles.forEach((role) => {
             const result = RolePermissionService.validateRole(role);
             assert(typeof result === 'boolean');
           });
@@ -313,12 +313,10 @@ describe('Phase 5A: RolePermissionService', () => {
         if (RolePermissionService && RolePermissionService.checkUserPermission) {
           const promises = [];
           for (let i = 0; i < 10; i++) {
-            promises.push(
-              Promise.resolve(RolePermissionService.checkUserPermission(`user-${i}`, 'admin'))
-            );
+            promises.push(Promise.resolve(RolePermissionService.checkUserPermission(`user-${i}`, 'admin')));
           }
           const results = await Promise.all(promises);
-          assert(results.every(r => typeof r === 'boolean'));
+          assert(results.every((r) => typeof r === 'boolean'));
         } else {
           assert(true);
         }

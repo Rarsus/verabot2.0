@@ -7,7 +7,7 @@ const ERROR_LEVELS = {
   LOW: 'LOW',
   MEDIUM: 'MEDIUM',
   HIGH: 'HIGH',
-  CRITICAL: 'CRITICAL'
+  CRITICAL: 'CRITICAL',
 };
 
 /**
@@ -29,15 +29,15 @@ function logError(context, error, level = ERROR_LEVELS.MEDIUM, metadata = {}) {
     level,
     message: errorMessage,
     ...(errorStack && { stack: errorStack }),
-    ...metadata
+    ...metadata,
   };
 
   // Color-coded console output
   const colors = {
-    LOW: '\x1b[36m',      // Cyan
-    MEDIUM: '\x1b[33m',   // Yellow
-    HIGH: '\x1b[31m',     // Red
-    CRITICAL: '\x1b[35m'  // Magenta
+    LOW: '\x1b[36m', // Cyan
+    MEDIUM: '\x1b[33m', // Yellow
+    HIGH: '\x1b[31m', // Red
+    CRITICAL: '\x1b[35m', // Magenta
   };
   const reset = '\x1b[0m';
   const color = colors[level] || reset;
@@ -61,7 +61,7 @@ async function handleInteractionError(interaction, error, context) {
   const errorMessage = error instanceof Error ? error.message : String(error);
   logError(context, error, ERROR_LEVELS.MEDIUM, {
     userId: interaction.user?.id,
-    commandName: interaction.commandName
+    commandName: interaction.commandName,
   });
 
   try {
@@ -73,7 +73,7 @@ async function handleInteractionError(interaction, error, context) {
     }
   } catch (replyErr) {
     logError(`${context} (reply error)`, replyErr, ERROR_LEVELS.HIGH, {
-      userId: interaction.user?.id
+      userId: interaction.user?.id,
     });
   }
 }
@@ -158,5 +158,5 @@ module.exports = {
   handleInteractionError,
   validateQuoteText,
   validateAuthor,
-  validateQuoteNumber
+  validateQuoteNumber,
 };

@@ -5,7 +5,7 @@ const quoteService = require('../../services/QuoteService');
 
 const { data, options } = buildCommandOptions('tag-quote', 'Add a tag to a quote', [
   { name: 'id', type: 'integer', description: 'Quote ID to tag', required: true },
-  { name: 'tag', type: 'string', description: 'Tag name', required: true }
+  { name: 'tag', type: 'string', description: 'Tag name', required: true },
 ]);
 
 class TagQuoteCommand extends Command {
@@ -17,8 +17,8 @@ class TagQuoteCommand extends Command {
       options,
       permissions: {
         minTier: 1,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 

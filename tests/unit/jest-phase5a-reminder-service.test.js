@@ -48,9 +48,9 @@ describe('Phase 5A: ReminderService', () => {
           'updateReminder',
           'deleteReminder',
           'getAllReminders',
-          'searchReminders'
+          'searchReminders',
         ];
-        expectedMethods.forEach(method => {
+        expectedMethods.forEach((method) => {
           if (ReminderService[method]) {
             assert(typeof ReminderService[method] === 'function');
           }
@@ -82,7 +82,7 @@ describe('Phase 5A: ReminderService', () => {
             guildId: 'guild-123',
             userId: 'user-456',
             text: 'Test reminder',
-            dueDate: new Date(Date.now() + 86400000) // Tomorrow
+            dueDate: new Date(Date.now() + 86400000), // Tomorrow
           };
           const result = await Promise.resolve(ReminderService.createReminder(reminder));
           assert(result === undefined || typeof result === 'object' || typeof result === 'number');
@@ -100,7 +100,7 @@ describe('Phase 5A: ReminderService', () => {
           const reminder = {
             userId: 'user-456',
             text: 'Test',
-            dueDate: new Date()
+            dueDate: new Date(),
           };
           const result = await Promise.resolve(ReminderService.createReminder(reminder));
           // Should handle gracefully
@@ -119,7 +119,7 @@ describe('Phase 5A: ReminderService', () => {
           const reminder = {
             guildId: 'guild-123',
             text: 'Test',
-            dueDate: new Date()
+            dueDate: new Date(),
           };
           const result = await Promise.resolve(ReminderService.createReminder(reminder));
           assert(true);
@@ -137,7 +137,7 @@ describe('Phase 5A: ReminderService', () => {
           const reminder = {
             guildId: 'guild-123',
             userId: 'user-456',
-            dueDate: new Date()
+            dueDate: new Date(),
           };
           const result = await Promise.resolve(ReminderService.createReminder(reminder));
           assert(true);
@@ -155,7 +155,7 @@ describe('Phase 5A: ReminderService', () => {
           const reminder = {
             guildId: 'guild-123',
             userId: 'user-456',
-            text: 'Test'
+            text: 'Test',
           };
           const result = await Promise.resolve(ReminderService.createReminder(reminder));
           assert(true);
@@ -174,7 +174,7 @@ describe('Phase 5A: ReminderService', () => {
             guildId: 'guild-123',
             userId: 'user-456',
             text: 'Test',
-            dueDate: 'invalid-date'
+            dueDate: 'invalid-date',
           };
           const result = await Promise.resolve(ReminderService.createReminder(reminder));
           assert(true);
@@ -193,7 +193,7 @@ describe('Phase 5A: ReminderService', () => {
             guildId: 'guild-123',
             userId: 'user-456',
             text: 'Test',
-            dueDate: new Date()
+            dueDate: new Date(),
           };
           const r1 = await Promise.resolve(ReminderService.createReminder(reminder));
           const r2 = await Promise.resolve(ReminderService.createReminder(reminder));
@@ -214,7 +214,7 @@ describe('Phase 5A: ReminderService', () => {
             userId: 'user-456',
             text: 'Test',
             dueDate: new Date(),
-            metadata: { custom: 'data', priority: 'high' }
+            metadata: { custom: 'data', priority: 'high' },
           };
           const result = await Promise.resolve(ReminderService.createReminder(reminder));
           assert(true);
@@ -300,7 +300,7 @@ describe('Phase 5A: ReminderService', () => {
         if (ReminderService && ReminderService.updateReminder) {
           const updates = {
             text: 'Updated text',
-            dueDate: new Date(Date.now() + 172800000)
+            dueDate: new Date(Date.now() + 172800000),
           };
           const result = await Promise.resolve(ReminderService.updateReminder('reminder-123', 'guild-123', updates));
           assert(true);
@@ -329,7 +329,9 @@ describe('Phase 5A: ReminderService', () => {
     test('should reject update to nonexistent reminder', async () => {
       try {
         if (ReminderService && ReminderService.updateReminder) {
-          const result = await Promise.resolve(ReminderService.updateReminder('nonexistent', 'guild-123', { text: 'Test' }));
+          const result = await Promise.resolve(
+            ReminderService.updateReminder('nonexistent', 'guild-123', { text: 'Test' })
+          );
           assert(true);
         } else {
           assert(true);
@@ -343,7 +345,7 @@ describe('Phase 5A: ReminderService', () => {
       try {
         if (ReminderService && ReminderService.updateReminder) {
           const updates = {
-            dueDate: 'invalid-date'
+            dueDate: 'invalid-date',
           };
           const result = await Promise.resolve(ReminderService.updateReminder('reminder-123', 'guild-123', updates));
           assert(true);
@@ -501,7 +503,7 @@ describe('Phase 5A: ReminderService', () => {
             userId: 'user-456',
             text: 'Recurring test',
             dueDate: new Date(),
-            recurring: 'daily'
+            recurring: 'daily',
           };
           const result = await Promise.resolve(ReminderService.createReminder(reminder));
           assert(true);
@@ -535,7 +537,7 @@ describe('Phase 5A: ReminderService', () => {
             guildId: 'guild-123',
             userId: 'user-456',
             text: 'Overdue',
-            dueDate: new Date(Date.now() - 86400000) // Yesterday
+            dueDate: new Date(Date.now() - 86400000), // Yesterday
           };
           const result = await Promise.resolve(ReminderService.createReminder(reminder));
           assert(true);
@@ -554,7 +556,7 @@ describe('Phase 5A: ReminderService', () => {
             guildId: 'guild-123',
             userId: 'user-456',
             text: 'Past date',
-            dueDate: new Date('2020-01-01')
+            dueDate: new Date('2020-01-01'),
           };
           const result = await Promise.resolve(ReminderService.createReminder(reminder));
           assert(true);
@@ -589,7 +591,7 @@ describe('Phase 5A: ReminderService', () => {
             guildId: 'guild-123',
             userId: 'user-456',
             text: 'Retry test',
-            dueDate: new Date()
+            dueDate: new Date(),
           };
           const result = await Promise.resolve(ReminderService.createReminder(reminder));
           assert(true);
@@ -610,7 +612,7 @@ describe('Phase 5A: ReminderService', () => {
             guildId: 'guild-123',
             userId: 'user-456',
             text: 'x'.repeat(10000),
-            dueDate: new Date()
+            dueDate: new Date(),
           };
           const result = await Promise.resolve(ReminderService.createReminder(reminder));
           assert(true);
@@ -629,7 +631,7 @@ describe('Phase 5A: ReminderService', () => {
             guildId: 'guild-123',
             userId: 'user-456',
             text: '',
-            dueDate: new Date()
+            dueDate: new Date(),
           };
           const result = await Promise.resolve(ReminderService.createReminder(reminder));
           assert(true);
@@ -649,7 +651,7 @@ describe('Phase 5A: ReminderService', () => {
               guildId: 'guild-123',
               userId: 'user-456',
               text: `Reminder ${i}`,
-              dueDate: new Date(Date.now() + i * 1000)
+              dueDate: new Date(Date.now() + i * 1000),
             };
             await Promise.resolve(ReminderService.createReminder(reminder));
           }
@@ -669,7 +671,7 @@ describe('Phase 5A: ReminderService', () => {
               guildId: 'guild-123',
               userId: `user-${i}`,
               text: `Concurrent reminder ${i}`,
-              dueDate: new Date()
+              dueDate: new Date(),
             };
             promises.push(Promise.resolve(ReminderService.createReminder(reminder)));
           }

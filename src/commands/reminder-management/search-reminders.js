@@ -6,7 +6,7 @@ const { searchReminders } = require('../../services/GuildAwareReminderService');
 
 const { data, options } = buildCommandOptions('search-reminders', 'Search reminders by keyword', [
   { name: 'keyword', type: 'string', description: 'Search keyword', required: true, minLength: 2 },
-  { name: 'page', type: 'integer', description: 'Page number (default: 1)', required: false, minValue: 1 }
+  { name: 'page', type: 'integer', description: 'Page number (default: 1)', required: false, minValue: 1 },
 ]);
 
 class SearchRemindersCommand extends Command {
@@ -18,8 +18,8 @@ class SearchRemindersCommand extends Command {
       options,
       permissions: {
         minTier: 1,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 
@@ -44,7 +44,7 @@ class SearchRemindersCommand extends Command {
 
     const embed = new EmbedBuilder()
       .setTitle(`🔍 Search Results: "${keyword}"`)
-      .setColor(0x5865F2)
+      .setColor(0x5865f2)
       .setFooter({ text: `Page ${page} • ${reminders.length} results` });
 
     // Add reminders to embed with highlighting
@@ -72,7 +72,7 @@ class SearchRemindersCommand extends Command {
       embed.addFields({
         name: `#${reminder.id} - ${reminder.subject}`,
         value: `${preview}\n📂 ${reminder.category} • 📅 ${timeStr}`,
-        inline: false
+        inline: false,
       });
     }
 

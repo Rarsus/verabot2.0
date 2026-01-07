@@ -18,15 +18,23 @@ async function createReminder(guildId, reminderData) {
   return new Promise(async (resolve, reject) => {
     try {
       const db = await GuildDatabaseManager.getGuildDatabase(guildId);
-      const {
-        subject, category, when, content, link, image, notification_method
-      } = reminderData;
+      const { subject, category, when, content, link, image, notification_method } = reminderData;
 
       db.run(
         `INSERT INTO reminders (subject, category, when_datetime, content, link, image, notificationTime, status, notification_method)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [subject, category, when, content || null, link || null, image || null, when, REMINDER_STATUS.ACTIVE, notification_method || 'dm'],
-        function(err) {
+        [
+          subject,
+          category,
+          when,
+          content || null,
+          link || null,
+          image || null,
+          when,
+          REMINDER_STATUS.ACTIVE,
+          notification_method || 'dm',
+        ],
+        function (err) {
           if (err) {
             logError('GuildAwareReminderService.createReminder', err, ERROR_LEVELS.MEDIUM, { guildId });
             reject(err);
@@ -58,9 +66,12 @@ async function addReminderAssignment(guildId, reminderId, assigneeType, assignee
       db.run(
         'INSERT INTO reminder_assignments (reminderId, assigneeType, assigneeId) VALUES (?, ?, ?)',
         [reminderId, assigneeType, assigneeId],
-        function(err) {
+        function (err) {
           if (err) {
-            logError('GuildAwareReminderService.addReminderAssignment', err, ERROR_LEVELS.MEDIUM, { guildId, reminderId });
+            logError('GuildAwareReminderService.addReminderAssignment', err, ERROR_LEVELS.MEDIUM, {
+              guildId,
+              reminderId,
+            });
             reject(err);
           } else {
             resolve(this.lastID);
@@ -85,18 +96,14 @@ async function getReminderById(guildId, id) {
     try {
       const db = await GuildDatabaseManager.getGuildDatabase(guildId);
 
-      db.get(
-        'SELECT * FROM reminders WHERE id = ?',
-        [id],
-        (err, row) => {
-          if (err) {
-            logError('GuildAwareReminderService.getReminderById', err, ERROR_LEVELS.MEDIUM, { guildId, id });
-            reject(err);
-          } else {
-            resolve(row || null);
-          }
+      db.get('SELECT * FROM reminders WHERE id = ?', [id], (err, row) => {
+        if (err) {
+          logError('GuildAwareReminderService.getReminderById', err, ERROR_LEVELS.MEDIUM, { guildId, id });
+          reject(err);
+        } else {
+          resolve(row || null);
         }
-      );
+      });
     } catch (error) {
       logError('GuildAwareReminderService.getReminderById', error, ERROR_LEVELS.MEDIUM, { guildId, id });
       reject(error);
@@ -126,18 +133,14 @@ async function updateReminder(guildId, id, updates) {
       fields.push('updatedAt = CURRENT_TIMESTAMP');
       values.push(id);
 
-      db.run(
-        `UPDATE reminders SET ${fields.join(', ')} WHERE id = ?`,
-        values,
-        (err) => {
-          if (err) {
-            logError('GuildAwareReminderService.updateReminder', err, ERROR_LEVELS.MEDIUM, { guildId, id });
-            reject(err);
-          } else {
-            resolve();
-          }
+      db.run(`UPDATE reminders SET ${fields.join(', ')} WHERE id = ?`, values, (err) => {
+        if (err) {
+          logError('GuildAwareReminderService.updateReminder', err, ERROR_LEVELS.MEDIUM, { guildId, id });
+          reject(err);
+        } else {
+          resolve();
         }
-      );
+      });
     } catch (error) {
       logError('GuildAwareReminderService.updateReminder', error, ERROR_LEVELS.MEDIUM, { guildId, id });
       reject(error);
@@ -212,18 +215,14 @@ async function getAllReminders(guildId, filters = {}) {
 
       const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
-      db.all(
-        `SELECT * FROM reminders ${whereClause} ORDER BY when_datetime ASC`,
-        params,
-        (err, rows) => {
-          if (err) {
-            logError('GuildAwareReminderService.getAllReminders', err, ERROR_LEVELS.MEDIUM, { guildId });
-            reject(err);
-          } else {
-            resolve(rows || []);
-          }
+      db.all(`SELECT * FROM reminders ${whereClause} ORDER BY when_datetime ASC`, params, (err, rows) => {
+        if (err) {
+          logError('GuildAwareReminderService.getAllReminders', err, ERROR_LEVELS.MEDIUM, { guildId });
+          reject(err);
+        } else {
+          resolve(rows || []);
         }
-      );
+      });
     } catch (error) {
       logError('GuildAwareReminderService.getAllReminders', error, ERROR_LEVELS.MEDIUM, { guildId });
       reject(error);
@@ -322,5 +321,5 @@ module.exports = {
   getAllReminders,
   searchReminders,
   deleteGuildReminders,
-  getGuildReminderStats
+  getGuildReminderStats,
 };

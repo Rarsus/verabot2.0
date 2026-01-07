@@ -15,8 +15,8 @@ class QuoteStatsCommand extends Command {
       options,
       permissions: {
         minTier: 1,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 
@@ -35,7 +35,7 @@ class QuoteStatsCommand extends Command {
 
       const totalQuotes = quotes.length;
       const authors = {};
-      quotes.forEach(q => {
+      quotes.forEach((q) => {
         authors[q.author] = (authors[q.author] || 0) + 1;
       });
 
@@ -50,7 +50,7 @@ class QuoteStatsCommand extends Command {
           { name: 'Top Author', value: `${topAuthor[0]} (${topAuthor[1]} quotes)`, inline: true },
           { name: 'Average Quote Length', value: `${avgLength} characters`, inline: true }
         )
-        .setColor(0x5865F2);
+        .setColor(0x5865f2);
 
       if (message.channel && typeof message.channel.send === 'function') {
         await message.channel.send({ embeds: [embed] });
@@ -78,7 +78,7 @@ class QuoteStatsCommand extends Command {
 
     const totalQuotes = quotes.length;
     const authors = {};
-    quotes.forEach(q => {
+    quotes.forEach((q) => {
       authors[q.author] = (authors[q.author] || 0) + 1;
     });
 
@@ -93,7 +93,7 @@ class QuoteStatsCommand extends Command {
         { name: 'Top Author', value: `${topAuthor[0]} (${topAuthor[1]} quotes)`, inline: true },
         { name: 'Average Quote Length', value: `${avgLength} characters`, inline: true }
       )
-      .setColor(0x5865F2);
+      .setColor(0x5865f2);
 
     await interaction.editReply({ embeds: [embed] });
   }

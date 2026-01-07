@@ -9,9 +9,10 @@ const path = require('path');
 const { spawn } = require('child_process');
 
 const testsDir = path.join(__dirname);
-const testFiles = fs.readdirSync(testsDir)
-  .filter(file => file.startsWith('test-') && file.endsWith('.js'))
-  .map(file => path.join(testsDir, file));
+const testFiles = fs
+  .readdirSync(testsDir)
+  .filter((file) => file.startsWith('test-') && file.endsWith('.js'))
+  .map((file) => path.join(testsDir, file));
 
 console.log('\n╔════════════════════════════════════════════════╗');
 console.log('║   Dashboard Test Suite                         ║');
@@ -28,7 +29,7 @@ async function runTest(testFile) {
 
     const proc = spawn('node', [testFile], {
       cwd: path.join(__dirname, '../..'),
-      stdio: 'pipe'
+      stdio: 'pipe',
     });
 
     let output = '';
@@ -58,7 +59,7 @@ async function runTest(testFile) {
         name: testName,
         passed,
         failed,
-        exitCode: code
+        exitCode: code,
       });
 
       resolve(code);
@@ -92,7 +93,7 @@ async function runAllTests() {
   console.log(`   📝 Total Tests: ${totalPassed + totalFailed}`);
   console.log(`   📁 Test Files: ${testFiles.length}`);
 
-  const failedFiles = results.filter(r => r.exitCode !== 0).length;
+  const failedFiles = results.filter((r) => r.exitCode !== 0).length;
   if (failedFiles > 0) {
     console.log(`\n   ⚠️  ${failedFiles} test file(s) had failures`);
   } else {
@@ -104,7 +105,7 @@ async function runAllTests() {
   process.exit(totalFailed > 0 ? 1 : 0);
 }
 
-runAllTests().catch(err => {
+runAllTests().catch((err) => {
   console.error('Error running tests:', err);
   process.exit(1);
 });

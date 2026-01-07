@@ -4,15 +4,15 @@ const RolePermissionService = require('../../services/RolePermissionService');
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 function formatUsage(cmd, prefix = '!') {
-  const opts = (cmd.data && typeof cmd.data.toJSON === 'function') ? (cmd.data.toJSON().options || []) : (cmd.options || []);
-  const parts = opts.map(o => (o.required ? `<${o.name}>` : `[${o.name}]`));
+  const opts = cmd.data && typeof cmd.data.toJSON === 'function' ? cmd.data.toJSON().options || [] : cmd.options || [];
+  const parts = opts.map((o) => (o.required ? `<${o.name}>` : `[${o.name}]`));
   const slash = `/${cmd.name}${parts.length ? ' ' + parts.join(' ') : ''}`;
   const message = `${prefix}${cmd.name}${parts.length ? ' ' + parts.join(' ') : ''}`;
   return { slash, message };
 }
 
 const { data, options } = buildCommandOptions('help', 'List available commands or show detailed help for a command', [
-  { name: 'command', type: 'string', description: 'Command name to get details for', required: false }
+  { name: 'command', type: 'string', description: 'Command name to get details for', required: false },
 ]);
 
 class HelpCommand extends Command {
@@ -30,7 +30,10 @@ class HelpCommand extends Command {
       }
 
       if (lines.length === 0) {
-        const e = new EmbedBuilder().setTitle('Available commands').setDescription('No commands available.').setColor(0x00AE86);
+        const e = new EmbedBuilder()
+          .setTitle('Available commands')
+          .setDescription('No commands available.')
+          .setColor(0x00ae86);
         if (message.channel && typeof message.channel.send === 'function') return message.channel.send({ embeds: [e] });
         if (message.reply) return message.reply({ embeds: [e] });
         return;
@@ -40,15 +43,24 @@ class HelpCommand extends Command {
       const pages = [];
       for (let i = 0; i < lines.length; i += pageSize) {
         const chunk = lines.slice(i, i + pageSize);
-        const desc = chunk.map(it => `**${it.name}** — ${it.desc}`).join('\n');
-        pages.push(new EmbedBuilder().setTitle('Available commands').setDescription(desc).setColor(0x00AE86));
+        const desc = chunk.map((it) => `**${it.name}** — ${it.desc}`).join('\n');
+        pages.push(new EmbedBuilder().setTitle('Available commands').setDescription(desc).setColor(0x00ae86));
       }
 
-      const components = (pageIndex) => new ActionRowBuilder().addComponents(
-        new ButtonBuilder().setCustomId('prev').setLabel('Previous').setStyle(ButtonStyle.Primary).setDisabled(pageIndex === 0),
-        new ButtonBuilder().setCustomId('next').setLabel('Next').setStyle(ButtonStyle.Primary).setDisabled(pageIndex === pages.length - 1),
-        new ButtonBuilder().setCustomId('close').setLabel('Close').setStyle(ButtonStyle.Danger)
-      );
+      const components = (pageIndex) =>
+        new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setCustomId('prev')
+            .setLabel('Previous')
+            .setStyle(ButtonStyle.Primary)
+            .setDisabled(pageIndex === 0),
+          new ButtonBuilder()
+            .setCustomId('next')
+            .setLabel('Next')
+            .setStyle(ButtonStyle.Primary)
+            .setDisabled(pageIndex === pages.length - 1),
+          new ButtonBuilder().setCustomId('close').setLabel('Close').setStyle(ButtonStyle.Danger)
+        );
 
       let sentMessage;
       try {
@@ -78,10 +90,16 @@ class HelpCommand extends Command {
             await i.update({ content: 'Help closed.', embeds: [], components: [] });
             collector.stop();
           }
-        } catch { void 0; }
+        } catch {
+          void 0;
+        }
       });
       collector.on('end', async () => {
-        try { await sentMessage.edit({ components: [] }); } catch { void 0; }
+        try {
+          await sentMessage.edit({ components: [] });
+        } catch {
+          void 0;
+        }
       });
     } catch {
       console.error('Help command (message) error', err);
@@ -112,7 +130,8 @@ class HelpCommand extends Command {
           return;
         }
 
-        const opts = (cmd.data && typeof cmd.data.toJSON === 'function') ? (cmd.data.toJSON().options || []) : (cmd.options || []);
+        const opts =
+          cmd.data && typeof cmd.data.toJSON === 'function' ? cmd.data.toJSON().options || [] : cmd.options || [];
         const usage = formatUsage(cmd, interaction.client?.config?.PREFIX || '!');
         const userTier = await RolePermissionService.getUserTier(userId, guildId, client);
         const tierDesc = RolePermissionService.getRoleDescription(userTier);
@@ -125,12 +144,16 @@ class HelpCommand extends Command {
             { name: 'Message usage', value: usage.message, inline: false },
             { name: 'Your role', value: tierDesc, inline: false }
           )
-          .setColor(0x00AE86);
+          .setColor(0x00ae86);
 
         if (opts.length) {
           for (const o of opts) {
             const t = o.type || o.type?.toString() || 'string';
-            embed.addFields({ name: o.name, value: `${o.description || '-'} (${o.required ? 'required' : 'optional'}, type: ${t})`, inline: false });
+            embed.addFields({
+              name: o.name,
+              value: `${o.description || '-'} (${o.required ? 'required' : 'optional'}, type: ${t})`,
+              inline: false,
+            });
           }
         }
 
@@ -156,21 +179,34 @@ class HelpCommand extends Command {
       const pages = [];
       for (let i = 0; i < items.length; i += pageSize) {
         const chunk = items.slice(i, i + pageSize);
-        const desc = chunk.map(it => `**${it.name}** — ${it.desc}`).join('\n');
-        pages.push(new EmbedBuilder()
-          .setTitle('Available commands')
-          .setDescription(desc)
-          .setFooter({ text: `Role: ${RolePermissionService.getRoleDescription(userTier)}` })
-          .setColor(0x00AE86));
+        const desc = chunk.map((it) => `**${it.name}** — ${it.desc}`).join('\n');
+        pages.push(
+          new EmbedBuilder()
+            .setTitle('Available commands')
+            .setDescription(desc)
+            .setFooter({ text: `Role: ${RolePermissionService.getRoleDescription(userTier)}` })
+            .setColor(0x00ae86)
+        );
       }
 
-      const components = (pageIndex) => new ActionRowBuilder().addComponents(
-        new ButtonBuilder().setCustomId('prev').setLabel('Previous').setStyle(ButtonStyle.Primary).setDisabled(pageIndex === 0),
-        new ButtonBuilder().setCustomId('next').setLabel('Next').setStyle(ButtonStyle.Primary).setDisabled(pageIndex === pages.length - 1),
-        new ButtonBuilder().setCustomId('close').setLabel('Close').setStyle(ButtonStyle.Danger)
-      );
+      const components = (pageIndex) =>
+        new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setCustomId('prev')
+            .setLabel('Previous')
+            .setStyle(ButtonStyle.Primary)
+            .setDisabled(pageIndex === 0),
+          new ButtonBuilder()
+            .setCustomId('next')
+            .setLabel('Next')
+            .setStyle(ButtonStyle.Primary)
+            .setDisabled(pageIndex === pages.length - 1),
+          new ButtonBuilder().setCustomId('close').setLabel('Close').setStyle(ButtonStyle.Danger)
+        );
 
-      const reply = await interaction.reply({ embeds: [pages[0]], components: [components(0)], flags: 64 }).then(() => interaction.fetchReply());
+      const reply = await interaction
+        .reply({ embeds: [pages[0]], components: [components(0)], flags: 64 })
+        .then(() => interaction.fetchReply());
       const filter = (i) => i.user.id === interaction.user.id;
       const collector = reply.createMessageComponentCollector({ filter, time: 120000 });
       let idx = 0;
@@ -186,14 +222,24 @@ class HelpCommand extends Command {
             await i.update({ content: 'Help closed.', embeds: [], components: [] });
             collector.stop();
           }
-        } catch { void 0; }
+        } catch {
+          void 0;
+        }
       });
       collector.on('end', async () => {
-        try { await reply.edit({ components: [] }); } catch { void 0; }
+        try {
+          await reply.edit({ components: [] });
+        } catch {
+          void 0;
+        }
       });
     } catch (err) {
       console.error('Help command (interaction) error', err);
-      try { await interaction.reply({ content: 'Could not list commands.', flags: 64 }); } catch { void 0; }
+      try {
+        await interaction.reply({ content: 'Could not list commands.', flags: 64 });
+      } catch {
+        void 0;
+      }
     }
   }
 }

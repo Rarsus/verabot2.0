@@ -16,6 +16,7 @@ Phase 1 tests successfully validate database operations but use the deprecated r
 ## Current State
 
 ### Phase 1 Test Coverage
+
 - ✅ Root-level database operations (30 tests)
 - ✅ Proxy configuration CRUD (12 tests)
 - ❌ Guild-aware operations (0 tests)
@@ -23,6 +24,7 @@ Phase 1 tests successfully validate database operations but use the deprecated r
 - ❌ Guild isolation validation (0 tests)
 
 ### Production Architecture
+
 - Guild-specific SQLite databases
 - One database file per guild
 - On-demand database creation
@@ -172,6 +174,7 @@ Assert: count = 100
 ## Implementation Notes
 
 ### Setup Requirements
+
 ```javascript
 const GuildDatabaseManager = require('../../src/services/GuildDatabaseManager');
 const {
@@ -183,22 +186,24 @@ const {
   deleteQuote,
   getQuoteCount,
   addTag,
-  getAllTags
+  getAllTags,
 } = require('../../src/services/GuildAwareDatabaseService');
 ```
 
 ### Important Patterns
 
 1. **Always pass guildId as first parameter**
+
    ```javascript
    // ✅ CORRECT
    await addQuote('guild-123', 'text', 'author');
-   
+
    // ❌ WRONG
    await addQuote('text', 'author');
    ```
 
 2. **Cleanup between tests**
+
    ```javascript
    afterEach(async () => {
      // Clean up guild databases to avoid test pollution
@@ -207,6 +212,7 @@ const {
    ```
 
 3. **Use unique guild IDs**
+
    ```javascript
    const guildId = `test-guild-${Date.now()}-${Math.random()}`;
    ```
@@ -216,7 +222,7 @@ const {
    // Always test that one guild's data doesn't appear in another
    const guild1Data = await getAllQuotes('guild-1');
    const guild2Data = await getAllQuotes('guild-2');
-   Assert: guild1Data !== guild2Data
+   Assert: guild1Data !== guild2Data;
    ```
 
 ---
@@ -224,16 +230,19 @@ const {
 ## Expected Coverage Improvements
 
 ### Before Phase 2
+
 - DatabaseService.js: 81.63% lines
 - GuildDatabaseManager: 0% (untested)
 - Guild-aware operations: 0% (untested)
 
 ### After Phase 2
+
 - DatabaseService.js: 90%+ lines (complete legacy coverage)
 - GuildDatabaseManager: 85%+ (complete new API coverage)
 - Guild-aware operations: 100% (comprehensive testing)
 
 ### Test Count
+
 - Current: 30 database tests + 12 proxy config tests
 - Phase 2 adds: 15-20 guild-aware tests
 - Total: 57-62 database-related tests
@@ -243,17 +252,20 @@ const {
 ## Phase 2 Integration
 
 ### Timeline
+
 - **Weeks 1-2:** Implement guild-aware database tests (8-12 hours)
 - **Week 2:** Add ReminderService.js tests (5-7 hours)
 - **Week 2-3:** Add errorHandler.js tests (7-10 hours)
 - **Week 3:** Integration tests and final coverage (5-7 hours)
 
 ### Total Phase 2 Effort
+
 - Guild-aware tests: 12 hours
 - Other Phase 2 modules: 17-24 hours
 - **Total: 29-36 hours (3.5-4.5 days)**
 
 ### Coverage Target for Phase 2
+
 - Overall: 75%+ (from current 70.33%)
 - Database modules: 90%+ (guild-aware + root)
 - Service modules: 85%+ average
@@ -263,11 +275,13 @@ const {
 ## Deprecation Management
 
 ### Timeline
+
 - **Current:** Jan 2026 - Root database DEPRECATED
 - **Phase 2:** Add guild-aware tests (validates new API)
 - **v0.3.0:** March 2026 - Remove root database API
 
 ### Deliverables
+
 1. Guild-aware test suite (15-20 tests)
 2. Migration guide for existing code
 3. Deprecation timeline documentation
@@ -285,22 +299,26 @@ const {
 ✅ Error scenarios covered  
 ✅ Overall coverage 75%+  
 ✅ All tests passing  
-✅ No deprecation warnings in new tests  
+✅ No deprecation warnings in new tests
 
 ---
 
 ## Risk Mitigation
 
 ### Risk: Breaking existing code using deprecated API
+
 **Mitigation:** Phase 2 tests validate new API before deprecating old API
 
 ### Risk: Guild isolation bugs
+
 **Mitigation:** Explicit isolation tests with multiple guilds per test
 
 ### Risk: Connection cache issues
+
 **Mitigation:** Test connection reuse and cleanup patterns
 
 ### Risk: Performance regression
+
 **Mitigation:** Test with large datasets (100+ quotes per guild)
 
 ---
@@ -310,6 +328,7 @@ const {
 **PROCEED WITH PHASE 2 GUILD-AWARE TESTS**
 
 This is critical for:
+
 1. Validating production architecture
 2. Ensuring guild isolation works correctly
 3. Before removing deprecated API

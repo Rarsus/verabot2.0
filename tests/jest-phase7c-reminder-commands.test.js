@@ -30,18 +30,18 @@ describe('Create Reminder Command', () => {
       options: {
         getString: (name) => {
           const opts = {
-            'reminder_text': 'Test reminder',
-            'due_time': '2026-01-10 10:00'
+            reminder_text: 'Test reminder',
+            due_time: '2026-01-10 10:00',
           };
           return opts[name];
         },
         getNumber: (name) => {
-          const opts = { 'days': 3 };
+          const opts = { days: 3 };
           return opts[name];
-        }
+        },
       },
       reply: async (msg) => ({ id: 'msg-123', ...msg }),
-      deferReply: async () => ({})
+      deferReply: async () => ({}),
     };
 
     command = {
@@ -58,7 +58,7 @@ describe('Create Reminder Command', () => {
           userId: interaction.user.id,
           text,
           dueTime,
-          created: new Date()
+          created: new Date(),
         };
       },
 
@@ -88,7 +88,7 @@ describe('Create Reminder Command', () => {
           throw new Error('Date must be in future');
         }
         return date;
-      }
+      },
     };
   });
 
@@ -110,7 +110,7 @@ describe('Create Reminder Command', () => {
   });
 
   it('should validate reminder text is not empty', () => {
-    mockInteraction.options.getString = (name) => name === 'reminder_text' ? '' : '2026-01-10';
+    mockInteraction.options.getString = (name) => (name === 'reminder_text' ? '' : '2026-01-10');
     const result = command.validate(mockInteraction);
     assert.strictEqual(result.valid, false);
   });
@@ -166,9 +166,9 @@ describe('List Reminders Command', () => {
         return [
           { id: 1, text: 'Reminder 1', dueDate: new Date(Date.now() + 3600000) },
           { id: 2, text: 'Reminder 2', dueDate: new Date(Date.now() + 7200000) },
-          { id: 3, text: 'Reminder 3', dueDate: new Date(Date.now() + 10800000) }
+          { id: 3, text: 'Reminder 3', dueDate: new Date(Date.now() + 10800000) },
         ];
-      }
+      },
     };
 
     command = {
@@ -178,7 +178,7 @@ describe('List Reminders Command', () => {
           reminders,
           count: reminders.length,
           guildId,
-          userId
+          userId,
         };
       },
 
@@ -194,7 +194,7 @@ describe('List Reminders Command', () => {
           page,
           pageSize,
           totalPages: Math.ceil(reminders.length / pageSize),
-          totalItems: reminders.length
+          totalItems: reminders.length,
         };
       },
 
@@ -202,9 +202,9 @@ describe('List Reminders Command', () => {
         return {
           title: 'Your Reminders',
           description: reminders.map(command.formatReminder).join('\n'),
-          color: 0x7289da
+          color: 0x7289da,
         };
-      }
+      },
     };
   });
 
@@ -222,17 +222,21 @@ describe('List Reminders Command', () => {
   });
 
   it('should paginate reminders with default size', () => {
-    const reminders = Array(25).fill(null).map((_, i) => ({
-      id: i,
-      text: `Reminder ${i}`
-    }));
+    const reminders = Array(25)
+      .fill(null)
+      .map((_, i) => ({
+        id: i,
+        text: `Reminder ${i}`,
+      }));
     const page = command.paginate(reminders, 1);
     assert.strictEqual(page.pageSize, 10);
     assert.strictEqual(page.totalPages, 3);
   });
 
   it('should get correct page of reminders', () => {
-    const reminders = Array(25).fill(null).map((_, i) => ({ id: i }));
+    const reminders = Array(25)
+      .fill(null)
+      .map((_, i) => ({ id: i }));
     const page2 = command.paginate(reminders, 2, 10);
     assert.strictEqual(page2.items.length, 10);
     assert.strictEqual(page2.items[0].id, 10);
@@ -271,28 +275,20 @@ describe('Search Reminders Command', () => {
       search: (reminders, query) => {
         if (!query) throw new Error('Query required');
         const lower = query.toLowerCase();
-        return reminders.filter(r =>
-          r.text.toLowerCase().includes(lower)
-        );
+        return reminders.filter((r) => r.text.toLowerCase().includes(lower));
       },
 
       filterByDate: (reminders, startDate, endDate) => {
-        return reminders.filter(r =>
-          r.dueDate >= startDate && r.dueDate <= endDate
-        );
+        return reminders.filter((r) => r.dueDate >= startDate && r.dueDate <= endDate);
       },
 
       filterByStatus: (reminders, status) => {
-        return reminders.filter(r =>
-          status === 'completed' ? r.completed : !r.completed
-        );
+        return reminders.filter((r) => (status === 'completed' ? r.completed : !r.completed));
       },
 
       sortByDate: (reminders, ascending = true) => {
         const copy = [...reminders];
-        return copy.sort((a, b) =>
-          ascending ? a.dueDate - b.dueDate : b.dueDate - a.dueDate
-        );
+        return copy.sort((a, b) => (ascending ? a.dueDate - b.dueDate : b.dueDate - a.dueDate));
       },
 
       sortByPriority: (reminders) => {
@@ -316,16 +312,12 @@ describe('Search Reminders Command', () => {
         }
 
         return result;
-      }
+      },
     };
   });
 
   it('should search reminders by query', () => {
-    const reminders = [
-      { text: 'Buy groceries' },
-      { text: 'Call Mom' },
-      { text: 'Buy milk' }
-    ];
+    const reminders = [{ text: 'Buy groceries' }, { text: 'Call Mom' }, { text: 'Buy milk' }];
     const results = command.search(reminders, 'buy');
     assert.strictEqual(results.length, 2);
   });
@@ -347,7 +339,7 @@ describe('Search Reminders Command', () => {
     const reminders = [
       { text: 'Old', dueDate: new Date(now.getTime() - 86400000) },
       { text: 'Today', dueDate: now },
-      { text: 'Future', dueDate: new Date(now.getTime() + 86400000) }
+      { text: 'Future', dueDate: new Date(now.getTime() + 86400000) },
     ];
 
     const start = new Date(now.getTime() - 1000);
@@ -359,7 +351,7 @@ describe('Search Reminders Command', () => {
   it('should filter by completion status', () => {
     const reminders = [
       { text: 'Done', completed: true },
-      { text: 'Pending', completed: false }
+      { text: 'Pending', completed: false },
     ];
     const completed = command.filterByStatus(reminders, 'completed');
     assert.strictEqual(completed.length, 1);
@@ -369,7 +361,7 @@ describe('Search Reminders Command', () => {
     const reminders = [
       { text: 'C', dueDate: new Date('2026-01-10') },
       { text: 'A', dueDate: new Date('2026-01-05') },
-      { text: 'B', dueDate: new Date('2026-01-07') }
+      { text: 'B', dueDate: new Date('2026-01-07') },
     ];
     const sorted = command.sortByDate(reminders);
     assert.strictEqual(sorted[0].text, 'A');
@@ -380,11 +372,11 @@ describe('Search Reminders Command', () => {
     const reminders = [
       { text: 'Buy eggs', dueDate: new Date(), completed: false },
       { text: 'Buy milk', dueDate: new Date(), completed: true },
-      { text: 'Sell car', dueDate: new Date(), completed: false }
+      { text: 'Sell car', dueDate: new Date(), completed: false },
     ];
     const filtered = command.applyFilters(reminders, {
       query: 'buy',
-      status: 'completed'
+      status: 'completed',
     });
     assert.strictEqual(filtered.length, 1);
     assert.strictEqual(filtered[0].text, 'Buy milk');
@@ -409,11 +401,11 @@ describe('Get Reminder Command', () => {
             dueDate: new Date(),
             userId: 'user-1',
             completed: false,
-            priority: 2
+            priority: 2,
           };
         }
         return null;
-      }
+      },
     };
 
     command = {
@@ -429,7 +421,7 @@ describe('Get Reminder Command', () => {
           text: reminder.text,
           due: reminder.dueDate.toLocaleString(),
           status: reminder.completed ? 'Completed' : 'Pending',
-          priority: reminder.priority || 'Normal'
+          priority: reminder.priority || 'Normal',
         };
       },
 
@@ -448,7 +440,7 @@ describe('Get Reminder Command', () => {
       validateReminderId: (id) => {
         if (!id || id < 1) throw new Error('Invalid reminder ID');
         if (!Number.isInteger(id)) throw new Error('ID must be integer');
-      }
+      },
     };
   });
 
@@ -478,7 +470,7 @@ describe('Get Reminder Command', () => {
       id: 1,
       text: 'Done',
       dueDate: new Date(),
-      completed: true
+      completed: true,
     });
     const reminder = await command.execute('guild-1', 1);
     const formatted = command.formatDetails(reminder);
@@ -526,7 +518,7 @@ describe('Delete Reminder Command', () => {
       },
       getReminder: async (guildId, reminderId) => {
         return mockDb.reminders.get(reminderId) || null;
-      }
+      },
     };
 
     command = {
@@ -552,7 +544,7 @@ describe('Delete Reminder Command', () => {
           }
         }
         return { deleted: deleted.length, total: reminderIds.length };
-      }
+      },
     };
   });
 
@@ -612,12 +604,17 @@ describe('Update Reminder Command', () => {
 
   beforeEach(() => {
     mockDb = {
-      reminders: new Map([[1, {
-        id: 1,
-        text: 'Original text',
-        dueDate: new Date(),
-        priority: 1
-      }]]),
+      reminders: new Map([
+        [
+          1,
+          {
+            id: 1,
+            text: 'Original text',
+            dueDate: new Date(),
+            priority: 1,
+          },
+        ],
+      ]),
       updateReminder: async (guildId, reminderId, updates) => {
         const reminder = mockDb.reminders.get(reminderId);
         if (!reminder) throw new Error('Reminder not found');
@@ -626,7 +623,7 @@ describe('Update Reminder Command', () => {
       },
       getReminder: async (guildId, reminderId) => {
         return mockDb.reminders.get(reminderId) || null;
-      }
+      },
     };
 
     command = {
@@ -670,7 +667,7 @@ describe('Update Reminder Command', () => {
           throw new Error('Priority must be 1-3');
         }
         return await command.execute(guildId, reminderId, { priority });
-      }
+      },
     };
   });
 
@@ -733,7 +730,7 @@ describe('Update Reminder Command', () => {
     const updated = await command.execute('guild-1', 1, {
       text: newText,
       dueDate: futureDate,
-      priority: 2
+      priority: 2,
     });
     assert.strictEqual(updated.text, newText);
     assert.strictEqual(updated.dueDate, futureDate);
@@ -750,7 +747,7 @@ describe('Phase 7C Reminder Command Integration', () => {
     const created = {
       id: 1,
       text: 'New reminder',
-      dueDate: new Date()
+      dueDate: new Date(),
     };
     const list = [created];
     assert.strictEqual(list.length, 1);
@@ -761,9 +758,9 @@ describe('Phase 7C Reminder Command Integration', () => {
     const reminders = [
       { text: 'Buy milk', id: 1 },
       { text: 'Buy eggs', id: 2 },
-      { text: 'Call Mom', id: 3 }
+      { text: 'Call Mom', id: 3 },
     ];
-    const results = reminders.filter(r => r.text.includes('Buy'));
+    const results = reminders.filter((r) => r.text.includes('Buy'));
     assert.strictEqual(results.length, 2);
   });
 
@@ -777,9 +774,9 @@ describe('Phase 7C Reminder Command Integration', () => {
   it('should delete and remove from list', () => {
     let reminders = [
       { id: 1, text: 'Keep' },
-      { id: 2, text: 'Delete' }
+      { id: 2, text: 'Delete' },
     ];
-    reminders = reminders.filter(r => r.id !== 2);
+    reminders = reminders.filter((r) => r.id !== 2);
     assert.strictEqual(reminders.length, 1);
     assert.strictEqual(reminders[0].text, 'Keep');
   });

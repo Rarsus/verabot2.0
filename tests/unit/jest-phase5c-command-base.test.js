@@ -32,7 +32,7 @@ describe('Phase 5C: CommandBase', () => {
         if (CommandBase) {
           testCommand = new CommandBase({
             name: 'test',
-            description: 'Test command'
+            description: 'Test command',
           });
           assert(testCommand !== null);
           assert(testCommand.name === 'test');
@@ -50,9 +50,7 @@ describe('Phase 5C: CommandBase', () => {
           const cmd = new CommandBase({
             name: 'test',
             description: 'Test',
-            options: [
-              { name: 'arg1', type: 'string', required: true }
-            ]
+            options: [{ name: 'arg1', type: 'string', required: true }],
           });
           assert(cmd.options !== undefined);
         } else {
@@ -68,7 +66,7 @@ describe('Phase 5C: CommandBase', () => {
         if (CommandBase) {
           const cmd = new CommandBase({
             name: '',
-            description: ''
+            description: '',
           });
           assert(cmd !== null);
         } else {
@@ -86,7 +84,7 @@ describe('Phase 5C: CommandBase', () => {
         if (CommandBase) {
           const cmd = new CommandBase({
             name: 'register-test',
-            description: 'Test registration'
+            description: 'Test registration',
           });
           const result = cmd.register();
           assert(result === cmd || result === undefined); // Should return instance or undefined
@@ -104,7 +102,7 @@ describe('Phase 5C: CommandBase', () => {
           const cmd = new CommandBase({
             name: 'dual',
             description: 'Dual command',
-            data: { toJSON: () => ({ name: 'dual' }) }
+            data: { toJSON: () => ({ name: 'dual' }) },
           });
           assert(cmd.name === 'dual');
         } else {
@@ -125,11 +123,11 @@ describe('Phase 5C: CommandBase', () => {
             description: 'Test',
             execute: async (message, args) => {
               return 'executed';
-            }
+            },
           });
 
           const mockMessage = {
-            reply: async (content) => ({ content })
+            reply: async (content) => ({ content }),
           };
 
           if (cmd.execute) {
@@ -154,11 +152,11 @@ describe('Phase 5C: CommandBase', () => {
             description: 'Test',
             executeInteraction: async (interaction) => {
               return 'executed';
-            }
+            },
           });
 
           const mockInteraction = {
-            reply: async (content) => ({ content })
+            reply: async (content) => ({ content }),
           };
 
           if (cmd.executeInteraction) {
@@ -182,9 +180,9 @@ describe('Phase 5C: CommandBase', () => {
             name: 'async-test',
             description: 'Async test',
             execute: async (message, args) => {
-              await new Promise(resolve => setTimeout(resolve, 100));
+              await new Promise((resolve) => setTimeout(resolve, 100));
               return 'completed';
-            }
+            },
           });
 
           assert(true);
@@ -206,7 +204,7 @@ describe('Phase 5C: CommandBase', () => {
             description: 'Error test',
             execute: async (message, args) => {
               throw new Error('Test error');
-            }
+            },
           });
 
           // CommandBase should catch errors automatically
@@ -225,9 +223,7 @@ describe('Phase 5C: CommandBase', () => {
           const cmd = new CommandBase({
             name: 'args-test',
             description: 'Args test',
-            options: [
-              { name: 'required', type: 'string', required: true }
-            ]
+            options: [{ name: 'required', type: 'string', required: true }],
           });
 
           assert(true);
@@ -247,8 +243,8 @@ describe('Phase 5C: CommandBase', () => {
             description: 'Type test',
             options: [
               { name: 'number', type: 'number' },
-              { name: 'boolean', type: 'boolean' }
-            ]
+              { name: 'boolean', type: 'boolean' },
+            ],
           });
 
           assert(true);
@@ -268,7 +264,7 @@ describe('Phase 5C: CommandBase', () => {
           const cmd = new CommandBase({
             name: 'admin-test',
             description: 'Admin test',
-            requiredPermissions: ['ADMINISTRATOR']
+            requiredPermissions: ['ADMINISTRATOR'],
           });
 
           assert(true);
@@ -286,7 +282,7 @@ describe('Phase 5C: CommandBase', () => {
           const cmd = new CommandBase({
             name: 'guild-admin',
             description: 'Guild admin',
-            requiredPermissions: ['MANAGE_GUILD']
+            requiredPermissions: ['MANAGE_GUILD'],
           });
 
           assert(true);
@@ -305,7 +301,7 @@ describe('Phase 5C: CommandBase', () => {
         if (CommandBase) {
           const cmd = new CommandBase({
             name: 'response-test',
-            description: 'Response test'
+            description: 'Response test',
           });
 
           assert(true);
@@ -323,7 +319,7 @@ describe('Phase 5C: CommandBase', () => {
           const cmd = new CommandBase({
             name: 'defer-test',
             description: 'Defer test',
-            shouldDefer: true
+            shouldDefer: true,
           });
 
           assert(true);
@@ -340,7 +336,7 @@ describe('Phase 5C: CommandBase', () => {
         if (CommandBase) {
           const cmd = new CommandBase({
             name: 'ephemeral-test',
-            description: 'Ephemeral test'
+            description: 'Ephemeral test',
           });
 
           assert(true);
@@ -363,9 +359,9 @@ describe('Phase 5C: CommandBase', () => {
             data: {
               toJSON: () => ({
                 name: 'slash-test',
-                description: 'Slash test'
-              })
-            }
+                description: 'Slash test',
+              }),
+            },
           });
 
           assert(true);
@@ -383,7 +379,7 @@ describe('Phase 5C: CommandBase', () => {
           const cmd = new CommandBase({
             name: 'cooldown-test',
             description: 'Cooldown test',
-            cooldown: 5000 // 5 second cooldown
+            cooldown: 5000, // 5 second cooldown
           });
 
           assert(true);

@@ -5,7 +5,7 @@ const quoteService = require('../../services/QuoteService');
 const { validateQuoteNumber } = require('../../middleware/errorHandler');
 
 const { data, options } = buildCommandOptions('quote', 'Retrieve a quote from the database by number', [
-  { name: 'number', type: 'integer', description: 'Quote number', required: true }
+  { name: 'number', type: 'integer', description: 'Quote number', required: true },
 ]);
 
 class QuoteCommand extends Command {
@@ -17,8 +17,8 @@ class QuoteCommand extends Command {
       options,
       permissions: {
         minTier: 0,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 

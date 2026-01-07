@@ -106,7 +106,8 @@ async function testProxyDatabaseSchema() {
     await new Promise((resolve, reject) => {
       testDb.serialize(() => {
         // Create proxy_config table
-        testDb.run(`
+        testDb.run(
+          `
           CREATE TABLE IF NOT EXISTS proxy_config (
             key TEXT PRIMARY KEY,
             value TEXT NOT NULL,
@@ -114,17 +115,23 @@ async function testProxyDatabaseSchema() {
             createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
             updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
           )
-        `, (err) => {
-          if (err) reject(err);
-        });
+        `,
+          (err) => {
+            if (err) reject(err);
+          }
+        );
 
         // Test insert
-        testDb.run(`
+        testDb.run(
+          `
           INSERT INTO proxy_config (key, value, encrypted) 
           VALUES (?, ?, ?)
-        `, ['test_key', 'test_value', 0], (err) => {
-          if (err) reject(err);
-        });
+        `,
+          ['test_key', 'test_value', 0],
+          (err) => {
+            if (err) reject(err);
+          }
+        );
 
         // Test select
         testDb.get('SELECT * FROM proxy_config WHERE key = ?', ['test_key'], (err, row) => {
@@ -188,7 +195,7 @@ async function runTests() {
     await testProxyConfigService();
 
     // Ensure all pending operations are complete before finishing
-    await new Promise(resolve => setImmediate(resolve));
+    await new Promise((resolve) => setImmediate(resolve));
 
     console.log('\n✅ All proxy configuration tests passed!');
   } catch {

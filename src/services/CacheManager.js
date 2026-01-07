@@ -14,7 +14,7 @@ class CacheManager {
       misses: 0,
       sets: 0,
       evictions: 0,
-      invalidations: 0
+      invalidations: 0,
     };
   }
 
@@ -64,7 +64,7 @@ class CacheManager {
     const entry = {
       value,
       expiresAt: Date.now() + timeToLive,
-      createdAt: Date.now()
+      createdAt: Date.now(),
     };
 
     this.cache.set(key, entry);
@@ -132,9 +132,7 @@ class CacheManager {
    */
   getStats() {
     const totalRequests = this._stats.hits + this._stats.misses;
-    const hitRate = totalRequests > 0
-      ? (this._stats.hits / totalRequests * 100).toFixed(2)
-      : 0;
+    const hitRate = totalRequests > 0 ? ((this._stats.hits / totalRequests) * 100).toFixed(2) : 0;
 
     return {
       size: this.cache.size,
@@ -145,7 +143,7 @@ class CacheManager {
       evictions: this._stats.evictions,
       invalidations: this._stats.invalidations,
       hitRate: parseFloat(hitRate),
-      memoryUsage: this._estimateMemoryUsage()
+      memoryUsage: this._estimateMemoryUsage(),
     };
   }
 
@@ -158,7 +156,7 @@ class CacheManager {
       misses: 0,
       sets: 0,
       evictions: 0,
-      invalidations: 0
+      invalidations: 0,
     };
   }
 

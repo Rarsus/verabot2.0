@@ -19,19 +19,15 @@ function isOptedIn(guildId, userId) {
     try {
       const db = await GuildDatabaseManager.getGuildDatabase(guildId);
 
-      db.get(
-        'SELECT opted_in FROM user_communications WHERE userId = ? LIMIT 1',
-        [userId],
-        (err, row) => {
-          if (err) {
-            logError('GuildAwareCommunicationService.isOptedIn', err, ERROR_LEVELS.MEDIUM, { guildId, userId });
-            reject(err);
-          } else {
-            // If user doesn't exist in guild, they haven't opted in (default: opt-out)
-            resolve(row ? row.opted_in === 1 : false);
-          }
+      db.get('SELECT opted_in FROM user_communications WHERE userId = ? LIMIT 1', [userId], (err, row) => {
+        if (err) {
+          logError('GuildAwareCommunicationService.isOptedIn', err, ERROR_LEVELS.MEDIUM, { guildId, userId });
+          reject(err);
+        } else {
+          // If user doesn't exist in guild, they haven't opted in (default: opt-out)
+          resolve(row ? row.opted_in === 1 : false);
         }
-      );
+      });
     } catch (error) {
       logError('GuildAwareCommunicationService.isOptedIn', error, ERROR_LEVELS.MEDIUM, { guildId, userId });
       reject(error);
@@ -145,18 +141,14 @@ function getOptedInUsersForGuild(guildId) {
     try {
       const db = await GuildDatabaseManager.getGuildDatabase(guildId);
 
-      db.all(
-        'SELECT userId FROM user_communications WHERE opted_in = 1',
-        [],
-        (err, rows) => {
-          if (err) {
-            logError('GuildAwareCommunicationService.getOptedInUsersForGuild', err, ERROR_LEVELS.MEDIUM, { guildId });
-            reject(err);
-          } else {
-            resolve((rows || []).map(r => r.userId));
-          }
+      db.all('SELECT userId FROM user_communications WHERE opted_in = 1', [], (err, rows) => {
+        if (err) {
+          logError('GuildAwareCommunicationService.getOptedInUsersForGuild', err, ERROR_LEVELS.MEDIUM, { guildId });
+          reject(err);
+        } else {
+          resolve((rows || []).map((r) => r.userId));
         }
-      );
+      });
     } catch (error) {
       logError('GuildAwareCommunicationService.getOptedInUsersForGuild', error, ERROR_LEVELS.MEDIUM, { guildId });
       reject(error);
@@ -198,7 +190,9 @@ function getGuildCommunicationStats(guildId) {
         [],
         (err, row) => {
           if (err) {
-            logError('GuildAwareCommunicationService.getGuildCommunicationStats', err, ERROR_LEVELS.MEDIUM, { guildId });
+            logError('GuildAwareCommunicationService.getGuildCommunicationStats', err, ERROR_LEVELS.MEDIUM, {
+              guildId,
+            });
             reject(err);
           } else {
             resolve(row || { total: 0, optedIn: 0, optedOut: 0 });
@@ -219,5 +213,5 @@ module.exports = {
   getStatus,
   getOptedInUsersForGuild,
   deleteGuildCommunications,
-  getGuildCommunicationStats
+  getGuildCommunicationStats,
 };

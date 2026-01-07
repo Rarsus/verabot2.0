@@ -89,7 +89,7 @@ console.log('\n=== Test 7: Log With Data ===');
 try {
   log(LOG_LEVELS.INFO, 'test.context', 'Message with data', {
     userId: '123',
-    action: 'test'
+    action: 'test',
   });
   console.log('✅ Test 7 Passed: Log with additional data');
   passed++;
@@ -126,7 +126,7 @@ try {
   const contexts = ['command', 'database', 'middleware', 'service.quote'];
   let allPassed = true;
 
-  contexts.forEach(context => {
+  contexts.forEach((context) => {
     try {
       log(LOG_LEVELS.INFO, context, 'Test message for ' + context);
     } catch (e) {

@@ -48,7 +48,7 @@ try {
     id: '123456789',
     username: 'testuser',
     discriminator: '0001',
-    avatar: 'avatar_hash'
+    avatar: 'avatar_hash',
   };
 
   const mockAccessToken = 'mock_access_token';
@@ -73,7 +73,7 @@ try {
     id: '123456789',
     username: 'testuser',
     discriminator: '0001',
-    avatar: 'avatar_hash'
+    avatar: 'avatar_hash',
   };
 
   const jwt = oauthService.generateJWT(mockUser, 'mock_token');
@@ -115,7 +115,7 @@ try {
     id: '123456789',
     username: 'testuser',
     discriminator: '0001',
-    avatar: 'avatar_hash'
+    avatar: 'avatar_hash',
   };
 
   const jwt = oauthService.generateJWT(mockUser, 'mock_token');

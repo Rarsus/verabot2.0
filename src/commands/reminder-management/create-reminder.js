@@ -5,13 +5,25 @@ const { createReminder, addReminderAssignment } = require('../../services/GuildA
 const { isOptedIn } = require('../../services/GuildAwareCommunicationService');
 
 const { data, options } = buildCommandOptions('create-reminder', 'Create a new reminder', [
-  { name: 'subject', type: 'string', description: 'Reminder subject/title', required: true, minLength: 3, maxLength: 200 },
+  {
+    name: 'subject',
+    type: 'string',
+    description: 'Reminder subject/title',
+    required: true,
+    minLength: 3,
+    maxLength: 200,
+  },
   { name: 'category', type: 'string', description: 'Reminder category', required: true, maxLength: 50 },
-  { name: 'when', type: 'string', description: 'When: "1 day", "tomorrow", "3:30 PM", "2025-12-31", "tomorrow at 3 PM"', required: true },
+  {
+    name: 'when',
+    type: 'string',
+    description: 'When: "1 day", "tomorrow", "3:30 PM", "2025-12-31", "tomorrow at 3 PM"',
+    required: true,
+  },
   { name: 'who', type: 'string', description: 'User ID or Role ID (prefix role with "role:")', required: true },
   { name: 'content', type: 'string', description: 'Detailed description (optional)', required: false, maxLength: 2000 },
   { name: 'link', type: 'string', description: 'Associated URL (optional)', required: false },
-  { name: 'image', type: 'string', description: 'Image URL (optional)', required: false }
+  { name: 'image', type: 'string', description: 'Image URL (optional)', required: false },
 ]);
 
 class CreateReminderCommand extends Command {
@@ -23,8 +35,8 @@ class CreateReminderCommand extends Command {
       options,
       permissions: {
         minTier: 1,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 
@@ -94,7 +106,7 @@ class CreateReminderCommand extends Command {
         content,
         link,
         image,
-        notification_method: 'dm' // Default, user will choose
+        notification_method: 'dm', // Default, user will choose
       });
 
       // Add assignment
@@ -106,7 +118,7 @@ class CreateReminderCommand extends Command {
         reminderId,
         subject,
         recipientId: assigneeId,
-        recipient
+        recipient,
       };
 
       // Show decision prompt
@@ -119,22 +131,16 @@ class CreateReminderCommand extends Command {
         when,
         content,
         link,
-        image
+        image,
       });
 
       // Add assignment
       await addReminderAssignment(guildId, reminderId, assigneeType, assigneeId);
 
       if (assigneeType === 'user') {
-        await sendSuccess(
-          interaction,
-          `Reminder #${reminderId} created successfully for <@${assigneeId}>!`
-        );
+        await sendSuccess(interaction, `Reminder #${reminderId} created successfully for <@${assigneeId}>!`);
       } else {
-        await sendSuccess(
-          interaction,
-          `Reminder #${reminderId} created successfully for role <@&${assigneeId}>!`
-        );
+        await sendSuccess(interaction, `Reminder #${reminderId} created successfully for role <@&${assigneeId}>!`);
       }
     }
   }

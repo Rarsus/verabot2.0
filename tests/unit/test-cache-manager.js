@@ -21,7 +21,7 @@ function assert(condition, testName) {
 }
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Test 1: Cache initialization
@@ -129,7 +129,7 @@ rateCache.get('item'); // hit
 rateCache.get('item'); // hit
 rateCache.get('none'); // miss
 const rateStats = rateCache.getStats();
-const expectedRate = (2 / 3 * 100).toFixed(2);
+const expectedRate = ((2 / 3) * 100).toFixed(2);
 assert(rateStats.hitRate === parseFloat(expectedRate), 'Correct hit rate calculation');
 
 // Test 13: Statistics - sets

@@ -74,7 +74,7 @@ class ExternalActionHandler {
 
     logInfo(`Executing external action: ${action}`, {
       action,
-      payloadKeys: Object.keys(payload)
+      payloadKeys: Object.keys(payload),
     });
 
     // Check handler exists
@@ -82,7 +82,7 @@ class ExternalActionHandler {
     if (!handler) {
       logError(`No handler registered for action: ${action}`, ERROR_LEVELS.MEDIUM, {
         action,
-        availableActions: Array.from(this.handlers.keys())
+        availableActions: Array.from(this.handlers.keys()),
       });
       throw new Error(`Unknown action: ${action}`);
     }
@@ -91,14 +91,14 @@ class ExternalActionHandler {
       const result = await handler(client, payload);
       logInfo(`Action executed successfully: ${action}`, {
         action,
-        resultKeys: Object.keys(result)
+        resultKeys: Object.keys(result),
       });
       return result;
     } catch (err) {
       logError(`Action execution failed: ${action}`, ERROR_LEVELS.HIGH, {
         action,
         error: err.message,
-        stack: err.stack
+        stack: err.stack,
       });
       throw err;
     }
@@ -139,7 +139,7 @@ class ExternalActionHandler {
     return {
       success: true,
       messageId: sent.id,
-      channelId: channel.id
+      channelId: channel.id,
     };
   }
 
@@ -168,7 +168,7 @@ class ExternalActionHandler {
     return {
       success: true,
       messageId: sent.id,
-      userId: user.id
+      userId: user.id,
     };
   }
 
@@ -213,7 +213,7 @@ class ExternalActionHandler {
       action,
       userId,
       roleId,
-      guildId
+      guildId,
     };
   }
 
@@ -230,13 +230,13 @@ class ExternalActionHandler {
 
     logInfo(`External notification (${level || 'info'}): ${message}`, {
       level: level || 'info',
-      source: 'external_action'
+      source: 'external_action',
     });
 
     return {
       success: true,
       message,
-      level: level || 'info'
+      level: level || 'info',
     };
   }
 
@@ -248,7 +248,7 @@ class ExternalActionHandler {
     return {
       success: true,
       pong: true,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 }

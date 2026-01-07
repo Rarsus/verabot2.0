@@ -22,7 +22,7 @@ async function generateAIPoem(subject, style = 'sonnet') {
       headers: { Authorization: `Bearer ${apiKey}` },
       method: 'POST',
       body: JSON.stringify({ inputs: prompt, parameters: { max_length: 200, num_return_sequences: 1 } }),
-      timeout: 5000
+      timeout: 5000,
     });
 
     if (!response.ok) {
@@ -67,7 +67,12 @@ function generateSonnet(subject) {
 
 function generateOther(subject) {
   const s = capitalize(subject);
-  return [`${s} drifts across the page,`, 'a small breath of meaning,', 'carrying moments between lines,', 'until silence answers.'].join('\n');
+  return [
+    `${s} drifts across the page,`,
+    'a small breath of meaning,',
+    'carrying moments between lines,',
+    'until silence answers.',
+  ].join('\n');
 }
 
 function generatePoem(type, subject) {
@@ -88,12 +93,12 @@ function generatePoem(type, subject) {
 const data = new SlashCommandBuilder()
   .setName('poem')
   .setDescription('Generate a short poem')
-  .addStringOption(opt => opt.setName('type').setDescription('poem type: sonnet, haiku, other').setRequired(false))
-  .addStringOption(opt => opt.setName('subject').setDescription('subject of the poem').setRequired(false));
+  .addStringOption((opt) => opt.setName('type').setDescription('poem type: sonnet, haiku, other').setRequired(false))
+  .addStringOption((opt) => opt.setName('subject').setDescription('subject of the poem').setRequired(false));
 
 const { options } = buildCommandOptions('poem', 'Generate a poem (sonnet, haiku, other)', [
   { name: 'type', type: 'string', description: 'poem type', required: false },
-  { name: 'subject', type: 'string', description: 'subject', required: false }
+  { name: 'subject', type: 'string', description: 'subject', required: false },
 ]);
 
 class PoemCommand extends Command {
@@ -105,8 +110,8 @@ class PoemCommand extends Command {
       options,
       permissions: {
         minTier: 0,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 
@@ -144,7 +149,7 @@ class PoemCommand extends Command {
       }
 
       const aiPoemPromise = generateAIPoem(subject, type);
-      const timeoutPromise = new Promise(resolve => setTimeout(() => resolve(null), 2000));
+      const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve(null), 2000));
       const poem = await Promise.race([aiPoemPromise, timeoutPromise]);
       const finalPoem = poem || generatePoem(type, subject);
 

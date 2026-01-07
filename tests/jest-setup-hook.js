@@ -4,7 +4,7 @@
  */
 
 // Override process.exit to silently ignore (let Jest handle test results)
-global.process.exit = function(_code) {
+global.process.exit = function (_code) {
   // Silently ignore - don't throw, Jest will handle test results
   // This allows async operations to complete
   return;

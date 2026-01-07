@@ -16,7 +16,7 @@ const TEST_FILES = [
   'test-integration-refactor.js',
   'test-quotes.js',
   'test-quotes-advanced.js',
-  'test-response-helpers.js'
+  'test-response-helpers.js',
 ];
 
 /**
@@ -39,7 +39,7 @@ function extractTestMetadata(filePath) {
     tests.push({
       number: parseInt(testNum),
       description,
-      result
+      result,
     });
   }
 
@@ -48,7 +48,7 @@ function extractTestMetadata(filePath) {
     filePath,
     header,
     tests,
-    testCount: tests.length
+    testCount: tests.length,
   };
 }
 
@@ -68,7 +68,7 @@ function extractTestResults(filePath) {
         passed: parseInt(passed),
         failed: parseInt(failed),
         total: parseInt(total),
-        success: parseInt(failed) === 0
+        success: parseInt(failed) === 0,
       };
     }
   } catch (err) {
@@ -78,7 +78,7 @@ function extractTestResults(filePath) {
       failed: 0,
       total: 0,
       success: false,
-      error: err.message
+      error: err.message,
     };
   }
 }
@@ -117,7 +117,7 @@ This documentation is automatically generated from test files. It updates every 
 
     testSuites.push({
       ...metadata,
-      results
+      results,
     });
   }
 
@@ -235,5 +235,5 @@ module.exports = {
   extractTestResults,
   generateTestDocumentation,
   updateTestResults,
-  generateTestSummary
+  generateTestSummary,
 };

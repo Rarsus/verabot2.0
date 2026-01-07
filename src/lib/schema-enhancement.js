@@ -80,7 +80,7 @@ function enhanceSchema(db) {
           });
         });
 
-        const columnNames = columns.map(col => col.name);
+        const columnNames = columns.map((col) => col.name);
 
         // Add category column if missing
         if (!columnNames.includes('category')) {
@@ -121,9 +121,12 @@ function enhanceSchema(db) {
         `);
 
         // Add notification_method column to existing reminders table if it doesn't exist
-        await runAsync(`
+        await runAsync(
+          `
           ALTER TABLE reminders ADD COLUMN notification_method TEXT NOT NULL DEFAULT 'dm' CHECK(notification_method IN ('dm', 'server'))
-        `, true);
+        `,
+          true
+        );
 
         // Create reminder_assignments table for user/role relationships
         await runAsync(`
@@ -153,9 +156,15 @@ function enhanceSchema(db) {
         await runAsync('CREATE INDEX IF NOT EXISTS idx_reminders_when ON reminders(when_datetime)');
         await runAsync('CREATE INDEX IF NOT EXISTS idx_reminders_status ON reminders(status)');
         await runAsync('CREATE INDEX IF NOT EXISTS idx_reminders_category ON reminders(category)');
-        await runAsync('CREATE INDEX IF NOT EXISTS idx_reminder_assignments_reminderId ON reminder_assignments(reminderId)');
-        await runAsync('CREATE INDEX IF NOT EXISTS idx_reminder_assignments_assigneeId ON reminder_assignments(assigneeId)');
-        await runAsync('CREATE INDEX IF NOT EXISTS idx_reminder_notifications_reminderId ON reminder_notifications(reminderId)');
+        await runAsync(
+          'CREATE INDEX IF NOT EXISTS idx_reminder_assignments_reminderId ON reminder_assignments(reminderId)'
+        );
+        await runAsync(
+          'CREATE INDEX IF NOT EXISTS idx_reminder_assignments_assigneeId ON reminder_assignments(assigneeId)'
+        );
+        await runAsync(
+          'CREATE INDEX IF NOT EXISTS idx_reminder_notifications_reminderId ON reminder_notifications(reminderId)'
+        );
 
         // Create proxy_config table
         await runAsync(`
@@ -178,5 +187,5 @@ function enhanceSchema(db) {
 }
 
 module.exports = {
-  enhanceSchema
+  enhanceSchema,
 };

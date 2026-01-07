@@ -23,7 +23,7 @@ describe('GuildAwareReminderService', () => {
   beforeEach(() => {
     mockDb = {
       reminders: new Map(),
-      nextId: 1
+      nextId: 1,
     };
 
     service = {
@@ -40,7 +40,7 @@ describe('GuildAwareReminderService', () => {
           text: reminder.text,
           dueDate: reminder.dueDate || new Date(),
           created: new Date(),
-          completed: false
+          completed: false,
         };
 
         mockDb.reminders.set(`${guildId}:${id}`, record);
@@ -113,13 +113,13 @@ describe('GuildAwareReminderService', () => {
           }
         }
         return reminders;
-      }
+      },
     };
   });
 
   it('should create reminder for guild and user', async () => {
     const reminder = await service.createReminder('guild-1', 'user-1', {
-      text: 'Test reminder'
+      text: 'Test reminder',
     });
     assert.strictEqual(reminder.guildId, 'guild-1');
     assert.strictEqual(reminder.userId, 'user-1');
@@ -223,8 +223,8 @@ describe('GuildAwareReminderService', () => {
 
     assert.strictEqual(g1Reminders.length, 2);
     assert.strictEqual(g2Reminders.length, 1);
-    assert(g1Reminders.every(r => r.guildId === 'guild-1'));
-    assert(g2Reminders.every(r => r.guildId === 'guild-2'));
+    assert(g1Reminders.every((r) => r.guildId === 'guild-1'));
+    assert(g2Reminders.every((r) => r.guildId === 'guild-2'));
   });
 });
 
@@ -238,7 +238,7 @@ describe('ReminderService', () => {
 
   beforeEach(() => {
     mockNotifier = {
-      notifications: []
+      notifications: [],
     };
 
     service = {
@@ -249,7 +249,7 @@ describe('ReminderService', () => {
         return {
           id: Math.random(),
           scheduled: true,
-          nextCheck: new Date(reminder.dueDate)
+          nextCheck: new Date(reminder.dueDate),
         };
       },
 
@@ -262,7 +262,7 @@ describe('ReminderService', () => {
         const notification = {
           userId: reminder.userId,
           message: reminder.text,
-          sentAt: new Date()
+          sentAt: new Date(),
         };
         mockNotifier.notifications.push(notification);
         return notification;
@@ -275,7 +275,7 @@ describe('ReminderService', () => {
         return {
           snoozed: true,
           id: reminderId,
-          resumeAt: new Date(Date.now() + snoozeMinutes * 60000)
+          resumeAt: new Date(Date.now() + snoozeMinutes * 60000),
         };
       },
 
@@ -284,17 +284,19 @@ describe('ReminderService', () => {
         return {
           rescheduled: true,
           id: reminderId,
-          nextCheck: newDate
+          nextCheck: newDate,
         };
       },
 
       getScheduledReminders: () => {
         return {
           count: 42,
-          reminders: Array(5).fill(null).map((_, i) => ({
-            id: i,
-            scheduled: true
-          }))
+          reminders: Array(5)
+            .fill(null)
+            .map((_, i) => ({
+              id: i,
+              scheduled: true,
+            })),
         };
       },
 
@@ -308,16 +310,16 @@ describe('ReminderService', () => {
         return {
           checked: true,
           dueCount: 3,
-          notified: 3
+          notified: 3,
         };
-      }
+      },
     };
   });
 
   it('should schedule reminder with user ID and due date', () => {
     const scheduled = service.scheduleReminder({
       userId: 'user-1',
-      dueDate: new Date(Date.now() + 3600000)
+      dueDate: new Date(Date.now() + 3600000),
     });
     assert.strictEqual(scheduled.scheduled, true);
     assert(scheduled.nextCheck instanceof Date);
@@ -343,7 +345,7 @@ describe('ReminderService', () => {
   it('should send reminder notification', async () => {
     const sent = await service.sendReminder({
       userId: 'user-1',
-      text: 'Your reminder'
+      text: 'Your reminder',
     });
     assert.strictEqual(sent.userId, 'user-1');
     assert.strictEqual(sent.message, 'Your reminder');
@@ -459,7 +461,7 @@ describe('RolePermissionService', () => {
 
       removeRolePermission: (member, permission) => {
         if (!member.permissions) return member;
-        member.permissions = member.permissions.filter(p => p !== permission);
+        member.permissions = member.permissions.filter((p) => p !== permission);
         return member;
       },
 
@@ -467,10 +469,8 @@ describe('RolePermissionService', () => {
         if (!Array.isArray(requiredPermissions)) {
           throw new Error('Required permissions must be array');
         }
-        return requiredPermissions.every(perm =>
-          service.hasPermission(member, perm)
-        );
-      }
+        return requiredPermissions.every((perm) => service.hasPermission(member, perm));
+      },
     };
   });
 
@@ -507,18 +507,9 @@ describe('RolePermissionService', () => {
 
   it('should determine permission level correctly', () => {
     assert.strictEqual(service.getPermissionLevel(null), 0);
-    assert.strictEqual(
-      service.getPermissionLevel({ permissions: ['ADMINISTRATOR'] }),
-      3
-    );
-    assert.strictEqual(
-      service.getPermissionLevel({ permissions: ['MANAGE_GUILD'] }),
-      2
-    );
-    assert.strictEqual(
-      service.getPermissionLevel({ permissions: ['SEND_MESSAGES'] }),
-      1
-    );
+    assert.strictEqual(service.getPermissionLevel({ permissions: ['ADMINISTRATOR'] }), 3);
+    assert.strictEqual(service.getPermissionLevel({ permissions: ['MANAGE_GUILD'] }), 2);
+    assert.strictEqual(service.getPermissionLevel({ permissions: ['SEND_MESSAGES'] }), 1);
   });
 
   it('should verify member can execute command by level', () => {
@@ -551,14 +542,8 @@ describe('RolePermissionService', () => {
 
   it('should verify entire permission chain', () => {
     const member = { permissions: ['SEND_MESSAGES', 'READ_MESSAGES', 'MANAGE_GUILD'] };
-    assert.strictEqual(
-      service.verifyPermissionChain(member, ['SEND_MESSAGES', 'READ_MESSAGES']),
-      true
-    );
-    assert.strictEqual(
-      service.verifyPermissionChain(member, ['ADMINISTRATOR']),
-      false
-    );
+    assert.strictEqual(service.verifyPermissionChain(member, ['SEND_MESSAGES', 'READ_MESSAGES']), true);
+    assert.strictEqual(service.verifyPermissionChain(member, ['ADMINISTRATOR']), false);
   });
 });
 
@@ -593,14 +578,12 @@ describe('Phase 7B Service Integration', () => {
   it('should enforce guild isolation across all services', () => {
     const reminders1 = [
       { guildId: 'guild-1', id: 1 },
-      { guildId: 'guild-1', id: 2 }
+      { guildId: 'guild-1', id: 2 },
     ];
-    const reminders2 = [
-      { guildId: 'guild-2', id: 1 }
-    ];
+    const reminders2 = [{ guildId: 'guild-2', id: 1 }];
 
-    const guild1Only = reminders1.filter(r => r.guildId === 'guild-1');
-    const guild2Only = reminders2.filter(r => r.guildId === 'guild-2');
+    const guild1Only = reminders1.filter((r) => r.guildId === 'guild-1');
+    const guild2Only = reminders2.filter((r) => r.guildId === 'guild-2');
 
     assert.strictEqual(guild1Only.length, 2);
     assert.strictEqual(guild2Only.length, 1);
@@ -609,9 +592,7 @@ describe('Phase 7B Service Integration', () => {
   it('should handle concurrent reminder operations', async () => {
     const operations = [];
     for (let i = 0; i < 5; i++) {
-      operations.push(
-        Promise.resolve({ id: i, completed: true })
-      );
+      operations.push(Promise.resolve({ id: i, completed: true }));
     }
     const results = await Promise.all(operations);
     assert.strictEqual(results.length, 5);
@@ -621,7 +602,7 @@ describe('Phase 7B Service Integration', () => {
     const requiredPerms = ['MANAGE_GUILD', 'READ_MESSAGES'];
     const memberPerms = ['MANAGE_GUILD', 'READ_MESSAGES', 'SEND_MESSAGES'];
 
-    const hasAll = requiredPerms.every(p => memberPerms.includes(p));
+    const hasAll = requiredPerms.every((p) => memberPerms.includes(p));
     assert.strictEqual(hasAll, true);
   });
 });

@@ -57,15 +57,12 @@ function setupSchema(db) {
       );
 
       // Create index on addedAt for faster queries
-      db.run(
-        'CREATE INDEX IF NOT EXISTS idx_quotes_addedAt ON quotes(addedAt)',
-        (err) => {
-          if (err) {
-            logError('database.setupSchema.createIndex', err, ERROR_LEVELS.MEDIUM);
-            // Don't reject on index creation failure
-          }
+      db.run('CREATE INDEX IF NOT EXISTS idx_quotes_addedAt ON quotes(addedAt)', (err) => {
+        if (err) {
+          logError('database.setupSchema.createIndex', err, ERROR_LEVELS.MEDIUM);
+          // Don't reject on index creation failure
         }
-      );
+      });
 
       // Create migrations table
       db.run(
@@ -115,7 +112,7 @@ function addQuote(text, author = 'Anonymous') {
     database.run(
       'INSERT INTO quotes (text, author, addedAt) VALUES (?, ?, ?)',
       [text, author, addedAt],
-      function(err) {
+      function (err) {
         if (err) {
           logError('database.addQuote', err, ERROR_LEVELS.MEDIUM, { text, author });
           reject(err);
@@ -135,17 +132,14 @@ function getAllQuotes() {
   return new Promise((resolve, reject) => {
     const database = getDatabase();
 
-    database.all(
-      'SELECT id, text, author, addedAt FROM quotes ORDER BY id ASC',
-      (err, rows) => {
-        if (err) {
-          logError('database.getAllQuotes', err, ERROR_LEVELS.MEDIUM);
-          reject(err);
-        } else {
-          resolve(rows || []);
-        }
+    database.all('SELECT id, text, author, addedAt FROM quotes ORDER BY id ASC', (err, rows) => {
+      if (err) {
+        logError('database.getAllQuotes', err, ERROR_LEVELS.MEDIUM);
+        reject(err);
+      } else {
+        resolve(rows || []);
       }
-    );
+    });
   });
 }
 
@@ -158,18 +152,14 @@ function getQuoteById(id) {
   return new Promise((resolve, reject) => {
     const database = getDatabase();
 
-    database.get(
-      'SELECT id, text, author, addedAt FROM quotes WHERE id = ?',
-      [id],
-      (err, row) => {
-        if (err) {
-          logError('database.getQuoteById', err, ERROR_LEVELS.MEDIUM, { id });
-          reject(err);
-        } else {
-          resolve(row || null);
-        }
+    database.get('SELECT id, text, author, addedAt FROM quotes WHERE id = ?', [id], (err, row) => {
+      if (err) {
+        logError('database.getQuoteById', err, ERROR_LEVELS.MEDIUM, { id });
+        reject(err);
+      } else {
+        resolve(row || null);
       }
-    );
+    });
   });
 }
 
@@ -213,7 +203,7 @@ function updateQuote(id, text, author) {
     database.run(
       'UPDATE quotes SET text = ?, author = ?, updatedAt = ? WHERE id = ?',
       [text, author, updatedAt, id],
-      function(err) {
+      function (err) {
         if (err) {
           logError('database.updateQuote', err, ERROR_LEVELS.MEDIUM, { id });
           reject(err);
@@ -234,18 +224,14 @@ function deleteQuote(id) {
   return new Promise((resolve, reject) => {
     const database = getDatabase();
 
-    database.run(
-      'DELETE FROM quotes WHERE id = ?',
-      [id],
-      function(err) {
-        if (err) {
-          logError('database.deleteQuote', err, ERROR_LEVELS.MEDIUM, { id });
-          reject(err);
-        } else {
-          resolve(this.changes > 0);
-        }
+    database.run('DELETE FROM quotes WHERE id = ?', [id], function (err) {
+      if (err) {
+        logError('database.deleteQuote', err, ERROR_LEVELS.MEDIUM, { id });
+        reject(err);
+      } else {
+        resolve(this.changes > 0);
       }
-    );
+    });
   });
 }
 
@@ -257,17 +243,14 @@ function getQuoteCount() {
   return new Promise((resolve, reject) => {
     const database = getDatabase();
 
-    database.get(
-      'SELECT COUNT(*) as count FROM quotes',
-      (err, row) => {
-        if (err) {
-          logError('database.getQuoteCount', err, ERROR_LEVELS.MEDIUM);
-          reject(err);
-        } else {
-          resolve(row?.count || 0);
-        }
+    database.get('SELECT COUNT(*) as count FROM quotes', (err, row) => {
+      if (err) {
+        logError('database.getQuoteCount', err, ERROR_LEVELS.MEDIUM);
+        reject(err);
+      } else {
+        resolve(row?.count || 0);
       }
-    );
+    });
   });
 }
 
@@ -313,7 +296,7 @@ module.exports = {
   getAllTags,
   getQuotesByCategory,
   exportQuotesAsJson,
-  exportQuotesAsCsv
+  exportQuotesAsCsv,
 };
 
 /**
@@ -390,18 +373,14 @@ function getQuoteRating(quoteId, userId) {
       return;
     }
 
-    database.get(
-      'SELECT rating FROM quote_ratings WHERE quoteId = ? AND userId = ?',
-      [quoteId, userId],
-      (err, row) => {
-        if (err) {
-          logError('database.getQuoteRating', err, ERROR_LEVELS.MEDIUM);
-          resolve(null);
-          return;
-        }
-        resolve(row ? row.rating : null);
+    database.get('SELECT rating FROM quote_ratings WHERE quoteId = ? AND userId = ?', [quoteId, userId], (err, row) => {
+      if (err) {
+        logError('database.getQuoteRating', err, ERROR_LEVELS.MEDIUM);
+        resolve(null);
+        return;
       }
-    );
+      resolve(row ? row.rating : null);
+    });
   });
 }
 
@@ -422,7 +401,7 @@ function addTag(name, description = '') {
     database.run(
       'INSERT OR IGNORE INTO tags (name, description) VALUES (?, ?)',
       [name.toLowerCase(), description],
-      function(err) {
+      function (err) {
         if (err) {
           logError('database.addTag', err, ERROR_LEVELS.MEDIUM);
           resolve({ success: false });
@@ -472,18 +451,14 @@ function addTagToQuote(quoteId, tagId) {
       return;
     }
 
-    database.run(
-      'INSERT OR IGNORE INTO quote_tags (quoteId, tagId) VALUES (?, ?)',
-      [quoteId, tagId],
-      (err) => {
-        if (err) {
-          logError('database.addTagToQuote', err, ERROR_LEVELS.MEDIUM);
-          resolve(false);
-          return;
-        }
-        resolve(true);
+    database.run('INSERT OR IGNORE INTO quote_tags (quoteId, tagId) VALUES (?, ?)', [quoteId, tagId], (err) => {
+      if (err) {
+        logError('database.addTagToQuote', err, ERROR_LEVELS.MEDIUM);
+        resolve(false);
+        return;
       }
-    );
+      resolve(true);
+    });
   });
 }
 
@@ -555,18 +530,14 @@ function getQuotesByCategory(category) {
       return;
     }
 
-    database.all(
-      'SELECT * FROM quotes WHERE category = ? ORDER BY id DESC',
-      [category],
-      (err, rows) => {
-        if (err) {
-          logError('database.getQuotesByCategory', err, ERROR_LEVELS.MEDIUM);
-          resolve([]);
-          return;
-        }
-        resolve(rows || []);
+    database.all('SELECT * FROM quotes WHERE category = ? ORDER BY id DESC', [category], (err, rows) => {
+      if (err) {
+        logError('database.getQuotesByCategory', err, ERROR_LEVELS.MEDIUM);
+        resolve([]);
+        return;
       }
-    );
+      resolve(rows || []);
+    });
   });
 }
 
@@ -582,12 +553,14 @@ function exportQuotesAsJson(quotes) {
       return;
     }
 
-    getAllQuotes().then((allQuotes) => {
-      resolve(JSON.stringify(allQuotes, null, 2));
-    }).catch((err) => {
-      logError('database.exportQuotesAsJson', err, ERROR_LEVELS.MEDIUM);
-      resolve('[]');
-    });
+    getAllQuotes()
+      .then((allQuotes) => {
+        resolve(JSON.stringify(allQuotes, null, 2));
+      })
+      .catch((err) => {
+        logError('database.exportQuotesAsJson', err, ERROR_LEVELS.MEDIUM);
+        resolve('[]');
+      });
   });
 }
 
@@ -605,27 +578,29 @@ function exportQuotesAsCsv(quotes) {
       }
 
       const headers = ['id', 'text', 'author', 'category', 'averageRating', 'ratingCount', 'addedAt'];
-      const rows = quotesToProcess.map(q => [
+      const rows = quotesToProcess.map((q) => [
         q.id,
         `"${(q.text || '').replace(/"/g, '""')}"`,
         `"${(q.author || '').replace(/"/g, '""')}"`,
         q.category || 'General',
         q.averageRating || 0,
         q.ratingCount || 0,
-        q.addedAt || ''
+        q.addedAt || '',
       ]);
 
-      const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const csv = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
       resolve(csv);
     };
 
     if (quotes) {
       processQuotes(quotes);
     } else {
-      getAllQuotes().then(processQuotes).catch((err) => {
-        logError('database.exportQuotesAsCsv', err, ERROR_LEVELS.MEDIUM);
-        processQuotes([]);
-      });
+      getAllQuotes()
+        .then(processQuotes)
+        .catch((err) => {
+          logError('database.exportQuotesAsCsv', err, ERROR_LEVELS.MEDIUM);
+          processQuotes([]);
+        });
     }
   });
 }

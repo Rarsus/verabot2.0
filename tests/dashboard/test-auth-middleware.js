@@ -15,7 +15,7 @@ console.log('\n=== Dashboard Auth Middleware Tests ===\n');
 function createMockReq(token = null, cookie = null) {
   return {
     headers: token ? { authorization: `Bearer ${token}` } : {},
-    cookies: cookie ? { auth_token: cookie } : {}
+    cookies: cookie ? { auth_token: cookie } : {},
   };
 }
 
@@ -24,16 +24,16 @@ function createMockRes() {
   let jsonData = null;
 
   return {
-    status: function(code) {
+    status: function (code) {
       statusCode = code;
       return this;
     },
-    json: function(data) {
+    json: function (data) {
       jsonData = data;
       return this;
     },
     getStatus: () => statusCode,
-    getData: () => jsonData
+    getData: () => jsonData,
   };
 }
 
@@ -58,7 +58,9 @@ try {
   const res = createMockRes();
   let nextCalled = false;
 
-  authMiddleware(req, res, () => { nextCalled = true; });
+  authMiddleware(req, res, () => {
+    nextCalled = true;
+  });
 
   if (res.getStatus() === 401 && !nextCalled) {
     console.log('✅ Requests without token rejected');
@@ -79,7 +81,7 @@ try {
     id: '123456789',
     username: 'testuser',
     discriminator: '0001',
-    avatar: 'avatar_hash'
+    avatar: 'avatar_hash',
   };
 
   const validToken = oauthService.generateJWT(mockUser, 'mock_token');
@@ -87,7 +89,9 @@ try {
   const res = createMockRes();
   let nextCalled = false;
 
-  authMiddleware(req, res, () => { nextCalled = true; });
+  authMiddleware(req, res, () => {
+    nextCalled = true;
+  });
 
   if (nextCalled && req.user && req.user.userId === mockUser.id) {
     console.log('✅ Valid token accepted');
@@ -108,7 +112,7 @@ try {
     id: '123456789',
     username: 'testuser',
     discriminator: '0001',
-    avatar: 'avatar_hash'
+    avatar: 'avatar_hash',
   };
 
   const validToken = oauthService.generateJWT(mockUser, 'mock_token');
@@ -116,7 +120,9 @@ try {
   const res = createMockRes();
   let nextCalled = false;
 
-  authMiddleware(req, res, () => { nextCalled = true; });
+  authMiddleware(req, res, () => {
+    nextCalled = true;
+  });
 
   if (nextCalled && req.user) {
     console.log('✅ Token from cookie accepted');
@@ -136,7 +142,9 @@ try {
   const res = createMockRes();
   let nextCalled = false;
 
-  optionalAuth(req, res, () => { nextCalled = true; });
+  optionalAuth(req, res, () => {
+    nextCalled = true;
+  });
 
   if (nextCalled && res.getStatus() === 200) {
     console.log('✅ Optional auth allows requests without token');
@@ -156,7 +164,7 @@ try {
     id: '123456789',
     username: 'testuser',
     discriminator: '0001',
-    avatar: 'avatar_hash'
+    avatar: 'avatar_hash',
   };
 
   const validToken = oauthService.generateJWT(mockUser, 'mock_token');
@@ -164,7 +172,9 @@ try {
   const res = createMockRes();
   let nextCalled = false;
 
-  optionalAuth(req, res, () => { nextCalled = true; });
+  optionalAuth(req, res, () => {
+    nextCalled = true;
+  });
 
   if (nextCalled && req.user) {
     console.log('✅ Optional auth attaches user when token present');

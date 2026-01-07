@@ -11,7 +11,7 @@ const {
   parseNaturalDate,
   parseTimeOnly,
   parseDateOnly,
-  parseCombinedDateTime
+  parseCombinedDateTime,
 } = require('../../src/utils/helpers/datetime-parser');
 
 let passed = 0;
@@ -457,8 +457,11 @@ async function runTests() {
       const parsedDate = new Date(result.isoString);
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
-      if (parsedDate.getHours() === 15 && parsedDate.getMinutes() === 30 &&
-          parsedDate.getDate() === tomorrow.getDate()) {
+      if (
+        parsedDate.getHours() === 15 &&
+        parsedDate.getMinutes() === 30 &&
+        parsedDate.getDate() === tomorrow.getDate()
+      ) {
         console.log('✅ Test 19 Passed: "tomorrow at 3 PM" parsed correctly');
         passed++;
       } else {
@@ -715,6 +718,6 @@ async function runTests() {
 }
 
 // Run tests
-runTests().catch(err => {
+runTests().catch((err) => {
   console.error('Test runner error:', err);
 });

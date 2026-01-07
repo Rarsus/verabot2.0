@@ -23,7 +23,7 @@ class DashboardAuthMiddleware {
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({
           success: false,
-          error: 'No authentication token provided'
+          error: 'No authentication token provided',
         });
       }
 
@@ -34,7 +34,7 @@ class DashboardAuthMiddleware {
       if (!decoded) {
         return res.status(401).json({
           success: false,
-          error: 'Invalid or expired token'
+          error: 'Invalid or expired token',
         });
       }
 
@@ -43,7 +43,7 @@ class DashboardAuthMiddleware {
         userId: decoded.userId,
         username: decoded.username,
         discriminator: decoded.discriminator,
-        avatar: decoded.avatar
+        avatar: decoded.avatar,
       };
 
       next();
@@ -51,7 +51,7 @@ class DashboardAuthMiddleware {
       console.error('Dashboard auth error:', error.message);
       return res.status(401).json({
         success: false,
-        error: 'Authentication failed'
+        error: 'Authentication failed',
       });
     }
   }
@@ -68,7 +68,7 @@ class DashboardAuthMiddleware {
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({
           success: false,
-          error: 'No API token provided'
+          error: 'No API token provided',
         });
       }
 
@@ -77,7 +77,7 @@ class DashboardAuthMiddleware {
       if (this.botApiToken && token !== this.botApiToken) {
         return res.status(401).json({
           success: false,
-          error: 'Invalid API token'
+          error: 'Invalid API token',
         });
       }
 
@@ -86,7 +86,7 @@ class DashboardAuthMiddleware {
       console.error('Bot API auth error:', error.message);
       return res.status(401).json({
         success: false,
-        error: 'API authentication failed'
+        error: 'API authentication failed',
       });
     }
   }
@@ -103,7 +103,7 @@ class DashboardAuthMiddleware {
         if (!userId) {
           return res.status(401).json({
             success: false,
-            error: 'User not authenticated'
+            error: 'User not authenticated',
           });
         }
 
@@ -135,7 +135,7 @@ class DashboardAuthMiddleware {
         if (!isAdmin) {
           return res.status(403).json({
             success: false,
-            error: 'Insufficient permissions'
+            error: 'Insufficient permissions',
           });
         }
 
@@ -144,7 +144,7 @@ class DashboardAuthMiddleware {
         console.error('Permission check error:', error.message);
         return res.status(500).json({
           success: false,
-          error: 'Failed to verify permissions'
+          error: 'Failed to verify permissions',
         });
       }
     };

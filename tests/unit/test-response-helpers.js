@@ -8,7 +8,7 @@ const {
   sendSuccess,
   sendError,
   sendDM,
-  deferReply
+  deferReply,
 } = require('../../src/utils/helpers/response-helpers');
 
 let passed = 0;
@@ -19,29 +19,31 @@ function createMockInteraction(replied = false, deferred = false) {
   return {
     deferred: deferred,
     replied: replied,
-    reply: async function(msg) {
+    reply: async function (msg) {
       this.replied = true;
       this._lastReply = msg;
       return msg;
     },
-    editReply: async function(msg) {
+    editReply: async function (msg) {
       this._lastEdit = msg;
       return msg;
     },
-    followUp: async function(msg) {
+    followUp: async function (msg) {
       this._lastFollowUp = msg;
       return msg;
     },
-    deferReply: async function() {
+    deferReply: async function () {
       this.deferred = true;
     },
-    user: { createDM: async function() {
-      return {
-        send: async function(msg) {
-          return msg;
-        }
-      };
-    }}
+    user: {
+      createDM: async function () {
+        return {
+          send: async function (msg) {
+            return msg;
+          },
+        };
+      },
+    },
   };
 }
 
@@ -67,7 +69,7 @@ console.log('\n=== Test 1: Quote Embed on New Interaction ===');
     const quote = {
       id: 1,
       text: 'The only way to do great work',
-      author: 'Steve Jobs'
+      author: 'Steve Jobs',
     };
 
     await sendQuoteEmbed(interaction, quote, 'Test Quote');
@@ -116,10 +118,12 @@ console.log('\n=== Test 3: Quote Embed Footer with Author ===');
 
     await sendQuoteEmbed(interaction, quote);
 
-    if (interaction._lastReply.embeds &&
-        interaction._lastReply.embeds[0].data.footer &&
-        interaction._lastReply.embeds[0].data.footer.text.includes('Great Person') &&
-        interaction._lastReply.embeds[0].data.footer.text.includes('42')) {
+    if (
+      interaction._lastReply.embeds &&
+      interaction._lastReply.embeds[0].data.footer &&
+      interaction._lastReply.embeds[0].data.footer.text.includes('Great Person') &&
+      interaction._lastReply.embeds[0].data.footer.text.includes('42')
+    ) {
       console.log('✅ Test 3 Passed: Footer includes author and ID');
       passed++;
     } else {
@@ -139,9 +143,11 @@ console.log('\n=== Test 4: Success Message ===');
 
     await sendSuccess(interaction, 'Operation successful');
 
-    if (interaction._lastReply &&
-        interaction._lastReply.content.includes('✅') &&
-        interaction._lastReply.content.includes('Operation successful')) {
+    if (
+      interaction._lastReply &&
+      interaction._lastReply.content.includes('✅') &&
+      interaction._lastReply.content.includes('Operation successful')
+    ) {
       console.log('✅ Test 4 Passed: Success message sent with checkmark');
       passed++;
     } else {
@@ -162,9 +168,11 @@ console.log('\n=== Test 5: Error Message ===');
 
     await sendError(interaction, 'Something went wrong');
 
-    if (interaction._lastReply &&
-        interaction._lastReply.content.includes('❌') &&
-        interaction._lastReply.content.includes('Something went wrong')) {
+    if (
+      interaction._lastReply &&
+      interaction._lastReply.content.includes('❌') &&
+      interaction._lastReply.content.includes('Something went wrong')
+    ) {
       console.log('✅ Test 5 Passed: Error message sent with X mark');
       passed++;
     } else {
@@ -225,8 +233,7 @@ console.log('\n=== Test 8: Send DM ===');
 
     await sendDM(interaction, 'Here is your data');
 
-    if (interaction._lastReply &&
-        interaction._lastReply.content.includes('Check your DMs')) {
+    if (interaction._lastReply && interaction._lastReply.content.includes('Check your DMs')) {
       console.log('✅ Test 8 Passed: DM sent and confirmation message shown');
       passed++;
     } else {
@@ -267,7 +274,7 @@ console.log('\n=== Test 10: Defer Skip if Already Deferred ===');
     const interaction = createMockInteraction(false, true);
     let deferCalled = false;
 
-    interaction.deferReply = async function() {
+    interaction.deferReply = async function () {
       deferCalled = true;
     };
 
@@ -463,10 +470,12 @@ console.log('\n=== Test 19: Send Opt-In Success ===');
 
     await sendOptInSuccess(interaction);
 
-    if (interaction._lastReply &&
-        interaction._lastReply.content.includes('✅') &&
-        interaction._lastReply.content.includes('opted in') &&
-        interaction._lastReply.flags === 64) {
+    if (
+      interaction._lastReply &&
+      interaction._lastReply.content.includes('✅') &&
+      interaction._lastReply.content.includes('opted in') &&
+      interaction._lastReply.flags === 64
+    ) {
       console.log('✅ Test 19 Passed: Opt-in success message sent with ephemeral flag');
       passed++;
     } else {
@@ -488,9 +497,7 @@ console.log('\n=== Test 20: Send Opt-In Success on Deferred ===');
 
     await sendOptInSuccess(interaction);
 
-    if (interaction._lastEdit &&
-        interaction._lastEdit.content.includes('✅') &&
-        interaction._lastEdit.flags === 64) {
+    if (interaction._lastEdit && interaction._lastEdit.content.includes('✅') && interaction._lastEdit.flags === 64) {
       console.log('✅ Test 20 Passed: Opt-in success uses editReply when deferred');
       passed++;
     } else {
@@ -512,10 +519,12 @@ console.log('\n=== Test 21: Send Opt-Out Success ===');
 
     await sendOptOutSuccess(interaction);
 
-    if (interaction._lastReply &&
-        interaction._lastReply.content.includes('⚠️') &&
-        interaction._lastReply.content.includes('opted out') &&
-        interaction._lastReply.flags === 64) {
+    if (
+      interaction._lastReply &&
+      interaction._lastReply.content.includes('⚠️') &&
+      interaction._lastReply.content.includes('opted out') &&
+      interaction._lastReply.flags === 64
+    ) {
       console.log('✅ Test 21 Passed: Opt-out success message sent with warning icon');
       passed++;
     } else {
@@ -537,9 +546,7 @@ console.log('\n=== Test 22: Send Opt-Out Success on Deferred ===');
 
     await sendOptOutSuccess(interaction);
 
-    if (interaction._lastEdit &&
-        interaction._lastEdit.content.includes('⚠️') &&
-        interaction._lastEdit.flags === 64) {
+    if (interaction._lastEdit && interaction._lastEdit.content.includes('⚠️') && interaction._lastEdit.flags === 64) {
       console.log('✅ Test 22 Passed: Opt-out success uses editReply when deferred');
       passed++;
     } else {
@@ -561,10 +568,12 @@ console.log('\n=== Test 23: Send Opt-In Status - Opted In ===');
 
     await sendOptInStatus(interaction, true, '2026-01-05 10:00:00');
 
-    if (interaction._lastReply &&
-        interaction._lastReply.content.includes('✅ Opted In') &&
-        interaction._lastReply.content.includes('2026-01-05 10:00:00') &&
-        interaction._lastReply.flags === 64) {
+    if (
+      interaction._lastReply &&
+      interaction._lastReply.content.includes('✅ Opted In') &&
+      interaction._lastReply.content.includes('2026-01-05 10:00:00') &&
+      interaction._lastReply.flags === 64
+    ) {
       console.log('✅ Test 23 Passed: Opt-in status shows correct status');
       passed++;
     } else {
@@ -586,9 +595,11 @@ console.log('\n=== Test 24: Send Opt-In Status - Opted Out ===');
 
     await sendOptInStatus(interaction, false, '2026-01-04 15:30:00');
 
-    if (interaction._lastReply &&
-        interaction._lastReply.content.includes('❌ Opted Out') &&
-        interaction._lastReply.content.includes('2026-01-04 15:30:00')) {
+    if (
+      interaction._lastReply &&
+      interaction._lastReply.content.includes('❌ Opted Out') &&
+      interaction._lastReply.content.includes('2026-01-04 15:30:00')
+    ) {
       console.log('✅ Test 24 Passed: Opt-in status shows opted out');
       passed++;
     } else {
@@ -610,8 +621,7 @@ console.log('\n=== Test 25: Send Opt-In Status - Never Updated ===');
 
     await sendOptInStatus(interaction, true, null);
 
-    if (interaction._lastReply &&
-        interaction._lastReply.content.includes('Never')) {
+    if (interaction._lastReply && interaction._lastReply.content.includes('Never')) {
       console.log('✅ Test 25 Passed: Opt-in status shows Never when no timestamp');
       passed++;
     } else {
@@ -634,12 +644,14 @@ console.log('\n=== Test 26: Send Opt-In Decision Prompt ===');
 
     await sendOptInDecisionPrompt(interaction, recipient, 'Important reminder');
 
-    if (interaction._lastReply &&
-        interaction._lastReply.content.includes('⚠️') &&
-        interaction._lastReply.content.includes('TestUser') &&
-        interaction._lastReply.content.includes('Important reminder') &&
-        interaction._lastReply.components &&
-        interaction._lastReply.components.length > 0) {
+    if (
+      interaction._lastReply &&
+      interaction._lastReply.content.includes('⚠️') &&
+      interaction._lastReply.content.includes('TestUser') &&
+      interaction._lastReply.content.includes('Important reminder') &&
+      interaction._lastReply.components &&
+      interaction._lastReply.components.length > 0
+    ) {
       console.log('✅ Test 26 Passed: Opt-in decision prompt sent with buttons');
       passed++;
     } else {
@@ -662,10 +674,12 @@ console.log('\n=== Test 27: Send Opt-In Decision Prompt on Deferred ===');
 
     await sendOptInDecisionPrompt(interaction, recipient, 'Test reminder');
 
-    if (interaction._lastEdit &&
-        interaction._lastEdit.content.includes('⚠️') &&
-        interaction._lastEdit.components &&
-        interaction._lastEdit.components.length > 0) {
+    if (
+      interaction._lastEdit &&
+      interaction._lastEdit.content.includes('⚠️') &&
+      interaction._lastEdit.components &&
+      interaction._lastEdit.components.length > 0
+    ) {
       console.log('✅ Test 27 Passed: Opt-in decision prompt uses editReply when deferred');
       passed++;
     } else {
@@ -688,11 +702,13 @@ console.log('\n=== Test 28: Send Reminder Created Server-Only ===');
 
     await sendReminderCreatedServerOnly(interaction, recipient, 'Meeting at 3pm');
 
-    if (interaction._lastReply &&
-        interaction._lastReply.content.includes('✅') &&
-        interaction._lastReply.content.includes('TestUser') &&
-        interaction._lastReply.content.includes('Server Only') &&
-        interaction._lastReply.content.includes('Meeting at 3pm')) {
+    if (
+      interaction._lastReply &&
+      interaction._lastReply.content.includes('✅') &&
+      interaction._lastReply.content.includes('TestUser') &&
+      interaction._lastReply.content.includes('Server Only') &&
+      interaction._lastReply.content.includes('Meeting at 3pm')
+    ) {
       console.log('✅ Test 28 Passed: Reminder server-only confirmation sent');
       passed++;
     } else {
@@ -715,8 +731,7 @@ console.log('\n=== Test 29: Send Reminder Created Server-Only on Deferred ===');
 
     await sendReminderCreatedServerOnly(interaction, recipient, 'Test reminder');
 
-    if (interaction._lastEdit &&
-        interaction._lastEdit.content.includes('✅')) {
+    if (interaction._lastEdit && interaction._lastEdit.content.includes('✅')) {
       console.log('✅ Test 29 Passed: Reminder server-only uses editReply when deferred');
       passed++;
     } else {
@@ -738,8 +753,8 @@ console.log('\n=== Test 30: Send Opt-In Request ===');
       createDM: async () => ({
         send: async (msg) => {
           return { success: true, sent: msg };
-        }
-      })
+        },
+      }),
     };
     const sender = { username: 'Admin', id: '654321' };
 
@@ -761,7 +776,7 @@ console.log('\n=== Test 31: Send Opt-In Request - DM Error ===');
     const user = {
       createDM: async () => {
         throw new Error('Cannot create DM');
-      }
+      },
     };
     const sender = { username: 'Admin', id: '654321' };
 

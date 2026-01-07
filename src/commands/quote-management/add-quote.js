@@ -6,7 +6,7 @@ const { validateQuoteText, validateAuthor } = require('../../middleware/errorHan
 
 const { data, options } = buildCommandOptions('add-quote', 'Add a quote to the database', [
   { name: 'quote', type: 'string', description: 'The quote to add', required: true },
-  { name: 'author', type: 'string', description: 'The author of the quote', required: false }
+  { name: 'author', type: 'string', description: 'The author of the quote', required: false },
 ]);
 
 class AddQuoteCommand extends Command {
@@ -18,8 +18,8 @@ class AddQuoteCommand extends Command {
       options,
       permissions: {
         minTier: 1,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 

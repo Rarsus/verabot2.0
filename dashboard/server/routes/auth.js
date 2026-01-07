@@ -47,10 +47,10 @@ router.get('/callback', async (req, res) => {
 
     // Exchange code for access token
     const tokenData = await oauthService.exchangeCodeForToken(code);
-    
+
     // Fetch user information
     const user = await oauthService.fetchUserInfo(tokenData.access_token);
-    
+
     // Fetch user's guilds
     const guilds = await oauthService.fetchUserGuilds(tokenData.access_token);
 
@@ -111,7 +111,7 @@ router.post('/logout', (req, res) => {
   try {
     // Clear auth cookie
     res.clearCookie('auth_token');
-    
+
     res.json({
       success: true,
       message: 'Logged out successfully',
@@ -145,7 +145,7 @@ router.get('/user', authMiddleware, async (req, res) => {
         email: user.email,
         verified: user.verified,
       },
-      guilds: guilds.map(guild => ({
+      guilds: guilds.map((guild) => ({
         id: guild.id,
         name: guild.name,
         icon: guild.icon,

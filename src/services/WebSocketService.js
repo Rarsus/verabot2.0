@@ -48,7 +48,7 @@ class WebSocketService {
     if (this.connections.has(serviceName)) {
       logError('WebSocket already connected to ' + serviceName, ERROR_LEVELS.MEDIUM, {
         serviceName,
-        webhookUrl
+        webhookUrl,
       });
       return false;
     }
@@ -68,7 +68,7 @@ class WebSocketService {
           shouldReconnect: true,
           reconnectDelay: this.reconnectDelay,
           messageCount: 0,
-          errorCount: 0
+          errorCount: 0,
         };
 
         ws.on('open', () => {
@@ -77,7 +77,7 @@ class WebSocketService {
           logInfo(`WebSocket connected to ${serviceName}`, {
             serviceName,
             webhookUrl,
-            allowedActions: Array.from(connectionState.allowedActions)
+            allowedActions: Array.from(connectionState.allowedActions),
           });
           resolve(true);
         });
@@ -92,7 +92,7 @@ class WebSocketService {
             serviceName,
             code,
             messageCount: connectionState.messageCount,
-            errorCount: connectionState.errorCount
+            errorCount: connectionState.errorCount,
           });
 
           if (connectionState.shouldReconnect) {
@@ -105,7 +105,7 @@ class WebSocketService {
           logError(`WebSocket error: ${serviceName}`, ERROR_LEVELS.MEDIUM, {
             serviceName,
             error: err.message,
-            errorCount: connectionState.errorCount
+            errorCount: connectionState.errorCount,
           });
         });
 
@@ -113,7 +113,7 @@ class WebSocketService {
       } catch (err) {
         logError(`Failed to create WebSocket connection to ${serviceName}`, ERROR_LEVELS.HIGH, {
           serviceName,
-          error: err.message
+          error: err.message,
         });
         resolve(false);
       }
@@ -134,7 +134,8 @@ class WebSocketService {
 
     try {
       state.shouldReconnect = false;
-      if (state.ws && state.ws.readyState === 1) { // WebSocket.OPEN
+      if (state.ws && state.ws.readyState === 1) {
+        // WebSocket.OPEN
         state.ws.close();
       }
       this.connections.delete(serviceName);
@@ -143,7 +144,7 @@ class WebSocketService {
     } catch (err) {
       logError(`Error disconnecting WebSocket: ${serviceName}`, ERROR_LEVELS.MEDIUM, {
         serviceName,
-        error: err.message
+        error: err.message,
       });
       return false;
     }
@@ -160,7 +161,7 @@ class WebSocketService {
     if (!state || !state.isConnected || !state.ws || state.ws.readyState !== 1) {
       logError(`Cannot send: WebSocket not connected to ${serviceName}`, ERROR_LEVELS.LOW, {
         serviceName,
-        connected: state ? state.isConnected : false
+        connected: state ? state.isConnected : false,
       });
       return false;
     }
@@ -169,13 +170,13 @@ class WebSocketService {
       state.ws.send(JSON.stringify(payload));
       logInfo(`WebSocket message sent to ${serviceName}`, {
         serviceName,
-        payloadKeys: Object.keys(payload)
+        payloadKeys: Object.keys(payload),
       });
       return true;
     } catch (err) {
       logError(`Failed to send WebSocket message to ${serviceName}`, ERROR_LEVELS.MEDIUM, {
         serviceName,
-        error: err.message
+        error: err.message,
       });
       return false;
     }
@@ -194,13 +195,13 @@ class WebSocketService {
         state.ws.send(JSON.stringify(ackPayload));
         logInfo(`Ack sent to ${state.serviceName}`, {
           serviceName: state.serviceName,
-          status: payload.status
+          status: payload.status,
         });
       }
     } catch (err) {
       logError(`Failed to send ack to ${state.serviceName}`, ERROR_LEVELS.LOW, {
         serviceName: state.serviceName,
-        error: err.message
+        error: err.message,
       });
     }
   }
@@ -220,12 +221,12 @@ class WebSocketService {
       if (!msg.action || typeof msg.action !== 'string') {
         logError(`Invalid message from ${state.serviceName}: missing or invalid action`, ERROR_LEVELS.LOW, {
           serviceName: state.serviceName,
-          messageKeys: Object.keys(msg)
+          messageKeys: Object.keys(msg),
         });
         this._sendAck(state, {
           status: 'error',
           reason: 'invalid_action_field',
-          message: 'Action field missing or not a string'
+          message: 'Action field missing or not a string',
         });
         return;
       }
@@ -235,13 +236,13 @@ class WebSocketService {
         logError(`Unauthorized action from ${state.serviceName}: ${msg.action}`, ERROR_LEVELS.MEDIUM, {
           serviceName: state.serviceName,
           action: msg.action,
-          allowedActions: Array.from(state.allowedActions)
+          allowedActions: Array.from(state.allowedActions),
         });
         this._sendAck(state, {
           status: 'error',
           reason: 'unauthorized_action',
           action: msg.action,
-          message: 'Action not in approved list'
+          message: 'Action not in approved list',
         });
         return;
       }
@@ -252,30 +253,30 @@ class WebSocketService {
         this._sendAck(state, {
           status: 'ok',
           action: msg.action,
-          message: 'Action processed successfully'
+          message: 'Action processed successfully',
         });
         logInfo(`Action processed from ${state.serviceName}: ${msg.action}`, {
           serviceName: state.serviceName,
           action: msg.action,
-          messageCount: state.messageCount
+          messageCount: state.messageCount,
         });
       } catch (err) {
         logError(`Handler error for action ${msg.action} from ${state.serviceName}`, ERROR_LEVELS.MEDIUM, {
           serviceName: state.serviceName,
           action: msg.action,
-          error: err.message
+          error: err.message,
         });
         this._sendAck(state, {
           status: 'error',
           reason: 'handler_error',
           action: msg.action,
-          message: 'Error processing action'
+          message: 'Error processing action',
         });
       }
     } catch (err) {
       logError(`Failed to parse WebSocket message from ${state.serviceName}`, ERROR_LEVELS.MEDIUM, {
         serviceName: state.serviceName,
-        error: err.message
+        error: err.message,
       });
     }
   }
@@ -294,20 +295,22 @@ class WebSocketService {
     const delay = state.reconnectDelay;
     logInfo(`WebSocket reconnect scheduled for ${state.serviceName} in ${delay}ms`, {
       serviceName: state.serviceName,
-      delayMs: delay
+      delayMs: delay,
     });
 
     const timeout = setTimeout(() => {
       state.reconnectDelay = Math.min(state.reconnectDelay * 2, this.maxReconnectDelay);
       logInfo(`Attempting to reconnect ${state.serviceName}...`, {
-        serviceName: state.serviceName
+        serviceName: state.serviceName,
       });
-      this.connect(state.serviceName, state.webhookUrl, Array.from(state.allowedActions), state.actionHandler).catch((err) => {
-        logError(`Reconnection failed for ${state.serviceName}`, ERROR_LEVELS.MEDIUM, {
-          serviceName: state.serviceName,
-          error: err.message
-        });
-      });
+      this.connect(state.serviceName, state.webhookUrl, Array.from(state.allowedActions), state.actionHandler).catch(
+        (err) => {
+          logError(`Reconnection failed for ${state.serviceName}`, ERROR_LEVELS.MEDIUM, {
+            serviceName: state.serviceName,
+            error: err.message,
+          });
+        }
+      );
     }, delay);
 
     this.reconnectTimeouts.set(state.serviceName, timeout);
@@ -330,7 +333,7 @@ class WebSocketService {
         webhookUrl: state.webhookUrl,
         allowedActions: Array.from(state.allowedActions),
         messageCount: state.messageCount,
-        errorCount: state.errorCount
+        errorCount: state.errorCount,
       };
     }
 
@@ -340,7 +343,7 @@ class WebSocketService {
       services[name] = {
         connected: state.isConnected,
         messageCount: state.messageCount,
-        errorCount: state.errorCount
+        errorCount: state.errorCount,
       };
     }
     return services;

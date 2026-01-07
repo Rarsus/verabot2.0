@@ -20,7 +20,7 @@ class Command {
     this.permissions = config.permissions || {
       minTier: 0,
       visible: true,
-      allowGuildOverride: true
+      allowGuildOverride: true,
     };
   }
 
@@ -35,15 +35,10 @@ class Command {
     const guildId = context.guildId;
 
     if (!userId || !guildId) {
-      return { allowed: true };  // Allow DMs
+      return { allowed: true }; // Allow DMs
     }
 
-    const hasPermission = await RolePermissionService.canExecuteCommand(
-      userId,
-      guildId,
-      this.name,
-      client
-    );
+    const hasPermission = await RolePermissionService.canExecuteCommand(userId, guildId, this.name, client);
 
     if (!hasPermission) {
       const userTier = await RolePermissionService.getUserTier(userId, guildId, client);
@@ -53,7 +48,7 @@ class Command {
 
       return {
         allowed: false,
-        reason: `You need **${tierName}** to use this command. Your tier: ${RolePermissionService.getRoleDescription(userTier)}`
+        reason: `You need **${tierName}** to use this command. Your tier: ${RolePermissionService.getRoleDescription(userTier)}`,
       };
     }
 
@@ -71,15 +66,10 @@ class Command {
     const guildId = context.guildId;
 
     if (!userId || !guildId) {
-      return true;  // Always visible in DMs
+      return true; // Always visible in DMs
     }
 
-    return RolePermissionService.isCommandVisible(
-      userId,
-      guildId,
-      this.name,
-      client
-    );
+    return RolePermissionService.isCommandVisible(userId, guildId, this.name, client);
   }
 
   /**
@@ -113,7 +103,7 @@ class Command {
         const isInteraction = firstArg?.isCommand?.() || firstArg?.isChatInputCommand?.();
 
         logError(context, err, ERROR_LEVELS.MEDIUM, {
-          commandName: this.name
+          commandName: this.name,
         });
 
         if (isInteraction) {
@@ -145,7 +135,11 @@ class Command {
     }
     if (this.executeInteraction) {
       // Slash commands get permission checks (interaction has full context)
-      this.executeInteraction = this.wrapError(this.executeInteraction.bind(this), `${this.name}.executeInteraction`, true);
+      this.executeInteraction = this.wrapError(
+        this.executeInteraction.bind(this),
+        `${this.name}.executeInteraction`,
+        true
+      );
     }
     return this;
   }

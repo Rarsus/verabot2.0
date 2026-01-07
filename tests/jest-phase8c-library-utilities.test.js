@@ -39,7 +39,7 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
 
         const client = {
           isReady: true,
-          guilds: { cache: { size: 5 } }
+          guilds: { cache: { size: 5 } },
         };
         assert.strictEqual(isFullyReady(client), true);
       });
@@ -51,7 +51,7 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
 
         const client = {
           isReady: true,
-          guilds: { cache: { size: 0 } }
+          guilds: { cache: { size: 0 } },
         };
         assert.strictEqual(isFullyReady(client), false);
       });
@@ -69,13 +69,13 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
 
       it('should wait for shard readiness in clustered setup', () => {
         const checkShardReady = (shards) => {
-          return shards.every(s => s.isReady);
+          return shards.every((s) => s.isReady);
         };
 
         const shards = [
           { id: 0, isReady: true },
           { id: 1, isReady: true },
-          { id: 2, isReady: true }
+          { id: 2, isReady: true },
         ];
         assert.strictEqual(checkShardReady(shards), true);
       });
@@ -109,14 +109,14 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
         const guildCache = {};
 
         const cacheGuilds = (guilds) => {
-          guilds.forEach(g => {
+          guilds.forEach((g) => {
             guildCache[g.id] = { id: g.id, name: g.name, memberCount: g.memberCount };
           });
         };
 
         const guilds = [
           { id: 'guild-1', name: 'Guild One', memberCount: 100 },
-          { id: 'guild-2', name: 'Guild Two', memberCount: 200 }
+          { id: 'guild-2', name: 'Guild Two', memberCount: 200 },
         ];
         cacheGuilds(guilds);
         assert.strictEqual(Object.keys(guildCache).length, 2);
@@ -157,7 +157,7 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
         const createTable = (schema) => {
           const table = {
             name: 'quotes',
-            columns: schema.split(',').map(c => c.trim())
+            columns: schema.split(',').map((c) => c.trim()),
           };
           return table;
         };
@@ -217,7 +217,7 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
 
       it('should add columns to existing tables', () => {
         const schema = {
-          quotes: ['id', 'text', 'author']
+          quotes: ['id', 'text', 'author'],
         };
 
         const addColumn = (table, column) => {
@@ -306,7 +306,11 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
           migrations[name] = { up: upFn, down: downFn };
         };
 
-        registerMigration('add-ratings-table', () => {}, () => {});
+        registerMigration(
+          'add-ratings-table',
+          () => {},
+          () => {}
+        );
         assert(migrations['add-ratings-table']);
       });
 
@@ -314,7 +318,7 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
         const executed = [];
 
         const runMigrations = (migrations) => {
-          Object.keys(migrations).forEach(key => {
+          Object.keys(migrations).forEach((key) => {
             executed.push(key);
             migrations[key].up();
           });
@@ -322,7 +326,7 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
 
         const migrations = {
           'migration-1': { up: () => {} },
-          'migration-2': { up: () => {} }
+          'migration-2': { up: () => {} },
         };
         runMigrations(migrations);
         assert.strictEqual(executed.length, 2);
@@ -342,7 +346,7 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
       it('should rollback migrations', () => {
         const migrations = [
           { name: 'migration-1', executed: true },
-          { name: 'migration-2', executed: true }
+          { name: 'migration-2', executed: true },
         ];
 
         const rollback = (steps) => {
@@ -360,7 +364,7 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
         const executed = ['migration-1'];
         const all = ['migration-1', 'migration-2', 'migration-3'];
 
-        const getPending = () => all.filter(m => !executed.includes(m));
+        const getPending = () => all.filter((m) => !executed.includes(m));
 
         const pending = getPending();
         assert.strictEqual(pending.length, 2);
@@ -368,9 +372,9 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
 
       it('should handle migration dependencies', () => {
         const migrations = {
-          'a': { dependsOn: null },
-          'b': { dependsOn: 'a' },
-          'c': { dependsOn: 'b' }
+          a: { dependsOn: null },
+          b: { dependsOn: 'a' },
+          c: { dependsOn: 'b' },
         };
 
         const canRun = (name, completed) => {
@@ -401,8 +405,10 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
       it('should handle migration errors gracefully', () => {
         const migrations = {
           'migration-1': {
-            up: () => { throw new Error('Migration failed'); }
-          }
+            up: () => {
+              throw new Error('Migration failed');
+            },
+          },
         };
 
         const runMigration = (name) => {
@@ -453,14 +459,14 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
         const migrations = [
           { name: 'migration-1', executed: true },
           { name: 'migration-2', executed: false },
-          { name: 'migration-3', executed: true }
+          { name: 'migration-3', executed: true },
         ];
 
         const getStatus = () => {
           return {
             total: migrations.length,
-            executed: migrations.filter(m => m.executed).length,
-            pending: migrations.filter(m => !m.executed).length
+            executed: migrations.filter((m) => m.executed).length,
+            pending: migrations.filter((m) => !m.executed).length,
           };
         };
 
@@ -511,11 +517,11 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
       const types = {
         userId: 'string',
         guildId: 'string',
-        rating: 'number'
+        rating: 'number',
       };
 
       const validate = (obj, schema) => {
-        return Object.keys(schema).every(key => {
+        return Object.keys(schema).every((key) => {
           return typeof obj[key] === schema[key];
         });
       };
@@ -527,7 +533,7 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
     it('should define nullable fields', () => {
       const schema = {
         author: { type: 'string', nullable: false },
-        tags: { type: 'array', nullable: true }
+        tags: { type: 'array', nullable: true },
       };
 
       const validateField = (value, fieldSchema) => {
@@ -544,7 +550,7 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
       const CommandStatus = {
         PENDING: 'pending',
         EXECUTED: 'executed',
-        FAILED: 'failed'
+        FAILED: 'failed',
       };
 
       const validateStatus = (value) => {
@@ -557,19 +563,14 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
 
     it('should validate nested structures', () => {
       const validateReminder = (reminder) => {
-        return (
-          reminder.id &&
-          reminder.userId &&
-          reminder.dueDate instanceof Date &&
-          Array.isArray(reminder.tags)
-        );
+        return reminder.id && reminder.userId && reminder.dueDate instanceof Date && Array.isArray(reminder.tags);
       };
 
       const valid = {
         id: 1,
         userId: 'user-123',
         dueDate: new Date(),
-        tags: ['important']
+        tags: ['important'],
       };
 
       assert.strictEqual(validateReminder(valid), true);
@@ -578,7 +579,7 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
     it('should export type definitions', () => {
       const types = {
         Quote: { id: 'number', text: 'string', author: 'string' },
-        Reminder: { id: 'number', dueDate: 'date', userId: 'string' }
+        Reminder: { id: 'number', dueDate: 'date', userId: 'string' },
       };
 
       const getType = (name) => types[name];
@@ -600,7 +601,7 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
         startup: () => {
           bot.isReady = true;
           bot.guilds.cache.size = 3;
-        }
+        },
       };
 
       bot.startup();
@@ -611,8 +612,20 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
     it('should apply schema migrations on startup', async () => {
       const db = { version: 0, tables: [] };
       const migrations = [
-        { name: 'v1', up: () => { db.version = 1; db.tables.push('quotes'); } },
-        { name: 'v2', up: () => { db.version = 2; db.tables.push('ratings'); } }
+        {
+          name: 'v1',
+          up: () => {
+            db.version = 1;
+            db.tables.push('quotes');
+          },
+        },
+        {
+          name: 'v2',
+          up: () => {
+            db.version = 2;
+            db.tables.push('ratings');
+          },
+        },
       ];
 
       const runMigrations = async (migs) => {
@@ -630,17 +643,17 @@ describe('Phase 8C: Library Utilities & Helpers', () => {
       const configSchema = {
         botToken: 'string',
         guildId: 'string',
-        prefix: 'string'
+        prefix: 'string',
       };
 
       const config = {
         botToken: 'xyz',
         guildId: 'guild-123',
-        prefix: '!'
+        prefix: '!',
       };
 
       const validate = (cfg) => {
-        return Object.keys(configSchema).every(k => {
+        return Object.keys(configSchema).every((k) => {
           return typeof cfg[k] === configSchema[k];
         });
       };

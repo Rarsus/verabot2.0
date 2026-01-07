@@ -75,5 +75,5 @@ async function migrateFromJson(database) {
 }
 
 module.exports = {
-  migrateFromJson
+  migrateFromJson,
 };

@@ -29,9 +29,9 @@ describe('Phase 5B: WebhookListenerService', () => {
 
   beforeEach(() => {
     mockServer = {
-      on: function() {},
-      listen: function() {},
-      close: function() {}
+      on: function () {},
+      listen: function () {},
+      close: function () {},
     };
   });
 
@@ -110,7 +110,7 @@ describe('Phase 5B: WebhookListenerService', () => {
             id: 'webhook-123',
             url: '/webhook/test',
             events: ['message.created'],
-            secret: 'secret-key'
+            secret: 'secret-key',
           };
           const result = await Promise.resolve(WebhookListenerService.registerWebhook(webhook));
           assert(true);
@@ -128,7 +128,7 @@ describe('Phase 5B: WebhookListenerService', () => {
           const webhook = {
             id: '',
             url: '',
-            events: []
+            events: [],
           };
           const result = await Promise.resolve(WebhookListenerService.registerWebhook(webhook));
           assert(true);
@@ -146,7 +146,7 @@ describe('Phase 5B: WebhookListenerService', () => {
           const webhook = {
             id: 'webhook-dup',
             url: '/webhook/dup',
-            events: ['message.created']
+            events: ['message.created'],
           };
           await Promise.resolve(WebhookListenerService.registerWebhook(webhook));
           const result = await Promise.resolve(WebhookListenerService.registerWebhook(webhook));
@@ -194,8 +194,8 @@ describe('Phase 5B: WebhookListenerService', () => {
             event: 'message.created',
             data: {
               messageId: 'msg-123',
-              content: 'Test message'
-            }
+              content: 'Test message',
+            },
           };
           const result = await Promise.resolve(WebhookListenerService.handleWebhookPayload(payload));
           assert(true);
@@ -212,7 +212,7 @@ describe('Phase 5B: WebhookListenerService', () => {
         if (WebhookListenerService && WebhookListenerService.handleWebhookPayload) {
           const payload = JSON.stringify({
             event: 'user.registered',
-            data: { userId: 'user-456' }
+            data: { userId: 'user-456' },
           });
           const result = await Promise.resolve(WebhookListenerService.handleWebhookPayload(payload));
           assert(true);
@@ -258,9 +258,7 @@ describe('Phase 5B: WebhookListenerService', () => {
           const payload = 'test payload';
           const signature = 'expected-signature';
           const secret = 'webhook-secret';
-          const result = await Promise.resolve(
-            WebhookListenerService.verifySignature(payload, signature, secret)
-          );
+          const result = await Promise.resolve(WebhookListenerService.verifySignature(payload, signature, secret));
           assert(typeof result === 'boolean' || result === undefined);
         } else {
           assert(true);
@@ -319,8 +317,8 @@ describe('Phase 5B: WebhookListenerService', () => {
           const maliciousPayload = {
             event: 'message.created',
             data: {
-              content: '<script>alert("xss")</script>'
-            }
+              content: '<script>alert("xss")</script>',
+            },
           };
           const result = await Promise.resolve(WebhookListenerService.sanitizePayload(maliciousPayload));
           assert(result === undefined || typeof result === 'object');
@@ -339,7 +337,7 @@ describe('Phase 5B: WebhookListenerService', () => {
         if (WebhookListenerService && WebhookListenerService.dispatchEvent) {
           const event = {
             type: 'message.created',
-            data: { messageId: 'msg-123' }
+            data: { messageId: 'msg-123' },
           };
           const result = await Promise.resolve(WebhookListenerService.dispatchEvent(event));
           assert(true);
@@ -355,9 +353,7 @@ describe('Phase 5B: WebhookListenerService', () => {
       try {
         if (WebhookListenerService && WebhookListenerService.subscribe) {
           const callback = (event) => {};
-          const result = await Promise.resolve(
-            WebhookListenerService.subscribe('message.created', callback)
-          );
+          const result = await Promise.resolve(WebhookListenerService.subscribe('message.created', callback));
           assert(true);
         } else {
           assert(true);
@@ -384,9 +380,7 @@ describe('Phase 5B: WebhookListenerService', () => {
       try {
         if (WebhookListenerService && WebhookListenerService.subscribe) {
           const callback = (event) => {};
-          const result = await Promise.resolve(
-            WebhookListenerService.subscribe('message.*', callback)
-          );
+          const result = await Promise.resolve(WebhookListenerService.subscribe('message.*', callback));
           assert(true);
         } else {
           assert(true);
@@ -463,10 +457,12 @@ describe('Phase 5B: WebhookListenerService', () => {
 
           for (let i = 0; i < 100; i++) {
             promises.push(
-              Promise.resolve(WebhookListenerService.handleWebhookPayload({
-                event: 'test',
-                data: { index: i }
-              }))
+              Promise.resolve(
+                WebhookListenerService.handleWebhookPayload({
+                  event: 'test',
+                  data: { index: i },
+                })
+              )
             );
           }
 
@@ -499,11 +495,13 @@ describe('Phase 5B: WebhookListenerService', () => {
         if (WebhookListenerService && WebhookListenerService.registerWebhook) {
           const start = Date.now();
           for (let i = 0; i < 50; i++) {
-            await Promise.resolve(WebhookListenerService.registerWebhook({
-              id: `webhook-perf-${i}`,
-              url: `/webhook/perf/${i}`,
-              events: ['test']
-            }));
+            await Promise.resolve(
+              WebhookListenerService.registerWebhook({
+                id: `webhook-perf-${i}`,
+                url: `/webhook/perf/${i}`,
+                events: ['test'],
+              })
+            );
           }
           const duration = Date.now() - start;
           assert(duration < 3000); // 50 registrations in under 3 seconds

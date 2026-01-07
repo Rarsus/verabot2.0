@@ -81,7 +81,7 @@ jobs:
             const prTitle = context.payload.pull_request.title;
             const validPrefixes = ['feat:', 'fix:', 'docs:', 'style:', 'refactor:', 'test:', 'chore:'];
             const hasValidPrefix = validPrefixes.some(prefix => prTitle.startsWith(prefix));
-            
+
             if (!hasValidPrefix) {
               core.setFailed(`❌ PR title must start with one of: ${validPrefixes.join(', ')}`);
             } else {

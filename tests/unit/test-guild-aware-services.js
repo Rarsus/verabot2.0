@@ -72,14 +72,12 @@ async function cleanup() {
   try {
     const db = await GuildDatabaseManager.getGuildDatabase(TEST_GUILD_ID);
     const result = await new Promise((resolve, reject) => {
-      db.all(
-        "SELECT name FROM sqlite_master WHERE type='table'",
-        [],
-        (err, rows) => err ? reject(err) : resolve(rows)
+      db.all("SELECT name FROM sqlite_master WHERE type='table'", [], (err, rows) =>
+        err ? reject(err) : resolve(rows)
       );
     });
     assert(result.length > 0, 'Creates tables in guild database');
-    const tableNames = result.map(r => r.name);
+    const tableNames = result.map((r) => r.name);
     assert(tableNames.includes('quotes'), 'quotes table created');
     assert(tableNames.includes('reminders'), 'reminders table created (Phase 1)');
     assert(tableNames.includes('user_communications'), 'user_communications table created (Phase 1)');
@@ -128,7 +126,7 @@ async function cleanup() {
       category: 'General',
       when: new Date().toISOString(),
       content: 'This is a test reminder',
-      notification_method: 'dm'
+      notification_method: 'dm',
     });
     assert(typeof reminderId === 'number' && reminderId > 0, 'Creates reminder and returns ID');
     createdReminderId = reminderId;
@@ -166,7 +164,7 @@ async function cleanup() {
   try {
     await GuildAwareReminderService.updateReminder(TEST_GUILD_ID, createdReminderId, {
       subject: 'Updated Reminder',
-      notification_method: 'server'
+      notification_method: 'server',
     });
     const reminder = await GuildAwareReminderService.getReminderById(TEST_GUILD_ID, createdReminderId);
     assert(reminder.subject === 'Updated Reminder', 'Updates reminder subject');
@@ -181,7 +179,10 @@ async function cleanup() {
     const reminders = await GuildAwareReminderService.getAllReminders(TEST_GUILD_ID);
     assert(Array.isArray(reminders), 'Returns array of reminders');
     assert(reminders.length > 0, 'Contains created reminder');
-    assert(reminders.some(r => r.id === createdReminderId), 'Created reminder is in list');
+    assert(
+      reminders.some((r) => r.id === createdReminderId),
+      'Created reminder is in list'
+    );
   } catch (err) {
     assert(false, `Get all reminders failed: ${err.message}`);
   }
@@ -192,7 +193,10 @@ async function cleanup() {
     const results = await GuildAwareReminderService.searchReminders(TEST_GUILD_ID, 'Updated');
     assert(Array.isArray(results), 'Search returns array');
     assert(results.length > 0, 'Search finds matching reminder');
-    assert(results.some(r => r.id === createdReminderId), 'Found reminder matches search query');
+    assert(
+      results.some((r) => r.id === createdReminderId),
+      'Found reminder matches search query'
+    );
   } catch (err) {
     assert(false, `Search reminders failed: ${err.message}`);
   }
@@ -226,7 +230,7 @@ async function cleanup() {
       subject: 'Delete Me',
       category: 'Test',
       when: new Date().toISOString(),
-      notification_method: 'dm'
+      notification_method: 'dm',
     });
     await GuildAwareReminderService.deleteReminder(TEST_GUILD_ID, reminderId, true);
     const reminder = await GuildAwareReminderService.getReminderById(TEST_GUILD_ID, reminderId);
@@ -353,7 +357,7 @@ async function cleanup() {
       subject: 'Guild 1 Reminder',
       category: 'Test',
       when: new Date().toISOString(),
-      notification_method: 'dm'
+      notification_method: 'dm',
     });
 
     // Create reminder in guild 2
@@ -361,12 +365,12 @@ async function cleanup() {
       subject: 'Guild 2 Reminder',
       category: 'Test',
       when: new Date().toISOString(),
-      notification_method: 'dm'
+      notification_method: 'dm',
     });
 
     // Verify guild 1 only sees its reminders
     const guild1Reminders = await GuildAwareReminderService.getAllReminders(TEST_GUILD_ID);
-    const guild1HasGuild2Data = guild1Reminders.some(r => r.subject === 'Guild 2 Reminder');
+    const guild1HasGuild2Data = guild1Reminders.some((r) => r.subject === 'Guild 2 Reminder');
     assert(!guild1HasGuild2Data, 'Guild 1 does not see Guild 2 data');
 
     // Cleanup guild 2
@@ -385,7 +389,7 @@ async function cleanup() {
       subject: 'To Delete',
       category: 'Test',
       when: new Date().toISOString(),
-      notification_method: 'dm'
+      notification_method: 'dm',
     });
 
     // Delete guild database
@@ -417,7 +421,7 @@ async function cleanup() {
   console.log(`📊 Total:  ${passedTests + failedTests}`);
 
   if (failedTests === 0) {
-    const coverage = ((passedTests) / (passedTests + failedTests) * 100).toFixed(1);
+    const coverage = ((passedTests / (passedTests + failedTests)) * 100).toFixed(1);
     console.log(`\n🎉 All tests passed! Coverage: ${coverage}%`);
   } else {
     console.log(`\n⚠️  ${failedTests} test(s) failed`);

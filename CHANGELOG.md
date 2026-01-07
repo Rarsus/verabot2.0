@@ -1,39 +1,33 @@
 # [2.16.0](https://github.com/Rarsus/verabot2.0/compare/v2.15.0...v2.16.0) (2026-01-06)
 
-
 ### Bug Fixes
 
-* Phase 4 gap tests now all passing (22/22) ([17dcdcf](https://github.com/Rarsus/verabot2.0/commit/17dcdcfb1ad9e846758101037456b4c570108f33))
-
+- Phase 4 gap tests now all passing (22/22) ([17dcdcf](https://github.com/Rarsus/verabot2.0/commit/17dcdcfb1ad9e846758101037456b4c570108f33))
 
 ### Features
 
-* Add Phase 3 coverage gap tests and code cleanup (30 new tests, 100% pass rate) ([83d6f9a](https://github.com/Rarsus/verabot2.0/commit/83d6f9ada6335a23004818d1483ab2db2c7f6e0a))
-* Migrate from custom test runner to Jest ([3063348](https://github.com/Rarsus/verabot2.0/commit/3063348d24b7d4b98fb478a5f65269d7d799f805))
+- Add Phase 3 coverage gap tests and code cleanup (30 new tests, 100% pass rate) ([83d6f9a](https://github.com/Rarsus/verabot2.0/commit/83d6f9ada6335a23004818d1483ab2db2c7f6e0a))
+- Migrate from custom test runner to Jest ([3063348](https://github.com/Rarsus/verabot2.0/commit/3063348d24b7d4b98fb478a5f65269d7d799f805))
 
 # [2.15.0](https://github.com/Rarsus/verabot2.0/compare/v2.14.0...v2.15.0) (2026-01-06)
 
-
 ### Bug Fixes
 
-* Achieve 100% test pass rate - Fix phase1 database cleanup and error handler tests ([2f1c515](https://github.com/Rarsus/verabot2.0/commit/2f1c5153a32c1f7a0cf21efe2b90980df2b89a34))
-
+- Achieve 100% test pass rate - Fix phase1 database cleanup and error handler tests ([2f1c515](https://github.com/Rarsus/verabot2.0/commit/2f1c5153a32c1f7a0cf21efe2b90980df2b89a34))
 
 ### Features
 
-* Add comprehensive Phase 2 tests - 37 new tests, 100% passing (70/70 total) ([df8c763](https://github.com/Rarsus/verabot2.0/commit/df8c763f893480cd6ec17f2e62e0ac8a67be11f1))
+- Add comprehensive Phase 2 tests - 37 new tests, 100% passing (70/70 total) ([df8c763](https://github.com/Rarsus/verabot2.0/commit/df8c763f893480cd6ec17f2e62e0ac8a67be11f1))
 
 # [2.14.0](https://github.com/Rarsus/verabot2.0/compare/v2.13.0...v2.14.0) (2026-01-05)
 
-
 ### Bug Fixes
 
-* resolve all ESLint warnings to unblock feature commits ([c3c433a](https://github.com/Rarsus/verabot2.0/commit/c3c433ab99e29dc6481f14982f3e19f186c9b7c2))
-
+- resolve all ESLint warnings to unblock feature commits ([c3c433a](https://github.com/Rarsus/verabot2.0/commit/c3c433ab99e29dc6481f14982f3e19f186c9b7c2))
 
 ### Features
 
-* implement MCP server configuration for GitHub Copilot integration ([826af7b](https://github.com/Rarsus/verabot2.0/commit/826af7ba362a0705644ae87139c135b4d202d579))
+- implement MCP server configuration for GitHub Copilot integration ([826af7b](https://github.com/Rarsus/verabot2.0/commit/826af7ba362a0705644ae87139c135b4d202d579))
 
 # [2.13.0](https://github.com/Rarsus/verabot2.0/compare/v2.12.0...v2.13.0) (2026-01-05)
 

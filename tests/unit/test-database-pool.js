@@ -23,7 +23,7 @@ function assert(condition, testName) {
 }
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Test database path
@@ -180,7 +180,11 @@ setTimeout(async () => {
     await smallPool.close();
   } catch (err) {
     assert(false, `Connection queuing failed: ${err.message}`);
-    try { await smallPool.close(); } catch { /* ignore */ }
+    try {
+      await smallPool.close();
+    } catch {
+      /* ignore */
+    }
   }
 
   // Test 11: Reset statistics
@@ -204,12 +208,13 @@ setTimeout(async () => {
   const availStats1 = pool.getStats();
   const conn = await pool.getConnection();
   const availStats2 = pool.getStats();
-  assert(availStats2.availableConnections < availStats1.availableConnections,
-    'Available connections decreased');
+  assert(availStats2.availableConnections < availStats1.availableConnections, 'Available connections decreased');
   pool.releaseConnection(conn);
   const availStats3 = pool.getStats();
-  assert(availStats3.availableConnections >= availStats2.availableConnections,
-    'Available connections increased after release');
+  assert(
+    availStats3.availableConnections >= availStats2.availableConnections,
+    'Available connections increased after release'
+  );
 
   // Test 14: Concurrent queries
   console.log('\n=== Test 14: Concurrent Queries ===');
@@ -217,11 +222,14 @@ setTimeout(async () => {
     const promises = [
       pool.execQuery('SELECT * FROM test', [], 'all'),
       pool.execQuery('SELECT * FROM test', [], 'all'),
-      pool.execQuery('SELECT * FROM test', [], 'all')
+      pool.execQuery('SELECT * FROM test', [], 'all'),
     ];
     const results = await Promise.all(promises);
     assert(results.length === 3, 'All concurrent queries completed');
-    assert(results.every(r => Array.isArray(r)), 'All results valid');
+    assert(
+      results.every((r) => Array.isArray(r)),
+      'All results valid'
+    );
   } catch (err) {
     assert(false, `Concurrent queries failed: ${err.message}`);
   }

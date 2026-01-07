@@ -29,18 +29,14 @@ class GuildAwareDatabaseService {
     const db = await guildManager.getGuildDatabase(guildId);
     return new Promise((resolve, reject) => {
       const addedAt = new Date().toISOString();
-      db.run(
-        'INSERT INTO quotes (text, author, addedAt) VALUES (?, ?, ?)',
-        [text, author, addedAt],
-        function (err) {
-          if (err) {
-            logError('GuildAwareDatabaseService.addQuote', err, ERROR_LEVELS.MEDIUM);
-            reject(err);
-          } else {
-            resolve(this.lastID);
-          }
+      db.run('INSERT INTO quotes (text, author, addedAt) VALUES (?, ?, ?)', [text, author, addedAt], function (err) {
+        if (err) {
+          logError('GuildAwareDatabaseService.addQuote', err, ERROR_LEVELS.MEDIUM);
+          reject(err);
+        } else {
+          resolve(this.lastID);
         }
-      );
+      });
     });
   }
 
@@ -258,7 +254,7 @@ class GuildAwareDatabaseService {
           } else {
             resolve({
               average: row?.average || 0,
-              count: row?.count || 0
+              count: row?.count || 0,
             });
           }
         }
@@ -282,45 +278,37 @@ class GuildAwareDatabaseService {
     const db = await guildManager.getGuildDatabase(guildId);
     return new Promise((resolve, reject) => {
       // First, get or create tag
-      db.run(
-        'INSERT OR IGNORE INTO tags (name) VALUES (?)',
-        [tagName],
-        (err) => {
+      db.run('INSERT OR IGNORE INTO tags (name) VALUES (?)', [tagName], (err) => {
+        if (err) {
+          logError('GuildAwareDatabaseService.tagQuote.insertTag', err, ERROR_LEVELS.MEDIUM);
+          reject(err);
+          return;
+        }
+
+        // Get tag ID
+        db.get('SELECT id FROM tags WHERE name = ?', [tagName], (err, tagRow) => {
           if (err) {
-            logError('GuildAwareDatabaseService.tagQuote.insertTag', err, ERROR_LEVELS.MEDIUM);
+            logError('GuildAwareDatabaseService.tagQuote.getTag', err, ERROR_LEVELS.MEDIUM);
             reject(err);
             return;
           }
 
-          // Get tag ID
-          db.get('SELECT id FROM tags WHERE name = ?', [tagName], (err, tagRow) => {
+          if (!tagRow) {
+            reject(new Error('Failed to get tag ID'));
+            return;
+          }
+
+          // Add quote-tag relationship
+          db.run('INSERT OR IGNORE INTO quote_tags (quoteId, tagId) VALUES (?, ?)', [quoteId, tagRow.id], (err) => {
             if (err) {
-              logError('GuildAwareDatabaseService.tagQuote.getTag', err, ERROR_LEVELS.MEDIUM);
+              logError('GuildAwareDatabaseService.tagQuote.insertQuoteTag', err, ERROR_LEVELS.MEDIUM);
               reject(err);
-              return;
+            } else {
+              resolve(true);
             }
-
-            if (!tagRow) {
-              reject(new Error('Failed to get tag ID'));
-              return;
-            }
-
-            // Add quote-tag relationship
-            db.run(
-              'INSERT OR IGNORE INTO quote_tags (quoteId, tagId) VALUES (?, ?)',
-              [quoteId, tagRow.id],
-              (err) => {
-                if (err) {
-                  logError('GuildAwareDatabaseService.tagQuote.insertQuoteTag', err, ERROR_LEVELS.MEDIUM);
-                  reject(err);
-                } else {
-                  resolve(true);
-                }
-              }
-            );
           });
-        }
-      );
+        });
+      });
     });
   }
 
@@ -404,13 +392,13 @@ class GuildAwareDatabaseService {
         statistics: {
           totalQuotes: quotes.length,
           totalTags: tags.length,
-          totalRatings: ratings.length
+          totalRatings: ratings.length,
         },
         data: {
           quotes,
           tags,
-          ratings
-        }
+          ratings,
+        },
       };
     } catch (error) {
       logError('GuildAwareDatabaseService.exportGuildData', error, ERROR_LEVELS.MEDIUM);
@@ -491,7 +479,7 @@ class GuildAwareDatabaseService {
         totalQuotes: quoteCount,
         uniqueAuthors: stats.uniqueAuthors || 0,
         averageRating: stats.avgRating || 0,
-        categories: stats.uniqueCategories || 0
+        categories: stats.uniqueCategories || 0,
       };
     } catch (error) {
       logError('GuildAwareDatabaseService.getGuildStatistics', error, ERROR_LEVELS.MEDIUM);

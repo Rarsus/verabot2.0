@@ -105,9 +105,7 @@ function sanitizeForLogging(content) {
   const sanitized = content.substring(0, maxLength);
 
   // Remove potential tokens or secrets (basic pattern matching)
-  return sanitized
-    .replace(/[a-zA-Z0-9_-]{20,}/g, '[REDACTED]')
-    .replace(/Bearer\s+\S+/gi, 'Bearer [REDACTED]');
+  return sanitized.replace(/[a-zA-Z0-9_-]{20,}/g, '[REDACTED]').replace(/Bearer\s+\S+/gi, 'Bearer [REDACTED]');
 }
 
 /**
@@ -121,14 +119,14 @@ function formatMessagePayload(message) {
     author: {
       id: message.author.id,
       username: message.author.username,
-      tag: message.author.tag
+      tag: message.author.tag,
     },
     channel: message.channel.id,
     channelName: message.channel.name,
     messageId: message.id,
     timestamp: message.createdTimestamp,
     serverId: message.guild?.id,
-    serverName: message.guild?.name
+    serverName: message.guild?.name,
   };
 }
 
@@ -154,7 +152,7 @@ function parseIncomingPayload(payload) {
     content: payload.content,
     channel: payload.channel,
     timestamp: payload.timestamp || Date.now(),
-    metadata: payload.metadata || {}
+    metadata: payload.metadata || {},
   };
 }
 
@@ -165,5 +163,5 @@ module.exports = {
   validateChannelId,
   sanitizeForLogging,
   formatMessagePayload,
-  parseIncomingPayload
+  parseIncomingPayload,
 };

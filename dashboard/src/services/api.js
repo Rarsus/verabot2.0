@@ -41,8 +41,7 @@ export const websocketAPI = {
   getService: (serviceName) => api.get(`/websocket/services/${serviceName}`),
 
   // Update service configuration
-  updateService: (serviceName, config) =>
-    api.put(`/websocket/services/${serviceName}`, config),
+  updateService: (serviceName, config) => api.put(`/websocket/services/${serviceName}`, config),
 
   // Get WebSocket service status
   getStatus: (serviceName) => api.get(`/websocket/status/${serviceName}`),
@@ -54,8 +53,7 @@ export const websocketAPI = {
   testConnection: (serviceName) => api.post(`/websocket/test/${serviceName}`),
 
   // Enable/disable service
-  toggleService: (serviceName, enabled) =>
-    api.patch(`/websocket/services/${serviceName}/toggle`, { enabled }),
+  toggleService: (serviceName, enabled) => api.patch(`/websocket/services/${serviceName}/toggle`, { enabled }),
 
   // Get available actions for a service
   getAvailableActions: () => api.get('/websocket/actions'),
@@ -72,8 +70,7 @@ export const websocketAPI = {
 // Quote Management APIs
 export const quotesAPI = {
   // Get all quotes with pagination
-  getQuotes: (page = 1, limit = 20) =>
-    api.get('/quotes', { params: { page, limit } }),
+  getQuotes: (page = 1, limit = 20) => api.get('/quotes', { params: { page, limit } }),
 
   // Get quote by ID
   getQuote: (id) => api.get(`/quotes/${id}`),

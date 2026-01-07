@@ -22,21 +22,21 @@ function createMockInteraction(options = {}) {
     options: {
       getString: (name) => options[name] || null,
       getInteger: (name) => options[name] || null,
-      getBoolean: (name) => options[name] || false
+      getBoolean: (name) => options[name] || false,
     },
-    reply: async function(msg) {
+    reply: async function (msg) {
       this.replied = true;
       this.lastReply = msg;
       return { id: '123' };
     },
-    editReply: async function(msg) {
+    editReply: async function (msg) {
       this.lastReply = msg;
       return { id: '123' };
     },
-    followUp: async function(msg) {
+    followUp: async function (msg) {
       this.lastFollowUp = msg;
       return { id: '456' };
-    }
+    },
   };
 }
 
@@ -44,15 +44,15 @@ function createMockMessage() {
   return {
     author: { id: '123456', bot: false },
     channel: {
-      send: async function(msg) {
+      send: async function (msg) {
         this.lastSent = msg;
         return { id: '123' };
-      }
+      },
     },
-    reply: async function(msg) {
+    reply: async function (msg) {
       this.lastReply = msg;
       return { id: '456' };
-    }
+    },
   };
 }
 
@@ -92,7 +92,7 @@ console.log('\n=== Test 3: Hi Command - Execution With Args ===');
 (async () => {
   try {
     const interaction = createMockInteraction({ name: 'Alice' });
-    interaction.options.getString = (key) => key === 'name' ? 'Alice' : null;
+    interaction.options.getString = (key) => (key === 'name' ? 'Alice' : null);
 
     await HiCommand.executeInteraction(interaction);
     // If we get here without error, the command executed successfully

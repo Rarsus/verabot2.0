@@ -9,25 +9,21 @@ const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers
 const { checkAdminPermission } = require('../../utils/proxy-helpers');
 const { resolveChannel } = require('../../utils/helpers/resolution-helpers');
 
-const { data, options } = buildCommandOptions(
-  'broadcast',
-  'Broadcast a message to multiple channels (Admin only)',
-  [
-    {
-      name: 'message',
-      type: 'string',
-      required: true,
-      description: 'Message content to broadcast',
-      maxLength: 2000
-    },
-    {
-      name: 'channels',
-      type: 'string',
-      required: true,
-      description: 'Channel names, IDs, or mentions (comma-separated)'
-    }
-  ]
-);
+const { data, options } = buildCommandOptions('broadcast', 'Broadcast a message to multiple channels (Admin only)', [
+  {
+    name: 'message',
+    type: 'string',
+    required: true,
+    description: 'Message content to broadcast',
+    maxLength: 2000,
+  },
+  {
+    name: 'channels',
+    type: 'string',
+    required: true,
+    description: 'Channel names, IDs, or mentions (comma-separated)',
+  },
+]);
 
 class BroadcastCommand extends Command {
   constructor() {
@@ -38,8 +34,8 @@ class BroadcastCommand extends Command {
       options,
       permissions: {
         minTier: 3,
-        visible: false
-      }
+        visible: false,
+      },
     });
   }
 
@@ -56,7 +52,10 @@ class BroadcastCommand extends Command {
       }
 
       const messageContent = interaction.options.getString('message');
-      const channelInputs = interaction.options.getString('channels').split(',').map(id => id.trim());
+      const channelInputs = interaction.options
+        .getString('channels')
+        .split(',')
+        .map((id) => id.trim());
 
       if (channelInputs.length === 0) {
         return sendError(interaction, 'No valid channel identifiers provided', true);
@@ -64,7 +63,7 @@ class BroadcastCommand extends Command {
 
       const results = {
         success: [],
-        failed: []
+        failed: [],
       };
 
       for (const channelInput of channelInputs) {
@@ -102,7 +101,7 @@ class BroadcastCommand extends Command {
       if (failedCount > 0) {
         resultMessage += `\n❌ Failed to send to ${failedCount} channel(s)`;
         if (failedCount <= 5) {
-          resultMessage += `:\n${results.failed.map(f => `  • ${f}`).join('\n')}`;
+          resultMessage += `:\n${results.failed.map((f) => `  • ${f}`).join('\n')}`;
         }
       }
 

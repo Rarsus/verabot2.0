@@ -25,7 +25,7 @@ describe('QuoteService', () => {
   beforeEach(() => {
     mockDb = {
       quotes: new Map(),
-      nextId: 1
+      nextId: 1,
     };
 
     service = {
@@ -42,7 +42,7 @@ describe('QuoteService', () => {
           author,
           rating: 0,
           addedAt: new Date(),
-          tags: []
+          tags: [],
         };
         mockDb.quotes.set(`${guildId}:${id}`, quote);
         return quote;
@@ -57,9 +57,10 @@ describe('QuoteService', () => {
         const lower = query.toLowerCase();
         const results = [];
         for (const [key, quote] of mockDb.quotes) {
-          if (key.startsWith(`${guildId}:`) &&
-              (quote.text.toLowerCase().includes(lower) ||
-               quote.author.toLowerCase().includes(lower))) {
+          if (
+            key.startsWith(`${guildId}:`) &&
+            (quote.text.toLowerCase().includes(lower) || quote.author.toLowerCase().includes(lower))
+          ) {
             results.push(quote);
           }
         }
@@ -124,9 +125,9 @@ describe('QuoteService', () => {
         return {
           totalQuotes,
           averageRating: totalQuotes > 0 ? totalRating / totalQuotes : 0,
-          uniqueAuthors: authors.size
+          uniqueAuthors: authors.size,
         };
-      }
+      },
     };
   });
 
@@ -227,7 +228,7 @@ describe('WebhookListenerService', () => {
   beforeEach(() => {
     listeners = {
       webhooks: new Map(),
-      nextId: 1
+      nextId: 1,
     };
 
     service = {
@@ -244,7 +245,7 @@ describe('WebhookListenerService', () => {
           events,
           active: true,
           createdAt: new Date(),
-          lastTriggered: null
+          lastTriggered: null,
         };
         listeners.webhooks.set(id, webhook);
         return webhook;
@@ -277,7 +278,7 @@ describe('WebhookListenerService', () => {
         return {
           triggered: true,
           webhookId,
-          timestamp: webhook.lastTriggered
+          timestamp: webhook.lastTriggered,
         };
       },
 
@@ -302,7 +303,7 @@ describe('WebhookListenerService', () => {
         if (!webhook) throw new Error('Webhook not found');
         webhook.active = false;
         return webhook;
-      }
+      },
     };
   });
 
@@ -398,7 +399,7 @@ describe('Error Handler', () => {
         return {
           message: error.message || 'Unknown error',
           stack: error.stack,
-          code: error.code
+          code: error.code,
         };
       },
 
@@ -417,7 +418,7 @@ describe('Error Handler', () => {
           status: statusCode,
           error: category,
           message: error.message || 'An error occurred',
-          timestamp: new Date()
+          timestamp: new Date(),
         };
       },
 
@@ -431,7 +432,7 @@ describe('Error Handler', () => {
           timestamp: new Date(),
           error: error.message,
           context,
-          logged: true
+          logged: true,
         };
       },
 
@@ -439,7 +440,7 @@ describe('Error Handler', () => {
         return {
           field,
           message,
-          error: 'VALIDATION_ERROR'
+          error: 'VALIDATION_ERROR',
         };
       },
 
@@ -447,7 +448,7 @@ describe('Error Handler', () => {
         return {
           query,
           error: error.message,
-          type: 'DATABASE_ERROR'
+          type: 'DATABASE_ERROR',
         };
       },
 
@@ -456,7 +457,7 @@ describe('Error Handler', () => {
           url,
           error: error.message,
           recoverable: true,
-          type: 'NETWORK_ERROR'
+          type: 'NETWORK_ERROR',
         };
       },
 
@@ -464,9 +465,9 @@ describe('Error Handler', () => {
         return {
           action,
           reason,
-          type: 'PERMISSION_ERROR'
+          type: 'PERMISSION_ERROR',
         };
-      }
+      },
     };
   });
 
@@ -580,7 +581,7 @@ describe('MigrationManager', () => {
           history.push({ version, ...migration });
         }
         return history.sort((a, b) => a.version - b.version);
-      }
+      },
     };
   });
 
@@ -639,7 +640,7 @@ describe('DatabasePool', () => {
     pool = {
       connections: [],
       maxSize: 5,
-      acquireConnection: function() {
+      acquireConnection: function () {
         if (this.connections.length < this.maxSize) {
           const conn = { id: this.connections.length, active: true };
           this.connections.push(conn);
@@ -648,43 +649,43 @@ describe('DatabasePool', () => {
         throw new Error('No connections available');
       },
 
-      releaseConnection: function(conn) {
+      releaseConnection: function (conn) {
         const idx = this.connections.indexOf(conn);
         if (idx === -1) throw new Error('Connection not found');
         this.connections.splice(idx, 1);
         return { released: true };
       },
 
-      getPoolSize: function() {
+      getPoolSize: function () {
         return this.connections.length;
       },
 
-      getMaxSize: function() {
+      getMaxSize: function () {
         return this.maxSize;
       },
 
-      clear: function() {
+      clear: function () {
         this.connections = [];
         return { cleared: true };
       },
 
-      setMaxSize: function(size) {
+      setMaxSize: function (size) {
         if (size < 1) throw new Error('Size must be at least 1');
         this.maxSize = size;
         return { maxSize: size };
       },
 
-      isAvailable: function() {
+      isAvailable: function () {
         return this.connections.length < this.maxSize;
       },
 
-      getStatus: function() {
+      getStatus: function () {
         return {
           current: this.connections.length,
           max: this.maxSize,
-          available: this.maxSize - this.connections.length
+          available: this.maxSize - this.connections.length,
         };
-      }
+      },
     };
   });
 
@@ -781,7 +782,7 @@ describe('Phase 7D Service Integration', () => {
       quotes: 42,
       webhooks: 5,
       poolConnections: 3,
-      migrations: 1
+      migrations: 1,
     };
     assert(metrics.quotes + metrics.webhooks > 0);
   });

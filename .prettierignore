@@ -1,0 +1,42 @@
+# Dependencies
+node_modules
+package-lock.json
+
+# Build
+dist
+build
+coverage
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test
+.nyc_output
+
+# Database
+*.db
+*.db-journal
+
+# Docker
+.dockerignore
+
+# Git
+.git
+.gitignore

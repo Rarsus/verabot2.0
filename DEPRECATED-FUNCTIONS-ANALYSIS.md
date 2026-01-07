@@ -27,6 +27,7 @@ This document identifies all deprecated functions and modules in VeraBot2.0 that
 These are legacy wrappers that have been replaced by core modules with better architecture.
 
 #### 1. `src/utils/command-base.js`
+
 - **Status**: ✅ DEPRECATED
 - **Replacement**: `src/core/CommandBase.js`
 - **Reason**: Consolidation of command handling into core module
@@ -38,6 +39,7 @@ These are legacy wrappers that have been replaced by core modules with better ar
 - **Removal Date**: March 2026 (v0.3.0)
 
 #### 2. `src/utils/command-options.js`
+
 - **Status**: ✅ DEPRECATED
 - **Replacement**: `src/core/CommandOptions.js`
 - **Reason**: Consolidation of command options into core module
@@ -49,6 +51,7 @@ These are legacy wrappers that have been replaced by core modules with better ar
 - **Removal Date**: March 2026 (v0.3.0)
 
 #### 3. `src/utils/response-helpers.js`
+
 - **Status**: ✅ DEPRECATED
 - **Replacement**: `src/utils/helpers/response-helpers.js` (new location)
 - **Reason**: File reorganization into helpers subdirectory
@@ -66,6 +69,7 @@ These are legacy wrappers that have been replaced by core modules with better ar
 ### Category 2: Database Wrapper (Already Removed/Deprecated)
 
 #### 4. `src/db.js`
+
 - **Status**: ✅ DEPRECATED/REMOVED
 - **Replacement**: Guild-aware services:
   - `QuoteService` for quote operations
@@ -99,18 +103,22 @@ The following files should **NOT** have Jest tests created in Phase 6:
 ### Why Skip These?
 
 **Reason 1: Superseded by Better Implementations**
+
 - Core modules at `src/core/` have replaced these utilities
 - New implementations are properly tested and superior
 
 **Reason 2: Short Lifespan**
+
 - These files will be removed in March 2026 (v0.3.0)
 - Creating tests for 2-month-old code is inefficient
 
 **Reason 3: Consolidation in Progress**
+
 - All functionality has been migrated to core modules
 - Tests should focus on core implementations instead
 
 **Reason 4: Legacy Code**
+
 - These are legacy wrappers maintained for backward compatibility
 - No new functionality should use these
 
@@ -122,12 +130,12 @@ The following files should **NOT** have Jest tests created in Phase 6:
 
 The functionality of deprecated modules is already tested in:
 
-| Deprecated Module | Replacement | Test File | Status |
-|------------------|-------------|-----------|--------|
-| `src/utils/command-base.js` | `src/core/CommandBase.js` | `jest-phase5c-command-base.test.js` | ✅ 13+ tests |
-| `src/utils/command-options.js` | `src/core/CommandOptions.js` | `jest-phase4-gaps.test.js` | ✅ Covered |
-| `src/utils/response-helpers.js` | `src/utils/helpers/response-helpers.js` | Custom test runner | ✅ Covered |
-| `src/db.js` | Guild-aware services | Multiple test files | ✅ Covered |
+| Deprecated Module               | Replacement                             | Test File                           | Status       |
+| ------------------------------- | --------------------------------------- | ----------------------------------- | ------------ |
+| `src/utils/command-base.js`     | `src/core/CommandBase.js`               | `jest-phase5c-command-base.test.js` | ✅ 13+ tests |
+| `src/utils/command-options.js`  | `src/core/CommandOptions.js`            | `jest-phase4-gaps.test.js`          | ✅ Covered   |
+| `src/utils/response-helpers.js` | `src/utils/helpers/response-helpers.js` | Custom test runner                  | ✅ Covered   |
+| `src/db.js`                     | Guild-aware services                    | Multiple test files                 | ✅ Covered   |
 
 ---
 
@@ -138,23 +146,27 @@ The functionality of deprecated modules is already tested in:
 These are the modules that SHOULD be tested in Phase 6 (not deprecated):
 
 #### Priority 1: Database Layer (High Impact)
+
 - ✅ `src/services/DatabaseService.js` (52.12% coverage)
 - ✅ `src/services/GuildAwareDatabaseService.js` (22.92% coverage)
 - ✅ `src/services/ProxyConfigService.js` (54.54% coverage)
 - ✅ `src/database.js` (0% coverage)
 
 #### Priority 2: Command Implementations (High Volume)
+
 - ✅ `src/commands/quote-discovery/` (0% coverage)
 - ✅ `src/commands/quote-management/` (0% coverage)
 - ✅ `src/commands/reminder-management/` (22% coverage)
 - ✅ `src/commands/admin/` (19% coverage)
 
 #### Priority 3: Feature Modules
+
 - ✅ `src/routes/dashboard.js` (0% coverage)
 - ✅ `src/commands/user-preferences/` (0% coverage)
 - ✅ `src/middleware/dashboard-auth.js` (0% coverage)
 
 #### Priority 4: Core Services Still Low
+
 - ✅ `src/services/ValidationService.js` (95.45% → 100%)
 - ✅ `src/services/CacheManager.js` (98.8% → 100%)
 - ✅ `src/services/ReminderService.js` (4.62% coverage)
@@ -163,14 +175,14 @@ These are the modules that SHOULD be tested in Phase 6 (not deprecated):
 
 ## Deprecation Timeline Summary
 
-| Item | Status | Timeline | Action |
-|------|--------|----------|--------|
-| `src/utils/command-base.js` | Deprecated | Remove March 2026 | SKIP in Phase 6 |
-| `src/utils/command-options.js` | Deprecated | Remove March 2026 | SKIP in Phase 6 |
-| `src/utils/response-helpers.js` | Deprecated | Remove March 2026 | SKIP in Phase 6 |
-| `src/db.js` | Removed | Already removed | Already skipped |
-| Replacement modules (`src/core/`) | Active | Maintained | TEST in Phase 6 ✅ |
-| Guild-aware services | Active | Maintained | TEST in Phase 6 ✅ |
+| Item                              | Status     | Timeline          | Action             |
+| --------------------------------- | ---------- | ----------------- | ------------------ |
+| `src/utils/command-base.js`       | Deprecated | Remove March 2026 | SKIP in Phase 6    |
+| `src/utils/command-options.js`    | Deprecated | Remove March 2026 | SKIP in Phase 6    |
+| `src/utils/response-helpers.js`   | Deprecated | Remove March 2026 | SKIP in Phase 6    |
+| `src/db.js`                       | Removed    | Already removed   | Already skipped    |
+| Replacement modules (`src/core/`) | Active     | Maintained        | TEST in Phase 6 ✅ |
+| Guild-aware services              | Active     | Maintained        | TEST in Phase 6 ✅ |
 
 ---
 
@@ -270,13 +282,13 @@ Since deprecated modules won't be tested, Phase 6 will focus on:
 
 ### Expected Phase 6 Results
 
-| Component | Before | After | Tests | Lines |
-|-----------|--------|-------|-------|-------|
-| Database Layer | 38.76% | 80%+ | 50+ | 600+ |
-| Commands | 9% | 70%+ | 80+ | 900+ |
-| Routes/Features | 0% | 80%+ | 40+ | 500+ |
-| Improvements | 92% | 96%+ | 10+ | 100+ |
-| **Phase 6 Total** | — | **60%+** | **180+** | **2,100+** |
+| Component         | Before | After    | Tests    | Lines      |
+| ----------------- | ------ | -------- | -------- | ---------- |
+| Database Layer    | 38.76% | 80%+     | 50+      | 600+       |
+| Commands          | 9%     | 70%+     | 80+      | 900+       |
+| Routes/Features   | 0%     | 80%+     | 40+      | 500+       |
+| Improvements      | 92%    | 96%+     | 10+      | 100+       |
+| **Phase 6 Total** | —      | **60%+** | **180+** | **2,100+** |
 
 ---
 

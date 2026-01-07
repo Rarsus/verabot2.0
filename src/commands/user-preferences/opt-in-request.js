@@ -4,7 +4,7 @@ const { sendSuccess, sendOptInRequest } = require('../../utils/helpers/response-
 
 const { data, options } = buildCommandOptions('opt-in-request', 'Request a user to opt in to DM notifications', [
   { name: 'user', type: 'user', description: 'User to request opt-in from', required: true },
-  { name: 'reason', type: 'string', description: 'Why you\'re requesting (optional)', required: false, maxLength: 100 }
+  { name: 'reason', type: 'string', description: "Why you're requesting (optional)", required: false, maxLength: 100 },
 ]);
 
 class OptInRequestCommand extends Command {
@@ -16,8 +16,8 @@ class OptInRequestCommand extends Command {
       options,
       permissions: {
         minTier: 1,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 
@@ -46,11 +46,7 @@ class OptInRequestCommand extends Command {
 
     try {
       // Send opt-in request message to the target user
-      await sendOptInRequest(
-        targetUser,
-        interaction.user.username,
-        reason || 'No reason provided'
-      );
+      await sendOptInRequest(targetUser, interaction.user.username, reason || 'No reason provided');
 
       await sendSuccess(
         interaction,
@@ -58,7 +54,8 @@ class OptInRequestCommand extends Command {
       );
     } catch (error) {
       // If DMs are disabled, show helpful error
-      if (error.code === 50007) { // Cannot send messages to this user
+      if (error.code === 50007) {
+        // Cannot send messages to this user
         throw new Error(`Cannot send opt-in request to ${targetUser.username} - they may have DMs disabled.`);
       }
       throw error;

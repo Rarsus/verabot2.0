@@ -31,7 +31,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         // Test /api/health endpoint
         const response = {
           status: 'ok',
-          timestamp: new Date()
+          timestamp: new Date(),
         };
         assert(response.status === 'ok');
       } catch (e) {
@@ -45,7 +45,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         const response = {
           quotes: [],
           count: 0,
-          totalPages: 0
+          totalPages: 0,
         };
         assert(Array.isArray(response.quotes));
       } catch (e) {
@@ -60,7 +60,7 @@ describe('Phase 5D: Dashboard Tests', () => {
           quotes: [],
           page: 2,
           limit: 20,
-          total: 100
+          total: 100,
         };
         assert(response.page === 2);
       } catch (e) {
@@ -73,7 +73,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         // GET /api/quotes/:guildId?search=test
         const response = {
           quotes: [{ text: 'test quote', author: 'Author' }],
-          count: 1
+          count: 1,
         };
         assert(response.count >= 0);
       } catch (e) {
@@ -86,7 +86,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         // GET /api/quotes/:guildId?author=Shakespeare
         const response = {
           quotes: [],
-          author: 'Shakespeare'
+          author: 'Shakespeare',
         };
         assert(true);
       } catch (e) {
@@ -99,7 +99,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         // GET /api/quotes/:guildId?tag=inspirational
         const response = {
           quotes: [],
-          tag: 'inspirational'
+          tag: 'inspirational',
         };
         assert(true);
       } catch (e) {
@@ -114,7 +114,7 @@ describe('Phase 5D: Dashboard Tests', () => {
           totalQuotes: 150,
           totalRatings: 500,
           topAuthors: ['Shakespeare', 'Twain'],
-          topTags: ['inspirational', 'funny']
+          topTags: ['inspirational', 'funny'],
         };
         assert(typeof response.totalQuotes === 'number');
       } catch (e) {
@@ -129,7 +129,7 @@ describe('Phase 5D: Dashboard Tests', () => {
           totalGuilds: 5,
           totalQuotesSubmitted: 20,
           favoriteQuotes: 10,
-          ratings: 50
+          ratings: 50,
         };
         assert(typeof response.totalGuilds === 'number');
       } catch (e) {
@@ -197,12 +197,12 @@ describe('Phase 5D: Dashboard Tests', () => {
         // POST /api/quotes/:guildId
         const quote = {
           text: 'Dashboard quote',
-          author: 'Author'
+          author: 'Author',
         };
         const response = {
           id: 1,
           ...quote,
-          createdAt: new Date()
+          createdAt: new Date(),
         };
         assert(response.id > 0);
       } catch (e) {
@@ -215,12 +215,12 @@ describe('Phase 5D: Dashboard Tests', () => {
         // PUT /api/quotes/:guildId/:quoteId
         const updates = {
           text: 'Updated text',
-          author: 'Updated Author'
+          author: 'Updated Author',
         };
         const response = {
           id: 1,
           ...updates,
-          updatedAt: new Date()
+          updatedAt: new Date(),
         };
         assert(response.id > 0);
       } catch (e) {
@@ -233,7 +233,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         // DELETE /api/quotes/:guildId/:quoteId
         const response = {
           success: true,
-          message: 'Quote deleted'
+          message: 'Quote deleted',
         };
         assert(response.success);
       } catch (e) {
@@ -247,7 +247,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         const ids = [1, 2, 3, 4, 5];
         const response = {
           deleted: 5,
-          remaining: 95
+          remaining: 95,
         };
         assert(response.deleted === ids.length);
       } catch (e) {
@@ -261,7 +261,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         const response = {
           quoteId: 1,
           rating: 'up',
-          currentScore: 42
+          currentScore: 42,
         };
         assert(typeof response.currentScore === 'number');
       } catch (e) {
@@ -275,7 +275,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         const response = {
           quoteId: 1,
           tags: ['favorite', 'inspirational'],
-          tagCount: 2
+          tagCount: 2,
         };
         assert(Array.isArray(response.tags));
       } catch (e) {
@@ -289,7 +289,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         const response = {
           quoteId: 1,
           removed: 'favorite',
-          remainingTags: ['inspirational']
+          remainingTags: ['inspirational'],
         };
         assert(Array.isArray(response.remainingTags));
       } catch (e) {
@@ -313,8 +313,8 @@ describe('Phase 5D: Dashboard Tests', () => {
         const stats = {
           topAuthors: [
             { author: 'Shakespeare', count: 45 },
-            { author: 'Twain', count: 23 }
-          ]
+            { author: 'Twain', count: 23 },
+          ],
         };
         assert(Array.isArray(stats.topAuthors));
       } catch (e) {
@@ -327,8 +327,8 @@ describe('Phase 5D: Dashboard Tests', () => {
         const stats = {
           topTags: [
             { tag: 'inspirational', count: 50 },
-            { tag: 'funny', count: 40 }
-          ]
+            { tag: 'funny', count: 40 },
+          ],
         };
         assert(Array.isArray(stats.topTags));
       } catch (e) {
@@ -340,10 +340,10 @@ describe('Phase 5D: Dashboard Tests', () => {
       try {
         const stats = {
           ratings: {
-            'up': 200,
-            'down': 50,
-            'neutral': 100
-          }
+            up: 200,
+            down: 50,
+            neutral: 100,
+          },
         };
         assert(stats.ratings.up > 0);
       } catch (e) {
@@ -356,8 +356,8 @@ describe('Phase 5D: Dashboard Tests', () => {
         const stats = {
           topContributors: [
             { userId: 'user-1', quotes: 25 },
-            { userId: 'user-2', quotes: 18 }
-          ]
+            { userId: 'user-2', quotes: 18 },
+          ],
         };
         assert(Array.isArray(stats.topContributors));
       } catch (e) {
@@ -370,8 +370,8 @@ describe('Phase 5D: Dashboard Tests', () => {
         const stats = {
           activity: [
             { date: '2024-01-01', count: 10 },
-            { date: '2024-01-02', count: 15 }
-          ]
+            { date: '2024-01-02', count: 15 },
+          ],
         };
         assert(Array.isArray(stats.activity));
       } catch (e) {
@@ -385,10 +385,8 @@ describe('Phase 5D: Dashboard Tests', () => {
       try {
         // GET /api/guilds/:guildId/members
         const response = {
-          members: [
-            { userId: 'user-1', username: 'User1', roles: [] }
-          ],
-          total: 100
+          members: [{ userId: 'user-1', username: 'User1', roles: [] }],
+          total: 100,
         };
         assert(Array.isArray(response.members));
       } catch (e) {
@@ -402,7 +400,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         const response = {
           userId: 'user-1',
           permissions: ['MANAGE_QUOTES'],
-          updated: true
+          updated: true,
         };
         assert(response.updated);
       } catch (e) {
@@ -416,7 +414,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         const response = {
           userId: 'user-1',
           role: 'moderator',
-          promoted: true
+          promoted: true,
         };
         assert(response.promoted);
       } catch (e) {
@@ -430,7 +428,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         const response = {
           userId: 'user-1',
           removed: true,
-          permissions: []
+          permissions: [],
         };
         assert(response.removed);
       } catch (e) {
@@ -448,8 +446,8 @@ describe('Phase 5D: Dashboard Tests', () => {
           settings: {
             maxQuoteLength: 500,
             allowDuplicates: false,
-            requireApproval: false
-          }
+            requireApproval: false,
+          },
         };
         assert(typeof response.settings === 'object');
       } catch (e) {
@@ -462,12 +460,12 @@ describe('Phase 5D: Dashboard Tests', () => {
         // PUT /api/guilds/:guildId/settings
         const updates = {
           maxQuoteLength: 1000,
-          allowDuplicates: true
+          allowDuplicates: true,
         };
         const response = {
           guildId: 'guild-1',
           settings: updates,
-          updated: true
+          updated: true,
         };
         assert(response.updated);
       } catch (e) {
@@ -481,7 +479,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         const response = {
           emailNotifications: true,
           discordNotifications: true,
-          preferencesSaved: true
+          preferencesSaved: true,
         };
         assert(response.preferencesSaved);
       } catch (e) {
@@ -496,7 +494,7 @@ describe('Phase 5D: Dashboard Tests', () => {
           guildId: 'guild-1',
           prefix: '!',
           language: 'en',
-          timezone: 'UTC'
+          timezone: 'UTC',
         };
         assert(typeof response.prefix === 'string');
       } catch (e) {
@@ -512,7 +510,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         const response = {
           filename: 'quotes.json',
           format: 'json',
-          size: 12345
+          size: 12345,
         };
         assert(response.format === 'json');
       } catch (e) {
@@ -526,7 +524,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         const response = {
           filename: 'quotes.csv',
           format: 'csv',
-          size: 8901
+          size: 8901,
         };
         assert(response.format === 'csv');
       } catch (e) {
@@ -540,7 +538,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         const response = {
           imported: 25,
           skipped: 2,
-          errors: []
+          errors: [],
         };
         assert(typeof response.imported === 'number');
       } catch (e) {
@@ -555,7 +553,7 @@ describe('Phase 5D: Dashboard Tests', () => {
           guildId: 'guild-1',
           backupId: 'backup-123',
           timestamp: new Date(),
-          success: true
+          success: true,
         };
         assert(response.success);
       } catch (e) {
@@ -569,7 +567,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         const response = {
           guildId: 'guild-1',
           backupId: 'backup-123',
-          restored: true
+          restored: true,
         };
         assert(response.restored);
       } catch (e) {
@@ -596,8 +594,8 @@ describe('Phase 5D: Dashboard Tests', () => {
           data: {
             quoteId: 1,
             text: 'New quote',
-            author: 'Author'
-          }
+            author: 'Author',
+          },
         };
         assert(event.type === 'quote:created');
       } catch (e) {
@@ -611,8 +609,8 @@ describe('Phase 5D: Dashboard Tests', () => {
           type: 'quote:updated',
           data: {
             quoteId: 1,
-            changes: { text: 'Updated' }
-          }
+            changes: { text: 'Updated' },
+          },
         };
         assert(event.type === 'quote:updated');
       } catch (e) {
@@ -624,7 +622,7 @@ describe('Phase 5D: Dashboard Tests', () => {
       try {
         const event = {
           type: 'quote:deleted',
-          data: { quoteId: 1 }
+          data: { quoteId: 1 },
         };
         assert(event.type === 'quote:deleted');
       } catch (e) {
@@ -638,8 +636,8 @@ describe('Phase 5D: Dashboard Tests', () => {
           type: 'user:joined',
           data: {
             userId: 'user-1',
-            username: 'NewUser'
-          }
+            username: 'NewUser',
+          },
         };
         assert(event.type === 'user:joined');
       } catch (e) {
@@ -651,7 +649,7 @@ describe('Phase 5D: Dashboard Tests', () => {
       try {
         const clients = [
           { id: 'client-1', subscriptions: ['quote.created'] },
-          { id: 'client-2', subscriptions: ['quote.*'] }
+          { id: 'client-2', subscriptions: ['quote.*'] },
         ];
         assert(Array.isArray(clients));
       } catch (e) {
@@ -679,7 +677,7 @@ describe('Phase 5D: Dashboard Tests', () => {
           promises.push(
             Promise.resolve({
               userId: `user-${i}`,
-              connected: true
+              connected: true,
             })
           );
         }
@@ -697,7 +695,7 @@ describe('Phase 5D: Dashboard Tests', () => {
           quotes.push({
             id: i,
             text: `Quote ${i}`,
-            author: `Author ${i}`
+            author: `Author ${i}`,
           });
         }
         assert(quotes.length === 1000);
@@ -713,7 +711,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         const response = {
           error: true,
           message: 'Quote not found',
-          status: 404
+          status: 404,
         };
         assert(response.status === 404);
       } catch (e) {
@@ -726,7 +724,7 @@ describe('Phase 5D: Dashboard Tests', () => {
         const response = {
           error: true,
           message: 'Network error',
-          status: 503
+          status: 503,
         };
         assert(response.status === 503);
       } catch (e) {
@@ -738,7 +736,7 @@ describe('Phase 5D: Dashboard Tests', () => {
       try {
         const error = {
           display: 'Something went wrong. Please try again.',
-          code: 'INTERNAL_ERROR'
+          code: 'INTERNAL_ERROR',
         };
         assert(typeof error.display === 'string');
       } catch (e) {

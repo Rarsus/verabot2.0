@@ -13,7 +13,7 @@ const CONFIG_KEYS = {
   MONITORED_CHANNELS: 'monitored_channels',
   PROXY_ENABLED: 'proxy_enabled',
   LISTENER_PORT: 'listener_port',
-  WEBHOOK_SECRET: 'webhook_secret'
+  WEBHOOK_SECRET: 'webhook_secret',
 };
 
 class ProxyConfigService {
@@ -190,7 +190,7 @@ class ProxyConfigService {
         monitoredChannels: [],
         enabled: false,
         hasToken: false,
-        hasSecret: false
+        hasSecret: false,
       };
 
       for (const entry of allEntries) {
@@ -226,7 +226,7 @@ class ProxyConfigService {
         monitoredChannels: [],
         enabled: false,
         hasToken: false,
-        hasSecret: false
+        hasSecret: false,
       };
     }
   }
@@ -237,11 +237,7 @@ class ProxyConfigService {
    */
   async clearAllConfig() {
     try {
-      await Promise.all(
-        Object.values(CONFIG_KEYS).map(key =>
-          this.db.deleteProxyConfig(key).catch(() => {})
-        )
-      );
+      await Promise.all(Object.values(CONFIG_KEYS).map((key) => this.db.deleteProxyConfig(key).catch(() => {})));
       return true;
     } catch (err) {
       logError('ProxyConfigService.clearAllConfig', err, ERROR_LEVELS.MEDIUM);

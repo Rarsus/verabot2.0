@@ -214,7 +214,7 @@ try {
   const complexData = JSON.stringify({
     user: 'test',
     data: [1, 2, 3],
-    nested: { key: 'value' }
+    nested: { key: 'value' },
   });
   const encrypted = security.encrypt(complexData);
   const decrypted = security.decrypt(encrypted);
@@ -247,7 +247,7 @@ try {
 // Print results asynchronously to avoid async leak
 (async () => {
   // Ensure all pending operations are complete
-  await new Promise(resolve => setImmediate(resolve));
+  await new Promise((resolve) => setImmediate(resolve));
 
   console.log('\n==================================================');
   console.log(`Results: ${passedTests} passed, ${failedTests} failed`);
@@ -257,6 +257,6 @@ try {
   } else {
     console.log(`❌ ${failedTests} test(s) failed`);
   }
-})().catch(err => {
+})().catch((err) => {
   console.error('Error in test summary:', err);
 });

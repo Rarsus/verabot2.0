@@ -7,7 +7,7 @@ const { validateQuoteText, validateAuthor } = require('../../middleware/errorHan
 const { data, options } = buildCommandOptions('update-quote', 'Update an existing quote (admin only)', [
   { name: 'id', type: 'integer', description: 'Quote ID to update', required: true },
   { name: 'quote', type: 'string', description: 'New quote text', required: true },
-  { name: 'author', type: 'string', description: 'New author', required: false }
+  { name: 'author', type: 'string', description: 'New author', required: false },
 ]);
 
 class UpdateQuoteCommand extends Command {
@@ -19,8 +19,8 @@ class UpdateQuoteCommand extends Command {
       options,
       permissions: {
         minTier: 2,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 

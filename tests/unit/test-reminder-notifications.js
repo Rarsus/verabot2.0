@@ -3,10 +3,7 @@
  * Tests notification scheduling and delivery logic
  */
 
-
-const {
-  createReminderEmbed
-} = require('../../src/services/ReminderNotificationService');
+const { createReminderEmbed } = require('../../src/services/ReminderNotificationService');
 
 console.log('\n=== Reminder Notification Service Tests ===\n');
 
@@ -39,10 +36,10 @@ try {
     'checkAndSendNotifications',
     'triggerNotificationCheck',
     'createReminderEmbed',
-    'sendReminderNotification'
+    'sendReminderNotification',
   ];
 
-  const allExported = requiredFunctions.every(fn => typeof notificationService[fn] === 'function');
+  const allExported = requiredFunctions.every((fn) => typeof notificationService[fn] === 'function');
 
   if (allExported) {
     console.log('✅ Test 2 Passed: All required functions exported');
@@ -66,7 +63,7 @@ try {
     when_datetime: '2024-12-31T10:00:00.000Z',
     content: 'Test content',
     link: 'https://example.com',
-    image: 'https://example.com/image.png'
+    image: 'https://example.com/image.png',
   };
 
   const embed = createReminderEmbed(reminder);
@@ -90,7 +87,7 @@ try {
     id: 2,
     subject: 'Minimal Reminder',
     category: 'Task',
-    when_datetime: '2024-12-31T10:00:00.000Z'
+    when_datetime: '2024-12-31T10:00:00.000Z',
   };
 
   const embed = createReminderEmbed(reminder);
@@ -114,12 +111,12 @@ try {
     id: 3,
     subject: 'Color Test',
     category: 'Event',
-    when_datetime: '2024-12-31T10:00:00.000Z'
+    when_datetime: '2024-12-31T10:00:00.000Z',
   };
 
   const embed = createReminderEmbed(reminder);
 
-  if (embed && embed.data && embed.data.color === 0xFFD700) {
+  if (embed && embed.data && embed.data.color === 0xffd700) {
     console.log('✅ Test 5 Passed: Embed has correct color');
     passed++;
   } else {
@@ -138,7 +135,7 @@ try {
     id: 123,
     subject: 'Footer Test',
     category: 'Task',
-    when_datetime: '2024-12-31T10:00:00.000Z'
+    when_datetime: '2024-12-31T10:00:00.000Z',
   };
 
   const embed = createReminderEmbed(reminder);
@@ -162,13 +159,13 @@ try {
     id: 4,
     subject: 'Category Test',
     category: 'Meeting',
-    when_datetime: '2024-12-31T10:00:00.000Z'
+    when_datetime: '2024-12-31T10:00:00.000Z',
   };
 
   const embed = createReminderEmbed(reminder);
 
-  const hasCategory = embed.data.fields &&
-                      embed.data.fields.some(f => f.name.includes('Category') && f.value === 'Meeting');
+  const hasCategory =
+    embed.data.fields && embed.data.fields.some((f) => f.name.includes('Category') && f.value === 'Meeting');
 
   if (hasCategory) {
     console.log('✅ Test 7 Passed: Embed includes category field');
@@ -189,13 +186,12 @@ try {
     id: 5,
     subject: 'When Test',
     category: 'Task',
-    when_datetime: '2024-12-31T10:00:00.000Z'
+    when_datetime: '2024-12-31T10:00:00.000Z',
   };
 
   const embed = createReminderEmbed(reminder);
 
-  const hasWhen = embed.data.fields &&
-                  embed.data.fields.some(f => f.name.includes('When'));
+  const hasWhen = embed.data.fields && embed.data.fields.some((f) => f.name.includes('When'));
 
   if (hasWhen) {
     console.log('✅ Test 8 Passed: Embed includes when field');
@@ -217,13 +213,13 @@ try {
     subject: 'Link Test',
     category: 'Task',
     when_datetime: '2024-12-31T10:00:00.000Z',
-    link: 'https://example.com'
+    link: 'https://example.com',
   };
 
   const embed = createReminderEmbed(reminder);
 
-  const hasLink = embed.data.fields &&
-                  embed.data.fields.some(f => f.name.includes('Link') && f.value.includes('example.com'));
+  const hasLink =
+    embed.data.fields && embed.data.fields.some((f) => f.name.includes('Link') && f.value.includes('example.com'));
 
   if (hasLink) {
     console.log('✅ Test 9 Passed: Embed includes link field');
@@ -245,7 +241,7 @@ try {
     subject: 'Image Test',
     category: 'Event',
     when_datetime: '2024-12-31T10:00:00.000Z',
-    image: 'https://example.com/image.png'
+    image: 'https://example.com/image.png',
   };
 
   const embed = createReminderEmbed(reminder);
@@ -270,7 +266,7 @@ try {
     subject: 'Content Test',
     category: 'Task',
     when_datetime: '2024-12-31T10:00:00.000Z',
-    content: 'This is test content for the reminder'
+    content: 'This is test content for the reminder',
   };
 
   const embed = createReminderEmbed(reminder);
@@ -292,9 +288,11 @@ console.log('\n=== Test 12: Check Default Constants ===');
 try {
   const constants = require('../../src/utils/constants/reminder-constants');
 
-  if (constants.NOTIFICATION_DEFAULTS &&
-      constants.NOTIFICATION_DEFAULTS.CHECK_INTERVAL &&
-      constants.NOTIFICATION_DEFAULTS.RETRY_ATTEMPTS) {
+  if (
+    constants.NOTIFICATION_DEFAULTS &&
+    constants.NOTIFICATION_DEFAULTS.CHECK_INTERVAL &&
+    constants.NOTIFICATION_DEFAULTS.RETRY_ATTEMPTS
+  ) {
     console.log('✅ Test 12 Passed: Notification constants defined');
     passed++;
   } else {
@@ -367,9 +365,9 @@ console.log('\n=== Test 15: Send Reminder Notification with Users ===');
             username: 'TestUser',
             send: async (msg) => {
               return { success: true, sent: msg };
-            }
+            },
           };
-        }
+        },
       },
       channels: {
         fetch: async (channelId) => {
@@ -378,10 +376,10 @@ console.log('\n=== Test 15: Send Reminder Notification with Users ===');
             name: 'test-channel',
             send: async (msg) => {
               return { success: true };
-            }
+            },
           };
-        }
-      }
+        },
+      },
     };
 
     notificationService.initializeNotificationService(mockClient);
@@ -392,7 +390,7 @@ console.log('\n=== Test 15: Send Reminder Notification with Users ===');
       category: 'Meeting',
       when_datetime: '2024-12-31T10:00:00.000Z',
       content: 'Test content',
-      assignees: 'user:123456789'
+      assignees: 'user:123456789',
     };
 
     const result = await notificationService.sendReminderNotification(reminder);
@@ -458,7 +456,7 @@ console.log('\n=== Test 17: Send Reminder with No Assignees ===');
       subject: 'No Assignees',
       category: 'Note',
       when_datetime: '2024-12-31T10:00:00.000Z',
-      assignees: ''
+      assignees: '',
     };
 
     const result = await notificationService.sendReminderNotification(reminder);
@@ -491,7 +489,7 @@ console.log('\n=== Test 18: Send Reminder Without Initialized Client ===');
       subject: 'Test',
       category: 'Task',
       when_datetime: '2024-12-31T10:00:00.000Z',
-      assignees: 'user:123'
+      assignees: 'user:123',
     };
 
     try {
@@ -522,12 +520,12 @@ console.log('\n=== Test 19: Format DateTime ===');
       id: 9,
       subject: 'DateTime Test',
       category: 'Event',
-      when_datetime: '2024-12-31T10:00:00.000Z'
+      when_datetime: '2024-12-31T10:00:00.000Z',
     };
 
     const embed = createReminderEmbed(reminder);
 
-    const whenField = embed.data.fields.find(f => f.name.includes('When'));
+    const whenField = embed.data.fields.find((f) => f.name.includes('When'));
 
     if (whenField && whenField.value.includes('<t:')) {
       console.log('✅ Test 19 Passed: DateTime formatted correctly');
@@ -578,9 +576,9 @@ console.log('\n=== Test 21: Invalid Assignee Format ===');
             username: 'TestUser',
             send: async (msg) => {
               return { success: true };
-            }
+            },
           };
-        }
+        },
       },
       channels: {
         fetch: async (channelId) => {
@@ -588,10 +586,10 @@ console.log('\n=== Test 21: Invalid Assignee Format ===');
             id: channelId,
             send: async (msg) => {
               return { success: true };
-            }
+            },
           };
-        }
-      }
+        },
+      },
     };
 
     notificationService.initializeNotificationService(mockClient);
@@ -601,7 +599,7 @@ console.log('\n=== Test 21: Invalid Assignee Format ===');
       subject: 'Invalid Format',
       category: 'Task',
       when_datetime: '2024-12-31T10:00:00.000Z',
-      assignees: 'user:invalid_id,user:123456'
+      assignees: 'user:invalid_id,user:123456',
     };
 
     const result = await notificationService.sendReminderNotification(reminder);
@@ -635,9 +633,9 @@ console.log('\n=== Test 22: Parse Mention Format Assignees ===');
             username: 'TestUser',
             send: async (msg) => {
               return { success: true };
-            }
+            },
           };
-        }
+        },
       },
       channels: {
         fetch: async (channelId) => {
@@ -645,10 +643,10 @@ console.log('\n=== Test 22: Parse Mention Format Assignees ===');
             id: channelId,
             send: async (msg) => {
               return { success: true };
-            }
+            },
           };
-        }
-      }
+        },
+      },
     };
 
     notificationService.initializeNotificationService(mockClient);
@@ -658,7 +656,7 @@ console.log('\n=== Test 22: Parse Mention Format Assignees ===');
       subject: 'Mention Format',
       category: 'Task',
       when_datetime: '2024-12-31T10:00:00.000Z',
-      assignees: 'user:<@123456789>'
+      assignees: 'user:<@123456789>',
     };
 
     const result = await notificationService.sendReminderNotification(reminder);
@@ -681,12 +679,12 @@ console.log('\n=== Test 22: Parse Mention Format Assignees ===');
 // Print final summary after all async operations complete
 (async () => {
   // Wait for all pending operations to complete
-  await new Promise(resolve => setImmediate(resolve));
+  await new Promise((resolve) => setImmediate(resolve));
 
   console.log('\n=== Final Test Summary ===');
   console.log(`✅ Passed: ${passed}`);
   console.log(`❌ Failed: ${failed}`);
   console.log(`Total: ${passed + failed}`);
-})().catch(err => {
+})().catch((err) => {
   console.error('Error in test summary:', err);
 });

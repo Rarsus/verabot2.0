@@ -30,7 +30,7 @@ const OriginalDatabaseService = {
   rateQuote: null,
   getQuoteRating: null,
   tagQuote: null,
-  getQuotesByTag: null
+  getQuotesByTag: null,
 };
 
 /**
@@ -43,7 +43,7 @@ const OriginalDatabaseService = {
  * @returns {Function} Wrapped method
  */
 function createGuildAwareWrapper(methodName, legacyMethod, guildAwareMethod, _legacyParamNames) {
-  return function(...args) {
+  return function (...args) {
     // If first argument is a Discord ID, use guild-aware API
     if (args.length > 0 && isDiscordId(args[0])) {
       const guildId = args[0];
@@ -132,21 +132,21 @@ function enableGuildAwareAPI(exportedService) {
   );
 
   // Add new guild-aware only methods
-  exportedService.getGuildStatistics = function(guildId) {
+  exportedService.getGuildStatistics = function (guildId) {
     if (!isDiscordId(guildId)) {
       throw new Error('getGuildStatistics requires a guild ID');
     }
     return GuildAwareDatabaseService.getGuildStatistics(guildId);
   };
 
-  exportedService.exportGuildData = function(guildId) {
+  exportedService.exportGuildData = function (guildId) {
     if (!isDiscordId(guildId)) {
       throw new Error('exportGuildData requires a guild ID');
     }
     return GuildAwareDatabaseService.exportGuildData(guildId);
   };
 
-  exportedService.deleteGuildData = function(guildId) {
+  exportedService.deleteGuildData = function (guildId) {
     if (!isDiscordId(guildId)) {
       throw new Error('deleteGuildData requires a guild ID');
     }
@@ -154,7 +154,7 @@ function enableGuildAwareAPI(exportedService) {
   };
 
   // Add guild manager access for shutdown
-  exportedService.closeAllGuildDatabases = async function() {
+  exportedService.closeAllGuildDatabases = async function () {
     const guildManager = require('./GuildDatabaseManager');
     return guildManager.closeAllDatabases();
   };
@@ -163,5 +163,5 @@ function enableGuildAwareAPI(exportedService) {
 module.exports = {
   enableGuildAwareAPI,
   isDiscordId,
-  OriginalDatabaseService
+  OriginalDatabaseService,
 };

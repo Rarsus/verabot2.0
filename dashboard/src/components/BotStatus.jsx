@@ -63,31 +63,23 @@ export default function BotStatus() {
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Status:</span>
                 <span
-                  className={`inline-block w-3 h-3 rounded-full ${
-                    status.online ? 'bg-green-500' : 'bg-red-500'
-                  }`}
+                  className={`inline-block w-3 h-3 rounded-full ${status.online ? 'bg-green-500' : 'bg-red-500'}`}
                 />
               </div>
 
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Uptime:</span>
-                <span className="font-medium text-gray-900">
-                  {formatUptime(status.uptime)}
-                </span>
+                <span className="font-medium text-gray-900">{formatUptime(status.uptime)}</span>
               </div>
 
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Latency:</span>
-                <span className="font-medium text-gray-900">
-                  {status.latency}ms
-                </span>
+                <span className="font-medium text-gray-900">{status.latency}ms</span>
               </div>
 
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Memory:</span>
-                <span className="font-medium text-gray-900">
-                  {formatBytes(status.memory)}
-                </span>
+                <span className="font-medium text-gray-900">{formatBytes(status.memory)}</span>
               </div>
             </div>
           )}
@@ -105,9 +97,7 @@ export default function BotStatus() {
 
               <div>
                 <span className="text-gray-600 text-sm">ID</span>
-                <p className="font-mono text-sm text-gray-900 break-all">
-                  {info.userId}
-                </p>
+                <p className="font-mono text-sm text-gray-900 break-all">{info.userId}</p>
               </div>
 
               <div>
@@ -129,30 +119,22 @@ export default function BotStatus() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
             <p className="text-sm text-blue-600 font-medium">Guilds</p>
-            <p className="text-3xl font-bold text-blue-900 mt-2">
-              {stats.guildCount || 0}
-            </p>
+            <p className="text-3xl font-bold text-blue-900 mt-2">{stats.guildCount || 0}</p>
           </div>
 
           <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 border border-green-200">
             <p className="text-sm text-green-600 font-medium">Commands</p>
-            <p className="text-3xl font-bold text-green-900 mt-2">
-              {stats.commandCount || 0}
-            </p>
+            <p className="text-3xl font-bold text-green-900 mt-2">{stats.commandCount || 0}</p>
           </div>
 
           <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
             <p className="text-sm text-purple-600 font-medium">Users</p>
-            <p className="text-3xl font-bold text-purple-900 mt-2">
-              {stats.userCount || 0}
-            </p>
+            <p className="text-3xl font-bold text-purple-900 mt-2">{stats.userCount || 0}</p>
           </div>
 
           <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200">
             <p className="text-sm text-orange-600 font-medium">Messages</p>
-            <p className="text-3xl font-bold text-orange-900 mt-2">
-              {stats.messageCount || 0}
-            </p>
+            <p className="text-3xl font-bold text-orange-900 mt-2">{stats.messageCount || 0}</p>
           </div>
         </div>
       )}

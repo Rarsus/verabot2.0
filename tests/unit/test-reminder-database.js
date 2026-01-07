@@ -34,7 +34,8 @@ async function createSchema(db) {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
       // Create reminders table
-      db.run(`
+      db.run(
+        `
         CREATE TABLE IF NOT EXISTS reminders (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           subject TEXT NOT NULL,
@@ -48,12 +49,15 @@ async function createSchema(db) {
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
           updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-      `, (err) => {
-        if (err) reject(err);
-      });
+      `,
+        (err) => {
+          if (err) reject(err);
+        }
+      );
 
       // Create reminder_assignments table
-      db.run(`
+      db.run(
+        `
         CREATE TABLE IF NOT EXISTS reminder_assignments (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           reminderId INTEGER NOT NULL,
@@ -62,12 +66,15 @@ async function createSchema(db) {
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
           FOREIGN KEY (reminderId) REFERENCES reminders(id) ON DELETE CASCADE
         )
-      `, (err) => {
-        if (err) reject(err);
-      });
+      `,
+        (err) => {
+          if (err) reject(err);
+        }
+      );
 
       // Create reminder_notifications table
-      db.run(`
+      db.run(
+        `
         CREATE TABLE IF NOT EXISTS reminder_notifications (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           reminderId INTEGER NOT NULL,
@@ -76,10 +83,12 @@ async function createSchema(db) {
           errorMessage TEXT,
           FOREIGN KEY (reminderId) REFERENCES reminders(id) ON DELETE CASCADE
         )
-      `, (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
+      `,
+        (err) => {
+          if (err) reject(err);
+          else resolve();
+        }
+      );
     });
   });
 }
@@ -114,7 +123,7 @@ async function runTests() {
         `INSERT INTO reminders (subject, category, when_datetime, notificationTime, status) 
          VALUES (?, ?, ?, ?, ?)`,
         ['Test Meeting', 'Meeting', '2024-12-31T10:00:00.000Z', '2024-12-31T10:00:00.000Z', 'active'],
-        function(err) {
+        function (err) {
           if (!err && this.lastID > 0) {
             console.log(`✅ Test 2 Passed: Reminder inserted with ID ${this.lastID}`);
             passed++;
@@ -148,7 +157,7 @@ async function runTests() {
       db.run(
         'INSERT INTO reminder_assignments (reminderId, assigneeType, assigneeId) VALUES (?, ?, ?)',
         [1, 'user', '123456789'],
-        function(err) {
+        function (err) {
           if (!err && this.lastID > 0) {
             console.log('✅ Test 4 Passed: Assignment inserted');
             passed++;
@@ -186,7 +195,7 @@ async function runTests() {
       db.run(
         'UPDATE reminders SET subject = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?',
         ['Updated Meeting', 1],
-        function(err) {
+        function (err) {
           if (!err && this.changes > 0) {
             console.log('✅ Test 6 Passed: Reminder updated');
             passed++;
@@ -202,20 +211,16 @@ async function runTests() {
     // Test 7: Soft delete (status change)
     console.log('\n=== Test 7: Soft Delete ===');
     await new Promise((resolve) => {
-      db.run(
-        'UPDATE reminders SET status = ? WHERE id = ?',
-        ['cancelled', 1],
-        function(err) {
-          if (!err && this.changes > 0) {
-            console.log('✅ Test 7 Passed: Reminder soft deleted');
-            passed++;
-          } else {
-            console.error('❌ Test 7 Failed:', err?.message);
-            failed++;
-          }
-          resolve();
+      db.run('UPDATE reminders SET status = ? WHERE id = ?', ['cancelled', 1], function (err) {
+        if (!err && this.changes > 0) {
+          console.log('✅ Test 7 Passed: Reminder soft deleted');
+          passed++;
+        } else {
+          console.error('❌ Test 7 Failed:', err?.message);
+          failed++;
         }
-      );
+        resolve();
+      });
     });
 
     // Test 8: Cascade delete
@@ -248,7 +253,7 @@ async function runTests() {
       db.run(
         'INSERT INTO reminders (subject, category, when_datetime, notificationTime, status) VALUES (?, ?, ?, ?, ?)',
         ['Test 2', 'Task', '2024-12-31T10:00:00.000Z', '2024-12-31T10:00:00.000Z', 'active'],
-        function(err) {
+        function (err) {
           if (!err) {
             const newId = this.lastID;
             db.run(
@@ -282,7 +287,7 @@ async function runTests() {
           db.run(
             'INSERT INTO reminder_notifications (reminderId, success, errorMessage) VALUES (?, ?, ?)',
             [reminder.id, 1, null],
-            function(err) {
+            function (err) {
               if (!err && this.lastID > 0) {
                 console.log('✅ Test 10 Passed: Notification tracked');
                 passed++;
@@ -300,7 +305,6 @@ async function runTests() {
         }
       });
     });
-
   } catch (err) {
     console.error('❌ Database setup failed:', err.message);
     failed++;
@@ -328,6 +332,6 @@ async function runTests() {
 }
 
 // Run tests
-runTests().catch(err => {
+runTests().catch((err) => {
   console.error('Test runner error:', err);
 });

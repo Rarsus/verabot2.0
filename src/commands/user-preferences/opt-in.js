@@ -3,7 +3,10 @@ const buildCommandOptions = require('../../core/CommandOptions');
 const { sendOptInSuccess } = require('../../utils/helpers/response-helpers');
 const { optIn } = require('../../services/GuildAwareCommunicationService');
 
-const { data, options } = buildCommandOptions('opt-in', 'Opt in to receive direct messages and use VeraBot communication features');
+const { data, options } = buildCommandOptions(
+  'opt-in',
+  'Opt in to receive direct messages and use VeraBot communication features'
+);
 
 class OptInCommand extends Command {
   constructor() {
@@ -14,8 +17,8 @@ class OptInCommand extends Command {
       options,
       permissions: {
         minTier: 0,
-        visible: true
-      }
+        visible: true,
+      },
     });
   }
 
