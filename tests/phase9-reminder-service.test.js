@@ -337,20 +337,25 @@ describe('Phase 9: Reminder Operations', () => {
 
   describe('Search & Filter Reminders', () => {
     beforeEach((done) => {
+      const future1 = new Date(Date.now() + 3600000);
+      const future2 = new Date(Date.now() + 7200000);
+
       testDb.run('BEGIN');
       testDb.run(
         'INSERT INTO reminders (guildId, userId, text, dueDate) VALUES (?, ?, ?, ?)',
-        [testGuildId, 'user-1', 'Buy groceries', new Date(Date.now() + 3600000).toISOString()]
+        [testGuildId, 'user-1', 'Buy groceries', future1.toISOString()]
       );
       testDb.run(
         'INSERT INTO reminders (guildId, userId, text, dueDate) VALUES (?, ?, ?, ?)',
-        [testGuildId, 'user-2', 'Call mom', new Date(Date.now() + 7200000).toISOString()]
+        [testGuildId, 'user-2', 'Call mom', future2.toISOString()]
       );
       testDb.run(
-        'INSERT INTO reminders (guildId, userId, text, dueDate, completed) VALUES (?, ?, ?, ?, 1)',
-        [testGuildId, 'user-1', 'Completed task', new Date().toISOString(), 1]
+        'INSERT INTO reminders (guildId, userId, text, dueDate, completed) VALUES (?, ?, ?, ?, ?)',
+        [testGuildId, 'user-1', 'Completed task', new Date().toISOString(), 1],
+        () => {
+          testDb.run('COMMIT', done);
+        }
       );
-      testDb.run('COMMIT', done);
     });
 
     it('should search reminders by text', (done) => {
