@@ -104,15 +104,15 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
 
     it('should validate quote text with boundary checks', () => {
       const service = createValidationService();
-      
+
       // Too short
       let result = service.validateQuoteText('ab');
       assert.strictEqual(result.valid, false);
-      
+
       // Valid
       result = service.validateQuoteText('This is a valid quote');
       assert.strictEqual(result.valid, true);
-      
+
       // Too long
       result = service.validateQuoteText('a'.repeat(501));
       assert.strictEqual(result.valid, false);
@@ -126,23 +126,23 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
 
     it('should validate rating boundaries', () => {
       const service = createValidationService();
-      
+
       // Below minimum
       let result = service.validateRating(0);
       assert.strictEqual(result.valid, false);
-      
+
       // Valid minimum
       result = service.validateRating(1);
       assert.strictEqual(result.valid, true);
-      
+
       // Valid maximum
       result = service.validateRating(5);
       assert.strictEqual(result.valid, true);
-      
+
       // Above maximum
       result = service.validateRating(6);
       assert.strictEqual(result.valid, false);
-      
+
       // Decimal value
       result = service.validateRating(3.5);
       assert.strictEqual(result.valid, false);
@@ -150,33 +150,33 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
 
     it('should validate date ranges', () => {
       const service = createValidationService();
-      
+
       const start = new Date('2026-01-01');
       const end = new Date('2026-01-10');
-      
+
       const result = service.validateDateRange(start, end);
       assert.strictEqual(result.valid, true);
     });
 
     it('should reject invalid date range (start >= end)', () => {
       const service = createValidationService();
-      
+
       const start = new Date('2026-01-10');
       const end = new Date('2026-01-01');
-      
+
       const result = service.validateDateRange(start, end);
       assert.strictEqual(result.valid, false);
     });
 
     it('should validate email addresses', () => {
       const service = createValidationService();
-      
+
       let result = service.validateEmail('user@example.com');
       assert.strictEqual(result.valid, true);
-      
+
       result = service.validateEmail('invalid-email');
       assert.strictEqual(result.valid, false);
-      
+
       result = service.validateEmail('user@');
       assert.strictEqual(result.valid, false);
     });
@@ -190,9 +190,9 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
 
         set: function(key, value, ttlMs = null) {
           if (!key) throw new Error('Key is required');
-          
+
           this.cache.set(key, value);
-          
+
           if (ttlMs) {
             if (this.ttls.has(key)) clearTimeout(this.ttls.get(key));
             const timeout = setTimeout(() => {
@@ -201,7 +201,7 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
             }, ttlMs);
             this.ttls.set(key, timeout);
           }
-          
+
           return true;
         },
 
@@ -241,7 +241,7 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
     it('should set and get cache value', () => {
       const cache = createCacheManager();
       cache.set('key1', 'value1');
-      
+
       const value = cache.get('key1');
       assert.strictEqual(value, 'value1');
     });
@@ -255,7 +255,7 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
     it('should check if key exists', () => {
       const cache = createCacheManager();
       cache.set('key1', 'value1');
-      
+
       assert.strictEqual(cache.has('key1'), true);
       assert.strictEqual(cache.has('missing'), false);
     });
@@ -264,7 +264,7 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
       const cache = createCacheManager();
       cache.set('key1', 'value1');
       cache.delete('key1');
-      
+
       assert.strictEqual(cache.get('key1'), null);
       assert.strictEqual(cache.has('key1'), false);
     });
@@ -274,9 +274,9 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
       cache.set('key1', 'value1');
       cache.set('key2', 'value2');
       cache.set('key3', 'value3');
-      
+
       cache.clear();
-      
+
       assert.strictEqual(cache.size(), 0);
     });
 
@@ -284,7 +284,7 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
       const cache = createCacheManager();
       cache.set('key1', 'value1');
       cache.set('key2', 'value2');
-      
+
       assert.strictEqual(cache.size(), 2);
     });
 
@@ -293,7 +293,7 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
       cache.set('key1', 'value1');
       cache.set('key2', 'value2');
       cache.set('key3', 'value3');
-      
+
       const keys = cache.keys();
       assert.strictEqual(keys.length, 3);
       assert.ok(keys.includes('key1'));
@@ -308,16 +308,16 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
         data: { nested: 'value' },
         array: [1, 2, 3]
       };
-      
+
       cache.set('complex', complexObj);
       const retrieved = cache.get('complex');
-      
+
       assert.deepStrictEqual(retrieved, complexObj);
     });
 
     it('should throw on invalid key', () => {
       const cache = createCacheManager();
-      
+
       assert.throws(() => {
         cache.set(null, 'value');
       });
@@ -326,12 +326,12 @@ describe('Phase 6D: Coverage Improvements & Edge Cases', () => {
     it('should handle cache expiration (TTL)', async () => {
       const cache = createCacheManager();
       cache.set('temp', 'value', 100); // 100ms TTL
-      
+
       assert.strictEqual(cache.get('temp'), 'value');
-      
+
       // Wait for expiration
       await new Promise(resolve => setTimeout(resolve, 150));
-      
+
       assert.strictEqual(cache.get('temp'), null);
     });
   });
