@@ -1,3 +1,16 @@
+# [2.17.0](https://github.com/Rarsus/verabot2.0/compare/v2.16.0...v2.17.0) (2026-01-07)
+
+
+### Bug Fixes
+
+* CI: Remove incompatible c8 coverage step, use Jest-native reporting ([#57](https://github.com/Rarsus/verabot2.0/issues/57)) ([b9fbdd3](https://github.com/Rarsus/verabot2.0/commit/b9fbdd3482053264885faccaaa30fe0438b217f4))
+* suppress eslint no-unused-vars warnings in test files ([48c00b0](https://github.com/Rarsus/verabot2.0/commit/48c00b075ca4c90a28d455d85d427e903f8bf11a))
+
+
+### Features
+
+* integrate Prettier for code formatting ([7ad0174](https://github.com/Rarsus/verabot2.0/commit/7ad017430f22c0ae54fc8584747b5f637da25145))
+
 # [2.16.0](https://github.com/Rarsus/verabot2.0/compare/v2.15.0...v2.16.0) (2026-01-06)
 
 ### Bug Fixes
