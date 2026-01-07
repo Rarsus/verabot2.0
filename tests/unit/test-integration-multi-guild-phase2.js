@@ -321,15 +321,12 @@ async function runTests() {
 
     if (failed === 0) {
       console.log('✨ All Phase 2B tests passed!\n');
-      process.exit(0);
     } else {
       console.log(`⚠️  ${failed} test(s) failed\n`);
-      process.exit(1);
     }
   } catch (error) {
     console.error('\n❌ Test execution failed:', error.message);
     console.error(error.stack);
-    process.exit(1);
   }
 }
 

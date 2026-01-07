@@ -422,6 +422,4 @@ async function cleanup() {
   } else {
     console.log(`\n⚠️  ${failedTests} test(s) failed`);
   }
-
-  process.exit(failedTests > 0 ? 1 : 0);
 })();

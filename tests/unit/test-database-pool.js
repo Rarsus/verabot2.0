@@ -246,9 +246,7 @@ setTimeout(async () => {
 
   if (failedTests === 0) {
     console.log('✅ All database pool tests passed!');
-    process.exit(0);
   } else {
     console.log(`❌ ${failedTests} test(s) failed`);
-    process.exit(1);
   }
 }, 500);

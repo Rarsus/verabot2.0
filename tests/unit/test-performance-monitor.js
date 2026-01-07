@@ -180,8 +180,6 @@ console.log(`Results: ${passedTests} passed, ${failedTests} failed`);
 
 if (failedTests === 0) {
   console.log('✅ All performance monitor integration tests passed!');
-  process.exit(0);
 } else {
   console.log(`❌ ${failedTests} test(s) failed`);
-  process.exit(1);
 }

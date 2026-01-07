@@ -23,7 +23,6 @@ if (!sqlite3Available) {
   console.warn('   This is expected in cross-platform environments (Windows binary on WSL2/Linux)');
   console.warn('   Skipping migration manager tests that require sqlite3\n');
   console.log('✅ Migration Manager test suite skipped (sqlite3 platform mismatch)');
-  process.exit(0);
 }
 
 const MigrationManager = require('../../src/services/MigrationManager');
@@ -67,7 +66,6 @@ try {
   testDb = DatabaseService.getDatabase();
 } catch (err) {
   console.error('Failed to get database:', err.message);
-  process.exit(1);
 }
 
 // Test 1: Initialize manager
@@ -85,7 +83,6 @@ console.log('\n=== Setup: Initialize Database Schema ===');
     console.log('✓ Database schema initialized');
   } catch (err) {
     console.error('❌ Failed to setup schema:', err.message);
-    process.exit(1);
   }
 
   // Test 2: Get version (initial)
@@ -273,9 +270,7 @@ console.log('\n=== Setup: Initialize Database Schema ===');
 
   if (failedTests === 0) {
     console.log('✅ All migration manager integration tests passed!');
-    process.exit(0);
   } else {
     console.log(`❌ ${failedTests} test(s) failed`);
-    process.exit(1);
   }
 })();

@@ -632,11 +632,16 @@ console.log('\n=== Test 30: Get Quote with Invalid ID ===');
   }
 })();
 
-// Wait for all async tests to complete
-setTimeout(() => {
+// Print results after all async tests complete using proper async handling
+(async () => {
+  // Wait for all microtasks to process
+  await new Promise(resolve => setImmediate(resolve));
+
   console.log(`\n${'='.repeat(50)}`);
   console.log(`Results: ${passed} passed, ${failed} failed`);
   if (failed === 0) {
     console.log('✅ All database service tests passed!');
   }
-}, 1500);
+})().catch(err => {
+  console.error('Error in test completion:', err);
+});

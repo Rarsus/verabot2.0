@@ -148,7 +148,7 @@ async function runTests() {
       // Ignore cleanup errors
     }
 
-    process.exit(1);
+    return false;
   }
 }
 

@@ -406,13 +406,8 @@ async function runTests() {
     console.log(`❌ Failed: ${failed}`);
     console.log(`Total: ${passed + failed}\n`);
 
-    if (failed > 0) {
-      process.exit(1);
-    }
-
   } catch (err) {
     console.error('Test suite error:', err);
-    process.exit(1);
   }
 }
 

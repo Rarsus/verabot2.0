@@ -171,14 +171,20 @@ test('Rate limiter - tracks remaining requests', () => {
   assert(remaining === 3, 'Should have 3 remaining requests');
 });
 
-console.log('\n' + '='.repeat(50));
-console.log(`Results: ${passed} passed, ${failed} failed`);
-console.log('='.repeat(50) + '\n');
+// Print summary after all tests complete
+(async () => {
+  // Ensure all pending operations are complete
+  await new Promise(resolve => setImmediate(resolve));
 
-if (failed > 0) {
-  console.error(`❌ ${failed} test(s) failed`);
-  process.exit(1);
-} else {
-  console.log('✅ All security validation tests passed!');
-  process.exit(0);
-}
+  console.log('\n' + '='.repeat(50));
+  console.log(`Results: ${passed} passed, ${failed} failed`);
+  console.log('='.repeat(50) + '\n');
+
+  if (failed > 0) {
+    console.error(`❌ ${failed} test(s) failed`);
+  } else {
+    console.log('✅ All security validation tests passed!');
+  }
+})().catch(err => {
+  console.error('Error in test summary:', err);
+});

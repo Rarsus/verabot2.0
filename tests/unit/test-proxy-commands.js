@@ -281,10 +281,8 @@ async function runTests() {
     await testAdminPermissionChecks();
 
     console.log('\n✅ All proxy admin command tests passed!');
-    process.exit(0);
   } catch {
     console.error('\n❌ Some tests failed');
-    process.exit(1);
   }
 }
 

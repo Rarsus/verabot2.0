@@ -27,9 +27,12 @@ async function cleanup() {
   }
 }
 
+// Collect all test promises
+const testPromises = [];
+
 // Test 1: getAllQuotes returns array
 console.log('\n=== Test 1: Get All Quotes Returns Array ===');
-(async () => {
+testPromises.push((async () => {
   try {
     const quotes = await getAllQuotes(TEST_GUILD_ID);
     if (Array.isArray(quotes)) {
@@ -43,11 +46,11 @@ console.log('\n=== Test 1: Get All Quotes Returns Array ===');
     console.error('❌ Test 1 Failed:', err.message);
     failed++;
   }
-})();
+})());
 
 // Test 2: getAllQuotes returns all quotes when database has data
 console.log('\n=== Test 2: Get All Quotes With Data ===');
-(async () => {
+testPromises.push((async () => {
   try {
     // Add a test quote first
     await addQuote(TEST_GUILD_ID, 'Test quote for getAllQuotes', 'Test Author');
@@ -63,11 +66,11 @@ console.log('\n=== Test 2: Get All Quotes With Data ===');
     console.error('❌ Test 2 Failed:', err.message);
     failed++;
   }
-})();
+})());
 
 // Test 3: getRandomQuote returns a quote object
 console.log('\n=== Test 3: Get Random Quote Returns Object ===');
-(async () => {
+testPromises.push((async () => {
   try {
     // Ensure there's at least one quote
     await addQuote(TEST_GUILD_ID, 'Test quote for random', 'Random Author');
@@ -83,11 +86,11 @@ console.log('\n=== Test 3: Get Random Quote Returns Object ===');
     console.error('❌ Test 3 Failed:', err.message);
     failed++;
   }
-})();
+})());
 
 // Test 4: getRandomQuote returns quote with text property
 console.log('\n=== Test 4: Random Quote Has Text ===');
-(async () => {
+testPromises.push((async () => {
   try {
     const quote = await getRandomQuote(TEST_GUILD_ID);
     if (quote && quote.text) {
@@ -101,11 +104,11 @@ console.log('\n=== Test 4: Random Quote Has Text ===');
     console.error('❌ Test 4 Failed:', err.message);
     failed++;
   }
-})();
+})());
 
 // Test 5: getRandomQuote returns quote with author property
 console.log('\n=== Test 5: Random Quote Has Author ===');
-(async () => {
+testPromises.push((async () => {
   try {
     const quote = await getRandomQuote(TEST_GUILD_ID);
     if (quote && typeof quote.author !== 'undefined') {
@@ -119,11 +122,11 @@ console.log('\n=== Test 5: Random Quote Has Author ===');
     console.error('❌ Test 5 Failed:', err.message);
     failed++;
   }
-})();
+})());
 
 // Test 6: searchQuotes returns array
 console.log('\n=== Test 6: Search Quotes Returns Array ===');
-(async () => {
+testPromises.push((async () => {
   try {
     const results = await searchQuotes(TEST_GUILD_ID, 'test');
     if (Array.isArray(results)) {
@@ -137,11 +140,11 @@ console.log('\n=== Test 6: Search Quotes Returns Array ===');
     console.error('❌ Test 6 Failed:', err.message);
     failed++;
   }
-})();
+})());
 
 // Test 7: searchQuotes finds matching quotes by text
 console.log('\n=== Test 7: Search By Text ===');
-(async () => {
+testPromises.push((async () => {
   try {
     // Add a specific quote to search for
     await addQuote(TEST_GUILD_ID, 'Unique search test phrase', 'Search Author');
@@ -157,11 +160,11 @@ console.log('\n=== Test 7: Search By Text ===');
     console.error('❌ Test 7 Failed:', err.message);
     failed++;
   }
-})();
+})());
 
 // Test 8: searchQuotes finds matching quotes by author
 console.log('\n=== Test 8: Search By Author ===');
-(async () => {
+testPromises.push((async () => {
   try {
     // Add a quote with unique author
     await addQuote(TEST_GUILD_ID, 'Another test quote', 'UniqueAuthorName');
@@ -177,11 +180,11 @@ console.log('\n=== Test 8: Search By Author ===');
     console.error('❌ Test 8 Failed:', err.message);
     failed++;
   }
-})();
+})());
 
 // Test 9: searchQuotes returns empty array for no matches
 console.log('\n=== Test 9: Search With No Matches ===');
-(async () => {
+testPromises.push((async () => {
   try {
     const results = await searchQuotes(TEST_GUILD_ID, 'xyznonexistentquery123456');
     if (Array.isArray(results) && results.length === 0) {
@@ -195,11 +198,11 @@ console.log('\n=== Test 9: Search With No Matches ===');
     console.error('❌ Test 9 Failed:', err.message);
     failed++;
   }
-})();
+})());
 
 // Test 10: searchQuotes is case-insensitive
 console.log('\n=== Test 10: Search Case Insensitive ===');
-(async () => {
+testPromises.push((async () => {
   try {
     // Add quote with specific case
     await addQuote(TEST_GUILD_ID, 'CaseSensitiveTest quote', 'CaseAuthor');
@@ -215,11 +218,11 @@ console.log('\n=== Test 10: Search Case Insensitive ===');
     console.error('❌ Test 10 Failed:', err.message);
     failed++;
   }
-})();
+})());
 
 // Test 11: searchQuotes handles partial matches
 console.log('\n=== Test 11: Search Partial Match ===');
-(async () => {
+testPromises.push((async () => {
   try {
     await addQuote(TEST_GUILD_ID, 'This is a partial match test', 'Partial Author');
     const results = await searchQuotes(TEST_GUILD_ID, 'partial');
@@ -234,11 +237,11 @@ console.log('\n=== Test 11: Search Partial Match ===');
     console.error('❌ Test 11 Failed:', err.message);
     failed++;
   }
-})();
+})());
 
 // Test 12: searchQuotes handles empty string
 console.log('\n=== Test 12: Search Empty String ===');
-(async () => {
+testPromises.push((async () => {
   try {
     const results = await searchQuotes(TEST_GUILD_ID, 'test');
     // Empty string searches are not allowed in QuoteService
@@ -254,16 +257,30 @@ console.log('\n=== Test 12: Search Empty String ===');
     console.error('❌ Test 12 Failed:', err.message);
     failed++;
   }
-})();
+})());
 
-// Wait for all async tests to complete before showing results
-setTimeout(async () => {
-  // Cleanup
-  await cleanup();
+// Print results after all async tests complete using proper async handling
+(async () => {
+  // Wait for ALL test promises to complete
+  try {
+    await Promise.all(testPromises);
+  } catch (err) {
+    console.error('Error waiting for tests:', err);
+  }
 
+  // Then perform cleanup
+  try {
+    await cleanup();
+  } catch (err) {
+    console.error('Cleanup error:', err);
+  }
+
+  // Finally print results
   console.log(`\n${'='.repeat(50)}`);
   console.log(`Results: ${passed} passed, ${failed} failed`);
   if (failed === 0) {
     console.log('✅ All QuoteService tests passed!');
   }
-}, 2000);
+})().catch(err => {
+  console.error('Error in test completion:', err);
+});

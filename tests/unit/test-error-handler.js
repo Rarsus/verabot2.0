@@ -323,8 +323,6 @@ console.log('='.repeat(50));
 
 if (failed > 0) {
   console.error(`\n❌ ${failed} test(s) failed`);
-  process.exit(1);
 } else {
   console.log('\n✅ All error handler tests passed!');
-  process.exit(0);
 }

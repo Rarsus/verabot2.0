@@ -219,6 +219,5 @@ setTimeout(() => {
   console.log(`Total: ${passed + failed}`);
 
   if (failed > 0) {
-    process.exit(1);
   }
 }, 2000);

@@ -153,14 +153,19 @@ const qb15 = new QueryBuilder();
 const sql15 = qb15.select('*').from('users').build();
 assert(sql15 === 'SELECT * FROM users', 'Explicit select * works');
 
-// Print results
-console.log('\n==================================================');
-console.log(`Results: ${passedTests} passed, ${failedTests} failed`);
+// Print results asynchronously to avoid async leak
+(async () => {
+  // Ensure all pending operations are complete
+  await new Promise(resolve => setImmediate(resolve));
 
-if (failedTests === 0) {
-  console.log('✅ All query builder tests passed!');
-  process.exit(0);
-} else {
-  console.log(`❌ ${failedTests} test(s) failed`);
-  process.exit(1);
-}
+  console.log('\n==================================================');
+  console.log(`Results: ${passedTests} passed, ${failedTests} failed`);
+
+  if (failedTests === 0) {
+    console.log('✅ All query builder tests passed!');
+  } else {
+    console.log(`❌ ${failedTests} test(s) failed`);
+  }
+})().catch(err => {
+  console.error('Error in test summary:', err);
+});

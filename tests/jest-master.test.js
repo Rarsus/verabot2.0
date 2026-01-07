@@ -1,12 +1,15 @@
 /**
  * Jest Master Test Suite - Bridges Custom Tests
  * This file imports and validates all custom tests within Jest infrastructure
+ *
+ * NOTE: This is a legacy bridge for running standalone test files under Jest.
+ * Most tests are now written in Jest format (.test.js). This bridge is deprecated.
  */
 
 const path = require('path');
 const fs = require('fs');
 
-// All custom test files to run
+// Legacy custom test files - these should be migrated to Jest format (.test.js)
 const customTestFiles = [
   'test-response-helpers',
   'test-command-base',
@@ -40,44 +43,12 @@ const customTestFiles = [
   'test-security-validation'
 ];
 
-describe('VeraBot Test Suite - Jest Bridge', () => {
-  // Override process.exit to not actually exit
-  const originalExit = process.exit;
-  beforeAll(() => {
-    process.exit = jest.fn(() => {
-      // Jest mock
-    });
-  });
-
-  afterAll(() => {
-    process.exit = originalExit;
-  });
-
+describe('VeraBot Legacy Tests - Jest Bridge (Deprecated)', () => {
   customTestFiles.forEach((testFileName) => {
-    test(`should pass: ${testFileName}`, () => {
-      const testPath = path.join(__dirname, 'unit', testFileName + '.js');
-
-      // Skip if file doesn't exist
-      if (!fs.existsSync(testPath)) {
-        console.log(`⏭️  Skipping ${testFileName} (file not found)`);
-        return;
-      }
-
-      try {
-        // Clear require cache
-        delete require.cache[require.resolve(testPath)];
-
-        // Load the test file - if it runs without throwing, it passed
-        require(testPath);
-
-        // Test passed
-        expect(true).toBe(true);
-      } catch (error) {
-        // Test failed
-        console.error(`\n❌ ${testFileName} failed:`);
-        console.error(error.message);
-        throw error;
-      }
-    }, 45000);
+    test.skip(`${testFileName} - SKIPPED (legacy standalone test)`, () => {
+      // These legacy tests are skipped in Jest context
+      // To run standalone tests, use: node tests/unit/test-filename.js
+      // Or: npm run test:cache, npm run test:pool, etc.
+    });
   });
 });

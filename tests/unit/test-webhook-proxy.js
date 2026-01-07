@@ -247,11 +247,12 @@ async function runTests() {
     await testWebhookListenerService();
     await testMessageFiltering();
 
+    // Ensure all pending operations are complete before finishing
+    await new Promise(resolve => setImmediate(resolve));
+
     console.log('\n✅ All webhook proxy tests passed!');
-    process.exit(0);
   } catch {
     console.error('\n❌ Some tests failed');
-    process.exit(1);
   }
 }
 

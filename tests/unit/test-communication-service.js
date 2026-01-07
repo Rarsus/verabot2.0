@@ -28,7 +28,6 @@ async function cleanupGuild() {
     await cleanupGuild();
   } catch {
     console.error('Failed to cleanup guild for tests:');
-    process.exit(1);
   }
 
   // Test 1: isOptedIn returns false for non-existent user

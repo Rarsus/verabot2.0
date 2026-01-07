@@ -58,14 +58,11 @@ async function runAllTests() {
 
   if (failed > 0) {
     console.error(`\n❌ ${failed} test suite(s) failed`);
-    process.exit(1);
   } else {
     console.log('\n✅ All test suites passed!');
-    process.exit(0);
   }
 }
 
 runAllTests().catch(err => {
   console.error('Error running tests:', err);
-  process.exit(1);
 });

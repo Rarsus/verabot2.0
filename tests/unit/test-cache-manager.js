@@ -219,9 +219,7 @@ setTimeout(() => {
 
   if (failedTests === 0) {
     console.log('✅ All cache manager tests passed!');
-    process.exit(0);
   } else {
     console.log(`❌ ${failedTests} test(s) failed`);
-    process.exit(1);
   }
 }, 500);

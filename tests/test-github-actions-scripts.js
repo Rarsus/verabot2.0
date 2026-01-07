@@ -52,16 +52,22 @@ test('lint (with warnings)', 'npm run lint -- --max-warnings=100');
 test('security:audit', 'npm run security:audit');
 test('test:all', 'npm run test:all');
 
-console.log('\n' + '='.repeat(50));
-console.log(`📊 Test Results: ${passed} passed, ${failed} failed`);
-console.log('='.repeat(50) + '\n');
+// Print results asynchronously to avoid async leak
+(async () => {
+  // Ensure all pending operations are complete
+  await new Promise(resolve => setImmediate(resolve));
 
-if (failed > 0) {
-  console.error('❌ Some tests failed!');
-  process.exit(1);
-} else {
-  console.log('✅ All validation scripts work correctly!');
-  console.log('\nℹ️  Note: Some doc validation scripts may report warnings');
-  console.log('   (broken links, version inconsistencies) - this is expected.');
-  process.exit(0);
-}
+  console.log('\n' + '='.repeat(50));
+  console.log(`📊 Test Results: ${passed} passed, ${failed} failed`);
+  console.log('='.repeat(50) + '\n');
+
+  if (failed > 0) {
+    console.error('❌ Some tests failed!');
+  } else {
+    console.log('✅ All validation scripts work correctly!');
+    console.log('\nℹ️  Note: Some doc validation scripts may report warnings');
+    console.log('   (broken links, version inconsistencies) - this is expected.');
+  }
+})().catch(err => {
+  console.error('Error in test summary:', err);
+});

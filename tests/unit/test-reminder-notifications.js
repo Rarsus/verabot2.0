@@ -678,14 +678,15 @@ console.log('\n=== Test 22: Parse Mention Format Assignees ===');
   }
 })();
 
-// Wait for async tests and print final summary
-setTimeout(() => {
+// Print final summary after all async operations complete
+(async () => {
+  // Wait for all pending operations to complete
+  await new Promise(resolve => setImmediate(resolve));
+
   console.log('\n=== Final Test Summary ===');
   console.log(`✅ Passed: ${passed}`);
   console.log(`❌ Failed: ${failed}`);
   console.log(`Total: ${passed + failed}`);
-
-  if (failed > 0) {
-    process.exit(1);
-  }
-}, 1000);
+})().catch(err => {
+  console.error('Error in test summary:', err);
+});

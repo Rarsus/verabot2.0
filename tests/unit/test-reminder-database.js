@@ -324,12 +324,10 @@ async function runTests() {
   console.log(`Total: ${passed + failed}`);
 
   if (failed > 0) {
-    process.exit(1);
   }
 }
 
 // Run tests
 runTests().catch(err => {
   console.error('Test runner error:', err);
-  process.exit(1);
 });

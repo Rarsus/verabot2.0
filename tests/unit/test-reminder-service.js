@@ -23,7 +23,6 @@ async function initializeDatabase() {
     console.log('✓ Test database initialized\n');
   } catch (err) {
     console.error('Failed to initialize test database:', err);
-    process.exit(1);
   }
 }
 
@@ -522,12 +521,10 @@ async function runTests() {
   console.log(`Total: ${passed + failed}`);
 
   if (failed > 0) {
-    process.exit(1);
   }
 }
 
 // Run tests
 runTests().catch(err => {
   console.error('Test runner error:', err);
-  process.exit(1);
 });

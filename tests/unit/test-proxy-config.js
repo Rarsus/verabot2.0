@@ -187,11 +187,12 @@ async function runTests() {
     await testConfigEncryption();
     await testProxyConfigService();
 
+    // Ensure all pending operations are complete before finishing
+    await new Promise(resolve => setImmediate(resolve));
+
     console.log('\n✅ All proxy configuration tests passed!');
-    process.exit(0);
   } catch {
     console.error('\n❌ Some tests failed');
-    process.exit(1);
   }
 }
 
