@@ -982,12 +982,11 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
       const transaction = async () => {
         changes.push('step1');
         throw new Error('Mid-transaction error');
-        changes.push('step2');
       };
 
       try {
         await transaction();
-      } catch (e) {
+      } catch (_e) {
         // Rollback
         changes.length = 0;
       }
