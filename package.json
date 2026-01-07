@@ -8,6 +8,8 @@
     "npm": ">=10.0.0"
   },
   "scripts": {
+    "check-node-version": "node scripts/check-node-version.js",
+    "preinstall": "node scripts/check-node-version.js",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "register-commands": "node src/register-commands.js",
