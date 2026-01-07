@@ -313,8 +313,6 @@ class GuildDatabaseManager {
       if (fs.existsSync(guildDir)) {
         fs.rmSync(guildDir, { recursive: true, force: true });
       }
-
-      console.log(`[GDPR] Guild database deleted: ${guildId}`);
     } catch (error) {
       logError('GuildDatabaseManager.deleteGuildDatabase', error, ERROR_LEVELS.CRITICAL);
       throw error;

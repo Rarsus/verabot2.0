@@ -288,30 +288,4 @@ async function cleanupGuild() {
       failed++;
     }
   })();
-
-  // Print summary
-  setTimeout(async () => {
-    console.log('\n' + '='.repeat(50));
-    console.log('TEST SUMMARY: Guild-Aware Communication Service (Phase 6)');
-    console.log('='.repeat(50));
-    console.log(`✅ Passed: ${passed}`);
-    console.log(`❌ Failed: ${failed}`);
-    console.log(`⏭️  Skipped: ${skipped}`);
-    console.log(`📊 Total:  ${passed + failed + skipped}`);
-
-    if (failed === 0) {
-      console.log('\n🎉 All tests passed!');
-    } else {
-      console.log(`\n⚠️  ${failed} test(s) failed`);
-    }
-
-    // Cleanup guild
-    try {
-      await GuildDatabaseManager.deleteGuildDatabase(TEST_GUILD_ID);
-    } catch {
-      // Ignore cleanup errors
-    }
-
-    process.exit(failed > 0 ? 1 : 0);
-  }, 2000);
 })();
