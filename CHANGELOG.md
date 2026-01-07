@@ -1,3 +1,10 @@
+# [2.18.0](https://github.com/Rarsus/verabot2.0/compare/v2.17.0...v2.18.0) (2026-01-07)
+
+
+### Features
+
+* enforce Node.js 20+ requirement across all tools ([5b401b9](https://github.com/Rarsus/verabot2.0/commit/5b401b984269078aa6904cac87a0960660d2ab04))
+
 # [2.17.0](https://github.com/Rarsus/verabot2.0/compare/v2.16.0...v2.17.0) (2026-01-07)
 
 
