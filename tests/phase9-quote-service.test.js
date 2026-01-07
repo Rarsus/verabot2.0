@@ -228,8 +228,9 @@ describe('Phase 9: Quote Operations', () => {
         testGuildId,
         'Dreams matter',
         'John Dream',
-      ]);
-      testDb.run('COMMIT', done);
+      ], () => {
+        testDb.run('COMMIT', done);
+      });
     });
 
     it('should search by text (case-insensitive)', (done) => {
