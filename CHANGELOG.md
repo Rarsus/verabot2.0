@@ -1,3 +1,10 @@
+# [2.19.0](https://github.com/Rarsus/verabot2.0/compare/v2.18.0...v2.19.0) (2026-01-07)
+
+
+### Features
+
+* add hasInstallScript property to package-lock.json ([30c53c6](https://github.com/Rarsus/verabot2.0/commit/30c53c6f10a335ce5b0633a571b167ede60914fb))
+
 # [2.18.0](https://github.com/Rarsus/verabot2.0/compare/v2.17.0...v2.18.0) (2026-01-07)
 
 
