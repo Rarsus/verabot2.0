@@ -361,6 +361,10 @@ class GuildDatabaseManager {
    * @returns {Promise<void>}
    */
   async closeAllDatabases() {
+    // Clear all pending timeouts first
+    this.connectionTimeouts.forEach((timeout) => clearTimeout(timeout));
+    this.connectionTimeouts.clear();
+
     const promises = Array.from(this.connections.keys()).map((guildId) => this.closeGuildDatabase(guildId));
     await Promise.all(promises);
   }
@@ -377,9 +381,11 @@ class GuildDatabaseManager {
       clearTimeout(this.connectionTimeouts.get(guildId));
     }
 
-    // Set new timeout
-    const timeout = setTimeout(async () => {
-      await this.closeGuildDatabase(guildId);
+    // Set new timeout - fire and forget async operation
+    const timeout = setTimeout(() => {
+      this.closeGuildDatabase(guildId).catch((err) => {
+        logError('GuildDatabaseManager idle timeout cleanup', err, ERROR_LEVELS.MEDIUM);
+      });
     }, this.idleTimeout);
 
     this.connectionTimeouts.set(guildId, timeout);

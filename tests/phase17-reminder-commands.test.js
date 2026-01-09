@@ -37,6 +37,16 @@ describe('Phase 17: Reminder Commands', () => {
     } catch (e) {
       // Ignore cleanup errors
     }
+
+    // Clean up database manager resources
+    const manager = require('../src/services/GuildDatabaseManager');
+    if (manager && typeof manager.closeAllDatabases === 'function') {
+      try {
+        await manager.closeAllDatabases();
+      } catch (err) {
+        // Ignore cleanup errors
+      }
+    }
   });
 
   describe('Create Reminder Command', () => {

@@ -27,6 +27,18 @@ describe('Phase 17: GuildAwareDatabaseService', () => {
     service = databaseService;
   });
 
+  afterEach(async () => {
+    // Clean up database manager resources
+    const manager = require('@/services/GuildDatabaseManager');
+    if (manager && typeof manager.closeAllDatabases === 'function') {
+      try {
+        await manager.closeAllDatabases();
+      } catch (err) {
+        // Ignore cleanup errors
+      }
+    }
+  });
+
   describe('Module Initialization & Exports', () => {
     it('should be importable and return a service instance', () => {
       assert(service !== null);
