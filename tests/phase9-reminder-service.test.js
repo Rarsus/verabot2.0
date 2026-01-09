@@ -21,10 +21,32 @@ const {
   searchReminders,
   getGuildReminderStats,
 } = require('../src/services/GuildAwareReminderService');
+const guildDbManager = require('../src/services/GuildDatabaseManager');
 
 describe('Phase 9C: GuildAwareReminderService Integration Tests', () => {
   const testGuildId = 'guild-test-456';
   const testUserId = 'user-test-789';
+
+  afterEach(async () => {
+    // Close idle timeout handles to prevent Jest warnings
+    if (guildDbManager && guildDbManager.connectionTimeouts) {
+      // Clear all pending timeouts
+      guildDbManager.connectionTimeouts.forEach((timeout) => clearTimeout(timeout));
+      guildDbManager.connectionTimeouts.clear();
+    }
+  });
+
+  afterAll(async () => {
+    // Close all database connections to clean up properly
+    if (guildDbManager) {
+      await guildDbManager.closeAllDatabases();
+      // Clear remaining timeouts
+      if (guildDbManager.connectionTimeouts) {
+        guildDbManager.connectionTimeouts.forEach((timeout) => clearTimeout(timeout));
+        guildDbManager.connectionTimeouts.clear();
+      }
+    }
+  });
 
   // ============================================================================
   // SECTION 1: Create Reminder Operations (5 tests)
