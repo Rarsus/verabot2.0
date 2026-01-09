@@ -273,6 +273,7 @@ See `docs/reference/DB-DEPRECATION-TIMELINE.md` for detailed migration guide.
 Before ANY code is committed, verify:
 
 - ✅ Test file created BEFORE implementation code
+- ✅ **IMPORTANT: Import real code from NEW locations** (not deprecated paths)
 - ✅ All public methods have test cases
 - ✅ Happy path scenarios tested
 - ✅ Error scenarios tested (all error types)
@@ -284,6 +285,71 @@ Before ANY code is committed, verify:
 - ✅ All tests PASS locally: `npm test`
 - ✅ No ESLint errors: `npm run lint`
 - ✅ Coverage maintained/improved: `npm test -- --coverage`
+
+#### Import Rules for Tests (CRITICAL)
+
+**What to import and test:**
+
+```javascript
+// ✅ Core modules - ALWAYS import and test these
+const CommandBase = require('../../../src/core/CommandBase');
+const CommandOptions = require('../../../src/core/CommandOptions');
+
+// ✅ Services - ALWAYS import and test these
+const DatabaseService = require('../../../src/services/DatabaseService');
+const GuildAwareDatabaseService = require('../../../src/services/GuildAwareDatabaseService');
+const QuoteService = require('../../../src/services/QuoteService');
+const GuildAwareReminderService = require('../../../src/services/GuildAwareReminderService');
+
+// ✅ Middleware - ALWAYS import and test these
+const { logError } = require('../../../src/middleware/errorHandler');
+const { validateInput } = require('../../../src/middleware/inputValidator');
+
+// ✅ Helpers - ALWAYS import and test these
+const { sendSuccess, sendError } = require('../../../src/utils/helpers/response-helpers');
+```
+
+**What NOT to import:**
+
+```javascript
+// ❌ DO NOT import from deprecated locations
+const CommandBase = require('../../../src/utils/command-base');  // WRONG
+const db = require('../../../src/db');  // WRONG
+const errorHandler = require('../../../src/utils/error-handler');  // WRONG
+
+// ❌ DO NOT avoid testing functionality to avoid deprecated code
+// If you need database functionality, import DatabaseService (NEW)
+// If you need error handling, import errorHandler (MIDDLEWARE)
+// If you need validation, import inputValidator (MIDDLEWARE)
+```
+
+**Example: Correct test that imports real code:**
+
+```javascript
+// ✅ CORRECT - Imports from new location, tests actual service
+const DatabaseService = require('../../../src/services/DatabaseService');
+const QuoteService = require('../../../src/services/QuoteService');
+
+describe('Quote Management', () => {
+  let db;
+  let quoteService;
+
+  beforeEach(async () => {
+    db = new DatabaseService(':memory:');
+    await db.initialize();
+    quoteService = new QuoteService(db);
+  });
+
+  it('should add quote to database', async () => {
+    const quote = await quoteService.addQuote(
+      'guild-123',
+      'Great quote',
+      'Author'
+    );
+    assert.strictEqual(quote.guildId, 'guild-123');
+  });
+});
+```
 
 #### Test File Structure (MANDATORY)
 
@@ -574,11 +640,29 @@ HUGGINGFACE_API_KEY=optional_key          # For AI poem generation
 - Tables: quotes, ratings, tags, quote_tags
 - All queries use prepared statements for SQL injection protection
 
-### Deprecation Notes
+### Deprecation Notes & Testing Requirements
 
-- Manual error handling in commands is deprecated
-- Raw Discord API calls in commands should use response helpers
-- Inconsistent option definitions should use `buildCommandOptions()`
+**Deprecated (DO NOT USE):**
+- `src/utils/command-base.js` → **Use:** `src/core/CommandBase.js`
+- `src/utils/command-options.js` → **Use:** `src/core/CommandOptions.js`
+- `src/utils/response-helpers.js` → **Use:** `src/utils/helpers/response-helpers.js`
+- `src/utils/error-handler.js` → **Use:** `src/middleware/errorHandler.js`
+- `src/db.js` → **Use:** Guild-aware services (`src/services/GuildAwareDatabaseService.js`)
+
+**What This Means for Testing:**
+- ✅ **DO import** from `src/core/`, `src/services/`, `src/middleware/`
+- ✅ **DO test** actual service implementations with real execution
+- ✅ **DO test** database operations through DatabaseService
+- ✅ **DO test** error handling through errorHandler middleware
+- ❌ **DON'T import** from deprecated locations
+- ❌ **DON'T mock** services when you can test real implementations
+- ❌ **DON'T avoid** testing actual code to avoid deprecated imports
+
+**Critical:** The deprecation applies to CODE LOCATIONS, not to functionality. You must still test all functionality—just import from NEW locations, not deprecated ones.
+
+**Manual error handling in commands is deprecated** - Use CommandBase
+**Raw Discord API calls in commands should use response helpers** - Use `src/utils/helpers/response-helpers.js`
+**Inconsistent option definitions should use CommandOptions** - Use `src/core/CommandOptions.js`
 
 ## Documentation Resources
 
