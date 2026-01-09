@@ -848,7 +848,7 @@ describe('Guild-Aware Reminder Service', () => {
       // Assign
       await reminderService.addReminderAssignment(testGuildId, id, 'user', 'user-123');
 
-      let stats = await reminderService.getGuildReminderStats(testGuildId);
+      const stats = await reminderService.getGuildReminderStats(testGuildId);
       assert.strictEqual(stats.assignmentCount, 1);
 
       // Update
