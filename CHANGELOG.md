@@ -1,3 +1,10 @@
+# [2.20.0](https://github.com/Rarsus/verabot2.0/compare/v2.19.0...v2.20.0) (2026-01-09)
+
+
+### Features
+
+* feature/test-validation-and-update-jest ([#59](https://github.com/Rarsus/verabot2.0/issues/59)) ([9085982](https://github.com/Rarsus/verabot2.0/commit/90859822f2c21f42c032270ca7d594db5d446738))
+
 # [2.19.0](https://github.com/Rarsus/verabot2.0/compare/v2.18.0...v2.19.0) (2026-01-07)
 
 
