@@ -2,8 +2,11 @@ module.exports = {
   // Test environment
   testEnvironment: 'node',
 
-  // Test patterns - only match .test.js files (Jest-native tests)
+  // Test patterns - match all .test.js files
   testMatch: ['**/tests/**/*.test.js'],
+  
+  // Ignore archived test files - use proper regex pattern
+  testPathIgnorePatterns: ['/node_modules/', '/dashboard/', '/coverage/', 'tests/_archive'],
 
   // Collect coverage from source files
   collectCoverageFrom: [
