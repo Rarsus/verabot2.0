@@ -55,7 +55,10 @@
     "release": "semantic-release",
     "release:dry": "semantic-release --dry-run",
     "release:check": "node scripts/validation/check-version.js",
-    "prepare": "husky || true"
+    "prepare": "husky || true",
+    "coverage:baseline": "npm run test:coverage && node scripts/coverage-tracking.js --baseline",
+    "coverage:validate": "npm run test:coverage && node scripts/coverage-tracking.js --compare",
+    "coverage:report": "node scripts/coverage-tracking.js --report"
   },
   "keywords": [
     "discord",
