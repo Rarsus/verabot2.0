@@ -13,7 +13,6 @@
  * Focus: Test core command functionality through real execution
  */
 
-/* eslint-disable max-nested-callbacks */
 const assert = require('assert');
 
 // Test utilities

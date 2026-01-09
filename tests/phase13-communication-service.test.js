@@ -13,7 +13,6 @@
  * Expected CommunicationService coverage: 20-30%
  */
 
-/* eslint-disable max-nested-callbacks */
 const assert = require('assert');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
