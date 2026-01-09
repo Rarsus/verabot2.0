@@ -3,9 +3,12 @@ module.exports = {
   testEnvironment: 'node',
 
   // Test patterns - match all .test.js files
-  testMatch: ['**/tests/**/*.test.js'],
+  testMatch: [
+    '**/tests/**/*.test.js',
+  ],
   
-  // Ignore archived test files - use proper regex pattern
+  // Ignore archived test files that are superseded by later phases
+  // Must use path segments that match filesystem paths
   testPathIgnorePatterns: ['/node_modules/', '/dashboard/', '/coverage/', 'tests/_archive'],
 
   // Collect coverage from source files
@@ -67,8 +70,6 @@ module.exports = {
     '^.+\\.js$': 'babel-jest',
   },
 
-  // Ignore patterns
-  testPathIgnorePatterns: ['/node_modules/', '/dashboard/', '/coverage/'],
 
   // Coverage path ignore patterns
   coveragePathIgnorePatterns: ['/node_modules/', '/tests/', '/dashboard/', '/coverage/'],
