@@ -13,7 +13,7 @@
  * Expected ProxyConfigService coverage: 20-30%
  */
 
-/* eslint-disable max-nested-callbacks */
+ 
 const assert = require('assert');
 const ProxyConfigService = require('../src/services/ProxyConfigService');
 

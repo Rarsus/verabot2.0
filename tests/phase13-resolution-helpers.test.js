@@ -13,7 +13,7 @@
  * Expected ResolutionHelpers coverage: 15-20%
  */
 
-/* eslint-disable max-nested-callbacks */
+ 
 const assert = require('assert');
 const {
   resolveChannel,

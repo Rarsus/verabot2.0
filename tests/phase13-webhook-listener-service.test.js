@@ -14,7 +14,7 @@
  * Expected WebhookListenerService coverage: 15-20%
  */
 
-/* eslint-disable max-nested-callbacks */
+ 
 const assert = require('assert');
 const WebhookListenerService = require('../src/services/WebhookListenerService');
 const { createHmacSignature } = require('../src/utils/encryption');
