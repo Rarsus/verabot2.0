@@ -27,7 +27,6 @@ function convertCustomTestToJest(customTestCode) {
 
   // Add closing brackets for describe blocks
   const describeCount = (jestCode.match(/describe\(/g) || []).length;
-  const testCount = (jestCode.match(/test\(/g) || []).length;
 
   if (describeCount > 0) {
     jestCode += '\n' + '});'.repeat(describeCount);

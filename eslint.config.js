@@ -114,9 +114,14 @@ module.exports = [
     rules: {
       'no-unused-expressions': 'off',
       'max-lines-per-function': 'off',
+      'max-nested-callbacks': 'off', // Test files often have deeply nested describe/it blocks
+      'max-depth': 'off', // Test setup and assertions can be deeply nested
       complexity: 'off', // Test files often have complex test scenarios
       'security/detect-object-injection': 'off',
       'security/detect-non-literal-fs-filename': 'off',
+      'security/detect-unsafe-regex': 'off', // Test patterns are safe
+      'security/detect-possible-timing-attacks': 'off', // Test assertions don't have real security impact
+      'no-return-await': 'off', // Test mocks may need await for consistency
     },
   },
   // Command files - allow higher complexity for feature-rich commands
