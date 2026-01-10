@@ -36,6 +36,33 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: 🗂️ Cache node_modules directory
+        uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-${{ matrix.node-version }}-
+            ${{ runner.os }}-node-modules-
+
+      - name: 🗂️ Cache npm cache directory
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-cache-
+
+      - name: 🗂️ Cache coverage results
+        uses: actions/cache@v4
+        with:
+          path: coverage
+          key: ${{ runner.os }}-coverage-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-coverage-
 
       - name: 📚 Install dependencies
         run: npm ci
@@ -45,7 +72,16 @@ jobs:
         continue-on-error: false
 
       - name: 🧪 Run all tests with coverage
-        run: npm run test:coverage
+        run: npm run test:coverage -- --json --outputFile=test-results.json
+      
+      - name: 📊 Publish test results
+        if: always()
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: test-results.json
+          check_name: CI Test Results (Node ${{ matrix.node-version }})
+          comment_mode: always
+        continue-on-error: true
 
       - name: 📝 Update test documentation
         if: always()

@@ -34,19 +34,29 @@ jobs:
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
       
-      - name: Restore npm cache
+      - name: 🗂️ Cache node_modules directory
+        uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-${{ matrix.node-version }}-
+            ${{ runner.os }}-node-modules-
+      
+      - name: 🗂️ Cache npm cache directory
         uses: actions/cache@v4
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-
+            ${{ runner.os }}-npm-cache-
       
-      - name: Cache coverage results
+      - name: 🗂️ Cache coverage results
         uses: actions/cache@v4
         with:
           path: coverage
-          key: ${{ runner.os }}-coverage-${{ github.sha }}
+          key: ${{ runner.os }}-coverage-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-coverage-
       
@@ -57,7 +67,16 @@ jobs:
         run: npm run lint --if-present
       
       - name: 🧪 Run tests
-        run: npm test
+        run: npm test -- --json --outputFile=test-results.json --coverage
+      
+      - name: 📊 Publish test results
+        if: always()
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: test-results.json
+          check_name: Test Results (Node ${{ matrix.node-version }})
+          comment_mode: always
+        continue-on-error: true
       
       - name: 📊 Generate coverage
         if: always()

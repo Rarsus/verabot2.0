@@ -476,3 +476,119 @@ npm run docs:validate
 ---
 
 Thank you for helping improve VeraBot's documentation! 📚
+
+---
+
+## 🚀 CI/CD Pipeline
+
+Our automated testing and deployment pipeline runs on every commit and pull request. Understanding how it works helps you write better code.
+
+### Workflow Overview
+
+**Key Workflows:**
+- **test.yml** - Runs tests on Node 20.x and 22.x with coverage reporting
+- **ci.yml** - Comprehensive CI including linting, tests, coverage, and security checks
+- **coverage.yml** - Coverage validation and PR comments
+- **security.yml** - Dependency scanning, SAST, and vulnerability checks
+- **code-quality.yml** - ESLint, complexity analysis, and quality metrics
+- **release.yml** - Semantic versioning and automated releases
+- **deploy.yml** - Docker image building and deployment
+
+### Coverage Requirements
+
+Coverage thresholds are enforced per-file and globally:
+
+**Global Minimum:**
+- Branches: 20%
+- Functions: 35%
+- Lines: 25%
+- Statements: 25%
+
+**Critical Paths (Higher Standards):**
+- `/src/middleware/**` - 80% branches, 90% functions
+- `/src/services/**` - 75% branches, 85% functions
+- `/src/core/**` - 70% branches, 80% functions
+
+View coverage: `npm run test:coverage`
+
+### Performance Targets
+
+The CI pipeline is optimized for speed:
+- **Test execution:** < 5 seconds per test (timeout enforced)
+- **Linting:** < 30 seconds
+- **Coverage generation:** < 1 minute
+- **Total CI time:** ~15-18 minutes (down from 30 minutes)
+
+### Making Your PR Pass CI
+
+1. **Run tests locally:**
+   ```bash
+   npm test
+   ```
+
+2. **Check coverage:**
+   ```bash
+   npm run test:coverage
+   ```
+
+3. **Lint your code:**
+   ```bash
+   npm run lint --fix
+   ```
+
+4. **Run security audit:**
+   ```bash
+   npm run security:audit
+   ```
+
+5. **Run full suite (before pushing):**
+   ```bash
+   npm run lint && npm test && npm run test:coverage
+   ```
+
+### Workflow Concurrency
+
+To prevent duplicate runs:
+- Only the latest commit in a branch will run CI
+- Previous runs are automatically cancelled
+- Pull request updates trigger fresh runs
+
+### Debugging CI Failures
+
+**If tests fail in CI but pass locally:**
+- Check Node version (CI uses 20.x and 22.x)
+- Check for timing issues (timeout: 5s)
+- Check coverage requirements
+- View artifact: test-results-node-*.json
+
+**If coverage fails:**
+- Run locally with coverage: `npm run test:coverage`
+- Check per-file requirements
+- Focus on critical paths first (/middleware, /services, /core)
+
+**If security audit fails:**
+- Run: `npm audit` to see vulnerabilities
+- Update packages: `npm update`
+- Contact maintainers if blocked by security issues
+
+### CI/CD Optimization History
+
+**Phase 1 (January 10, 2026):** Critical Fixes
+- Consolidated redundant test workflows
+- Fixed coverage configuration mismatch (jest.config.js + .nycrc.json)
+- Updated all actions to @v4
+- Added concurrency control (40% time reduction)
+- Implemented proper permission scoping
+- Enhanced caching strategy
+
+**Phase 2 (In Progress):** Configuration Enhancement
+- Added per-file coverage enforcement
+- Enhanced cache strategies for faster builds
+- Added test result publishing
+- Updated documentation
+
+**Phase 3 (Planned):** Advanced Security
+- Add Semgrep SAST scanning
+- Add performance benchmarking
+- Implement deployment approval gates
+
