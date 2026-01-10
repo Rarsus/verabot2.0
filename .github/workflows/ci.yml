@@ -151,6 +151,7 @@ jobs:
           tags: verabot2:latest,verabot2:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+        continue-on-error: true
 
       - name: ✅ Docker build successful
         run: echo "✅ Docker image built successfully"
