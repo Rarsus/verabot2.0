@@ -211,6 +211,7 @@ class GuildAwareDatabaseService {
     }
 
     const db = await guildManager.getGuildDatabase(guildId);
+    
     return new Promise((resolve, reject) => {
       db.run(
         `INSERT OR REPLACE INTO quote_ratings (quoteId, userId, rating)

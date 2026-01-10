@@ -109,8 +109,27 @@ function createHmacSignature(payload, secret) {
  * @returns {boolean} True if signature is valid
  */
 function verifyHmacSignature(payload, signature, secret) {
-  const expectedSignature = createHmacSignature(payload, secret);
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
+  // Validate inputs - return false for null/undefined
+  if (!payload || !signature || !secret) {
+    return false;
+  }
+
+  try {
+    const expectedSignature = createHmacSignature(payload, secret);
+    
+    // Ensure both buffers exist and have the same length
+    const signatureBuffer = Buffer.from(signature, 'hex');
+    const expectedBuffer = Buffer.from(expectedSignature, 'hex');
+    
+    if (signatureBuffer.length !== expectedBuffer.length) {
+      return false;
+    }
+    
+    return crypto.timingSafeEqual(signatureBuffer, expectedBuffer);
+  } catch {
+    // Return false for any error (malformed input, invalid hex, etc.)
+    return false;
+  }
 }
 
 module.exports = {

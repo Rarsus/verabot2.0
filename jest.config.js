@@ -11,6 +11,22 @@ module.exports = {
   // Must use path segments that match filesystem paths
   testPathIgnorePatterns: ['/node_modules/', '/dashboard/', '/coverage/', 'tests/_archive', 'test-security-integration'],
 
+  // Test reporters - output JUnit XML for GitHub Actions
+  reporters: [
+    'default',
+    ['jest-junit', {
+      outputDirectory: './test-reports',
+      outputName: 'junit.xml',
+      suiteName: 'VeraBot2.0 Test Suite',
+      usePathAsTestName: true,
+      classNameTemplate: '{classname}',
+      titleTemplate: '{title}',
+      ancestorSeparator: ' › ',
+      useConsoleLog: false,
+      reportTestSuite: true,
+    }],
+  ],
+
   // Collect coverage from source files
   collectCoverageFrom: [
     'src/**/*.js',

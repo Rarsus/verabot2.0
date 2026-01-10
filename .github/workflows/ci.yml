@@ -72,13 +72,13 @@ jobs:
         continue-on-error: false
 
       - name: 🧪 Run all tests with coverage
-        run: npm run test:coverage -- --json --outputFile=test-results.json
+        run: npm run test:coverage
       
       - name: 📊 Publish test results
         if: always()
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          files: test-results.json
+          files: test-reports/junit.xml
           check_name: CI Test Results (Node ${{ matrix.node-version }})
           comment_mode: always
         continue-on-error: true
