@@ -11,8 +11,10 @@
   ],
   "reporter": [
     "text",
+    "text-summary",
     "lcov",
     "html",
+    "json",
     "json-summary"
   ],
   "report-dir": "./coverage",
@@ -22,6 +24,7 @@
   "branches": 20,
   "statements": 25,
   "check-coverage": true,
-  "per-file": false,
-  "skip-full": false
+  "per-file": true,
+  "skip-full": true,
+  "produce-source-map": true
 }

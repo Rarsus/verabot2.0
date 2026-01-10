@@ -6,6 +6,15 @@ on:
   pull_request:
     branches: [main]
 
+# Prevent duplicate runs for same commit
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   test-and-lint:
     runs-on: ubuntu-latest

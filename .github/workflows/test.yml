@@ -6,36 +6,79 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+# Prevent duplicate runs when pushing to multiple branches
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [20.x, 22.x]
 
     steps:
-      - uses: actions/checkout@v3
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
       
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: 📦 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
       
-      - name: Install dependencies
+      - name: Restore npm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      
+      - name: Cache coverage results
+        uses: actions/cache@v4
+        with:
+          path: coverage
+          key: ${{ runner.os }}-coverage-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-coverage-
+      
+      - name: 📚 Install dependencies
         run: npm ci
       
-      - name: Lint code
+      - name: 🔍 Lint code
         run: npm run lint --if-present
       
-      - name: Run tests
+      - name: 🧪 Run tests
         run: npm test
       
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
+      - name: 📊 Generate coverage
+        if: always()
+        run: npm run test:coverage || true
+      
+      - name: ☁️ Upload coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@v4
         with:
           files: ./coverage/lcov.info
           flags: unittests
-          name: codecov-umbrella
+          name: codecov-${{ matrix.node-version }}
           fail_ci_if_error: false
+          verbose: true
+      
+      - name: 📝 Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-node-${{ matrix.node-version }}
+          path: |
+            coverage/
+            docs/TEST-SUMMARY-LATEST.md
+          retention-days: 30

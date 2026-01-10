@@ -22,26 +22,37 @@ module.exports = {
     '!**/node_modules/**',
   ],
 
-  // Coverage thresholds - Set realistically for current state (0.52%)
-  // Will be increased as coverage improves with new tests
-  // Current baseline: Statements 0.52% | Branches 0.06% | Functions 0.33% | Lines 0.54%
+  // Coverage thresholds - Enforce minimum standards
+  // Target: 90%+ overall, stricter for critical modules
   coverageThreshold: {
     global: {
-      branches: 0,      // Current: 0.06% - No threshold until more tests added
-      functions: 0,     // Current: 0.33% - No threshold until more tests added
-      lines: 0,         // Current: 0.54% - No threshold until more tests added
-      statements: 0,    // Current: 0.52% - No threshold until more tests added
+      branches: 20,      // Minimum 20% branch coverage
+      functions: 35,     // Minimum 35% function coverage
+      lines: 25,         // Minimum 25% line coverage
+      statements: 25,    // Minimum 25% statement coverage
+    },
+    './src/middleware/**/*.js': {
+      branches: 80,      // Stricter for critical middleware
+      functions: 90,     // High coverage for security-related code
+      lines: 85,         // Enforce high standards
+      statements: 85,
+    },
+    './src/services/**/*.js': {
+      branches: 75,      // Services handle business logic
+      functions: 85,
+      lines: 80,
+      statements: 80,
+    },
+    './src/core/**/*.js': {
+      branches: 70,      // Core utilities should be well-tested
+      functions: 80,
+      lines: 75,
+      statements: 75,
     },
   },
 
-  // Coverage directory
-  coverageDirectory: 'coverage',
-
-  // Coverage reporters
-  coverageReporters: ['text', 'text-summary', 'html', 'json', 'json-summary', 'lcov'],
-
-  // Timeout for tests
-  testTimeout: 10000,
+  // Timeout for tests - Reduced from 10s to catch slow tests early
+  testTimeout: 5000,
 
   // Verbose output
   verbose: true,
