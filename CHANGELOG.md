@@ -1,3 +1,10 @@
+## [2.20.2](https://github.com/Rarsus/verabot2.0/compare/v2.20.1...v2.20.2) (2026-01-10)
+
+
+### Bug Fixes
+
+* Resolve database and test result format issues ([00f71b8](https://github.com/Rarsus/verabot2.0/commit/00f71b83b834c640eb5835ba970a05491fc13f9f))
+
 ## [2.20.1](https://github.com/Rarsus/verabot2.0/compare/v2.20.0...v2.20.1) (2026-01-10)
 
 

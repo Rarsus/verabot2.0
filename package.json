@@ -1,6 +1,6 @@
 {
   "name": "verabot2.0",
-  "version": "2.20.1",
+  "version": "2.20.2",
   "description": "Vera bot for Discord",
   "main": "index.js",
   "engines": {
