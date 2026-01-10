@@ -1,3 +1,10 @@
+## [2.20.1](https://github.com/Rarsus/verabot2.0/compare/v2.20.0...v2.20.1) (2026-01-10)
+
+
+### Bug Fixes
+
+* Resolve GitHub Actions workflow failures - Fix test discovery, coverage config, and docker build ([0d62d15](https://github.com/Rarsus/verabot2.0/commit/0d62d158e28358728fbcaaf2b48d3adbd3bef484))
+
 # [2.20.0](https://github.com/Rarsus/verabot2.0/compare/v2.19.0...v2.20.0) (2026-01-09)
 
 
