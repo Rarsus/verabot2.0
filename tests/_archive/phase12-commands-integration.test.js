@@ -49,7 +49,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
 
   describe('Misc Commands', () => {
     it('should handle ping command', async () => {
-      const PingCommand = require('../src/commands/misc/ping.js');
+      const PingCommand = require('../../src/commands/misc/ping.js');
 
       // Command should be a singleton instance
       assert(PingCommand);
@@ -65,7 +65,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should handle help command', async () => {
-      const HelpCommand = require('../src/commands/misc/help.js');
+      const HelpCommand = require('../../src/commands/misc/help.js');
 
       assert(HelpCommand);
       assert.strictEqual(HelpCommand.name, 'help');
@@ -73,7 +73,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should handle hi command', async () => {
-      const HiCommand = require('../src/commands/misc/hi.js');
+      const HiCommand = require('../../src/commands/misc/hi.js');
 
       assert(HiCommand);
       assert.strictEqual(HiCommand.name, 'hi');
@@ -87,7 +87,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
 
   describe('Quote Management Commands', () => {
     it('should have add-quote command with proper structure', async () => {
-      const AddQuoteCommand = require('../src/commands/quote-management/add-quote.js');
+      const AddQuoteCommand = require('../../src/commands/quote-management/add-quote.js');
 
       assert(AddQuoteCommand);
       assert.strictEqual(AddQuoteCommand.name, 'add-quote');
@@ -97,7 +97,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have delete-quote command', async () => {
-      const DeleteQuoteCommand = require('../src/commands/quote-management/delete-quote.js');
+      const DeleteQuoteCommand = require('../../src/commands/quote-management/delete-quote.js');
 
       assert(DeleteQuoteCommand);
       assert.strictEqual(DeleteQuoteCommand.name, 'delete-quote');
@@ -105,7 +105,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have list-quotes command', async () => {
-      const ListQuotesCommand = require('../src/commands/quote-management/list-quotes.js');
+      const ListQuotesCommand = require('../../src/commands/quote-management/list-quotes.js');
 
       assert(ListQuotesCommand);
       assert.strictEqual(ListQuotesCommand.name, 'list-quotes');
@@ -113,7 +113,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have update-quote command', async () => {
-      const UpdateQuoteCommand = require('../src/commands/quote-management/update-quote.js');
+      const UpdateQuoteCommand = require('../../src/commands/quote-management/update-quote.js');
 
       assert(UpdateQuoteCommand);
       assert.strictEqual(UpdateQuoteCommand.name, 'update-quote');
@@ -121,7 +121,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have quote command', async () => {
-      const QuoteCommand = require('../src/commands/quote-management/quote.js');
+      const QuoteCommand = require('../../src/commands/quote-management/quote.js');
 
       assert(QuoteCommand);
       assert.strictEqual(QuoteCommand.name, 'quote');
@@ -135,7 +135,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
 
   describe('Quote Discovery Commands', () => {
     it('should have random-quote command', async () => {
-      const RandomQuoteCommand = require('../src/commands/quote-discovery/random-quote.js');
+      const RandomQuoteCommand = require('../../src/commands/quote-discovery/random-quote.js');
 
       assert(RandomQuoteCommand);
       assert.strictEqual(RandomQuoteCommand.name, 'random-quote');
@@ -143,7 +143,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have search-quotes command', async () => {
-      const SearchQuotesCommand = require('../src/commands/quote-discovery/search-quotes.js');
+      const SearchQuotesCommand = require('../../src/commands/quote-discovery/search-quotes.js');
 
       assert(SearchQuotesCommand);
       assert.strictEqual(SearchQuotesCommand.name, 'search-quotes');
@@ -151,7 +151,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have quote-stats command', async () => {
-      const QuoteStatsCommand = require('../src/commands/quote-discovery/quote-stats.js');
+      const QuoteStatsCommand = require('../../src/commands/quote-discovery/quote-stats.js');
 
       assert(QuoteStatsCommand);
       assert.strictEqual(QuoteStatsCommand.name, 'quote-stats');
@@ -165,7 +165,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
 
   describe('Quote Social Commands', () => {
     it('should have rate-quote command', async () => {
-      const RateQuoteCommand = require('../src/commands/quote-social/rate-quote.js');
+      const RateQuoteCommand = require('../../src/commands/quote-social/rate-quote.js');
 
       assert(RateQuoteCommand);
       assert.strictEqual(RateQuoteCommand.name, 'rate-quote');
@@ -173,7 +173,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have tag-quote command', async () => {
-      const TagQuoteCommand = require('../src/commands/quote-social/tag-quote.js');
+      const TagQuoteCommand = require('../../src/commands/quote-social/tag-quote.js');
 
       assert(TagQuoteCommand);
       assert.strictEqual(TagQuoteCommand.name, 'tag-quote');
@@ -187,7 +187,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
 
   describe('Quote Export Command', () => {
     it('should have export-quotes command', async () => {
-      const ExportQuotesCommand = require('../src/commands/quote-export/export-quotes.js');
+      const ExportQuotesCommand = require('../../src/commands/quote-export/export-quotes.js');
 
       assert(ExportQuotesCommand);
       assert.strictEqual(ExportQuotesCommand.name, 'export-quotes');
@@ -201,7 +201,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
 
   describe('Reminder Management Commands', () => {
     it('should have create-reminder command', async () => {
-      const CreateReminderCommand = require('../src/commands/reminder-management/create-reminder.js');
+      const CreateReminderCommand = require('../../src/commands/reminder-management/create-reminder.js');
 
       assert(CreateReminderCommand);
       assert.strictEqual(CreateReminderCommand.name, 'create-reminder');
@@ -209,7 +209,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have delete-reminder command', async () => {
-      const DeleteReminderCommand = require('../src/commands/reminder-management/delete-reminder.js');
+      const DeleteReminderCommand = require('../../src/commands/reminder-management/delete-reminder.js');
 
       assert(DeleteReminderCommand);
       assert.strictEqual(DeleteReminderCommand.name, 'delete-reminder');
@@ -217,7 +217,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have get-reminder command', async () => {
-      const GetReminderCommand = require('../src/commands/reminder-management/get-reminder.js');
+      const GetReminderCommand = require('../../src/commands/reminder-management/get-reminder.js');
 
       assert(GetReminderCommand);
       assert.strictEqual(GetReminderCommand.name, 'get-reminder');
@@ -225,7 +225,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have list-reminders command', async () => {
-      const ListRemindersCommand = require('../src/commands/reminder-management/list-reminders.js');
+      const ListRemindersCommand = require('../../src/commands/reminder-management/list-reminders.js');
 
       assert(ListRemindersCommand);
       assert.strictEqual(ListRemindersCommand.name, 'list-reminders');
@@ -233,7 +233,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have search-reminders command', async () => {
-      const SearchRemindersCommand = require('../src/commands/reminder-management/search-reminders.js');
+      const SearchRemindersCommand = require('../../src/commands/reminder-management/search-reminders.js');
 
       assert(SearchRemindersCommand);
       assert.strictEqual(SearchRemindersCommand.name, 'search-reminders');
@@ -241,7 +241,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have update-reminder command', async () => {
-      const UpdateReminderCommand = require('../src/commands/reminder-management/update-reminder.js');
+      const UpdateReminderCommand = require('../../src/commands/reminder-management/update-reminder.js');
 
       assert(UpdateReminderCommand);
       assert.strictEqual(UpdateReminderCommand.name, 'update-reminder');
@@ -255,7 +255,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
 
   describe('User Preferences Commands', () => {
     it('should have opt-in command', async () => {
-      const OptInCommand = require('../src/commands/user-preferences/opt-in.js');
+      const OptInCommand = require('../../src/commands/user-preferences/opt-in.js');
 
       assert(OptInCommand);
       assert.strictEqual(OptInCommand.name, 'opt-in');
@@ -263,7 +263,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have opt-out command', async () => {
-      const OptOutCommand = require('../src/commands/user-preferences/opt-out.js');
+      const OptOutCommand = require('../../src/commands/user-preferences/opt-out.js');
 
       assert(OptOutCommand);
       assert.strictEqual(OptOutCommand.name, 'opt-out');
@@ -271,7 +271,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have opt-in-request command', async () => {
-      const OptInRequestCommand = require('../src/commands/user-preferences/opt-in-request.js');
+      const OptInRequestCommand = require('../../src/commands/user-preferences/opt-in-request.js');
 
       assert(OptInRequestCommand);
       assert.strictEqual(OptInRequestCommand.name, 'opt-in-request');
@@ -279,7 +279,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have comm-status command', async () => {
-      const CommStatusCommand = require('../src/commands/user-preferences/comm-status.js');
+      const CommStatusCommand = require('../../src/commands/user-preferences/comm-status.js');
 
       assert(CommStatusCommand);
       assert.strictEqual(CommStatusCommand.name, 'comm-status');
@@ -293,7 +293,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
 
   describe('Admin Commands', () => {
     it('should have broadcast command', async () => {
-      const BroadcastCommand = require('../src/commands/admin/broadcast.js');
+      const BroadcastCommand = require('../../src/commands/admin/broadcast.js');
 
       assert(BroadcastCommand);
       assert.strictEqual(BroadcastCommand.name, 'broadcast');
@@ -301,7 +301,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have say command', async () => {
-      const SayCommand = require('../src/commands/admin/say.js');
+      const SayCommand = require('../../src/commands/admin/say.js');
 
       assert(SayCommand);
       assert.strictEqual(SayCommand.name, 'say');
@@ -309,7 +309,7 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have proxy-status command', async () => {
-      const ProxyStatusCommand = require('../src/commands/admin/proxy-status.js');
+      const ProxyStatusCommand = require('../../src/commands/admin/proxy-status.js');
 
       assert(ProxyStatusCommand);
       assert.strictEqual(ProxyStatusCommand.name, 'proxy-status');
@@ -325,11 +325,11 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     it('should have all commands extending CommandBase', async () => {
       // Sample commands from different categories
       const commands = [
-        require('../src/commands/misc/ping.js'),
-        require('../src/commands/quote-management/add-quote.js'),
-        require('../src/commands/quote-discovery/random-quote.js'),
-        require('../src/commands/reminder-management/create-reminder.js'),
-        require('../src/commands/admin/broadcast.js'),
+        require('../../src/commands/misc/ping.js'),
+        require('../../src/commands/quote-management/add-quote.js'),
+        require('../../src/commands/quote-discovery/random-quote.js'),
+        require('../../src/commands/reminder-management/create-reminder.js'),
+        require('../../src/commands/admin/broadcast.js'),
       ];
 
       commands.forEach((cmd) => {
@@ -341,16 +341,16 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
 
     it('should have all commands registered as singletons', async () => {
       // Commands are instantiated and exported when required
-      const AddQuoteCommand = require('../src/commands/quote-management/add-quote.js');
-      const AddQuoteCommand2 = require('../src/commands/quote-management/add-quote.js');
+      const AddQuoteCommand = require('../../src/commands/quote-management/add-quote.js');
+      const AddQuoteCommand2 = require('../../src/commands/quote-management/add-quote.js');
 
       // Same instance should be returned
       assert.strictEqual(AddQuoteCommand, AddQuoteCommand2);
     });
 
     it('should have consistent permission structures', async () => {
-      const PingCommand = require('../src/commands/misc/ping.js');
-      const AddQuoteCommand = require('../src/commands/quote-management/add-quote.js');
+      const PingCommand = require('../../src/commands/misc/ping.js');
+      const AddQuoteCommand = require('../../src/commands/quote-management/add-quote.js');
 
       // All commands should have permissions or default permissions
       assert(PingCommand.permissions || PingCommand.data);
@@ -358,8 +358,8 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
     });
 
     it('should have consistent option structures', async () => {
-      const AddQuoteCommand = require('../src/commands/quote-management/add-quote.js');
-      const RandomQuoteCommand = require('../src/commands/quote-discovery/random-quote.js');
+      const AddQuoteCommand = require('../../src/commands/quote-management/add-quote.js');
+      const RandomQuoteCommand = require('../../src/commands/quote-discovery/random-quote.js');
 
       // Commands should have options defined
       assert(AddQuoteCommand.options !== undefined);
@@ -368,8 +368,8 @@ describe('Phase 12: Command Implementation Integration Tests', () => {
 
     it('should handle both prefix and slash contexts', async () => {
       const commands = [
-        require('../src/commands/misc/ping.js'),
-        require('../src/commands/quote-management/add-quote.js'),
+        require('../../src/commands/misc/ping.js'),
+        require('../../src/commands/quote-management/add-quote.js'),
       ];
 
       commands.forEach((cmd) => {

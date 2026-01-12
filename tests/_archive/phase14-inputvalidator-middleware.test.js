@@ -13,7 +13,7 @@ const {
   detectXSS,
   sanitizeString,
   RateLimiter,
-} = require('../src/middleware/inputValidator');
+} = require('../../src/middleware/inputValidator');
 
 describe('InputValidator Middleware', () => {
   // ============================================

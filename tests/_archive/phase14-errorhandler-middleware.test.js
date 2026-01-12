@@ -12,7 +12,7 @@ const {
   validateQuoteText,
   validateAuthor,
   validateQuoteNumber,
-} = require('../src/middleware/errorHandler');
+} = require('../../src/middleware/errorHandler');
 
 describe('ErrorHandler Middleware', () => {
   // Capture console.error output

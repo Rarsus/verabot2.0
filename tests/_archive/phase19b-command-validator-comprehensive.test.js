@@ -4,7 +4,7 @@
  */
 
 const assert = require('assert');
-const { validateCommand } = require('../src/middleware/commandValidator');
+const { validateCommand } = require('../../src/middleware/commandValidator');
 
 describe('Command Validator Middleware', () => {
   describe('validateCommand()', () => {

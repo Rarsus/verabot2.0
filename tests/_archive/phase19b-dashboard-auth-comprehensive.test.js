@@ -5,7 +5,7 @@
 
 const assert = require('assert');
 const jwt = require('jsonwebtoken');
-const dashboardAuth = require('../src/middleware/dashboard-auth');
+const dashboardAuth = require('../../src/middleware/dashboard-auth');
 
 describe('Dashboard Auth Middleware', () => {
   let middleware;
@@ -59,12 +59,12 @@ describe('Dashboard Auth Middleware', () => {
       delete process.env.SESSION_SECRET;
 
       // Re-require to get fresh instance
-      delete require.cache[require.resolve('../src/middleware/dashboard-auth')];
-      const testMiddleware = require('../src/middleware/dashboard-auth');
+      delete require.cache[require.resolve('../../src/middleware/dashboard-auth')];
+      const testMiddleware = require('../../src/middleware/dashboard-auth');
       assert.strictEqual(testMiddleware.jwtSecret, 'your-secret-key-change-in-production');
 
       process.env.SESSION_SECRET = originalSecret;
-      delete require.cache[require.resolve('../src/middleware/dashboard-auth')];
+      delete require.cache[require.resolve('../../src/middleware/dashboard-auth')];
     });
 
     it('should have verifyToken method', () => {
@@ -596,13 +596,13 @@ describe('Dashboard Auth Middleware', () => {
       delete process.env.BOT_API_TOKEN;
 
       // Re-require to get fresh instance
-      delete require.cache[require.resolve('../src/middleware/dashboard-auth')];
-      const testMiddleware = require('../src/middleware/dashboard-auth');
+      delete require.cache[require.resolve('../../src/middleware/dashboard-auth')];
+      const testMiddleware = require('../../src/middleware/dashboard-auth');
       assert.ok(testMiddleware.jwtSecret);
 
       process.env.SESSION_SECRET = originalSecret;
       process.env.BOT_API_TOKEN = originalToken;
-      delete require.cache[require.resolve('../src/middleware/dashboard-auth')];
+      delete require.cache[require.resolve('../../src/middleware/dashboard-auth')];
     });
 
     it('should not throw on invalid JWT', () => {

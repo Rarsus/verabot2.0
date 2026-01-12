@@ -4,7 +4,7 @@
  */
 
 const assert = require('assert');
-const { log, LOG_LEVELS } = require('../src/middleware/logger');
+const { log, LOG_LEVELS } = require('../../src/middleware/logger');
 
 describe('Logger Middleware', () => {
   // Capture console.log output
