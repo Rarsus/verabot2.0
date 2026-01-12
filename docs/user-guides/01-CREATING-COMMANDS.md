@@ -54,6 +54,8 @@ Create a new file: `src/commands/misc/mycommand.js`
 const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
+const quoteService = require('../../services/QuoteService'); // For database operations
+const guildDbService = require('../../services/GuildAwareDatabaseService'); // For guild-specific queries
 
 // Define command options
 const { data, options } = buildCommandOptions('mycommand', 'Does something cool', [
@@ -374,35 +376,96 @@ class RateCommand extends Command {
 
 ## Working with the Database
 
-### Query Examples
+### Guild-Aware Database Operations (RECOMMENDED)
+
+**Always use guild-aware services for database access.** This ensures data isolation across guilds.
 
 ```javascript
-// SELECT - Get single row
+// Import guild-aware services (NOT the legacy db.js)
+const QuoteService = require('../../services/QuoteService');
+const GuildAwareReminderService = require('../../services/GuildAwareReminderService');
+const guildDbService = require('../../services/GuildAwareDatabaseService');
+
+// Get guild ID from interaction
+const guildId = interaction.guildId;
+
+// ✅ CORRECT - QuoteService with guild context
+const quote = await QuoteService.getQuoteById(guildId, id);
+const quotes = await QuoteService.getAllQuotes(guildId);
+await QuoteService.addQuote(guildId, text, author);
+
+// ✅ CORRECT - ReminderService with guild context
+const reminder = await GuildAwareReminderService.getReminderById(guildId, id);
+await GuildAwareReminderService.addReminder(guildId, userId, text, dueDate);
+
+// ✅ CORRECT - Direct database queries with guild context
+const result = await guildDbService.executeQuery(guildId, sql, params);
+```
+
+### Legacy Query Examples (DO NOT USE - Deprecated)
+
+```javascript
+// ❌ WRONG - db.js wrapper has no guild context
 const item = await db.get('SELECT * FROM items WHERE id = ?', [id]);
 
-// SELECT - Get multiple rows
+// ❌ WRONG - No guild isolation
 const items = await db.all('SELECT * FROM items WHERE category = ?', [category]);
 
-// COUNT
-const count = await db.get('SELECT COUNT(*) as count FROM items');
+// These should be replaced with guild-aware services
+```
 
-// INSERT
-await db.run('INSERT INTO items (name, value) VALUES (?, ?)', [name, value]);
+### Prepared Statement Examples
+
+```javascript
+// SELECT - Get single row (guild-aware)
+const item = await guildDbService.executeQuery(
+  guildId,
+  'SELECT * FROM items WHERE id = ?',
+  [id]
+);
+
+// SELECT - Get multiple rows
+const items = await guildDbService.executeQuery(
+  guildId,
+  'SELECT * FROM items WHERE category = ?',
+  [category]
+);
+
+// COUNT
+const countResult = await guildDbService.executeQuery(
+  guildId,
+  'SELECT COUNT(*) as count FROM items'
+);
+
+// INSERT (guild-aware)
+await guildDbService.executeQuery(
+  guildId,
+  'INSERT INTO items (name, value, guild_id) VALUES (?, ?, ?)',
+  [name, value, guildId]
+);
 
 // UPDATE
-await db.run('UPDATE items SET value = ? WHERE id = ?', [newValue, id]);
+await guildDbService.executeQuery(
+  guildId,
+  'UPDATE items SET value = ? WHERE id = ? AND guild_id = ?',
+  [newValue, id, guildId]
+);
 
 // DELETE
-await db.run('DELETE FROM items WHERE id = ?', [id]);
+await guildDbService.executeQuery(
+  guildId,
+  'DELETE FROM items WHERE id = ? AND guild_id = ?',
+  [id, guildId]
+);
 
 // TRANSACTION
-await db.run('BEGIN TRANSACTION');
+await guildDbService.executeQuery(guildId, 'BEGIN TRANSACTION');
 try {
-  await db.run('INSERT INTO ...');
-  await db.run('UPDATE FROM ...');
-  await db.run('COMMIT');
+  await guildDbService.executeQuery(guildId, 'INSERT INTO ...');
+  await guildDbService.executeQuery(guildId, 'UPDATE FROM ...');
+  await guildDbService.executeQuery(guildId, 'COMMIT');
 } catch {
-  await db.run('ROLLBACK');
+  await guildDbService.executeQuery(guildId, 'ROLLBACK');
   throw error;
 }
 ```
@@ -411,17 +474,37 @@ try {
 
 ## Working with Discord.js
 
-### Sending Messages
+### Sending Messages (Always Use Response Helpers)
+
+**Use response helpers for all Discord messages.** They provide consistent formatting and error handling.
 
 ```javascript
-// Using response helpers (recommended)
-await sendSuccess(interaction, 'Done!', true);
-await sendError(interaction, 'Error occurred', true);
-await sendQuoteEmbed(interaction, quote, 'Title');
+// ✅ RECOMMENDED - Use response helpers from src/utils/helpers/response-helpers.js
+const { 
+  sendSuccess, 
+  sendError, 
+  sendQuoteEmbed,
+  sendDM 
+} = require('../../utils/helpers/response-helpers');
 
-// Direct Discord.js (if needed)
-await interaction.reply({ content: 'Hello!', ephemeral: true });
-await interaction.channel.send('Hello!');
+// Send success message (ephemeral by default for interactions)
+await sendSuccess(interaction, 'Operation successful!');
+await sendSuccess(message.channel, 'Operation successful!');
+
+// Send error message
+await sendError(interaction, 'Something went wrong', true);
+await sendError(message.channel, 'Something went wrong');
+
+// Send formatted embed (for quotes, data display, etc)
+await sendQuoteEmbed(interaction, quote, 'Quote Title');
+
+// Send direct message to user
+const user = interaction.user;
+await sendDM(user, 'Your reminder is here!');
+
+// ❌ DO NOT use raw Discord API calls
+await interaction.reply({ content: 'Message', ephemeral: true }); // Wrong
+await message.channel.send('Message'); // Wrong
 ```
 
 ### User Information

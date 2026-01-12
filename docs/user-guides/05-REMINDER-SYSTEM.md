@@ -1,5 +1,56 @@
 # Reminder System Guide
 
+## Important: Guild-Aware Operations
+
+**All reminder operations are guild-specific.** Each guild has isolated reminders - a reminder created in Guild A is not visible in Guild B.
+
+### Using the Reminder Service
+
+```javascript
+// ✅ CORRECT - Use GuildAwareReminderService with guild context
+const GuildAwareReminderService = require('../../services/GuildAwareReminderService');
+
+// Always provide guild ID as the first parameter
+const guildId = interaction.guildId;
+
+// Get a specific reminder
+const reminder = await GuildAwareReminderService.getReminderById(guildId, id);
+
+// Get all reminders for this guild
+const reminders = await GuildAwareReminderService.getAllReminders(guildId);
+
+// Create a new reminder (guild-specific)
+const newReminder = await GuildAwareReminderService.addReminder(
+  guildId,
+  userId,
+  subject,
+  category,
+  whenDateTime,
+  content,
+  link,
+  image
+);
+
+// Update a reminder
+await GuildAwareReminderService.updateReminder(guildId, id, { status: 'completed' });
+
+// Delete a reminder
+await GuildAwareReminderService.deleteReminder(guildId, id);
+
+// Search reminders in this guild
+const results = await GuildAwareReminderService.searchReminders(guildId, keyword);
+
+// ❌ DO NOT - Don't use legacy db.js (has no guild context)
+const reminder = await db.getReminder(id); // WRONG - crosses guild boundaries
+```
+
+### Guild Isolation Benefits
+
+- ✅ Data privacy - Each guild's reminders are isolated
+- ✅ No cross-guild data leaks
+- ✅ Scalable for multi-guild deployments
+- ✅ Clear guild context in all operations
+
 ## Overview
 
 The Reminder Management System is a comprehensive feature for VeraBot 2.0 that enables users to create, manage, and receive automated reminders. The system supports scheduled notifications, user/role assignments, rich content including links and images, and flexible filtering and searching capabilities.
@@ -212,6 +263,7 @@ An embed showing matching reminders with keyword context highlighted.
 | Column           | Type     | Description                                       |
 | ---------------- | -------- | ------------------------------------------------- |
 | id               | INTEGER  | Primary key                                       |
+| guild_id         | TEXT     | Guild ID (required, for guild isolation)          |
 | subject          | TEXT     | Reminder title (required)                         |
 | category         | TEXT     | Category for organization (required)              |
 | when_datetime    | TEXT     | Event date/time ISO format (required)             |
@@ -228,6 +280,7 @@ An embed showing matching reminders with keyword context highlighted.
 | Column       | Type     | Description              |
 | ------------ | -------- | ------------------------ |
 | id           | INTEGER  | Primary key              |
+| guild_id     | TEXT     | Guild ID (for isolation) |
 | reminderId   | INTEGER  | Foreign key to reminders |
 | assigneeType | TEXT     | 'user' or 'role'         |
 | assigneeId   | TEXT     | User ID or Role ID       |
@@ -238,6 +291,7 @@ An embed showing matching reminders with keyword context highlighted.
 | Column       | Type     | Description                  |
 | ------------ | -------- | ---------------------------- |
 | id           | INTEGER  | Primary key                  |
+| guild_id     | TEXT     | Guild ID (for isolation)     |
 | reminderId   | INTEGER  | Foreign key to reminders     |
 | sentAt       | DATETIME | When notification was sent   |
 | success      | INTEGER  | 1 if successful, 0 if failed |

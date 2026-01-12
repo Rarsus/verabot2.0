@@ -2,6 +2,54 @@
 
 Welcome to VeraBot's opt-in communication system! This guide explains how the system works, why it's important, and how to use it.
 
+## Permission Tier System
+
+VeraBot uses a **Tier 0-4 Permission System** to control access to reminder and communication features:
+
+| Tier | Level | Permission | Can Create Reminders | Can Send Opt-In Requests |
+|------|-------|-----------|---------------------|--------------------------|
+| **0** | No Access | ❌ Blocked | No | No |
+| **1** | User | ✅ Basic Access | Yes (for self) | No |
+| **2** | Trusted | ✅ Power User | Yes (for others) | Yes |
+| **3** | Moderator | ✅ Admin Actions | Yes (all) | Yes (with notify) |
+| **4** | Administrator | ✅ Full Access | Yes (all) | Yes (all) |
+
+### Permission Examples
+
+**Tier 0 (No Access)**
+- Cannot use any reminder commands
+- Cannot receive or opt in
+- Usually for bots or restricted users
+
+**Tier 1 (User)**
+- Can create reminders for themselves
+- Can opt in to receive reminders from others
+- Cannot create reminders for other users
+
+**Tier 2 (Trusted)**
+- Can create reminders for other users
+- Can send opt-in requests
+- Can manage their own reminders
+
+**Tier 3 (Moderator)**
+- Can create reminders for anyone
+- Can forcefully send reminders to opted-out users (with notification)
+- Can manage all reminders in the guild
+- Can view opt-in statistics
+
+**Tier 4 (Administrator)**
+- Full access to all reminder features
+- Can manage user permissions
+- Can view and export all reminders
+- Can configure opt-in settings
+
+### Setting User Permissions
+
+```
+/set-permission user:@John tier:2
+/set-permission user:@Jane tier:3
+```
+
 ## Quick Summary
 
 VeraBot lets you **control whether you want to receive direct messages** from the bot. When someone creates a reminder for you but you haven't opted in, they'll be notified and given choices about how to proceed. You stay in control of your communication preferences!
