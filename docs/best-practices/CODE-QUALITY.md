@@ -33,8 +33,8 @@ const config = { enabled: true };
 const arr = [1, 2, 3];
 
 // ❌ No spaces inside brackets/braces
-const bad1 = { key: 'value' };
-const bad2 = [1, 2, 3];
+const bad1 = {key:'value'};
+const bad2 = [1,2,3];
 ```
 
 #### Variable Declaration
