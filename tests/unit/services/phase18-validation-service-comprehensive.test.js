@@ -4,7 +4,7 @@
  */
 
 describe('Validation Service Comprehensive', () => {
-  const ValidationService = require('../src/services/ValidationService');
+  const ValidationService = require('../../src/services/ValidationService');
 
   describe('validateQuoteText', () => {
     it('should validate correct quote text', () => {

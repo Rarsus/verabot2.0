@@ -6,7 +6,7 @@
  */
 
 const assert = require('assert');
-const guildAwareReminderService = require('../src/services/GuildAwareReminderService');
+const guildAwareReminderService = require('../../src/services/GuildAwareReminderService');
 
 describe('Phase 17: Reminder Commands', () => {
   // Cleanup test reminders after each test
@@ -39,7 +39,7 @@ describe('Phase 17: Reminder Commands', () => {
     }
 
     // Clean up database manager resources
-    const manager = require('../src/services/GuildDatabaseManager');
+    const manager = require('../../src/services/GuildDatabaseManager');
     if (manager && typeof manager.closeAllDatabases === 'function') {
       try {
         await manager.closeAllDatabases();

@@ -15,7 +15,7 @@
 
  
 const assert = require('assert');
-const ProxyConfigService = require('../src/services/ProxyConfigService');
+const ProxyConfigService = require('../../src/services/ProxyConfigService');
 
 describe('Phase 13A: ProxyConfigService Integration Tests', () => {
   let service;

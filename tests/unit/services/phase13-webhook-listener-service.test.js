@@ -16,8 +16,8 @@
 
  
 const assert = require('assert');
-const WebhookListenerService = require('../src/services/WebhookListenerService');
-const { createHmacSignature } = require('../src/utils/encryption');
+const WebhookListenerService = require('../../src/services/WebhookListenerService');
+const { createHmacSignature } = require('../../src/utils/encryption');
 
 describe('Phase 13C: WebhookListenerService Integration Tests', () => {
   let service;

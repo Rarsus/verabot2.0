@@ -6,7 +6,7 @@
  */
 
 const assert = require('assert');
-const guildAwareDbService = require('../src/services/GuildAwareDatabaseService');
+const guildAwareDbService = require('../../src/services/GuildAwareDatabaseService');
 
 describe('Phase 17: Quote Commands', () => {
   // GuildAwareDatabaseService manages its own databases

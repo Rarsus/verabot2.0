@@ -5,7 +5,7 @@
  */
 
 // Mock error-handler before requiring command-base
-jest.mock('../src/utils/error-handler', () => ({
+jest.mock('../../src/middleware/errorHandler', () => ({
   logError: jest.fn(),
   ERROR_LEVELS: {
     LOW: 'LOW',
@@ -35,7 +35,7 @@ describe('Command Base & Options Comprehensive', () => {
     beforeEach(() => {
       jest.resetModules();
       jest.clearAllMocks();
-      Command = require('../src/utils/command-base');
+      Command = require('../../src/core/CommandBase');
       mockError = new Error('Test error');
     });
 
@@ -107,7 +107,7 @@ describe('Command Base & Options Comprehensive', () => {
       });
 
       it('should catch and log errors', async () => {
-        const { logError } = require('../src/utils/error-handler');
+        const { logError } = require('../../src/middleware/errorHandler');
         const cmd = new Command({
           name: 'test',
           description: 'test',
@@ -247,7 +247,7 @@ describe('Command Base & Options Comprehensive', () => {
       });
 
       it('should handle reply error gracefully', async () => {
-        const { logError } = require('../src/utils/error-handler');
+        const { logError } = require('../../src/middleware/errorHandler');
         const cmd = new Command({
           name: 'test',
           description: 'test',
@@ -378,7 +378,7 @@ describe('Command Base & Options Comprehensive', () => {
 
     beforeEach(() => {
       jest.resetModules();
-      buildCommandOptions = require('../src/utils/command-options');
+      buildCommandOptions = require('../../src/core/CommandOptions');
       jest.clearAllMocks();
     });
 
@@ -562,8 +562,8 @@ describe('Command Base & Options Comprehensive', () => {
 
   describe('Integration: Command with Options', () => {
     it('should create command with options and register', () => {
-      const Command = require('../src/utils/command-base');
-      const buildCommandOptions = require('../src/utils/command-options');
+      const Command = require('../../src/core/CommandBase');
+      const buildCommandOptions = require('../../src/core/CommandOptions');
 
       const { data, options } = buildCommandOptions('add-quote', 'Add a new quote', [
         { name: 'text', type: 'string', description: 'Quote text', required: true },

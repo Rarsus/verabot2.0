@@ -5,7 +5,7 @@
  */
 
 const assert = require('assert');
-const CacheManager = require('../src/services/CacheManager');
+const CacheManager = require('../../src/services/CacheManager');
 
 describe('CacheManager', () => {
   let cache;

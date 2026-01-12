@@ -84,7 +84,7 @@ Module.prototype.require = function (id) {
   return originalRequire.apply(this, arguments);
 };
 
-const DatabasePool = require('../src/services/DatabasePool');
+const DatabasePool = require('../../src/services/DatabasePool');
 
 // Increase Jest timeout for DatabasePool tests
 jest.setTimeout(10000);

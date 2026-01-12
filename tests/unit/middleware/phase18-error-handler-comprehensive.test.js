@@ -12,7 +12,7 @@ describe('Error Handler Comprehensive', () => {
     validateQuoteText,
     validateAuthor,
     validateQuoteNumber,
-  } = require('../src/utils/error-handler');
+  } = require('../../src/middleware/errorHandler');
 
   beforeEach(() => {
     // Suppress console output during tests

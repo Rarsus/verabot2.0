@@ -22,7 +22,7 @@ const {
   resolveChannels,
   resolveUsers,
   resolveRoles,
-} = require('../src/utils/helpers/resolution-helpers');
+} = require('../../src/utils/helpers/resolution-helpers');
 
 describe('Phase 13D: ResolutionHelpers Utility Tests', () => {
   let mockGuild;

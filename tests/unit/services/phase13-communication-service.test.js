@@ -50,7 +50,7 @@ describe('Phase 13B: CommunicationService Integration Tests', () => {
             }));
 
             // Now require the service
-            communicationService = require('../src/services/CommunicationService');
+            communicationService = require('../../src/services/CommunicationService');
             done();
           }
         }

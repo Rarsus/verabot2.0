@@ -5,7 +5,7 @@
 
 const assert = require('assert');
 const { EmbedBuilder } = require('discord.js');
-const { createReminderEmbed } = require('../src/services/ReminderNotificationService');
+const { createReminderEmbed } = require('../../src/services/ReminderNotificationService');
 
 describe('ReminderNotificationService', () => {
   describe('createReminderEmbed()', () => {

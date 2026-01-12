@@ -21,7 +21,7 @@ describe('Response Helpers Comprehensive', () => {
     sendError,
     sendDM,
     deferReply,
-  } = require('../src/utils/response-helpers');
+  } = require('../../src/utils/helpers/response-helpers');
 
   describe('sendQuoteEmbed', () => {
     let mockInteraction;
