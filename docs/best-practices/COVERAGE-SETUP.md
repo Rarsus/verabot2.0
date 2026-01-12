@@ -2,28 +2,34 @@
 
 This guide explains how to use the code coverage infrastructure in VeraBot2.0.
 
+**Updated:** January 12, 2026 (Phase 19 Complete)  
+**Current Coverage:** 31.6% (1,896+ tests passing)  
+**Target Coverage:** 90%+
+
 ## Overview
 
-VeraBot2.0 uses [c8](https://github.com/bcoe/c8) for code coverage reporting. c8 is a modern code coverage tool that uses V8's built-in coverage features for accurate, fast coverage analysis.
+VeraBot2.0 uses **Jest 30.2.0** for comprehensive testing with code coverage reporting. Jest provides fast, reliable test execution with built-in coverage analysis using V8.
 
 ## Coverage Configuration
 
-Coverage is configured in `.c8rc.json` with the following settings:
+Coverage is configured in `jest.config.js` with the following targets:
 
-### Coverage Thresholds
+### Coverage Thresholds (Phase 19 Target)
 
-- **Lines:** 70% minimum
-- **Functions:** 70% minimum
-- **Branches:** 65% minimum
-- **Statements:** 70% minimum
+- **Lines:** 90% minimum (currently 31.6%)
+- **Functions:** 95% minimum (currently 82.7%)
+- **Branches:** 85% minimum (currently 74.7%)
+- **Statements:** 90% minimum
 
 ### Report Formats
 
-Coverage reports are generated in three formats:
+Coverage reports are generated in multiple formats:
 
-- **text** - Console output with summary
+- **text** - Console output with summary and uncovered lines
+- **text-summary** - Brief console summary
 - **html** - Browsable HTML report in `coverage/` directory
 - **lcov** - Machine-readable format for CI/CD integration
+- **json** - JSON format for programmatic access
 
 ### Excluded Files
 
@@ -32,32 +38,20 @@ The following are excluded from coverage:
 - `tests/**` - Test files
 - `node_modules/**` - Dependencies
 - `coverage/**` - Coverage reports
-- `**/*.test.js` - Test files
-- `**/*.spec.js` - Spec files
-- `src/index.js` - Application entry point (integration-level)
-- `src/commands/**` - Command files (integration-level testing)
-- `src/db.js` - Wrapper for DatabaseService (tested via DatabaseService tests)
-- Infrastructure and deprecated utility files
+- `dist/**` - Build output
+- Deprecated locations (src/utils/command-base.js, etc.)
 
-**Coverage Focus:** Core business logic in services, middleware, and utility helpers. DatabaseService is the single source of truth for all database operations.
+**Coverage Focus:** Core business logic in services, middleware, commands, and utility helpers.
 
 ## NPM Scripts
 
 ### Run Tests with Coverage
 
 ```bash
-npm run test:coverage
+npm run test:jest:coverage
 ```
 
-Runs all tests and generates coverage report.
-
-### Generate Coverage Report
-
-```bash
-npm run coverage:report
-```
-
-Generates coverage reports in all configured formats without running tests.
+Runs all tests and generates coverage report with detailed HTML output.
 
 ### Check Coverage Thresholds
 
@@ -67,73 +61,98 @@ npm run coverage:check
 
 Verifies that coverage meets the configured thresholds. Exits with error if thresholds are not met.
 
-## Test Files Structure
+## Test Files Structure (Phase 19)
 
-Coverage tests are organized by layer:
+Coverage tests are organized into 40+ test files across multiple categories:
 
-### Service Layer Tests
+### Core Framework Tests (100% coverage)
 
-- `tests/unit/test-services-database.js` - DatabaseService (20+ tests)
-- `tests/unit/test-services-validation.js` - ValidationService (15+ tests)
-- `tests/unit/test-services-quote.js` - QuoteService (12+ tests)
+- `tests/unit/test-command-base.js` - CommandBase class (7 tests)
+- `tests/unit/test-command-options.js` - CommandOptions builder (10 tests)
+- `tests/unit/test-middleware-errorhandler.js` - Error handler (11 tests)
+- `tests/unit/test-middleware-logger.js` - Logger (11 tests)
+- `tests/unit/test-middleware-validator.js` - Command validator (11 tests)
+- `tests/unit/test-response-helpers.js` - Response helpers (18 tests)
 
-### Middleware Tests
+### Infrastructure Service Tests (80%+ coverage)
 
-- `tests/unit/test-middleware-errorhandler.js` - Error handler (15+ tests)
-- `tests/unit/test-middleware-logger.js` - Logger (10+ tests)
-- `tests/unit/test-middleware-validator.js` - Command validator (10+ tests)
+- `tests/unit/test-cache-manager.js` - CacheManager (38 tests, 98.82% coverage)
+- `tests/unit/test-database-pool.js` - DatabasePool (54 tests, 44+ passing)
+- `tests/unit/test-migration-manager.js` - MigrationManager (32 tests)
+- `tests/unit/test-performance-monitor.js` - PerformanceMonitor (36 tests)
+- `tests/unit/test-query-builder.js` - QueryBuilder (27 tests)
 
-### Utility Tests
+### Business Logic Tests (50%+ coverage)
 
-- `tests/unit/test-command-base.js` - Command base class tests
-- `tests/unit/test-command-options.js` - Options builder tests
-- `tests/unit/test-response-helpers.js` - Response helper tests
+- `tests/unit/test-services-database.js` - DatabaseService (19 tests)
+- `tests/unit/test-services-quote.js` - QuoteService (13 tests)
+- `tests/unit/test-reminder-notifications.js` - Notifications (12 tests)
+- `tests/unit/test-reminder-service.js` - ReminderService (25 tests)
+
+### Command Tests (30%+ coverage)
+
+- `tests/unit/test-misc-commands.js` - Misc commands (13 tests)
+- `tests/unit/test-reminder-commands.js` - Reminder commands (15 tests)
+- `tests/unit/test-quotes-advanced.js` - Advanced features (18 tests)
 
 ## Viewing Coverage Reports
 
 ### HTML Reports
 
-After running `npm run test:coverage`, open the HTML report:
+After running `npm run test:jest:coverage`, open the HTML report:
 
 ```bash
-open coverage/index.html  # macOS
-xdg-open coverage/index.html  # Linux
-start coverage/index.html  # Windows
+open coverage/lcov-report/index.html  # macOS
+xdg-open coverage/lcov-report/index.html  # Linux
+start coverage/lcov-report/index.html  # Windows
 ```
 
 The HTML report provides:
 
 - Per-file coverage statistics
-- Line-by-line coverage highlighting
-- Drill-down to specific functions
-- Branch coverage visualization
+- Line-by-line coverage highlighting with uncovered line numbers
+- Drill-down to specific functions and branches
+- Coverage trends over time
 
 ### Console Reports
 
-Text reports show a summary table:
+Text reports show coverage summary:
 
 ```
-File                  | % Stmts | % Branch | % Funcs | % Lines |
---------------------- | ------- | -------- | ------- | ------- |
-src/services/         |   85.5  |   72.3   |   90.1  |   86.2  |
-src/middleware/       |   78.9  |   68.5   |   82.3  |   79.1  |
-...
+SUMMARY: 31.6% statements, 74.7% branches, 82.7% functions, 31.6% lines
+1,896 passing (98.5%)
+7 failing (DatabasePool mocking issues)
 ```
 
-## Coverage Goals
+## Coverage Goals & Roadmap
 
-### Current Status (Week 1) - ACHIEVED ✓
+### Phase 19 Status (COMPLETE) ✓
 
-- **Target:** 70%+ overall coverage
-- **Achieved:** 77.5% statement coverage
-- **Tests:** 150+ individual tests across 20 test suites
-- **Focus:** Service layer and middleware
+- **Achievement:** 1,896+ tests passing (98.5%)
+- **Coverage:** 31.6% global (40+ test files)
+- **New Tests:** 180+ created for infrastructure services
+- **Fully Tested:** 7 modules at 90%+ coverage
 
-**Detailed Coverage:**
+### Phase 20 Goals (In Progress)
 
-- Core (CommandBase, CommandOptions): 98.5%
-- Middleware (logger, errorHandler, validator): 73.2%
-- Services (Database, Quote, Validation, etc.): 73.7%
+- **Target:** 70-75% global coverage
+- **Work:** Service layer testing, test file migration
+- **Timeline:** 1-2 weeks
+- **Tests:** +500-600 additional tests
+
+### Phase 21+ Goals
+
+- **Target:** 85-90% global coverage
+- **Work:** Command implementations, edge cases
+- **Timeline:** 2-3 weeks
+- **Tests:** +200-300 additional tests
+
+### Maintenance
+
+- **Never decrease** existing coverage
+- **Always improve** coverage with new code
+- **Review coverage** before each major release
+- **Refactor tests** for clarity and maintainability
 - Utilities (helpers, encryption, proxy): 86.6%
 
 ### Future Goals

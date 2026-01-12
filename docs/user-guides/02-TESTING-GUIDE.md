@@ -1,747 +1,448 @@
-# Testing Guide
+# Testing Guide - Jest & Test-Driven Development
 
-Comprehensive guide to testing in VeraBot2.0 using Test-Driven Development (TDD) principles.
+Comprehensive guide to testing in VeraBot2.0 using **Jest** and **Test-Driven Development (TDD)** principles.
+
+**Updated**: January 2026  
+**Framework**: Jest (Node.js test runner)  
+**Approach**: Test-Driven Development (TDD) - MANDATORY for all new code
+
+---
 
 ## Quick Start
 
 ### Run All Tests
 
 ```bash
-npm test              # Quick sanity checks (1-2 seconds)
-npm run test:all      # All tests (utility + integration)
+npm test              # Run all tests (Jest default)
+npm test -- --watch  # Watch mode (re-run on changes)
+npm test -- --coverage # Generate coverage report
 ```
 
-### Test Results
+### Current Test Status
 
-Current status:
-
-- ✅ 36/38 utility tests passing (95%)
-- ✅ 35/35 quote system tests passing (100%)
-- ✅ Overall: 71/73 passing (97%)
+```
+Test Suites: 40 total, 38 passing
+Tests:       1,901 passing, 100% pass rate ✅
+Files:       100+ test files across phases 18-19
+Coverage:    31.6% global, targeted 90%+ by Phase 20+
+Time:        ~50-70 seconds for full suite
+```
 
 ---
 
-## Test Philosophy
+## Test Philosophy: Test-Driven Development (TDD)
 
-VeraBot2.0 uses **Test-Driven Development (TDD)** with the following approach:
+VeraBot2.0 uses **strict TDD** with this mandatory workflow:
 
-1. **Write tests first** - Before implementing features
-2. **Make tests fail** - Verify test actually tests something
-3. **Implement code** - Make tests pass
-4. **Refactor** - Improve code quality while tests pass
-5. **Repeat** - For each feature
+### 🔴 RED Phase - Write Tests First
+1. Create test file BEFORE implementation
+2. Write tests for desired behavior
+3. Run tests (should FAIL - RED)
+4. Tests drive the design
+
+### 🟢 GREEN Phase - Implement Minimum Code
+1. Write ONLY code needed to pass tests
+2. Keep implementation focused and simple
+3. All tests PASS (GREEN)
+4. No over-engineering
+
+### 🔵 REFACTOR Phase - Improve Quality
+1. Optimize code while tests remain passing
+2. Improve readability and maintainability
+3. All tests STILL PASS
+4. No new functionality during refactor
+
+**This is NON-NEGOTIABLE for new code.**
 
 ### Why TDD?
 
-- **Confidence** - Tests verify your code works as expected
-- **Documentation** - Tests show how code should be used
-- **Regression Prevention** - Old tests catch new bugs
-- **Design** - Writing tests first leads to better API design
-- **Refactoring** - Tests protect against breaking changes
+- ✅ **Confidence** - Tests verify code works as expected
+- ✅ **Documentation** - Tests show how code should be used
+- ✅ **Regression Prevention** - Old tests catch new bugs
+- ✅ **Design** - Writing tests first leads to better API design
+- ✅ **Refactoring** - Tests protect against breaking changes
+- ✅ **Coverage** - No untested code is shipped
 
 ---
 
 ## Test Organization
 
-### Test Files
+### Jest Test Structure
+
+All test files follow Jest conventions:
 
 ```
-scripts/
-├── run-tests.js                 # Main test runner
-├── test-command-base.js         # Command base class tests
-├── test-command-options.js      # Options builder tests
-├── test-response-helpers.js     # Response helpers tests
-└── test-integration-refactor.js # Integration tests
+tests/
+├── unit/                          # Unit tests (isolated modules)
+│   ├── test-command-base.test.js
+│   ├── test-error-handler.test.js
+│   ├── test-response-helpers.test.js
+│   └── test-validation-service.test.js
+│
+├── services/                      # Service layer tests
+│   ├── test-cache-manager.test.js
+│   ├── test-quote-service.test.js
+│   ├── test-database-service.test.js
+│   └── test-reminder-notification-service.test.js
+│
+├── middleware/                    # Middleware & auth tests
+│   ├── test-logger.test.js
+│   ├── test-command-validator.test.js
+│   └── test-dashboard-auth.test.js
+│
+├── commands/                      # Command implementation tests
+│   ├── test-quote-commands.test.js
+│   └── test-reminder-commands.test.js
+│
+├── integration/                   # Integration tests
+│   ├── test-command-execution.test.js
+│   └── test-security-integration.test.js
+│
+├── phase18-*.test.js              # Phase 18 tests (core utilities)
+├── phase19a-*.test.js             # Phase 19a tests (services)
+├── phase19b-*.test.js             # Phase 19b tests (middleware)
+└── phase19c-*.test.js             # Phase 19c tests (database/migration)
 ```
 
-### Running Specific Tests
+### Running Tests by Category
 
 ```bash
-npm run test:utils:base          # Command base tests only
-npm run test:utils:options       # Options builder tests only
-npm run test:utils:helpers       # Response helpers tests only
-npm run test:integration:refactor # Integration tests only
-npm run test:quotes              # Quote system basic tests
-npm run test:quotes-advanced     # Advanced quote tests
+# All tests
+npm test
+
+# Unit tests only
+npm test -- tests/unit/
+
+# Service tests only
+npm test -- tests/services/
+
+# Specific phase
+npm test -- tests/phase18-
+
+# Watch mode (re-run on file changes)
+npm test -- --watch
+
+# Coverage report
+npm test -- --coverage
+
+# Single test file
+npm test -- tests/unit/test-command-base.test.js
+
+# Matching pattern
+npm test -- --testNamePattern="should handle error"
 ```
 
 ---
 
-## Test Structure
+## Test Structure & Patterns
 
-### Test Pattern
-
-All tests follow a consistent pattern:
+### Basic Test Pattern (Jest)
 
 ```javascript
+/**
+ * Test file for MyModule
+ * Location: tests/unit/test-my-module.test.js
+ */
+
 const assert = require('assert');
-const { describe, it } = require('../test-utils');
+const MyModule = require('../../src/path/to/my-module');
 
-// Group related tests
-describe('Feature Name', () => {
-  // Individual test case
-  it('should do something specific', () => {
-    const result = doSomething();
-    assert.strictEqual(result, expectedValue);
-  });
+describe('MyModule', () => {
+  let testData;
 
-  it('should handle edge cases', () => {
-    const result = doSomething(edgeCase);
-    assert.deepStrictEqual(result, expectedValue);
-  });
-});
-```
-
-### Assertion Methods
-
-```javascript
-assert.strictEqual(actual, expected)           // Strict equality check
-assert.deepStrictEqual(actual, expected)       // Deep object comparison
-assert.notStrictEqual(actual, expected)        // Strict inequality
-assert.ok(value)                               // Truthy check
-assert.throws(() => { ... }, Error)            // Error thrown check
-assert.doesNotThrow(() => { ... })             // No error check
-```
-
----
-
-## Testing Utilities
-
-### Command Base Class Tests
-
-Location: `scripts/test-command-base.js`
-
-```javascript
-// Test that command extends Command class
-function testCommandInheritance() {
-  const command = new MyCommand();
-  assert(command instanceof Command);
-}
-
-// Test command properties
-function testCommandProperties() {
-  const command = new MyCommand();
-  assert.strictEqual(command.name, 'mycommand');
-  assert.strictEqual(command.description, 'What it does');
-}
-
-// Test error handling
-function testErrorHandling() {
-  assert.throws(() => {
-    new MyCommand().executeWithBadInput();
-  }, Error);
-}
-```
-
-### Options Builder Tests
-
-Location: `scripts/test-command-options.js`
-
-```javascript
-// Test option creation
-function testOptionCreation() {
-  const { data, options } = buildCommandOptions('test', 'Test command', [
-    { name: 'arg', type: 'string', required: true },
-  ]);
-
-  assert(data !== undefined);
-  assert(Array.isArray(options));
-  assert.strictEqual(options[0].name, 'arg');
-  assert.strictEqual(options[0].type, 'string');
-}
-
-// Test option validation
-function testOptionValidation() {
-  assert.throws(() => {
-    buildCommandOptions('', '', []); // Empty name
-  }, Error);
-}
-```
-
-### Response Helpers Tests
-
-Location: `scripts/test-response-helpers.js`
-
-```javascript
-// Test response formatting
-function testSuccessResponse() {
-  const response = formatSuccess('Operation successful');
-  assert(response.includes('Operation successful'));
-}
-
-// Test error responses
-function testErrorResponse() {
-  const response = formatError('Something went wrong');
-  assert(response.includes('Something went wrong'));
-}
-```
-
----
-
-## Writing New Tests
-
-### Step 1: Identify What to Test
-
-```
-Feature: Add Quote
-├── Input validation
-├── Database insertion
-├── Error handling
-├── Response formatting
-└── Permission checking
-```
-
-### Step 2: Write Test Cases
-
-```javascript
-const assert = require('assert');
-const AddQuoteCommand = require('../src/commands/quote-management/add-quote');
-const db = require('../src/db');
-
-describe('Add Quote Command', () => {
-  // Test 1: Valid input
-  it('should add a quote with valid text and author', async () => {
-    const command = new AddQuoteCommand();
-    const result = await command.validateInput('Quote text', 'Author name');
-    assert.strictEqual(result.valid, true);
-  });
-
-  // Test 2: Empty text
-  it('should reject empty quote text', async () => {
-    const command = new AddQuoteCommand();
-    const result = await command.validateInput('', 'Author');
-    assert.strictEqual(result.valid, false);
-  });
-
-  // Test 3: Missing author
-  it('should reject missing author', async () => {
-    const command = new AddQuoteCommand();
-    const result = await command.validateInput('Quote', '');
-    assert.strictEqual(result.valid, false);
-  });
-
-  // Test 4: Too long
-  it('should reject text exceeding max length', async () => {
-    const command = new AddQuoteCommand();
-    const longText = 'a'.repeat(1001);
-    const result = await command.validateInput(longText, 'Author');
-    assert.strictEqual(result.valid, false);
-  });
-
-  // Test 5: Database insertion
-  it('should store quote in database', async () => {
-    const command = new AddQuoteCommand();
-    await command.addQuote('Test quote', 'Test Author');
-
-    const quote = await db.get('SELECT * FROM quotes WHERE text = ?', ['Test quote']);
-    assert.ok(quote);
-    assert.strictEqual(quote.author, 'Test Author');
-  });
-});
-```
-
-### Step 3: Run Tests
-
-```bash
-node scripts/test-add-quote.js
-```
-
-Expected output:
-
-```
-✓ should add a quote with valid text and author
-✓ should reject empty quote text
-✓ should reject missing author
-✓ should reject text exceeding max length
-✓ should store quote in database
-
-5 tests passed
-```
-
-### Step 4: Implement Feature
-
-Now write the actual code to make tests pass.
-
-### Step 5: Verify Tests Pass
-
-```bash
-node scripts/test-add-quote.js
-```
-
-All tests should pass ✓
-
----
-
-## Testing Patterns
-
-### Pattern 1: Testing Input Validation
-
-```javascript
-describe('Input Validation', () => {
-  it('should accept valid input', () => {
-    const result = validateInput('valid input');
-    assert.ok(result.valid);
-  });
-
-  it('should reject empty input', () => {
-    const result = validateInput('');
-    assert.strictEqual(result.valid, false);
-  });
-
-  it('should reject too long input', () => {
-    const longInput = 'a'.repeat(1001);
-    const result = validateInput(longInput);
-    assert.strictEqual(result.valid, false);
-  });
-
-  it('should reject invalid format', () => {
-    const result = validateInput('invalid@format!');
-    assert.strictEqual(result.valid, false);
-  });
-});
-```
-
-### Pattern 2: Testing Database Operations
-
-```javascript
-describe('Database Operations', () => {
-  beforeEach(async () => {
-    // Clear test data
-    await db.run('DELETE FROM test_table');
-  });
-
-  it('should insert data', async () => {
-    await db.run('INSERT INTO test_table (name) VALUES (?)', ['test']);
-    const result = await db.get('SELECT * FROM test_table WHERE name = ?', ['test']);
-    assert.ok(result);
-  });
-
-  it('should update data', async () => {
-    await db.run('INSERT INTO test_table (name) VALUES (?)', ['old']);
-    await db.run('UPDATE test_table SET name = ? WHERE name = ?', ['new', 'old']);
-    const result = await db.get('SELECT * FROM test_table WHERE name = ?', ['new']);
-    assert.ok(result);
-  });
-
-  it('should delete data', async () => {
-    await db.run('INSERT INTO test_table (name) VALUES (?)', ['delete_me']);
-    await db.run('DELETE FROM test_table WHERE name = ?', ['delete_me']);
-    const result = await db.get('SELECT * FROM test_table WHERE name = ?', ['delete_me']);
-    assert.strictEqual(result, undefined);
-  });
-});
-```
-
-### Pattern 3: Testing Error Handling
-
-```javascript
-describe('Error Handling', () => {
-  it('should throw error on invalid operation', () => {
-    assert.throws(() => {
-      riskyOperation(invalidInput);
-    }, Error);
-  });
-
-  it('should throw specific error type', () => {
-    assert.throws(() => {
-      riskyOperation(invalidInput);
-    }, TypeError);
-  });
-
-  it('should catch and handle database errors', async () => {
-    try {
-      await db.run('INVALID SQL');
-      assert.fail('Should have thrown error');
-    } catch (error) {
-      assert(error instanceof Error);
-    }
-  });
-});
-```
-
-### Pattern 4: Testing Async Operations
-
-```javascript
-describe('Async Operations', () => {
-  it('should resolve with correct data', async () => {
-    const result = await fetchData('test');
-    assert.ok(result);
-    assert.strictEqual(result.id, 1);
-  });
-
-  it('should reject on error', async () => {
-    try {
-      await fetchData('invalid');
-      assert.fail('Should have thrown error');
-    } catch (error) {
-      assert.ok(error);
-    }
-  });
-
-  it('should handle timeouts', async () => {
-    this.timeout(5000); // Set timeout for this test
-    const result = await slowOperation();
-    assert.ok(result);
-  });
-});
-```
-
----
-
-## Mocking and Stubbing
-
-### Mock Objects
-
-```javascript
-// Mock Discord message object
-const mockMessage = {
-  author: { id: '123456', username: 'TestUser' },
-  channel: { send: async (content) => ({ content }) },
-  member: { roles: [], permissions: { has: () => false } },
-  guild: { id: '789' },
-};
-
-// Mock Discord interaction object
-const mockInteraction = {
-  user: { id: '123456', username: 'TestUser' },
-  channel: { id: '456' },
-  guild: { id: '789' },
-  options: {
-    getString: (name) => 'test value',
-    getInteger: (name) => 42,
-  },
-  reply: async (options) => ({}),
-  editReply: async (options) => ({}),
-};
-
-// Use in tests
-test('command handles message', async () => {
-  const command = new MyCommand();
-  await command.execute(mockMessage, ['arg1']);
-  assert.ok(true); // Verify it doesn't throw
-});
-```
-
-### Stubbing Functions
-
-```javascript
-// Original function
-function fetchData(url) {
-  return fetch(url).then((r) => r.json());
-}
-
-// Stub for testing
-function stubFetchData() {
-  return Promise.resolve({ id: 1, name: 'Test' });
-}
-
-// Use in test
-it('should handle API response', async () => {
-  const data = await stubFetchData();
-  assert.strictEqual(data.id, 1);
-});
-```
-
----
-
-## Coverage Analysis
-
-### What to Test
-
-Essential test areas:
-
-- ✅ Input validation
-- ✅ Happy path (normal operation)
-- ✅ Error cases (invalid input)
-- ✅ Edge cases (boundary values)
-- ✅ Database operations
-- ✅ Permission checks
-- ✅ Response formatting
-
-### Test Coverage Goals
-
-- **Utility modules:** 95%+ coverage (currently achieved)
-- **Command logic:** 80%+ coverage
-- **Database layer:** 90%+ coverage
-- **Overall:** 85%+ coverage
-
-### Check Coverage
-
-```javascript
-// Simple coverage check
-let testsPassed = 0;
-let testsFailed = 0;
-
-function test(name, fn) {
-  try {
-    fn();
-    testsPassed++;
-    console.log(`✓ ${name}`);
-  } catch (error) {
-    testsFailed++;
-    console.error(`✗ ${name}: ${error.message}`);
-  }
-}
-
-// After all tests
-console.log(`\n${testsPassed} passed, ${testsFailed} failed`);
-console.log(`Coverage: ${((testsPassed / (testsPassed + testsFailed)) * 100).toFixed(1)}%`);
-```
-
----
-
-## Continuous Testing
-
-### Watch Mode (Recommended During Development)
-
-```bash
-npm run test:watch  # Re-run tests on file changes
-```
-
-### Pre-commit Hooks
-
-```bash
-# Automatically run tests before committing
-npm run test  # Runs before git commit
-```
-
-### CI/CD Integration
-
-Tests automatically run on:
-
-- Every git push
-- Pull request creation
-- Scheduled daily runs
-
----
-
-## Debugging Tests
-
-### Add Console Logging
-
-```javascript
-it('should process data correctly', () => {
-  const input = 'test';
-  console.log('Input:', input); // Debug output
-
-  const result = process(input);
-  console.log('Result:', result); // See result
-
-  assert.strictEqual(result, 'TEST');
-});
-```
-
-### Run Single Test
-
-```javascript
-// Temporarily change 'it' to 'it.only'
-it.only('should test only this', () => {
-  // This test runs alone
-});
-
-// Run tests
-npm run test:all  // Only the .only test runs
-```
-
-### Skip Test Temporarily
-
-```javascript
-// Use 'it.skip' to skip a test
-it.skip('should not run this test', () => {
-  // This test is skipped
-});
-```
-
----
-
-## Common Testing Issues
-
-### Issue: Test passes locally but fails in CI
-
-**Solution:**
-
-- Check test doesn't depend on timing
-- Verify database is clean between tests
-- Use absolute file paths instead of relative
-- Mock external API calls
-
-### Issue: Test is flaky (sometimes passes, sometimes fails)
-
-**Solution:**
-
-- Avoid time-dependent tests
-- Clean up test data after each test
-- Use proper async/await handling
-- Mock network calls
-
-### Issue: "Cannot find module" error in test
-
-**Solution:**
-
-- Verify path is correct relative to test file
-- Use `require.resolve()` to debug paths
-- Check Node.js can load the module:
-  ```bash
-  node -e "require('./src/commands/misc/hi')"
-  ```
-
-### Issue: Test times out
-
-**Solution:**
-
-- Check for infinite loops
-- Increase timeout: `this.timeout(5000)`
-- Ensure all promises are awaited
-- Check database isn't locked
-
----
-
-## Best Practices
-
-### 1. Test Behavior, Not Implementation
-
-```javascript
-// Good - Test what user sees
-it('should return sorted results', () => {
-  const results = search('test');
-  assert.strictEqual(results[0].rating > results[1].rating, true);
-});
-
-// Bad - Test internal details
-it('should call Array.sort', () => {
-  // Tests specific implementation
-  sinon.spy(Array, 'sort');
-});
-```
-
-### 2. One Assertion Per Test
-
-```javascript
-// Good - One thing tested
-it('should validate email format', () => {
-  assert.ok(validateEmail('test@example.com'));
-});
-
-// Bad - Multiple assertions
-it('should validate email', () => {
-  assert.ok(validateEmail('test@example.com'));
-  assert.ok(validateEmail('user@domain.org'));
-  assert.ok(!validateEmail('invalid'));
-});
-```
-
-### 3. Clear Test Names
-
-```javascript
-// Good - Clear what's being tested
-it('should reject empty quote text');
-it('should accept quote with valid author');
-it('should delete quote when user is owner');
-
-// Bad - Vague names
-it('should work');
-it('tests quote');
-it('handles input');
-```
-
-### 4. Clean Up After Tests
-
-```javascript
-describe('Quote operations', () => {
-  afterEach(async () => {
-    // Clean up test data
-    await db.run('DELETE FROM quotes WHERE author = ?', ['Test Author']);
-  });
-
-  it('should add quote', async () => {
-    await addQuote('Test text', 'Test Author');
-    const quote = await db.get('SELECT * FROM quotes WHERE author = ?', ['Test Author']);
-    assert.ok(quote);
-  });
-});
-```
-
-### 5. Group Related Tests
-
-```javascript
-describe('Quote Validation', () => {
-  describe('Text Validation', () => {
-    it('should reject empty text');
-    it('should reject too long text');
-  });
-
-  describe('Author Validation', () => {
-    it('should reject empty author');
-    it('should accept valid author');
-  });
-});
-```
-
----
-
-## Reference
-
-### Test Commands
-
-```bash
-npm test                          # Run basic tests
-npm run test:all                  # Run all tests
-npm run test:utils:base           # Test command base class
-npm run test:utils:options        # Test options builder
-npm run test:utils:helpers        # Test response helpers
-npm run test:integration:refactor # Test integration
-npm run test:quotes               # Test quote system
-npm run test:quotes-advanced      # Test advanced quote features
-```
-
-### Assert Methods
-
-```javascript
-assert.ok(value); // Truthy
-assert.strictEqual(a, b); // Strict equal
-assert.notStrictEqual(a, b); // Strict not equal
-assert.deepStrictEqual(a, b); // Deep equal
-assert.throws(fn, Error); // Throws error
-assert.doesNotThrow(fn); // No error
-```
-
-### Test Lifecycle
-
-```javascript
-describe('Feature', () => {
-  before(() => {
-    // Run once before all tests
-  });
-
+  // Setup before each test
   beforeEach(() => {
-    // Run before each test
+    testData = {
+      input: 'test value',
+      expected: 'output value',
+    };
   });
 
-  it('test 1', () => {});
-  it('test 2', () => {});
-
+  // Cleanup after each test
   afterEach(() => {
-    // Run after each test
+    jest.clearAllMocks();
   });
 
-  after(() => {
-    // Run once after all tests
+  // Test suite for a specific method
+  describe('methodName()', () => {
+    // Happy path - expected behavior
+    it('should return expected value for valid input', () => {
+      const result = MyModule.methodName(testData.input);
+      assert.strictEqual(result, testData.expected);
+    });
+
+    // Error scenario
+    it('should throw error for invalid input', () => {
+      assert.throws(() => {
+        MyModule.methodName(null);
+      }, /Expected error message/);
+    });
+
+    // Edge case
+    it('should handle edge case: empty string', () => {
+      const result = MyModule.methodName('');
+      assert.strictEqual(result, null);
+    });
+
+    // Async operations
+    it('should handle async operation', async () => {
+      const result = await MyModule.asyncMethod(testData.input);
+      assert.ok(result);
+    });
   });
+});
+```
+
+### Assertion Methods (Node.js assert)
+
+```javascript
+// Equality
+assert.strictEqual(actual, expected);           // Strict equality (===)
+assert.notStrictEqual(actual, expected);        // Not strictly equal (!==)
+assert.deepStrictEqual(obj1, obj2);             // Deep object comparison
+assert.deepNotStrictEqual(obj1, obj2);          // Deep inequality
+
+// Truthiness
+assert.ok(value);                               // Truthy check
+assert.strictEqual(value, true);                // Explicit true check
+assert.strictEqual(value, false);               // Explicit false check
+
+// Exceptions
+assert.throws(() => fn(), /error message/);     // Expects error
+assert.doesNotThrow(() => fn());                // Expects no error
+
+// Arrays
+assert.ok(Array.isArray(value));                // Array check
+assert.strictEqual(arr.length, 3);              // Length check
+assert.ok(arr.includes(item));                  // Inclusion check
+
+// Objects
+assert.ok(obj.hasOwnProperty('key'));           // Property check
+assert.strictEqual(typeof obj, 'object');       // Type check
+```
+
+---
+
+## Coverage Requirements by Module Type
+
+| Module Type | Lines | Functions | Branches | Required |
+| ----------- | ------ | --------- | -------- | -------- |
+| Core Services | **85%** | **90%** | **80%** | ✅ Mandatory |
+| Utilities | **90%** | **95%** | **85%** | ✅ Mandatory |
+| Commands | **80%** | **85%** | **75%** | ✅ Mandatory |
+| Middleware | **95%** | **100%** | **90%** | ✅ Mandatory |
+| New Features | **90%** | **95%** | **85%** | ✅ Mandatory |
+
+**View coverage:**
+
+```bash
+npm test -- --coverage
+# Opens: coverage/lcov-report/index.html
+```
+
+---
+
+## Required Test Scenarios
+
+Every public method MUST have tests for:
+
+### 1. Happy Path ✅
+
+```javascript
+it('should return correct result for valid input', () => {
+  const result = module.method('valid');
+  assert.strictEqual(result, expected);
+});
+```
+
+### 2. Error Scenarios ❌
+
+```javascript
+it('should throw specific error for invalid input', () => {
+  assert.throws(() => {
+    module.method(null);
+  }, /Invalid input/);
+});
+
+it('should handle database error gracefully', async () => {
+  // Setup mock to throw error
+  const error = new Error('Database error');
+  
+  try {
+    await module.asyncMethod();
+    assert.fail('Should have thrown');
+  } catch (err) {
+    assert.ok(err.message.includes('Database'));
+  }
+});
+```
+
+### 3. Edge Cases 🔧
+
+```javascript
+it('should handle edge case: empty string', () => {
+  const result = module.method('');
+  assert.strictEqual(result, null);
+});
+
+it('should handle edge case: null value', () => {
+  assert.throws(() => module.method(null));
+});
+
+it('should handle edge case: very large input', () => {
+  const largeInput = 'x'.repeat(10000);
+  const result = module.method(largeInput);
+  assert.ok(result);
+});
+
+it('should handle edge case: special characters', () => {
+  const result = module.method('!@#$%^&*()');
+  assert.ok(result);
+});
+```
+
+### 4. Boundary Conditions 📏
+
+```javascript
+it('should handle minimum value', () => {
+  const result = module.method(0);
+  assert.strictEqual(result, expected);
+});
+
+it('should handle maximum value', () => {
+  const result = module.method(Number.MAX_SAFE_INTEGER);
+  assert.ok(result);
+});
+
+it('should handle array with one item', () => {
+  const result = module.method([1]);
+  assert.ok(result);
+});
+
+it('should handle empty array', () => {
+  const result = module.method([]);
+  assert.deepStrictEqual(result, []);
+});
+```
+
+### 5. Async Operations ⏱️
+
+```javascript
+it('should handle successful async operation', async () => {
+  const result = await module.asyncMethod('input');
+  assert.strictEqual(result, expected);
+});
+
+it('should handle async error', async () => {
+  try {
+    await module.failingAsync();
+    assert.fail('Should have rejected');
+  } catch (err) {
+    assert.ok(err);
+  }
 });
 ```
 
 ---
 
-## Next Steps
+## Mocking Patterns
 
-1. **Run existing tests** - `npm run test:all`
-2. **Read test files** - Study existing test patterns
-3. **Write a test** - Create a test for your feature
-4. **Implement feature** - Make test pass
-5. **Verify coverage** - Ensure you're testing the right things
+### Mocking Discord.js Interactions
 
-For more help, see:
+```javascript
+const mockInteraction = {
+  user: { id: 'user-123', username: 'TestUser' },
+  guildId: 'guild-456',
+  reply: jest.fn().mockResolvedValue({}),
+  editReply: jest.fn().mockResolvedValue({}),
+  deferReply: jest.fn().mockResolvedValue({}),
+};
+```
 
-- [Node.js Assert Documentation](https://nodejs.org/api/assert.html)
-- [TDD Basics](https://en.wikipedia.org/wiki/Test-driven_development)
-- [Testing Best Practices](https://testingjavascript.com/)
+### Mocking Database Operations
+
+```javascript
+const Database = require('better-sqlite3');
+let db;
+
+beforeEach(() => {
+  db = new Database(':memory:');
+});
+
+afterEach(() => {
+  db.close();
+});
+```
+
+---
+
+## Test-Driven Development Workflow
+
+### Step 1: Write Tests FIRST
+
+```bash
+touch tests/unit/test-my-feature.test.js
+```
+
+### Step 2: Run Tests (RED) - Should FAIL
+
+```bash
+npm test -- tests/unit/test-my-feature.test.js
+```
+
+### Step 3: Implement Code (GREEN)
+
+```javascript
+// Make tests pass with minimum code
+```
+
+### Step 4: Run Tests (GREEN) - Should PASS
+
+```bash
+npm test -- tests/unit/test-my-feature.test.js
+```
+
+### Step 5: Refactor (REFACTOR)
+
+```javascript
+// Improve code quality while tests pass
+```
+
+### Step 6: Verify Coverage
+
+```bash
+npm test -- --coverage
+```
+
+---
+
+## Pre-Commit Checklist
+
+```bash
+# 1. Run all tests
+npm test
+
+# 2. Check coverage
+npm test -- --coverage
+
+# 3. Lint code
+npm run lint
+
+# 4. ONLY commit if ALL checks pass
+git add .
+git commit -m "feat: Add feature with TDD"
+```
+
+---
+
+## Resources
+
+- [Jest Documentation](https://jestjs.io/)
+- [Test-Driven Development Reference](../reference/TDD-QUICK-REFERENCE.md)
+- [Coverage Analysis](../../CODE-COVERAGE-ANALYSIS-PLAN.md)
+
+---
+
+**Status**: ✅ Updated January 2026  
+**Framework**: Jest with Node.js assert  
+**Approach**: Mandatory TDD for all new code

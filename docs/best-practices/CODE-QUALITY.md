@@ -7,8 +7,9 @@ This document outlines code quality standards and practices for VeraBot2.0.
 Before every commit, the following checks run automatically:
 
 1. **ESLint** - Code style and quality rules
-2. **Unit Tests** - All 74+ tests must pass
+2. **Unit Tests** - All 1,896+ tests must pass (Phase 19: 98.5% pass rate)
 3. **Documentation Generation** - Test docs auto-update
+4. **Coverage Analysis** - Maintain or improve coverage (current: 31.6%)
 
 If any check fails, the commit is aborted.
 
@@ -174,22 +175,24 @@ try {
 - All public methods must have tests
 - Error cases must be tested
 - Edge cases must be covered
-- Minimum target: 80% coverage
+- **Target coverage:** 90%+ lines, 95%+ functions, 85%+ branches
+- **Phase 19 status:** 31.6% global coverage (1,896+ tests passing)
+- **Enforcement:** Coverage trends must not decrease
 
 ### Running Tests
 
 ```bash
-# Run basic tests
-npm test
+# Run Jest tests with coverage
+npm run test:jest:coverage
 
-# Run all tests including advanced suites
+# Run all tests (1,900+)
 npm run test:all
 
 # Run specific test suite
-npm run test:utils:base
+npm run test:jest:coverage -- tests/unit/test-cache-manager.js
 
-# Generate test documentation
-npm run test:docs
+# Check coverage report
+npm run coverage:report
 ```
 
 ## Documentation Standards

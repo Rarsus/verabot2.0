@@ -2,9 +2,14 @@ module.exports = {
   // Test environment
   testEnvironment: 'node',
 
-  // Test patterns - match all .test.js files
+  // Test patterns - match all .test.js files in functional structure
   testMatch: [
-    '**/tests/**/*.test.js',
+    '<rootDir>/tests/unit/core/**/*.test.js',
+    '<rootDir>/tests/unit/middleware/**/*.test.js',
+    '<rootDir>/tests/unit/services/**/*.test.js',
+    '<rootDir>/tests/unit/commands/**/*.test.js',
+    '<rootDir>/tests/unit/utils/**/*.test.js',
+    '<rootDir>/tests/integration/**/*.test.js',
   ],
   
   // Ignore archived test files that are superseded by later phases
