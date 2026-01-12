@@ -2,6 +2,8 @@
 
 Complete navigation for all VeraBot2.0 documentation. Choose your path below.
 
+**📌 Note:** Archived documentation from completed phases and features is available in [docs/archive/](archive/INDEX.md).
+
 ---
 
 ## 🚀 Quick Start
