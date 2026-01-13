@@ -10,7 +10,7 @@ const fs = require('fs');
 const path = require('path');
 const utils = require('./lib/utils');
 
-const { header, subheader, success, error, warning, formatTable } = utils;
+const { header, subheader, success, error } = utils;
 
 const commandsPath = path.join(__dirname, '..', 'src', 'commands');
 
@@ -40,7 +40,6 @@ function findCommandFiles(dir) {
  * Validate a single command file
  */
 function validateCommand(filePath) {
-  const basename = path.basename(filePath);
   const relativePath = path.relative(commandsPath, filePath);
 
   try {

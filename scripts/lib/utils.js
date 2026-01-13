@@ -229,18 +229,22 @@ function formatTable(rows, columns) {
   // Calculate column widths
   const widths = {};
   columns.forEach((col) => {
+    // eslint-disable-next-line security/detect-object-injection
     widths[col] = Math.max(
       col.length,
+      // eslint-disable-next-line security/detect-object-injection
       ...rows.map((row) => String(row[col] || '').length),
     );
   });
 
   // Build header
+  // eslint-disable-next-line security/detect-object-injection
   let table = columns.map((col) => col.padEnd(widths[col])).join(' | ');
   table += '\n' + '─'.repeat(table.length);
 
   // Build rows
   rows.forEach((row) => {
+    // eslint-disable-next-line security/detect-object-injection
     const cells = columns.map((col) => String(row[col] || '').padEnd(widths[col]));
     table += '\n' + cells.join(' | ');
   });
@@ -283,6 +287,7 @@ function shouldUseColor() {
 // Disable colors globally if needed
 if (!shouldUseColor()) {
   Object.keys(colors).forEach((key) => {
+    // eslint-disable-next-line security/detect-object-injection
     colors[key] = '';
   });
 }
