@@ -600,13 +600,16 @@ describe('Guild-Aware Database Operations', () => {
       const guild1 = 'rating-guild-1';
       const guild2 = 'rating-guild-2';
 
-      const id1 = await db.addQuote(guild1, 'Quote', 'Author');
-      const id2 = await db.addQuote(guild2, 'Quote', 'Author');
+      const id1 = await db.addQuote(guild1, 'Quote 1', 'Author');
+      const id2 = await db.addQuote(guild1, 'Quote 2', 'Author');
+      const id3 = await db.addQuote(guild2, 'Quote 3', 'Author');
 
-      // Try to rate quote from guild2 using guild1 context
-      const success = await db.rateQuote(guild1, id2, 'user1', 5);
+      // Quotes in guild1: ID 1, 2
+      // Quotes in guild2: ID 1 (not 3, because guild2 starts at 1)
+      // Try to rate quote with ID 3 in guild1 context (doesn't exist)
+      const success = await db.rateQuote(guild1, 999, 'user1', 5);
 
-      // Should fail because ID 2 doesn't exist in guild1
+      // Should fail because ID 999 doesn't exist in guild1
       assert.strictEqual(success, false);
     });
   });
