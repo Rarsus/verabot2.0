@@ -4,6 +4,20 @@ This folder contains historical documentation from earlier phases and developmen
 
 ## Folder Structure
 
+### `/docs/` (Consolidated Archive)
+Comprehensive documentation archive reorganized from `/docs/archive/`
+
+**Structure:**
+- **analysis/** - Coverage analysis, test coverage reports, ESLint technical debt
+- **features/** - Feature-specific documentation (webhooks, reminders, etc.)
+- **infrastructure/** - Infrastructure and setup documentation
+- **other/** - Miscellaneous archived documentation
+- **phases/** - Phase-specific documentation (Phase 3+)
+- **process/** - Process documentation (audits, MCP implementation, etc.)
+- **sessions/** - Session summaries and handoff documentation
+
+**Purpose:** Centralized archive for all historical project documentation
+
 ### `/phase-22.1a/`
 Documentation from Phase 22.1a (January 5-6, 2026)
 - **PHASE-22.1a-COMPLETION-REPORT.md** - Final completion report
