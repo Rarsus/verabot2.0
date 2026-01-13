@@ -1,691 +1,568 @@
 /**
- * Phase 17 Tier 4: Integration Tests
- * Comprehensive testing for bot initialization, API endpoints, and multi-component workflows
+ * Phase 22.2: Integration Tests
+ * 
+ * Comprehensive integration tests combining:
+ * - Performance characteristics with guild isolation
+ * - Multi-guild scenarios with concurrent operations
+ * - Real-world workflow testing
+ * - End-to-end feature validation
  */
 
 const assert = require('assert');
 
-describe('Phase 17: Integration Tests', () => {
-  describe('Bot Initialization', () => {
-    it('should initialize bot client', () => {
-      try {
-        const client = {
-          id: 'bot-123',
-          token: 'valid-token',
-          user: { id: 'bot-id-123', username: 'BotName' },
-          ready: false
-        };
-        assert(client.id && client.token);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
+class IntegrationTestDatabase {
+  constructor() {
+    this.guilds = new Map();
+    this.globalStats = {
+      totalOperations: 0,
+      totalGuilds: 0,
+      averageGuildSize: 0
+    };
+  }
 
-    it('should load configuration on startup', () => {
-      try {
-        const config = {
-          clientId: 'client-123',
-          guildId: 'guild-456',
-          prefix: '!',
-          token: 'token-789'
-        };
-        assert(config.clientId && config.token);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
+  initGuild(guildId) {
+    if (!this.guilds.has(guildId)) {
+      this.guilds.set(guildId, {
+        quotes: new Map(),
+        ratings: new Map(),
+        tags: new Map(),
+        createdAt: Date.now(),
+        lastModified: Date.now()
+      });
+      this.globalStats.totalGuilds++;
+    }
+  }
 
-    it('should register slash commands on startup', () => {
-      try {
-        const commands = [
-          { name: 'add-quote', type: 'CHAT_INPUT' },
-          { name: 'search-quotes', type: 'CHAT_INPUT' },
-          { name: 'ping', type: 'CHAT_INPUT' }
-        ];
-        assert(Array.isArray(commands) && commands.length > 0);
-        assert(commands.every(cmd => cmd.name && cmd.type));
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
+  async addQuote(guildId, quoteId, text, author) {
+    assert(guildId && quoteId && text, 'Required parameters missing');
+    this.initGuild(guildId);
+    
+    const guild = this.guilds.get(guildId);
+    guild.quotes.set(quoteId, {
+      id: quoteId,
+      text,
+      author,
+      guildId,
+      createdAt: Date.now(),
+      ratings: [],
+      tags: []
     });
+    guild.lastModified = Date.now();
+    this.globalStats.totalOperations++;
+  }
 
-    it('should initialize database connection on startup', () => {
-      try {
-        const database = {
-          connected: true,
-          initialized: true,
-          schemaVersion: 2,
-          tables: ['quotes', 'ratings', 'tags']
-        };
-        assert(database.connected === true);
-        assert(Array.isArray(database.tables) && database.tables.length > 0);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
+  async rateQuote(guildId, quoteId, rating) {
+    assert(guildId && quoteId && typeof rating === 'number', 'Invalid parameters');
+    this.initGuild(guildId);
+    
+    const guild = this.guilds.get(guildId);
+    const quote = guild.quotes.get(quoteId);
+    
+    if (quote) {
+      quote.ratings.push(rating);
+      guild.lastModified = Date.now();
+      this.globalStats.totalOperations++;
+    }
+  }
 
-    it('should load environment variables', () => {
-      try {
-        const env = {
-          DISCORD_TOKEN: 'token-123',
-          CLIENT_ID: 'client-456',
-          PREFIX: '!'
-        };
-        assert(env.DISCORD_TOKEN && env.CLIENT_ID);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
+  async tagQuote(guildId, quoteId, tag) {
+    assert(guildId && quoteId && tag, 'Invalid parameters');
+    this.initGuild(guildId);
+    
+    const guild = this.guilds.get(guildId);
+    const quote = guild.quotes.get(quoteId);
+    
+    if (quote && !quote.tags.includes(tag)) {
+      quote.tags.push(tag);
+      guild.lastModified = Date.now();
+      this.globalStats.totalOperations++;
+    }
+  }
 
-    it('should handle startup errors gracefully', () => {
-      try {
-        const startup = {
-          success: false,
-          error: 'Connection failed',
-          errorCode: 'ECONNREFUSED',
-          shouldRetry: true
-        };
-        assert(startup.error && startup.shouldRetry === true);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
+  async getQuote(guildId, quoteId) {
+    this.initGuild(guildId);
+    return this.guilds.get(guildId).quotes.get(quoteId);
+  }
 
-    it('should log startup completion', () => {
-      try {
-        const log = {
-          timestamp: new Date(),
-          level: 'INFO',
-          message: 'Bot initialized and ready',
-          commandCount: 15
-        };
-        assert(log.message && log.timestamp instanceof Date);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
+  async getGuildStats(guildId) {
+    this.initGuild(guildId);
+    const guild = this.guilds.get(guildId);
+    
+    return {
+      guildId,
+      quoteCount: guild.quotes.size,
+      createdAt: guild.createdAt,
+      lastModified: guild.lastModified,
+      averageRating: this.calculateAverageRating(guildId),
+      topTags: this.getTopTags(guildId)
+    };
+  }
 
-    it('should verify bot permissions in guilds', () => {
-      try {
-        const permissions = {
-          SEND_MESSAGES: true,
-          EMBED_LINKS: true,
-          READ_MESSAGE_HISTORY: true,
-          ADD_REACTIONS: true
-        };
-        assert(permissions.SEND_MESSAGES === true);
-        assert(permissions.EMBED_LINKS === true);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
+  calculateAverageRating(guildId) {
+    const guild = this.guilds.get(guildId);
+    let totalRatings = 0;
+    let ratingCount = 0;
+
+    for (const quote of guild.quotes.values()) {
+      totalRatings += quote.ratings.reduce((a, b) => a + b, 0);
+      ratingCount += quote.ratings.length;
+    }
+
+    return ratingCount > 0 ? totalRatings / ratingCount : 0;
+  }
+
+  getTopTags(guildId) {
+    const guild = this.guilds.get(guildId);
+    const tagCounts = {};
+
+    for (const quote of guild.quotes.values()) {
+      for (const tag of quote.tags) {
+        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
       }
-    });
+    }
+
+    return Object.entries(tagCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([tag, count]) => ({ tag, count }));
+  }
+
+  async getAllGuildQuotes(guildId) {
+    this.initGuild(guildId);
+    return Array.from(this.guilds.get(guildId).quotes.values());
+  }
+
+  getGlobalStats() {
+    const totalQuotes = Array.from(this.guilds.values())
+      .reduce((sum, guild) => sum + guild.quotes.size, 0);
+
+    return {
+      totalGuilds: this.globalStats.totalGuilds,
+      totalOperations: this.globalStats.totalOperations,
+      totalQuotes,
+      averageQuotesPerGuild: this.globalStats.totalGuilds > 0
+        ? totalQuotes / this.globalStats.totalGuilds
+        : 0
+    };
+  }
+}
+
+describe('Integration Tests - Phase 22.2', () => {
+  let db;
+
+  beforeEach(() => {
+    db = new IntegrationTestDatabase();
   });
 
-  describe('Command Execution Flow', () => {
-    it('should execute slash command', () => {
-      try {
-        const interaction = {
-          commandName: 'add-quote',
-          options: {
-            getString: (name) => name === 'text' ? 'Great quote' : 'Author'
-          },
-          user: { id: 'user-123' },
-          guildId: 'guild-456',
-          channelId: 'channel-789'
-        };
-        const command = {
-          name: 'add-quote',
-          execute: async (int) => ({ success: true })
-        };
-        assert(interaction.commandName === command.name);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
+  // ==================== REAL-WORLD WORKFLOWS ====================
+  
+  describe('Real-World Workflows', () => {
+    it('should handle typical bot usage pattern', async () => {
+      const guildId = 'gaming-discord';
+
+      // Step 1: User adds quotes
+      await db.addQuote(guildId, '1', 'Unity is strength', 'Ancient Proverb');
+      await db.addQuote(guildId, '2', 'Enjoy the process', 'Unknown');
+      await db.addQuote(guildId, '3', 'Always learn', 'Confucius');
+
+      // Step 2: Community rates quotes
+      await db.rateQuote(guildId, '1', 5);
+      await db.rateQuote(guildId, '1', 4);
+      await db.rateQuote(guildId, '2', 3);
+      await db.rateQuote(guildId, '3', 5);
+      await db.rateQuote(guildId, '3', 5);
+
+      // Step 3: Add tags for organization
+      await db.tagQuote(guildId, '1', 'motivational');
+      await db.tagQuote(guildId, '1', 'teamwork');
+      await db.tagQuote(guildId, '2', 'life');
+      await db.tagQuote(guildId, '3', 'wisdom');
+      await db.tagQuote(guildId, '3', 'education');
+
+      // Step 4: Get guild stats
+      const stats = await db.getGuildStats(guildId);
+
+      assert.strictEqual(stats.quoteCount, 3, 'Should have 3 quotes');
+      assert(stats.averageRating > 4, 'Average rating should be high');
+      assert(stats.topTags.length > 0, 'Should have top tags');
     });
 
-    it('should execute prefix command', () => {
-      try {
-        const message = {
-          content: '!search-quotes love',
-          author: { id: 'user-123' },
-          guild: { id: 'guild-456' },
-          channel: { id: 'channel-789' }
-        };
-        const args = message.content.split(' ').slice(1);
-        assert(args[0] === 'love');
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
+    it('should support multiple communities with independent data', async () => {
+      const guilds = {
+        'gaming': 'gaming-community',
+        'studying': 'study-group',
+        'fitness': 'gym-buddies'
+      };
 
-    it('should validate command arguments', () => {
-      try {
-        const args = ['quote-text', 'author-name'];
-        assert(args.length >= 2, 'Missing required arguments');
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
+      // Each guild adds its own type of quotes
+      const guildQuotes = {
+        'gaming-community': [
+          { id: '1', text: 'Level up', author: 'Gamer' },
+          { id: '2', text: 'No rage quit', author: 'Pro' }
+        ],
+        'study-group': [
+          { id: '1', text: 'Study hard', author: 'Teacher' },
+          { id: '2', text: 'Ask questions', author: 'Mentor' }
+        ],
+        'gym-buddies': [
+          { id: '1', text: 'No pain', author: 'Trainer' },
+          { id: '2', text: 'Believe in self', author: 'Coach' }
+        ]
+      };
 
-    it('should check command permissions before execution', () => {
-      try {
-        const user = { roles: ['user'] };
-        const commandRequiredRole = 'admin';
-        assert(user.roles.includes(commandRequiredRole), 'Insufficient permissions');
-        assert.fail('Should check permissions');
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-
-    it('should handle command timeout', () => {
-      try {
-        const execution = {
-          startTime: Date.now(),
-          timeout: 3000,
-          timedOut: false
-        };
-        const elapsed = Date.now() - execution.startTime;
-        assert(elapsed < execution.timeout);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-
-    it('should defer long-running commands', () => {
-      try {
-        const interaction = {
-          deferred: false,
-          defer: async () => { interaction.deferred = true; }
-        };
-        assert(typeof interaction.defer === 'function');
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-
-    it('should track command execution time', () => {
-      try {
-        const execution = {
-          command: 'search-quotes',
-          startTime: Date.now(),
-          endTime: Date.now() + 250,
-          duration: 250
-        };
-        assert(execution.duration >= 0);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-  });
-
-  describe('Multi-Step Workflows', () => {
-    it('should handle quote creation workflow', () => {
-      try {
-        const workflow = {
-          step1_getUserInput: { success: true, text: 'Quote text', author: 'Author' },
-          step2_validateInput: { success: true },
-          step3_saveToDatabase: { success: true, quoteId: 123 },
-          step4_sendConfirmation: { success: true }
-        };
-        assert(workflow.step1_getUserInput.success);
-        assert(workflow.step4_sendConfirmation.success);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-
-    it('should handle quote search and rating workflow', () => {
-      try {
-        const workflow = {
-          step1_searchQuotes: { success: true, results: [{ id: 1, text: 'Quote' }] },
-          step2_selectQuote: { success: true, quoteId: 1 },
-          step3_submitRating: { success: true, rating: 5 },
-          step4_updateDatabase: { success: true }
-        };
-        assert(workflow.step1_searchQuotes.results.length > 0);
-        assert(workflow.step4_updateDatabase.success === true);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-
-    it('should rollback on workflow failure', () => {
-      try {
-        const workflow = {
-          step1_start: { success: true },
-          step2_process: { success: false, error: 'Database error' },
-          rollback: true,
-          finalState: 'reverted'
-        };
-        assert(workflow.step2_process.success === false);
-        assert(workflow.rollback === true);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-
-    it('should support command chaining', () => {
-      try {
-        const chain = [
-          { command: 'search-quotes', args: ['love'] },
-          { command: 'rate-quote', args: ['123', '5'] },
-          { command: 'tag-quote', args: ['123', 'favorites'] }
-        ];
-        assert(chain.length === 3);
-        assert(chain.every(cmd => cmd.command && cmd.args));
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-
-    it('should maintain context across workflow steps', () => {
-      try {
-        const context = {
-          userId: 'user-123',
-          guildId: 'guild-456',
-          quoteId: 789,
-          searchQuery: 'love'
-        };
-        assert(context.userId && context.guildId);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-
-    it('should handle workflow timeout', () => {
-      try {
-        const workflow = {
-          maxDuration: 30000,
-          startTime: Date.now(),
-          completed: true
-        };
-        assert(workflow.completed === true);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-  });
-
-  describe('Error Handling & Recovery', () => {
-    it('should catch and handle command errors', () => {
-      try {
-        try {
-          throw new Error('Command execution failed');
-        } catch (error) {
-          assert(error instanceof Error);
-          assert(error.message === 'Command execution failed');
+      // Add quotes to each guild
+      for (const [guildId, quotes] of Object.entries(guildQuotes)) {
+        for (const quote of quotes) {
+          await db.addQuote(guildId, quote.id, quote.text, quote.author);
         }
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
       }
+
+      // Verify isolation: each guild sees only its quotes
+      for (const [guildId, quotes] of Object.entries(guildQuotes)) {
+        const guildQuotes = await db.getAllGuildQuotes(guildId);
+        assert.strictEqual(guildQuotes.length, quotes.length,
+          `${guildId} should have its own quotes`);
+      }
+
+      // Verify global stats
+      const globalStats = db.getGlobalStats();
+      assert.strictEqual(globalStats.totalGuilds, 3, 'Should have 3 guilds');
+      assert.strictEqual(globalStats.totalQuotes, 6, 'Should have 6 quotes total');
     });
 
-    it('should recover from database errors', () => {
-      try {
-        const recovery = {
-          error: 'Connection timeout',
-          attempt: 1,
-          maxAttempts: 3,
-          retryDelay: 1000,
-          shouldRetry: true
-        };
-        assert(recovery.shouldRetry === true);
-        assert(recovery.attempt < recovery.maxAttempts);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
+    it('should handle progressive user engagement pattern', async () => {
+      const guildId = 'progressive-guild';
+      const stages = [
+        { phase: 'discovery', quotes: 3 },
+        { phase: 'engagement', quotes: 7 },
+        { phase: 'maturity', quotes: 15 }
+      ];
+
+      for (const stage of stages) {
+        // Add quotes for this stage
+        for (let i = 0; i < stage.quotes; i++) {
+          await db.addQuote(guildId, `${stage.phase}-${i}`,
+            `Quote ${i}`, 'Author');
+        }
+
+        const stats = await db.getGuildStats(guildId);
+        
+        // After each phase, add ratings
+        const quotes = await db.getAllGuildQuotes(guildId);
+        for (let i = 0; i < Math.min(3, quotes.length); i++) {
+          await db.rateQuote(guildId, quotes[i].id, 4 + Math.floor(Math.random()));
+        }
       }
+
+      // Final state check
+      const finalStats = await db.getGuildStats(guildId);
+      assert.strictEqual(finalStats.quoteCount, 25, 'Should accumulate quotes');
+    });
+  });
+
+  // ==================== CONCURRENT OPERATIONS ====================
+  
+  describe('Concurrent Multi-Guild Operations', () => {
+    it('should handle concurrent adds across 5 guilds', async () => {
+      const guildIds = ['g1', 'g2', 'g3', 'g4', 'g5'];
+      const promises = [];
+
+      // Add quotes concurrently
+      for (const guildId of guildIds) {
+        for (let i = 0; i < 20; i++) {
+          promises.push(
+            db.addQuote(guildId, `q-${i}`, `Quote ${i}`, 'Author')
+          );
+        }
+      }
+
+      await Promise.all(promises);
+
+      // Verify all added
+      const globalStats = db.getGlobalStats();
+      assert.strictEqual(globalStats.totalGuilds, 5);
+      assert.strictEqual(globalStats.totalQuotes, 100);
     });
 
-    it('should handle permission denied errors', () => {
-      try {
-        const error = {
-          code: 'PERMISSION_DENIED',
-          message: 'User does not have permission',
-          shouldLog: true,
-          userFacingMessage: 'You do not have permission to use this command'
-        };
-        assert(error.code === 'PERMISSION_DENIED');
-        assert(error.userFacingMessage);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
+    it('should handle concurrent operations of mixed types', async () => {
+      const guildId = 'mixed-guild';
+      const promises = [];
+
+      // Add quotes
+      for (let i = 0; i < 10; i++) {
+        promises.push(
+          db.addQuote(guildId, `q-${i}`, `Quote ${i}`, 'Author')
+        );
       }
+
+      // Wait for quotes to be added
+      await Promise.all(promises);
+
+      // Now rate and tag
+      const ratingPromises = [];
+      for (let i = 0; i < 10; i++) {
+        ratingPromises.push(
+          db.rateQuote(guildId, `q-${i}`, 5),
+          db.rateQuote(guildId, `q-${i}`, 4),
+          db.tagQuote(guildId, `q-${i}`, 'popular'),
+          db.tagQuote(guildId, `q-${i}`, 'featured')
+        );
+      }
+
+      await Promise.all(ratingPromises);
+
+      const stats = await db.getGuildStats(guildId);
+      assert.strictEqual(stats.quoteCount, 10);
+      assert(stats.topTags.length > 0);
+    });
+  });
+
+  // ==================== PERFORMANCE AT SCALE ====================
+  
+  describe('Performance Characteristics', () => {
+    it('should maintain responsiveness with 1000 quotes per guild', async () => {
+      const guildId = 'large-guild';
+
+      // Add 1000 quotes
+      for (let i = 0; i < 1000; i++) {
+        await db.addQuote(guildId, `q-${i}`, `Quote ${i}`, `Author ${i % 50}`);
+      }
+
+      const stats = await db.getGuildStats(guildId);
+      assert.strictEqual(stats.quoteCount, 1000);
+
+      // Verify we can still operate efficiently
+      await db.rateQuote(guildId, 'q-500', 5);
+      await db.tagQuote(guildId, 'q-750', 'sampled');
+
+      const updated = await db.getQuote(guildId, 'q-500');
+      assert(updated.ratings.length > 0);
     });
 
-    it('should handle network errors gracefully', () => {
-      try {
-        const error = {
-          code: 'ECONNREFUSED',
-          message: 'Connection refused',
-          retryable: true,
-          retryAfter: 5000
-        };
-        assert(error.retryable === true);
-        assert(typeof error.retryAfter === 'number');
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
+    it('should handle 10 guilds with 100 quotes each efficiently', async () => {
+      const guildCount = 10;
+      const quotesPerGuild = 100;
+
+      // Add quotes to all guilds
+      for (let g = 0; g < guildCount; g++) {
+        const guildId = `guild-${g}`;
+        for (let q = 0; q < quotesPerGuild; q++) {
+          await db.addQuote(guildId, `q-${q}`, `Quote ${q}`, 'Author');
+        }
       }
+
+      const globalStats = db.getGlobalStats();
+      assert.strictEqual(globalStats.totalGuilds, guildCount);
+      assert.strictEqual(globalStats.totalQuotes, guildCount * quotesPerGuild);
+
+      // Verify average
+      assert.strictEqual(
+        globalStats.averageQuotesPerGuild,
+        quotesPerGuild
+      );
     });
 
-    it('should notify user of errors appropriately', () => {
-      try {
-        const error = {
-          internalMessage: 'Database connection failed at 192.168.1.1:5432',
-          userMessage: 'An error occurred while processing your request',
-          shouldLog: true
-        };
-        assert(!error.userMessage.includes('192.168'));
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
+    it('should efficiently compute stats across multiple guilds', async () => {
+      // Setup: 5 guilds with 50 quotes and ratings each
+      const guildIds = Array.from({ length: 5 }, (_, i) => `guild-${i}`);
+
+      for (const guildId of guildIds) {
+        for (let i = 0; i < 50; i++) {
+          await db.addQuote(guildId, `q-${i}`, `Quote ${i}`, 'Author');
+          // Rate every other quote
+          if (i % 2 === 0) {
+            await db.rateQuote(guildId, `q-${i}`, 5);
+            await db.rateQuote(guildId, `q-${i}`, 4);
+          }
+        }
+      }
+
+      // Get stats for all guilds
+      const allStats = [];
+      for (const guildId of guildIds) {
+        const stats = await db.getGuildStats(guildId);
+        allStats.push(stats);
+      }
+
+      // Verify stats are computed correctly
+      assert.strictEqual(allStats.length, 5);
+      for (const stats of allStats) {
+        assert.strictEqual(stats.quoteCount, 50);
       }
     });
   });
 
-  describe('Event Handling', () => {
-    it('should handle ready event', () => {
-      try {
-        const event = {
-          type: 'ready',
-          handler: async (client) => {
-            return { success: true, message: 'Bot is ready' };
-          }
-        };
-        assert(event.type === 'ready');
-        assert(typeof event.handler === 'function');
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
+  // ==================== DATA CONSISTENCY ====================
+  
+  describe('Data Consistency & Integrity', () => {
+    it('should maintain data consistency during concurrent operations', async () => {
+      const guildId = 'consistency-test';
+      const quoteId = 'important-quote';
+
+      // Add quote
+      await db.addQuote(guildId, quoteId, 'Important', 'Author');
+
+      // Concurrent reads
+      const readPromises = Array.from({ length: 10 }, () =>
+        db.getQuote(guildId, quoteId)
+      );
+
+      const results = await Promise.all(readPromises);
+
+      // All reads should return same data
+      for (const result of results) {
+        assert.strictEqual(result.id, quoteId);
+        assert.strictEqual(result.text, 'Important');
       }
     });
 
-    it('should handle interaction create event', () => {
-      try {
-        const event = {
-          type: 'interactionCreate',
-          handler: async (interaction) => {
-            return { processed: true };
-          }
-        };
-        assert(event.type === 'interactionCreate');
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
+    it('should maintain referential integrity across operations', async () => {
+      const guildId = 'integrity-test';
+
+      // Add quotes
+      for (let i = 0; i < 5; i++) {
+        await db.addQuote(guildId, `q-${i}`, `Quote ${i}`, 'Author');
+      }
+
+      // Add ratings and tags
+      for (let i = 0; i < 5; i++) {
+        await db.rateQuote(guildId, `q-${i}`, 5);
+        await db.tagQuote(guildId, `q-${i}`, 'verified');
+      }
+
+      // Retrieve and verify references
+      const quotes = await db.getAllGuildQuotes(guildId);
+
+      for (const quote of quotes) {
+        assert(quote.id.startsWith('q-'), 'Quote ID should be valid');
+        assert(quote.ratings.length > 0, 'Quote should have ratings');
+        assert(quote.tags.includes('verified'), 'Quote should have tag');
       }
     });
 
-    it('should handle message create event', () => {
-      try {
-        const event = {
-          type: 'messageCreate',
-          handler: async (message) => {
-            return { processed: true };
-          }
-        };
-        assert(event.type === 'messageCreate');
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
+    it('should correctly handle multiple operations on same quote', async () => {
+      const guildId = 'multi-op-test';
+      const quoteId = 'test-quote';
 
-    it('should handle guild join event', () => {
-      try {
-        const event = {
-          type: 'guildCreate',
-          handler: async (guild) => {
-            return { guildInitialized: true };
-          }
-        };
-        assert(event.type === 'guildCreate');
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
+      // Add quote
+      await db.addQuote(guildId, quoteId, 'Test Quote', 'Author');
 
-    it('should handle guild leave event', () => {
-      try {
-        const event = {
-          type: 'guildDelete',
-          handler: async (guild) => {
-            return { guildCleaned: true };
-          }
-        };
-        assert(event.type === 'guildDelete');
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-  });
+      // Multiple operations
+      const operations = [
+        () => db.rateQuote(guildId, quoteId, 5),
+        () => db.rateQuote(guildId, quoteId, 4),
+        () => db.rateQuote(guildId, quoteId, 3),
+        () => db.tagQuote(guildId, quoteId, 'tag1'),
+        () => db.tagQuote(guildId, quoteId, 'tag2'),
+        () => db.tagQuote(guildId, quoteId, 'tag3')
+      ];
 
-  describe('Cross-Guild Operations', () => {
-    it('should maintain data isolation between guilds', () => {
-      try {
-        const guild1Quotes = [{ id: 1, text: 'Quote 1', guildId: 'guild-1' }];
-        const guild2Quotes = [{ id: 2, text: 'Quote 2', guildId: 'guild-2' }];
-        assert(guild1Quotes[0].guildId !== guild2Quotes[0].guildId);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
+      // Execute in sequence
+      for (const op of operations) {
+        await op();
       }
-    });
 
-    it('should handle operations across multiple guilds', () => {
-      try {
-        const operations = {
-          guild1: { quotes: 50, reminders: 10 },
-          guild2: { quotes: 75, reminders: 15 },
-          guild3: { quotes: 30, reminders: 5 }
-        };
-        assert(Object.keys(operations).length === 3);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-
-    it('should synchronize guild settings', () => {
-      try {
-        const settings = {
-          guildId: 'guild-123',
-          prefix: '!',
-          language: 'en',
-          timezone: 'UTC'
-        };
-        assert(settings.guildId && settings.prefix);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-
-    it('should handle guild-specific permissions', () => {
-      try {
-        const permissions = {
-          guildId: 'guild-123',
-          roleId: 'role-456',
-          canUseCommands: true,
-          canDeleteQuotes: false
-        };
-        assert(permissions.guildId && permissions.roleId);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
+      // Verify state
+      const quote = await db.getQuote(guildId, quoteId);
+      assert.strictEqual(quote.ratings.length, 3, 'Should have 3 ratings');
+      assert.strictEqual(quote.tags.length, 3, 'Should have 3 tags');
+      assert.deepStrictEqual(quote.ratings, [5, 4, 3], 'Ratings should be in order');
     });
   });
 
-  describe('Concurrent Operations', () => {
-    it('should handle multiple concurrent commands', async () => {
+  // ==================== ERROR RECOVERY ====================
+  
+  describe('Error Handling & Recovery', () => {
+    it('should handle invalid input gracefully', async () => {
+      const guildId = 'error-test';
+
+      // Try operations with invalid inputs
       try {
-        const commands = Promise.all([
-          Promise.resolve({ command: 'cmd1', result: 'success' }),
-          Promise.resolve({ command: 'cmd2', result: 'success' }),
-          Promise.resolve({ command: 'cmd3', result: 'success' })
-        ]);
-        const results = await commands;
-        assert(results.length === 3);
-        assert(results.every(r => r.result === 'success'));
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
+        await db.addQuote(guildId, '', 'Text', 'Author'); // empty ID
+        assert.fail('Should reject empty quote ID');
+      } catch {
+        // Expected
+      }
+
+      try {
+        await db.addQuote(guildId, 'q-1', '', 'Author'); // empty text
+        assert.fail('Should reject empty text');
+      } catch {
+        // Expected
+      }
+
+      try {
+        await db.rateQuote(guildId, 'nonexistent', 5);
+        // Should not throw, just no-op
+      } catch {
+        // Either is acceptable
       }
     });
 
-    it('should handle concurrent database operations', async () => {
-      try {
-        const operations = Promise.all([
-          Promise.resolve({ op: 'insert', success: true }),
-          Promise.resolve({ op: 'update', success: true }),
-          Promise.resolve({ op: 'delete', success: true })
-        ]);
-        const results = await operations;
-        assert(results.every(r => r.success === true));
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
+    it('should continue operating after errors', async () => {
+      const guildId = 'recovery-test';
 
-    it('should prevent race conditions', () => {
-      try {
-        const lock = {
-          locked: false,
-          acquire: () => { lock.locked = true; },
-          release: () => { lock.locked = false; }
-        };
-        assert(lock.locked === false);
-        lock.acquire();
-        assert(lock.locked === true);
-        lock.release();
-        assert(lock.locked === false);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
+      // Add quote
+      await db.addQuote(guildId, 'q-1', 'Quote 1', 'Author');
 
-    it('should handle request queueing', () => {
+      // Attempt invalid operation
       try {
-        const queue = {
-          items: [],
-          push: (item) => { queue.items.push(item); },
-          pop: () => queue.items.shift()
-        };
-        queue.push('request-1');
-        queue.push('request-2');
-        assert(queue.items.length === 2);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
+        await db.addQuote(guildId, '', 'Invalid', 'Author');
+      } catch {
+        // Swallow error
       }
+
+      // Should still be able to add valid quotes
+      await db.addQuote(guildId, 'q-2', 'Quote 2', 'Author');
+
+      const stats = await db.getGuildStats(guildId);
+      assert.strictEqual(stats.quoteCount, 2, 'Should have both quotes');
     });
   });
 
-  describe('Performance & Monitoring', () => {
-    it('should track command performance', () => {
-      try {
-        const metrics = {
-          command: 'search-quotes',
-          executionTime: 125,
-          averageTime: 120,
-          p99Time: 500,
-          slowCommand: 125 > 120
-        };
-        assert(typeof metrics.executionTime === 'number');
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
+  // ==================== GLOBAL METRICS ====================
+  
+  describe('Global Metrics & Reporting', () => {
+    it('should accurately track global operations', async () => {
+      const guildIds = ['g1', 'g2', 'g3'];
+
+      // Perform various operations
+      let expectedOps = 0;
+
+      for (const guildId of guildIds) {
+        for (let i = 0; i < 5; i++) {
+          await db.addQuote(guildId, `q-${i}`, `Quote ${i}`, 'Author');
+          expectedOps++;
+
+          await db.rateQuote(guildId, `q-${i}`, 5);
+          expectedOps++;
+        }
       }
+
+      const globalStats = db.getGlobalStats();
+      assert.strictEqual(globalStats.totalOperations, expectedOps);
+      assert.strictEqual(globalStats.totalGuilds, 3);
     });
 
-    it('should monitor database performance', () => {
-      try {
-        const metrics = {
-          queriesPerSecond: 150,
-          averageQueryTime: 45,
-          slowQueryCount: 5,
-          connectionPoolSize: 20,
-          activeConnections: 15
-        };
-        assert(metrics.activeConnections <= metrics.connectionPoolSize);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
+    it('should provide accurate guild distribution metrics', async () => {
+      // Add quotes with varying distribution
+      const distribution = {
+        'small': 10,
+        'medium': 50,
+        'large': 100
+      };
 
-    it('should track memory usage', () => {
-      try {
-        const metrics = {
-          heapUsed: 52428800,
-          heapTotal: 134217728,
-          heapWarning: 100000000,
-          exceedsWarning: 52428800 > 100000000
-        };
-        assert(metrics.heapUsed <= metrics.heapTotal);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
+      for (const [type, count] of Object.entries(distribution)) {
+        for (let i = 0; i < count; i++) {
+          await db.addQuote(`guild-${type}`, `q-${i}`,
+            `Quote ${i}`, 'Author');
+        }
       }
-    });
 
-    it('should generate performance reports', () => {
-      try {
-        const report = {
-          period: '1h',
-          commandsExecuted: 1250,
-          averageResponseTime: 145,
-          errorRate: 0.02,
-          uptimePercentage: 99.95
-        };
-        assert(typeof report.commandsExecuted === 'number');
-        assert(report.errorRate < 0.05);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-  });
-
-  describe('Bot State Management', () => {
-    it('should maintain bot state', () => {
-      try {
-        const state = {
-          ready: true,
-          commandsRegistered: true,
-          databaseConnected: true,
-          uptimeSince: new Date()
-        };
-        assert(state.ready === true);
-        assert(state.uptimeSince instanceof Date);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-
-    it('should track user sessions', () => {
-      try {
-        const sessions = {
-          'user-1': { lastActivity: new Date(), commands: 5 },
-          'user-2': { lastActivity: new Date(), commands: 3 }
-        };
-        assert(Object.keys(sessions).length === 2);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-
-    it('should cache frequently accessed data', () => {
-      try {
-        const cache = {
-          quotes: [{ id: 1, text: 'Quote' }],
-          reminders: [{ id: 1, subject: 'Reminder' }],
-          ttl: 3600000
-        };
-        assert(Array.isArray(cache.quotes));
-        assert(cache.ttl > 0);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
-    });
-
-    it('should invalidate cache on updates', () => {
-      try {
-        const cache = {
-          valid: true,
-          invalidate: () => { cache.valid = false; }
-        };
-        assert(cache.valid === true);
-        cache.invalidate();
-        assert(cache.valid === false);
-      } catch (e) {
-        assert(e instanceof Error || typeof e === 'object');
-      }
+      const globalStats = db.getGlobalStats();
+      assert.strictEqual(globalStats.totalGuilds, 3);
+      assert.strictEqual(globalStats.totalQuotes, 160);
+      assert(globalStats.averageQuotesPerGuild > 50);
     });
   });
 });

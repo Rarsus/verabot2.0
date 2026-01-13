@@ -7,7 +7,7 @@ This document serves as a reference for ensuring VeraBot2.0 remains stable and r
 ### Code Quality
 
 - [ ] All linting errors resolved (npm run lint)
-- [ ] All 74+ tests passing (npm run test:all)
+- [ ] All 1525 tests passing (npm run test:all)
 - [ ] No console warnings related to errors
 - [ ] Code review completed
 - [ ] Test coverage >= 80%

@@ -22,8 +22,8 @@ GitHub Actions now automatically tests, validates, and builds your code on every
 **On Every Push to `main`:**
 ```
 ✅ Lint checking (ESLint)
-✅ Full test suite (1,896+ tests passing, 98.5% pass rate)
-✅ Coverage reporting (current: 31.6% global)
+✅ Full test suite (1525 tests passing, 100% pass rate)
+✅ Coverage reporting (current: 22.93% lines / 32.69% functions / 16.4% branches)
 ✅ Security audit (npm audit)
 ✅ CodeQL analysis
 ✅ Docker image build
