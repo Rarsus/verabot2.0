@@ -102,9 +102,27 @@ tests/
 └── integration/               # Integration tests
 
 docs/
-├── guides/                    # How-to guides for development
-├── reference/                 # Architecture & technical docs
-└── project/                   # Project information & history
+├── INDEX.md                   # Master documentation index
+├── admin-guides/              # Administrator how-to guides
+├── user-guides/               # End-user guides and tutorials
+├── guides/                    # Developer process guides
+├── reference/                 # Technical reference & architecture docs
+├── architecture/              # System design and patterns
+├── best-practices/            # Coding standards and best practices
+├── testing/                   # Testing frameworks and patterns
+└── archived/                  # Historical documentation
+
+root/
+├── README.md                  # Project overview
+├── CHANGELOG.md               # Version history
+├── CONTRIBUTING.md            # Contribution guidelines
+├── CODE_OF_CONDUCT.md         # Community standards
+├── DEFINITION-OF-DONE.md      # Definition of Done criteria
+├── DOCUMENT-NAMING-CONVENTION.md  # Documentation naming standards
+├── DOCUMENTATION-INDEX.md     # Root docs navigation
+├── COMMAND-REFERENCE-QUICK.md # Quick command reference
+├── PHASE-*.md                 # Phase deliverables & summaries
+└── TEST-*.md                  # Testing documentation
 ```
 
 ## Coding Guidelines & Conventions
@@ -666,28 +684,86 @@ HUGGINGFACE_API_KEY=optional_key          # For AI poem generation
 
 ## Documentation Resources
 
-**Primary Documentation:**
+**Documentation Standards:**
 
-- [docs/README.md](docs/README.md) - Documentation overview
-- [docs/INDEX.md](docs/INDEX.md) - Complete documentation index
+- [DOCUMENT-NAMING-CONVENTION.md](../../DOCUMENT-NAMING-CONVENTION.md) - Complete naming convention guide (follow this for all new docs)
+- [docs/INDEX.md](../../docs/INDEX.md) - Master documentation index
 
-**Development Guides:**
+**Development Guides (docs/user-guides/):**
 
-- [docs/guides/01-CREATING-COMMANDS.md](docs/guides/01-CREATING-COMMANDS.md) - Command creation guide
-- [docs/guides/02-TESTING-GUIDE.md](docs/guides/02-TESTING-GUIDE.md) - Testing with TDD
-- [docs/guides/03-HUGGINGFACE-SETUP.md](docs/guides/03-HUGGINGFACE-SETUP.md) - AI setup
+- [creating-commands.md](../../docs/user-guides/creating-commands.md) - Command creation guide
+- [testing-guide.md](../../docs/user-guides/testing-guide.md) - Testing with TDD
+- [huggingface-setup.md](../../docs/user-guides/huggingface-setup.md) - AI setup
+- [docker-setup.md](../../docs/user-guides/docker-setup.md) - Docker containerization
 
-**Technical Reference:**
+**Technical Reference (docs/reference/):**
 
-- [docs/reference/ARCHITECTURE.md](docs/reference/ARCHITECTURE.md) - System design details
-- [docs/reference/REFACTORING-GUIDE.md](docs/reference/REFACTORING-GUIDE.md) - Before/after examples
-- [docs/reference/TDD-QUICK-REFERENCE.md](docs/reference/TDD-QUICK-REFERENCE.md) - Testing patterns
+- [ARCHITECTURE.md](../../docs/reference/ARCHITECTURE.md) - System design details
+- [REFACTORING-GUIDE.md](../../docs/reference/REFACTORING-GUIDE.md) - Before/after examples
+- [TDD-QUICK-REFERENCE.md](../../docs/reference/TDD-QUICK-REFERENCE.md) - Testing patterns
+
+**Process & Planning (Root Level):**
+
+- [PHASE-22.3-COVERAGE-EXPANSION-PLAN.md](../../PHASE-22.3-COVERAGE-EXPANSION-PLAN.md) - Current phase plan
+- [TEST-NAMING-CONVENTION-GUIDE.md](../../TEST-NAMING-CONVENTION-GUIDE.md) - Test naming standards
+- [DEFINITION-OF-DONE.md](../../DEFINITION-OF-DONE.md) - DoD criteria
 
 **External Resources:**
 
 - [Discord.js Documentation](https://discord.js.org/)
 - [Discord Developer Portal](https://discord.com/developers/applications)
 - [SQLite Documentation](https://www.sqlite.org/docs.html)
+
+## Documentation Standards & Naming Convention
+
+**ALL new documentation must follow the standards in [DOCUMENT-NAMING-CONVENTION.md](../../DOCUMENT-NAMING-CONVENTION.md).**
+
+### Quick Reference - Document Naming Rules
+
+**Root-Level Documents (Project Governance):**
+- Pattern: `{DESCRIPTOR}.md` (e.g., `README.md`, `CHANGELOG.md`)
+- Use UPPER-CASE for organizational documents
+- Examples: `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`
+
+**Phase Documents (Planning & Deliverables):**
+- Pattern: `PHASE-{#}.{a-z?}-{TYPE}.md`
+- Examples: `PHASE-22.3-COVERAGE-EXPANSION-PLAN.md`, `PHASE-22.3a-INITIALIZATION-SUMMARY.md`
+
+**Test & Quality Documents:**
+- Pattern: `TEST-{DESCRIPTOR}.md` or `TESTING-{DESCRIPTOR}.md`
+- Examples: `TEST-NAMING-CONVENTION-GUIDE.md`, `TEST-COVERAGE-ANALYSIS.md`
+
+**Definition Documents:**
+- Pattern: `DEFINITION-OF-{CONCEPT}.md`
+- Examples: `DEFINITION-OF-DONE.md`, `DEFINITION-OF-READY.md`
+
+**Subdirectory Files (use lowercase with hyphens):**
+- `docs/admin-guides/{action}.md` - Admin how-to guides
+- `docs/user-guides/{action}.md` - User how-to guides
+- `docs/guides/{topic}.md` - Developer process guides
+- `docs/reference/{component}-reference.md` - Technical reference
+- `docs/architecture/{topic}.md` - System design docs
+- `docs/best-practices/{topic}.md` - Coding standards
+- `docs/testing/{topic}.md` - Testing documentation
+- `docs/archived/{historical}.md` - Old or historical docs
+
+### Creating New Documentation
+
+1. **Identify the document type** (Phase, Test, Definition, Guide, Reference, etc.)
+2. **Use the appropriate naming pattern** from DOCUMENT-NAMING-CONVENTION.md
+3. **Choose the right location** (root, docs/*, or docs/archived/)
+4. **Create with clear structure** - headers, examples, links
+5. **Update DOCUMENTATION-INDEX.md** when adding root-level docs
+6. **Link from docs/INDEX.md** when adding docs/ files
+
+### Updating Links When Documents Change
+
+When renaming or moving documents:
+1. Update all markdown links in other documents
+2. Update links in code comments
+3. Update `DOCUMENTATION-INDEX.md` and `docs/INDEX.md`
+4. Use grep to find all references: `grep -r "old-filename" src/ docs/`
+5. Test all links before committing
 
 ## Common Tasks & Examples
 
