@@ -1,0 +1,38 @@
+{
+  "coverage": {
+    "statements": 90,
+    "branches": 85,
+    "functions": 95,
+    "lines": 90,
+    "description": "Target coverage thresholds for project (based on Phase 22.3 roadmap)"
+  },
+  "paths": {
+    "coverage": "coverage/",
+    "tests": "tests/",
+    "docs": "docs/",
+    "commands": "src/commands/",
+    "services": "src/services/"
+  },
+  "database": {
+    "enabled": true,
+    "checkConnectionOnStartup": false,
+    "description": "Database-related script settings"
+  },
+  "validation": {
+    "checkLinks": true,
+    "checkVersion": true,
+    "checkCommands": true,
+    "description": "Validation script settings"
+  },
+  "output": {
+    "useColor": true,
+    "verbose": false,
+    "timestamps": false,
+    "description": "Output formatting settings"
+  },
+  "ci": {
+    "autoDetect": true,
+    "disableColorInCI": true,
+    "description": "CI/CD related settings"
+  }
+}
