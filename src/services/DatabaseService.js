@@ -78,7 +78,7 @@ function setupSchema(db) {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
       let completed = 0;
-      const totalOperations = 4;
+      const totalOperations = 6;
 
       const checkComplete = () => {
         completed++;
@@ -157,6 +157,43 @@ function setupSchema(db) {
           if (err) {
             logError('database.setupSchema.createProxyConfig', err, ERROR_LEVELS.MEDIUM);
             // Don't reject on proxy_config creation failure, just continue
+          }
+          checkComplete();
+        }
+      );
+
+      // Create global_config table (Phase 23: Global Services)
+      db.run(
+        `
+        CREATE TABLE IF NOT EXISTS global_config (
+          key TEXT PRIMARY KEY,
+          value TEXT NOT NULL,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+        `,
+        (err) => {
+          if (err) {
+            logError('database.setupSchema.createGlobalConfig', err, ERROR_LEVELS.MEDIUM);
+            // Don't reject on global_config creation failure, just continue
+          }
+          checkComplete();
+        }
+      );
+
+      // Create user_communications table (Phase 23: Global Services)
+      db.run(
+        `
+        CREATE TABLE IF NOT EXISTS user_communications (
+          user_id TEXT PRIMARY KEY,
+          opted_in INTEGER DEFAULT 0,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+        `,
+        (err) => {
+          if (err) {
+            logError('database.setupSchema.createUserCommunications', err, ERROR_LEVELS.MEDIUM);
+            // Don't reject on user_communications creation failure, just continue
           }
           checkComplete();
         }
