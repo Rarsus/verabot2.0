@@ -1,8 +1,8 @@
-# VeraBot2.0 v0.2.0 Changelog
+# VeraBot2.0 v3.0.0 Changelog
 
 **Release Date**: January 2026  
 **Previous Version**: v0.1.0 (December 2024)  
-**Next Version**: v0.3.0 (TBD)
+**Next Version**: v4.0.0 (TBD)
 
 ## Overview
 
@@ -293,8 +293,8 @@ For issues or questions:
 ## Release Signature
 
 ```
-Release: v0.2.0
-Tag: v0.2.0
+Release: v3.0.0
+Tag: v3.0.0
 Date: January 2026
 Tests: 2,745 passing (100%)
 Status: Production Ready

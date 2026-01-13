@@ -27,7 +27,7 @@
 
 const { getDatabase } = require('./DatabaseService');
 const { REMINDER_STATUS, REMINDER_LIMITS } = require('../utils/constants/reminder-constants');
-const { logError, ERROR_LEVELS } = require('../utils/error-handler');
+const { logError, ERROR_LEVELS } = require('../middleware/errorHandler');
 const { parseDateTime } = require('../utils/helpers/datetime-parser');
 
 /**

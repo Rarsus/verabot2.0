@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { logError, ERROR_LEVELS } = require('./utils/error-handler');
+const { logError, ERROR_LEVELS } = require('./middleware/errorHandler');
 
 const jsonDbPath = path.join(__dirname, '..', 'data', 'quotes.json');
 

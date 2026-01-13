@@ -1,7 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
-const { logError, ERROR_LEVELS } = require('./utils/error-handler');
+const { logError, ERROR_LEVELS } = require('./middleware/errorHandler');
 
 const dbPath = path.join(__dirname, '..', 'data', 'db', 'quotes.db');
 
