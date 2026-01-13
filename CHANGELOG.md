@@ -1,3 +1,21 @@
+# [3.0.0](https://github.com/Rarsus/verabot2.0/compare/v2.21.0...v3.0.0) (2026-01-13)
+
+
+* Phase 22.3c: Test Coverage Expansion - Input Validator & Response Helpers ([b6ca898](https://github.com/Rarsus/verabot2.0/commit/b6ca898787b4f5a38b990e1f4fd5931252d4f37d))
+
+
+### Features
+
+* Add Phase 22.3d middleware coverage expansion (Logger + CommandValidator) ([6591740](https://github.com/Rarsus/verabot2.0/commit/6591740ce766b3b1df953c41a5f16b73b6962d7e))
+* Add Phase 22.3e CacheManager service coverage tests ([105292d](https://github.com/Rarsus/verabot2.0/commit/105292d273a5236f2f800f01e9accc0d88c0caa6))
+* Complete document naming convention migration ([b30c92f](https://github.com/Rarsus/verabot2.0/commit/b30c92ff372a4d5bb376b6b1fb16bcb9990e3990))
+
+
+### BREAKING CHANGES
+
+* None
+Migration Required: None
+
 # [2.21.0](https://github.com/Rarsus/verabot2.0/compare/v2.20.2...v2.21.0) (2026-01-13)
 
 
