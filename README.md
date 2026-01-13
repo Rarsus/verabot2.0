@@ -1,12 +1,12 @@
 # VeraBot2.0
 
 ![Version](https://img.shields.io/badge/version-v2.21.0-blue)
-![Tests](https://img.shields.io/badge/tests-1097%2F1097%20passing-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-79.5%25-orange)
+![Tests](https://img.shields.io/badge/tests-1525%2F1525%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-22.93%25-yellow)
 ![Node Version](https://img.shields.io/badge/node-%3E%3D20-green)
 ![Status](https://img.shields.io/badge/status-Phase%2022.3%20Active-blue)
 
-Advanced Discord bot with organized commands, quote management system, and modern architecture. Features slash commands, legacy prefix commands, comprehensive testing (1097 tests, 100% pass rate), and database integration.
+Advanced Discord bot with organized commands, quote management system, and modern architecture. Features slash commands, legacy prefix commands, comprehensive testing (1525 tests, 100% pass rate), and database integration.
 
 ## 🚀 Quick Start
 
