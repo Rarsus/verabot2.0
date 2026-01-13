@@ -759,14 +759,14 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
       const execute = (duration) => {
         return new Promise((resolve, reject) => {
           setTimeout(() => {
-            if (duration > 5000) reject(new Error('Operation timeout'));
+            if (duration > 50) reject(new Error('Operation timeout'));
             else resolve({ success: true });
-          }, duration);
+          }, Math.min(duration, 1)); // Cap at 1ms for testing
         });
       };
 
       try {
-        await execute(10000);
+        await execute(100);
         assert.fail('Should throw error');
       } catch (e) {
         assert(e.message.includes('timeout'));
@@ -912,7 +912,7 @@ describe('Phase 8D: Error Scenarios & Edge Cases', () => {
           } catch (e) {
             attempts++;
             if (i === maxAttempts - 1) throw e;
-            await new Promise((r) => setTimeout(r, 100 * Math.pow(2, i)));
+            await new Promise((r) => setTimeout(r, 1 * Math.pow(2, i)));
           }
         }
       };
