@@ -1,3 +1,10 @@
+# [2.21.0](https://github.com/Rarsus/verabot2.0/compare/v2.20.2...v2.21.0) (2026-01-13)
+
+
+### Features
+
+* Phase 19 completion - Documentation audit, test expansion, and infrastructure setup ([afdcfb8](https://github.com/Rarsus/verabot2.0/commit/afdcfb83d8c92183f345aee0fcbe4168d4e487df))
+
 ## [2.20.2](https://github.com/Rarsus/verabot2.0/compare/v2.20.1...v2.20.2) (2026-01-10)
 
 
