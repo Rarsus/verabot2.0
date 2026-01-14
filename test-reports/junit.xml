@@ -1,169 +1,169 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="VeraBot2.0 Test Suite" tests="82" failures="0" errors="0" time="1.043">
-  <testsuite name="GuildAwareReminderNotificationService" errors="0" failures="0" skipped="0" timestamp="2026-01-14T09:48:42" time="0.978" tests="82">
-    <testcase classname="GuildAwareReminderNotificationService › getActiveGuildIds()" name="should return empty array when no guilds present" time="0.033">
+<testsuites name="VeraBot2.0 Test Suite" tests="82" failures="0" errors="0" time="1.56">
+  <testsuite name="GuildAwareReminderNotificationService" errors="0" failures="0" skipped="0" timestamp="2026-01-14T09:49:12" time="1.478" tests="82">
+    <testcase classname="GuildAwareReminderNotificationService › getActiveGuildIds()" name="should return empty array when no guilds present" time="0.12">
     </testcase>
     <testcase classname="GuildAwareReminderNotificationService › getActiveGuildIds()" name="should return single guild ID" time="0.004">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › getActiveGuildIds()" name="should return multiple guild IDs" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › getActiveGuildIds()" name="should return multiple guild IDs" time="0.006">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › getActiveGuildIds()" name="should filter out unavailable guilds" time="0.005">
+    <testcase classname="GuildAwareReminderNotificationService › getActiveGuildIds()" name="should filter out unavailable guilds" time="0.004">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › getActiveGuildIds()" name="should handle all unavailable guilds" time="0.007">
+    <testcase classname="GuildAwareReminderNotificationService › getActiveGuildIds()" name="should handle all unavailable guilds" time="0.004">
     </testcase>
     <testcase classname="GuildAwareReminderNotificationService › getActiveGuildIds()" name="should maintain guild IDs across multiple calls" time="0.004">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › getActiveGuildIds()" name="should return correct guild count" time="0.006">
+    <testcase classname="GuildAwareReminderNotificationService › getActiveGuildIds()" name="should return correct guild count" time="0.008">
     </testcase>
     <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should return 0 sent when no reminders exist" time="0.007">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should return 0 sent when no reminders are due" time="0.013">
+    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should return 0 sent when no reminders are due" time="0.008">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should process single due reminder" time="0.016">
+    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should process single due reminder" time="0.01">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should process multiple due reminders" time="0.008">
+    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should process multiple due reminders" time="0.011">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should skip non-due reminders" time="0.006">
+    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should skip non-due reminders" time="0.007">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should skip inactive reminders" time="0.006">
+    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should skip inactive reminders" time="0.007">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should handle guild with only inactive reminders" time="0.007">
+    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should handle guild with only inactive reminders" time="0.005">
     </testcase>
     <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should handle result summary structure" time="0.006">
     </testcase>
     <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should return 0 errors on success" time="0.013">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should handle processing different guilds independently" time="0.006">
+    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should handle processing different guilds independently" time="0.01">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should not process non-existent guild" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should not process non-existent guild" time="0.005">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should process mixed due/not-due reminders correctly" time="0.006">
+    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should process mixed due/not-due reminders correctly" time="0.009">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should handle boundary: reminder exactly at current time" time="0.005">
+    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should handle boundary: reminder exactly at current time" time="0.006">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should handle boundary: reminder 100ms in future" time="0.004">
+    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should handle boundary: reminder 100ms in future" time="0.005">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should handle large batch of reminders" time="0.053">
+    <testcase classname="GuildAwareReminderNotificationService › checkAndSendNotificationsForGuild()" name="should handle large batch of reminders" time="0.104">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should send DM notification successfully" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should send DM notification successfully" time="0.005">
     </testcase>
     <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should return message ID on success" time="0.003">
     </testcase>
     <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should throw error when guild not found" time="0.003">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should throw error when user not found" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should throw error when user not found" time="0.003">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should include reminder subject in notification" time="0.005">
+    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should include reminder subject in notification" time="0.009">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle special characters in subject" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle special characters in subject" time="0.004">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle long subject text" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle long subject text" time="0.004">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle empty subject" time="0.003">
+    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle empty subject" time="0.005">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle unicode characters in subject" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle unicode characters in subject" time="0.003">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should return timestamp on success" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should return timestamp on success" time="0.004">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle multiple consecutive sends" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle multiple consecutive sends" time="0.003">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle different users in same guild" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle different users in same guild" time="0.004">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle notification to user in multiple guilds" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle notification to user in multiple guilds" time="0.003">
     </testcase>
     <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should preserve reminder data integrity" time="0.004">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle rapid concurrent sends to different users" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle rapid concurrent sends to different users" time="0.003">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should not modify database on send" time="0.003">
+    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should not modify database on send" time="0.007">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle sending same reminder multiple times" time="0.004">
+    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should handle sending same reminder multiple times" time="0.007">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should return consistent success on repeated sends" time="0.003">
+    <testcase classname="GuildAwareReminderNotificationService › sendReminderNotification()" name="should return consistent success on repeated sends" time="0.005">
     </testcase>
     <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should record successful notification attempt" time="0.003">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should record failed notification attempt" time="0.001">
+    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should record failed notification attempt" time="0.003">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should include recorded timestamp" time="0.001">
+    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should include recorded timestamp" time="0.003">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should record timestamp close to current time" time="0.001">
+    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should record timestamp close to current time" time="0.005">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should handle record with null error" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should handle record with null error" time="0.004">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should handle record with undefined error" time="0.001">
+    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should handle record with undefined error" time="0.003">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should handle long error messages" time="0.001">
+    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should handle long error messages" time="0.003">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should record multiple attempts for same reminder" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should record multiple attempts for same reminder" time="0.003">
     </testcase>
     <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should isolate records between guilds" time="0.003">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should handle special characters in error message" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should handle special characters in error message" time="0.003">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should handle unicode in error message" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should handle unicode in error message" time="0.003">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should preserve reminder ID exactly" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should preserve reminder ID exactly" time="0.003">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should preserve guild ID exactly" time="0.005">
+    <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should preserve guild ID exactly" time="0.006">
     </testcase>
     <testcase classname="GuildAwareReminderNotificationService › recordNotificationAttempt()" name="should handle rapid concurrent records for same reminder" time="0.003">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should process two guilds concurrently" time="0.014">
+    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should process two guilds concurrently" time="0.019">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should process five guilds concurrently" time="0.018">
+    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should process five guilds concurrently" time="0.03">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should isolate data: concurrent processing does not leak data" time="0.013">
+    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should isolate data: concurrent processing does not leak data" time="0.018">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should maintain data consistency across concurrent operations" time="0.011">
+    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should maintain data consistency across concurrent operations" time="0.016">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should handle all guilds processed in checkAndSendAllGuildNotifications" time="0.016">
+    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should handle all guilds processed in checkAndSendAllGuildNotifications" time="0.024">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should batch guilds in groups of 10" time="0.227">
+    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should batch guilds in groups of 10" time="0.24">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should handle guild processing errors without stopping others" time="0.016">
+    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should handle guild processing errors without stopping others" time="0.018">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should not create cross-guild data leaks during concurrent processing" time="0.015">
+    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should not create cross-guild data leaks during concurrent processing" time="0.02">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should verify guild isolation: reminder records isolated by guild" time="0.01">
+    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should verify guild isolation: reminder records isolated by guild" time="0.012">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should handle concurrent notifications to users across guilds" time="0.011">
+    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should handle concurrent notifications to users across guilds" time="0.012">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should not corrupt data under SQLite concurrent writes" time="0.017">
+    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should not corrupt data under SQLite concurrent writes" time="0.024">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should verify SQLite consistency: read after concurrent write" time="0.013">
+    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should verify SQLite consistency: read after concurrent write" time="0.021">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should handle rapid-fire concurrent guild processing" time="0.027">
+    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should handle rapid-fire concurrent guild processing" time="0.065">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should not deadlock under high concurrent load" time="0.045">
+    <testcase classname="GuildAwareReminderNotificationService › Multi-Guild Concurrency" name="should not deadlock under high concurrent load" time="0.07">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should handle missing guild gracefully" time="0.003">
+    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should handle missing guild gracefully" time="0.005">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should handle missing user in notification" time="0.003">
+    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should handle missing user in notification" time="0.011">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should capture error message in failed record" time="0.003">
+    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should capture error message in failed record" time="0.006">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should continue processing after error in batch" time="0.008">
+    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should continue processing after error in batch" time="0.014">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should not stop all processing on single guild error" time="0.004">
+    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should not stop all processing on single guild error" time="0.005">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should handle database query errors" time="0.005">
+    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should handle database query errors" time="0.013">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should handle concurrent error scenarios" time="0.003">
+    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should handle concurrent error scenarios" time="0.004">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should handle null reminder gracefully" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should handle null reminder gracefully" time="0.012">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should handle undefined reminder gracefully" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should handle undefined reminder gracefully" time="0.004">
     </testcase>
     <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should record errors with details" time="0.003">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should handle timeout scenarios" time="0.003">
+    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should handle timeout scenarios" time="0.013">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should recover from transient errors" time="0.003">
+    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should recover from transient errors" time="0.004">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should handle out-of-memory gracefully" time="0.002">
+    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should handle out-of-memory gracefully" time="0.004">
     </testcase>
-    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should isolate guild errors: error in guild-1 does not affect guild-2" time="0.004">
+    <testcase classname="GuildAwareReminderNotificationService › Error Handling" name="should isolate guild errors: error in guild-1 does not affect guild-2" time="0.018">
     </testcase>
   </testsuite>
 </testsuites>
