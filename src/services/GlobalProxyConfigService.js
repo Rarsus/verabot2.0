@@ -689,7 +689,7 @@ class GlobalProxyConfigService {
       try {
         new URL(url);
         return true;
-      } catch (e) {
+      } catch {
         return false;
       }
     } catch (err) {
@@ -709,7 +709,7 @@ class GlobalProxyConfigService {
       try {
         new URL(url);
         return true;
-      } catch (e) {
+      } catch {
         return false;
       }
     } catch (err) {
