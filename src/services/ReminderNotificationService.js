@@ -1,28 +1,51 @@
 /**
- * Reminder Notification Service
- * Handles scheduled notification delivery for reminders
+ * Reminder Notification Service (Wrapper)
+ * 
+ * DEPRECATED WRAPPER: This service wraps GuildAwareReminderNotificationService
+ * 
+ * Migration Status (Phase 6):
+ * - ✅ Delegates to guild-aware service
+ * - ✅ Maintains backward compatibility with existing code
+ * - ✅ Uses guild-aware reminder service
+ * - ⏳ Remove this wrapper in v0.4.0 (April 2026)
+ * 
+ * See: docs/reference/DB-DEPRECATION-TIMELINE.md
  */
 
 const { EmbedBuilder } = require('discord.js');
-const { getRemindersForNotification, recordNotification, updateReminder } = require('./ReminderService');
-const { REMINDER_STATUS, NOTIFICATION_DEFAULTS } = require('../utils/constants/reminder-constants');
 const { logError, ERROR_LEVELS } = require('../middleware/errorHandler');
+const {
+  getActiveGuildIds,
+  checkAndSendAllGuildNotifications,
+  initializeScheduler,
+} = require('./GuildAwareReminderNotificationService');
 
-// Store the check interval timer
-let notificationInterval = null;
+// Guild-aware reminder service (injected at runtime)
+let guildAwareReminderService = null;
+
+// Store the scheduler interval handle
+let notificationScheduler = null;
 let client = null;
 
 /**
  * Initialize notification service
  * @param {Client} discordClient - Discord client instance
+ * @param {Object} reminderService - Guild-aware reminder service instance
  */
-function initializeNotificationService(discordClient) {
+function initializeNotificationService(discordClient, reminderService) {
   client = discordClient;
+  guildAwareReminderService = reminderService;
 
-  // Start notification checker
-  if (!notificationInterval) {
-    const checkInterval = parseInt(process.env.REMINDER_CHECK_INTERVAL) || NOTIFICATION_DEFAULTS.CHECK_INTERVAL;
-    notificationInterval = setInterval(checkAndSendNotifications, checkInterval);
+  // Start notification scheduler using guild-aware service
+  if (!notificationScheduler && client && guildAwareReminderService) {
+    const checkInterval = parseInt(process.env.REMINDER_CHECK_INTERVAL) || 30000; // 30 seconds default
+    
+    notificationScheduler = initializeScheduler(
+      client,
+      guildAwareReminderService,
+      checkInterval
+    );
+    
     console.log(`✅ Reminder notification service initialized (checking every ${checkInterval}ms)`);
   }
 }
@@ -31,58 +54,58 @@ function initializeNotificationService(discordClient) {
  * Stop notification service
  */
 function stopNotificationService() {
-  if (notificationInterval) {
-    clearInterval(notificationInterval);
-    notificationInterval = null;
+  if (notificationScheduler) {
+    clearInterval(notificationScheduler);
+    notificationScheduler = null;
     console.log('✅ Reminder notification service stopped');
   }
 }
 
 /**
- * Check for and send due notifications
+ * Check for and send due notifications (wrapper for backward compatibility)
  */
 async function checkAndSendNotifications() {
+  if (!client || !guildAwareReminderService) {
+    logError(
+      'ReminderNotificationService.checkAndSendNotifications',
+      new Error('Service not properly initialized'),
+      ERROR_LEVELS.HIGH
+    );
+    return;
+  }
+
   try {
-    const dueReminders = await getRemindersForNotification();
-
-    for (const reminder of dueReminders) {
-      try {
-        await sendReminderNotification(reminder);
-        await recordNotification(reminder.id, true);
-
-        // Mark reminder as completed if it's past the event time
-        const now = new Date();
-        const eventTime = new Date(reminder.when_datetime);
-        if (now >= eventTime) {
-          await updateReminder(reminder.id, { status: REMINDER_STATUS.COMPLETED });
-        }
-      } catch (err) {
-        logError('ReminderNotificationService.sendNotification', err, ERROR_LEVELS.MEDIUM, {
-          reminderId: reminder.id,
-        });
-        await recordNotification(reminder.id, false, err.message);
-      }
-    }
+    await checkAndSendAllGuildNotifications(client, guildAwareReminderService);
   } catch (err) {
     logError('ReminderNotificationService.checkAndSendNotifications', err, ERROR_LEVELS.HIGH);
   }
 }
 
 /**
- * Create reminder embed
+ * Create reminder embed (backward compatibility helper)
  * @param {Object} reminder - Reminder object
  * @returns {EmbedBuilder} Discord embed
+ * 
+ * DEPRECATED: Use GuildAwareReminderNotificationService.sendReminderNotification instead
  */
 function createReminderEmbed(reminder) {
   const embed = new EmbedBuilder()
-    .setTitle(`🔔 Reminder: ${reminder.subject}`)
+    .setTitle(`🔔 Reminder: ${reminder.subject || reminder.text || 'Untitled'}`)
     .setColor(0xffd700)
-    .addFields([
-      { name: '📅 When', value: formatDateTime(reminder.when_datetime), inline: true },
-      { name: '📂 Category', value: reminder.category, inline: true },
-    ])
     .setTimestamp()
     .setFooter({ text: `Reminder ID: ${reminder.id}` });
+
+  if (reminder.when_datetime) {
+    embed.addFields([
+      { name: '📅 When', value: formatDateTime(reminder.when_datetime), inline: true },
+    ]);
+  }
+
+  if (reminder.category) {
+    embed.addFields([
+      { name: '📂 Category', value: reminder.category, inline: true },
+    ]);
+  }
 
   if (reminder.content) {
     embed.setDescription(reminder.content);
@@ -105,13 +128,21 @@ function createReminderEmbed(reminder) {
  * @returns {string} Formatted datetime
  */
 function formatDateTime(datetime) {
-  const date = new Date(datetime);
-  return `<t:${Math.floor(date.getTime() / 1000)}:F>`;
+  try {
+    const date = new Date(datetime);
+    const timestamp = Math.floor(date.getTime() / 1000);
+    return `<t:${timestamp}:F>`;
+  } catch (err) {
+    return datetime;
+  }
 }
 
 /**
- * Send reminder notification
+ * Send reminder notification (backward compatibility wrapper)
  * @param {Object} reminder - Reminder object with assignments
+ * @returns {Promise<Object>} Notification results
+ * 
+ * DEPRECATED: Use GuildAwareReminderNotificationService.sendReminderNotification instead
  */
 async function sendReminderNotification(reminder) {
   if (!client) {
@@ -120,14 +151,14 @@ async function sendReminderNotification(reminder) {
 
   const embed = createReminderEmbed(reminder);
 
-  // Parse assignees (format: "type:id,type:id")
-  const assignees = reminder.assignees ? reminder.assignees.split(',') : [];
-
   const sent = {
     users: [],
     roles: [],
     errors: [],
   };
+
+  // Parse assignees (format: "type:id,type:id")
+  const assignees = reminder.assignees ? reminder.assignees.split(',') : [];
 
   for (const assignee of assignees) {
     const [type, rawId] = assignee.split(':');
@@ -185,6 +216,8 @@ async function sendReminderNotification(reminder) {
  * Send notification to a user via DM
  * @param {string} userId - User ID
  * @param {EmbedBuilder} embed - Notification embed
+ * 
+ * DEPRECATED: Use GuildAwareReminderNotificationService.sendReminderNotification instead
  */
 async function sendUserNotification(userId, embed) {
   try {
@@ -199,6 +232,8 @@ async function sendUserNotification(userId, embed) {
  * Send notification to a role in designated channel
  * @param {string} roleId - Role ID
  * @param {EmbedBuilder} embed - Notification embed
+ * 
+ * DEPRECATED: Use GuildAwareReminderNotificationService.sendReminderNotification instead
  */
 async function sendRoleNotification(roleId, embed) {
   const channelId = process.env.REMINDER_NOTIFICATION_CHANNEL;
@@ -224,6 +259,7 @@ async function sendRoleNotification(roleId, embed) {
 
 /**
  * Manually trigger notification check (for testing)
+ * DEPRECATED: Use checkAndSendNotifications instead
  */
 async function triggerNotificationCheck() {
   await checkAndSendNotifications();

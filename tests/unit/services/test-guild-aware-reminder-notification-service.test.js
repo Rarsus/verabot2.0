@@ -449,9 +449,12 @@ describe('GuildAwareReminderNotificationService', () => {
       assert(result.sent >= 0); // Depends on exact timing
     });
 
-    it('should handle boundary: reminder 1ms in future', async () => {
-      const almostFuture = new Date(Date.now() + 1).toISOString();
-      await reminderService.addReminder('guild-123', 'test-user-123', 'Almost future', almostFuture);
+    it('should handle boundary: reminder 100ms in future', async () => {
+      // Use larger time window (100ms) to avoid race condition on slow systems
+      // 1ms window causes flakiness because by the time this code runs,
+      // the reminder might already be due
+      const futureTime = new Date(Date.now() + 100).toISOString();
+      await reminderService.addReminder('guild-123', 'test-user-123', 'Future', futureTime);
 
       const result = await notificationService.checkAndSendNotificationsForGuild('guild-123');
 
