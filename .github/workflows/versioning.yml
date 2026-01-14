@@ -98,7 +98,22 @@ jobs:
           
           # Calculate new version using npm version (dry-run)
           if [ "$RELEASE_TYPE" != "none" ]; then
-            NEW_VERSION=$(npm version $RELEASE_TYPE --no-git-tag-version 2>/dev/null | grep -oP 'v\K[0-9.]+' | head -1 || echo "")
+            # Run npm version to calculate new version
+            NPM_OUTPUT=$(npm version $RELEASE_TYPE --no-git-tag-version 2>&1)
+            EXTRACT_VERSION=$(echo "$NPM_OUTPUT" | grep -oP 'v\K[0-9.]+' | head -1 || echo "")
+            
+            if [ -z "$EXTRACT_VERSION" ]; then
+              echo "ERROR: Failed to extract version from npm output: $NPM_OUTPUT"
+              exit 1
+            fi
+            
+            # Validate the extracted version is proper semver
+            if ! [[ "$EXTRACT_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "ERROR: Invalid semver format extracted: '$EXTRACT_VERSION' (expected X.Y.Z)"
+              exit 1
+            fi
+            
+            NEW_VERSION="$EXTRACT_VERSION"
             git checkout package.json package-lock.json 2>/dev/null || true
             SHOULD_RELEASE="true"
           else
@@ -231,15 +246,44 @@ jobs:
 
       - name: 📝 Update version in package.json
         run: |
+          RELEASE_TYPE=${{ needs.analyze-commits.outputs.release-type }}
           NEW_VERSION=${{ needs.analyze-commits.outputs.new-version }}
-          npm version $NEW_VERSION --no-git-tag-version
-          echo "Updated package.json to version $NEW_VERSION"
+          
+          echo "Release type: $RELEASE_TYPE"
+          echo "Expected new version: $NEW_VERSION"
+          
+          # Use release type (major/minor/patch) with npm version to update package.json
+          npm version $RELEASE_TYPE --no-git-tag-version
+          
+          # Verify the version was updated correctly
+          UPDATED_VERSION=$(cat package.json | grep '"version"' | head -1 | awk -F'"' '{print $4}')
+          echo "Actual updated version: $UPDATED_VERSION"
+          
+          if [ "$UPDATED_VERSION" != "$NEW_VERSION" ]; then
+            echo "ERROR: Version mismatch! Expected $NEW_VERSION but got $UPDATED_VERSION"
+            exit 1
+          fi
+          
+          echo "✅ Version successfully updated to $UPDATED_VERSION"
 
       - name: 🏷️ Create git tag
         id: tag
         run: |
           NEW_VERSION=${{ needs.analyze-commits.outputs.new-version }}
           TAG="v${NEW_VERSION}"
+          
+          # Validate NEW_VERSION is proper semver
+          if ! [[ "$NEW_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "ERROR: Invalid version tag: '$NEW_VERSION' (expected X.Y.Z format)"
+            exit 1
+          fi
+          
+          # Verify package.json has correct version
+          PACKAGE_VERSION=$(cat package.json | grep '"version"' | head -1 | awk -F'"' '{print $4}')
+          if [ "$PACKAGE_VERSION" != "$NEW_VERSION" ]; then
+            echo "ERROR: package.json version ($PACKAGE_VERSION) doesn't match new version ($NEW_VERSION)"
+            exit 1
+          fi
           
           git add package.json package-lock.json
           git commit -m "chore: release version $NEW_VERSION" || true
@@ -248,7 +292,7 @@ jobs:
           git push origin "$TAG"
           
           echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "Created and pushed tag: $TAG"
+          echo "✅ Created and pushed tag: $TAG"
 
       - name: 📚 Create GitHub Release
         id: release
