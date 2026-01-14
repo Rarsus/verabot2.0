@@ -9,6 +9,7 @@
 const assert = require('assert');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const GuildAwareReminderNotificationService = require('../../../src/services/GuildAwareReminderNotificationService');
 
 // Mock Discord.js Client
 const mockDiscordClient = {
@@ -184,86 +185,14 @@ describe('GuildAwareReminderNotificationService', () => {
       }
     };
 
-    // For now, create a simple notification service
-    // (will be replaced with actual implementation in GREEN phase)
+    // Setup notification service wrapper using real GuildAwareReminderNotificationService
     notificationService = {
       client: mockDiscordClient,
-      getActiveGuildIds: async () => {
-        const guilds = Array.from(mockDiscordClient.guilds.cache.keys());
-        return guilds.filter(guildId => {
-          const guild = mockDiscordClient.guilds.cache.get(guildId);
-          return !guild.unavailable;
-        });
-      },
-      checkAndSendNotificationsForGuild: async (guildId) => {
-        const reminders = await reminderService.getRemindersForNotification(guildId);
-        const results = {
-          guildId,
-          total: reminders.length,
-          sent: 0,
-          failed: 0,
-          errors: []
-        };
-
-        for (const reminder of reminders) {
-          try {
-            await notificationService.sendReminderNotification(guildId, reminder);
-            results.sent++;
-          } catch (err) {
-            results.failed++;
-            results.errors.push(err.message);
-          }
-        }
-
-        return results;
-      },
-      sendReminderNotification: async (guildId, reminder) => {
-        const guild = mockDiscordClient.guilds.cache.get(guildId);
-        if (!guild) throw new Error(`Guild ${guildId} not found`);
-
-        const user = mockDiscordClient.users.cache.get(reminder.user_id);
-        if (!user) throw new Error(`User ${reminder.user_id} not found`);
-
-        const dmChannel = await user.createDM();
-        const result = await dmChannel.send({
-          content: `${reminder.subject}`
-        });
-
-        return {
-          success: true,
-          messageId: result.id
-        };
-      },
-      recordNotificationAttempt: async (guildId, reminderId, success, error = null) => {
-        // Record attempt in notification history
-        return {
-          guildId,
-          reminderId,
-          success,
-          error,
-          recordedAt: new Date().toISOString()
-        };
-      },
-      checkAndSendAllGuildNotifications: async () => {
-        const guildIds = await notificationService.getActiveGuildIds();
-        const results = {};
-
-        const batchSize = 10;
-        for (let i = 0; i < guildIds.length; i += batchSize) {
-          const batch = guildIds.slice(i, i + batchSize);
-          const batchResults = await Promise.all(
-            batch.map(guildId =>
-              notificationService.checkAndSendNotificationsForGuild(guildId)
-            )
-          );
-
-          batchResults.forEach(result => {
-            results[result.guildId] = result;
-          });
-        }
-
-        return results;
-      }
+      getActiveGuildIds: async () => GuildAwareReminderNotificationService.getActiveGuildIds(mockDiscordClient),
+      checkAndSendNotificationsForGuild: async (guildId) => GuildAwareReminderNotificationService.checkAndSendNotificationsForGuild(mockDiscordClient, guildId, reminderService),
+      sendReminderNotification: async (guildId, reminder) => GuildAwareReminderNotificationService.sendReminderNotification(mockDiscordClient, guildId, reminder),
+      recordNotificationAttempt: async (guildId, reminderId, success, error) => GuildAwareReminderNotificationService.recordNotificationAttempt(reminderService, guildId, reminderId, success, error),
+      checkAndSendAllGuildNotifications: async () => GuildAwareReminderNotificationService.checkAndSendAllGuildNotifications(mockDiscordClient, reminderService)
     };
   });
 
@@ -271,6 +200,9 @@ describe('GuildAwareReminderNotificationService', () => {
     // Cleanup
     mockDiscordClient.guilds.cache.clear();
     mockDiscordClient.users.cache.clear();
+    
+    // Clear any pending timers
+    jest.clearAllTimers();
   });
 
   // ============================================================
@@ -378,7 +310,8 @@ describe('GuildAwareReminderNotificationService', () => {
 
       const result = await notificationService.checkAndSendNotificationsForGuild('guild-123');
 
-      assert.strictEqual(result.total, 1);
+      // Future reminder is in database but not due, so total should be 0
+      assert.strictEqual(result.total, 0);
       assert.strictEqual(result.sent, 0);
       assert.strictEqual(result.failed, 0);
     });
@@ -416,7 +349,8 @@ describe('GuildAwareReminderNotificationService', () => {
 
       const result = await notificationService.checkAndSendNotificationsForGuild('guild-123');
 
-      assert.strictEqual(result.total, 2);
+      // Only the due reminder is counted in total
+      assert.strictEqual(result.total, 1);
       assert.strictEqual(result.sent, 1);
       assert.strictEqual(result.failed, 0);
     });
@@ -499,7 +433,8 @@ describe('GuildAwareReminderNotificationService', () => {
 
       const result = await notificationService.checkAndSendNotificationsForGuild('guild-123');
 
-      assert.strictEqual(result.total, 4);
+      // Only due reminders are counted in total
+      assert.strictEqual(result.total, 2);
       assert.strictEqual(result.sent, 2);
       assert.strictEqual(result.failed, 0);
     });
@@ -520,7 +455,8 @@ describe('GuildAwareReminderNotificationService', () => {
 
       const result = await notificationService.checkAndSendNotificationsForGuild('guild-123');
 
-      // Should not be sent (not yet due)
+      // Should not be sent (not yet due) - total should be 0
+      assert.strictEqual(result.total, 0);
       assert.strictEqual(result.sent, 0);
     });
 

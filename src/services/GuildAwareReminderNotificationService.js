@@ -23,7 +23,12 @@ const { logError, ERROR_LEVELS } = require('../middleware/errorHandler');
  */
 async function getActiveGuildIds(client) {
   try {
-    return client.guilds.cache
+    if (!client || !client.guilds || !client.guilds.cache) {
+      return [];
+    }
+    
+    const guilds = Array.from(client.guilds.cache.values());
+    return guilds
       .filter(guild => !guild.unavailable)
       .map(guild => guild.id);
   } catch (err) {
