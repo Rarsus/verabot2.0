@@ -69,10 +69,11 @@ jobs:
           
           echo "Analyzing commits in range: $COMMIT_RANGE"
           
-          # Analyze commit types
+          # Analyze commit types (supports both conventional formats)
+          # Matches: feat(scope): ... or feat: ...
           BREAKING=$(git log $COMMIT_RANGE --pretty=format:"%B" 2>/dev/null | grep -c "BREAKING CHANGE\|breaking:" || echo "0")
-          FEATURES=$(git log $COMMIT_RANGE --pretty=format:"%s" 2>/dev/null | grep -c "^feat(" || echo "0")
-          FIXES=$(git log $COMMIT_RANGE --pretty=format:"%s" 2>/dev/null | grep -c "^fix(" || echo "0")
+          FEATURES=$(git log $COMMIT_RANGE --pretty=format:"%s" 2>/dev/null | grep -cE "^feat(\(|:)" || echo "0")
+          FIXES=$(git log $COMMIT_RANGE --pretty=format:"%s" 2>/dev/null | grep -cE "^fix(\(|:)" || echo "0")
           
           echo "Breaking changes: $BREAKING"
           echo "Features: $FEATURES"
@@ -159,8 +160,8 @@ jobs:
           CHANGELOG_EOF
           fi
           
-          # Features
-          FEATURES=$(git log $COMMIT_RANGE --pretty=format:"- %s" 2>/dev/null | grep "^- feat(" | sort -u)
+          # Features (supports both feat(scope): and feat: formats)
+          FEATURES=$(git log $COMMIT_RANGE --pretty=format:"- %s" 2>/dev/null | grep -E "^- feat(\(|:)" | sort -u)
           if [ ! -z "$FEATURES" ]; then
             cat >> /tmp/changelog.txt <<CHANGELOG_EOF
           
@@ -169,8 +170,8 @@ jobs:
           CHANGELOG_EOF
           fi
           
-          # Fixes
-          FIXES=$(git log $COMMIT_RANGE --pretty=format:"- %s" 2>/dev/null | grep "^- fix(" | sort -u)
+          # Fixes (supports both fix(scope): and fix: formats)
+          FIXES=$(git log $COMMIT_RANGE --pretty=format:"- %s" 2>/dev/null | grep -E "^- fix(\(|:)" | sort -u)
           if [ ! -z "$FIXES" ]; then
             cat >> /tmp/changelog.txt <<CHANGELOG_EOF
           
