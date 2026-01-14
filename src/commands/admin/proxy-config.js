@@ -7,11 +7,7 @@ const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
 const { checkAdminPermission, validateWebhookUrl, validateChannelId } = require('../../utils/proxy-helpers');
-const ProxyConfigService = require('../../services/ProxyConfigService');
-const database = require('../../services/DatabaseService');
-
-// Create proxy config service instance
-const proxyConfig = new ProxyConfigService(database);
+const GlobalProxyConfigService = require('../../services/GlobalProxyConfigService');
 
 // Define command options
 const { data, options } = buildCommandOptions('proxy-config', 'Configure webhook proxy settings (Admin only)', [
@@ -103,19 +99,19 @@ class ProxyConfigCommand extends Command {
           return;
         }
 
-        await proxyConfig.setWebhookUrl(webhookUrl);
+        await GlobalProxyConfigService.setWebhookUrl(webhookUrl);
         updates.push('Webhook URL updated');
       }
 
       // Update webhook token
       if (webhookToken) {
-        await proxyConfig.setWebhookToken(webhookToken);
+        await GlobalProxyConfigService.setWebhookToken(webhookToken);
         updates.push('Webhook token updated (encrypted)');
       }
 
       // Update webhook secret
       if (webhookSecret) {
-        await proxyConfig.setWebhookSecret(webhookSecret);
+        await GlobalProxyConfigService.setWebhookSecret(webhookSecret);
         updates.push('Webhook secret updated (encrypted)');
       }
 
@@ -126,10 +122,10 @@ class ProxyConfigCommand extends Command {
           return;
         }
 
-        const channels = await proxyConfig.getMonitoredChannels();
+        const channels = await GlobalProxyConfigService.getMonitoredChannels();
         if (!channels.includes(addChannel)) {
           channels.push(addChannel);
-          await proxyConfig.setMonitoredChannels(channels);
+          await GlobalProxyConfigService.setMonitoredChannels(channels);
           updates.push(`Added channel <#${addChannel}> to monitoring`);
         } else {
           updates.push(`Channel <#${addChannel}> is already monitored`);
@@ -138,11 +134,11 @@ class ProxyConfigCommand extends Command {
 
       // Remove channel from monitoring
       if (removeChannel) {
-        const channels = await proxyConfig.getMonitoredChannels();
+        const channels = await GlobalProxyConfigService.getMonitoredChannels();
         const filtered = channels.filter((ch) => ch !== removeChannel);
 
         if (filtered.length < channels.length) {
-          await proxyConfig.setMonitoredChannels(filtered);
+          await GlobalProxyConfigService.setMonitoredChannels(filtered);
           updates.push(`Removed channel <#${removeChannel}> from monitoring`);
         } else {
           updates.push(`Channel <#${removeChannel}> was not monitored`);
@@ -151,7 +147,7 @@ class ProxyConfigCommand extends Command {
 
       // Clear all channels
       if (clearChannels) {
-        await proxyConfig.setMonitoredChannels([]);
+        await GlobalProxyConfigService.setMonitoredChannels([]);
         updates.push('Cleared all monitored channels');
       }
 
