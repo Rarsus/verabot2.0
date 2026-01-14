@@ -21,15 +21,11 @@ const database = require('./services/DatabaseService');
 // const { enhanceSchema } = require('./lib/schema-enhancement');
 
 // Initialize proxy services (only if enabled)
-let proxyConfig = null;
 let webhookProxy = null;
 let webhookListener = null;
 
 if (features.proxy.enabled) {
-  const ProxyConfigService = require('./services/ProxyConfigService');
   const WebhookProxyService = require('./services/WebhookProxyService');
-  // ProxyConfigService still uses root database for global configuration
-  proxyConfig = new ProxyConfigService(database);
   webhookProxy = new WebhookProxyService();
 }
 
@@ -137,10 +133,11 @@ _attachReadyEvent();
 client.once('clientReady', async () => {
   try {
     // Check if proxy is enabled and start listener
-    if (features.proxy.enabled && proxyConfig) {
+    if (features.proxy.enabled) {
       const WebhookListenerService = require('./services/WebhookListenerService');
-      const isProxyEnabled = await proxyConfig.isProxyEnabled();
-      const webhookSecret = await proxyConfig.getWebhookSecret();
+      const GlobalProxyConfigService = require('./services/GlobalProxyConfigService');
+      const isProxyEnabled = await GlobalProxyConfigService.isProxyEnabled();
+      const webhookSecret = await GlobalProxyConfigService.getWebhookSecret();
       const proxyPort = features.proxy.webhookPort;
 
       if (isProxyEnabled) {
@@ -352,14 +349,15 @@ client.on('messageCreate', async (message) => {
     if (message.author?.bot) return;
 
     // Handle webhook proxy forwarding (only if proxy is enabled)
-    if (features.proxy.enabled && proxyConfig && webhookProxy) {
+    if (features.proxy.enabled && webhookProxy) {
       const { shouldForwardMessage } = require('./utils/proxy-helpers');
-      const isProxyEnabled = await proxyConfig.isProxyEnabled();
+      const GlobalProxyConfigService = require('./services/GlobalProxyConfigService');
+      const isProxyEnabled = await GlobalProxyConfigService.isProxyEnabled();
       if (isProxyEnabled) {
-        const monitoredChannels = await proxyConfig.getMonitoredChannels();
+        const monitoredChannels = await GlobalProxyConfigService.getMonitoredChannels();
         if (shouldForwardMessage(message, monitoredChannels)) {
-          const webhookUrl = await proxyConfig.getWebhookUrl();
-          const webhookToken = await proxyConfig.getWebhookToken();
+          const webhookUrl = await GlobalProxyConfigService.getWebhookUrl();
+          const webhookToken = await GlobalProxyConfigService.getWebhookToken();
 
           if (webhookUrl && webhookToken) {
             // Forward message asynchronously (don't block command processing)
