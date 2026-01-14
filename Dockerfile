@@ -1,11 +1,11 @@
 ﻿# Stage 1: Build dependencies
-FROM node:18-alpine AS dependencies
+FROM node:20-alpine AS dependencies
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci --only=production
 
 # Stage 2: Runtime
-FROM node:18-alpine
+FROM node:20-alpine
 WORKDIR /app
 
 # Set environment
