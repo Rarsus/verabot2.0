@@ -438,11 +438,10 @@ jobs:
           extra_args: --debug --only-verified
         continue-on-error: true
 
-  security-summary:
+  security-summary-report:
     name: Security Summary
     runs-on: ubuntu-latest
     needs: [dependency-scan, eslint-security, security-tests, semgrep-sast, secret-detection]
-    if: always()
 
     steps:
       - name: 📊 Security scan summary

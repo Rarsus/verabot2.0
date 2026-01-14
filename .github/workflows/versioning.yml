@@ -128,55 +128,60 @@ jobs:
             COMMIT_RANGE="${LAST_TAG}..HEAD"
           fi
           
-          CHANGELOG="## [${NEW_VERSION}] - $(date +%Y-%m-%d)
-
-### ${RELEASE_TYPE^} Release
-
-"
+          cat > /tmp/changelog.txt <<CHANGELOG_EOF
+          ## [${NEW_VERSION}] - $(date +%Y-%m-%d)
+          
+          ### ${RELEASE_TYPE^} Release
+          CHANGELOG_EOF
           
           # Breaking changes
           BREAKING=$(git log $COMMIT_RANGE --pretty=format:"%B" 2>/dev/null | grep -A2 "BREAKING CHANGE" | grep -v "^--$" | sort -u)
           if [ ! -z "$BREAKING" ]; then
-            CHANGELOG="${CHANGELOG}### 🚨 Breaking Changes
-${BREAKING}
-
-"
+            cat >> /tmp/changelog.txt <<CHANGELOG_EOF
+          
+          ### 🚨 Breaking Changes
+          ${BREAKING}
+          CHANGELOG_EOF
           fi
           
           # Features
           FEATURES=$(git log $COMMIT_RANGE --pretty=format:"- %s" 2>/dev/null | grep "^- feat(" | sort -u)
           if [ ! -z "$FEATURES" ]; then
-            CHANGELOG="${CHANGELOG}### ✨ Features
-${FEATURES}
-
-"
+            cat >> /tmp/changelog.txt <<CHANGELOG_EOF
+          
+          ### ✨ Features
+          ${FEATURES}
+          CHANGELOG_EOF
           fi
           
           # Fixes
           FIXES=$(git log $COMMIT_RANGE --pretty=format:"- %s" 2>/dev/null | grep "^- fix(" | sort -u)
           if [ ! -z "$FIXES" ]; then
-            CHANGELOG="${CHANGELOG}### 🐛 Bug Fixes
-${FIXES}
-
-"
+            cat >> /tmp/changelog.txt <<CHANGELOG_EOF
+          
+          ### 🐛 Bug Fixes
+          ${FIXES}
+          CHANGELOG_EOF
           fi
           
           # Performance
           PERF=$(git log $COMMIT_RANGE --pretty=format:"- %s" 2>/dev/null | grep "^- perf(" | sort -u)
           if [ ! -z "$PERF" ]; then
-            CHANGELOG="${CHANGELOG}### ⚡ Performance
-${PERF}
-
-"
+            cat >> /tmp/changelog.txt <<CHANGELOG_EOF
+          
+          ### ⚡ Performance
+          ${PERF}
+          CHANGELOG_EOF
           fi
           
-          # Save changelog
+          # Save changelog to output
+          CHANGELOG=$(cat /tmp/changelog.txt)
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
           
           echo "Generated changelog:"
-          echo "$CHANGELOG"
+          cat /tmp/changelog.txt
 
       - name: 📊 Summary
         if: always()
