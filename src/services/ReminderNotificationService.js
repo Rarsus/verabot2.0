@@ -15,7 +15,6 @@
 const { EmbedBuilder } = require('discord.js');
 const { logError, ERROR_LEVELS } = require('../middleware/errorHandler');
 const {
-  getActiveGuildIds,
   checkAndSendAllGuildNotifications,
   initializeScheduler,
 } = require('./GuildAwareReminderNotificationService');
@@ -132,7 +131,7 @@ function formatDateTime(datetime) {
     const date = new Date(datetime);
     const timestamp = Math.floor(date.getTime() / 1000);
     return `<t:${timestamp}:F>`;
-  } catch (err) {
+  } catch {
     return datetime;
   }
 }
