@@ -1,0 +1,318 @@
+name: PR Checks - Fast Validation
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+
+# Prevent duplicate runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  lint-and-format:
+    name: "Lint & Format Check"
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Lint code
+        id: lint
+        run: |
+          npm run lint 2>&1 | tee lint-output.txt
+          LINT_EXIT_CODE=$?
+          echo "exit_code=${LINT_EXIT_CODE}" >> $GITHUB_OUTPUT
+          exit $LINT_EXIT_CODE
+        continue-on-error: true
+
+      - name: ✨ Check formatting
+        id: format
+        run: |
+          npm run format:check 2>&1 | tee format-output.txt
+          FORMAT_EXIT_CODE=$?
+          echo "exit_code=${FORMAT_EXIT_CODE}" >> $GITHUB_OUTPUT
+          exit $FORMAT_EXIT_CODE
+        continue-on-error: true
+
+      - name: 💬 Comment with results
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            
+            let message = '## Code Quality Check\n\n';
+            let hasIssues = false;
+            
+            if (fs.existsSync('lint-output.txt')) {
+              const lintOutput = fs.readFileSync('lint-output.txt', 'utf8');
+              if (lintOutput.includes('error') || ${{ steps.lint.outputs.exit_code }} !== 0) {
+                message += '❌ **Linting issues found**\n```\n' + lintOutput.slice(0, 500) + '\n```\n\n';
+                hasIssues = true;
+              } else {
+                message += '✅ Linting passed\n\n';
+              }
+            }
+            
+            if (fs.existsSync('format-output.txt')) {
+              const formatOutput = fs.readFileSync('format-output.txt', 'utf8');
+              if (${{ steps.format.outputs.exit_code }} !== 0) {
+                message += '❌ **Formatting issues found**\n```\n' + formatOutput.slice(0, 500) + '\n```\n\n';
+                message += 'Run `npm run lint:fix && npm run format` locally to fix.\n\n';
+                hasIssues = true;
+              } else {
+                message += '✅ Formatting passed\n\n';
+              }
+            }
+            
+            // Find existing comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+            
+            const existingComment = comments.data.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('Code Quality Check')
+            );
+            
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: message
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: message
+              });
+            }
+
+      - name: ❌ Fail if linting failed
+        if: steps.lint.outputs.exit_code != 0
+        run: exit 1
+
+      - name: ❌ Fail if formatting failed
+        if: steps.format.outputs.exit_code != 0
+        run: exit 1
+
+  pr-validation:
+    name: "PR Structure Validation"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: 🎯 Validate PR title
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const validPrefixes = [
+              'feat:', 'feature:',
+              'fix:', 'bugfix:',
+              'docs:',
+              'style:',
+              'refactor:',
+              'perf:', 'performance:',
+              'test:', 'testing:',
+              'chore:',
+              'ci:', 'cd:',
+              'revert:',
+              'merge:'
+            ];
+            
+            const hasValidPrefix = validPrefixes.some(prefix => 
+              pr.title.toLowerCase().startsWith(prefix)
+            );
+            
+            if (!hasValidPrefix) {
+              core.setFailed(
+                `❌ PR title must start with one of: ${validPrefixes.join(', ')}\n` +
+                `Current: "${pr.title}"`
+              );
+            } else {
+              core.notice(`✅ PR title format valid: "${pr.title}"`);
+            }
+
+      - name: 📏 Check PR size
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const additions = pr.additions || 0;
+            const deletions = pr.deletions || 0;
+            const total = additions + deletions;
+            
+            let message = '';
+            
+            if (total > 1000) {
+              message += `⚠️ **Large PR (${total} lines changed)**\n`;
+              message += '- Consider breaking into smaller PRs\n';
+              message += '- Ensures better review quality\n';
+              message += '- Speeds up CI/CD pipeline\n\n';
+            } else if (total > 500) {
+              message += `ℹ️ **Medium PR (${total} lines changed)**\n\n`;
+            } else {
+              message += `✅ PR size good (${total} lines)\n\n`;
+            }
+            
+            core.notice(message);
+
+      - name: 🔄 Check for breaking changes
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const body = (pr.body || '').toLowerCase();
+            
+            const hasBreakingLabel = pr.labels?.some(l => 
+              l.name.toLowerCase().includes('breaking')
+            );
+            
+            const mentionedBreaking = body.includes('breaking change') || 
+                                      body.includes('breaking changes') ||
+                                      body.includes('⚠️');
+            
+            if (pr.title.toLowerCase().startsWith('fix:') || 
+                pr.title.toLowerCase().startsWith('feature:') ||
+                pr.title.toLowerCase().startsWith('feat:')) {
+              
+              if ((hasBreakingLabel || mentionedBreaking) && 
+                  !body.includes('migration guide') &&
+                  !body.includes('migration path')) {
+                core.warning(
+                  '⚠️ Breaking changes detected but no migration guide found.\n' +
+                  'Please include migration instructions in PR description.'
+                );
+              }
+            }
+
+  dependency-check:
+    name: "Dependency Audit"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 🔐 Audit dependencies
+        id: audit
+        run: |
+          npm audit --audit-level=moderate --json > audit.json 2>&1
+          AUDIT_EXIT_CODE=$?
+          
+          # Count vulnerabilities
+          VULNERABILITIES=$(jq '.metadata.vulnerabilities.total // 0' audit.json)
+          CRITICALS=$(jq '.metadata.vulnerabilities.critical // 0' audit.json)
+          HIGHS=$(jq '.metadata.vulnerabilities.high // 0' audit.json)
+          
+          echo "total=${VULNERABILITIES}" >> $GITHUB_OUTPUT
+          echo "critical=${CRITICALS}" >> $GITHUB_OUTPUT
+          echo "high=${HIGHS}" >> $GITHUB_OUTPUT
+          echo "exit_code=${AUDIT_EXIT_CODE}" >> $GITHUB_OUTPUT
+          
+          exit 0  # Don't fail here, we'll handle it in the next step
+        continue-on-error: true
+
+      - name: 💬 Report audit results
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const audit = JSON.parse(fs.readFileSync('audit.json', 'utf8'));
+            
+            const vulnerabilities = audit.metadata?.vulnerabilities || {};
+            const total = vulnerabilities.total || 0;
+            const critical = vulnerabilities.critical || 0;
+            const high = vulnerabilities.high || 0;
+            const moderate = vulnerabilities.moderate || 0;
+            
+            let message = '## Dependency Audit\n\n';
+            
+            if (total === 0) {
+              message += '✅ No vulnerabilities found\n';
+            } else {
+              if (critical > 0) {
+                message += `❌ **${critical} critical** vulnerabilities\n`;
+              }
+              if (high > 0) {
+                message += `⚠️ **${high} high** vulnerabilities\n`;
+              }
+              if (moderate > 0) {
+                message += `ℹ️ **${moderate} moderate** vulnerabilities\n`;
+              }
+              message += '\nRun `npm audit` locally for details.\n';
+            }
+            
+            if (critical > 0 || high > 0) {
+              core.setFailed(`Found ${critical} critical and ${high} high vulnerability/vulnerabilities`);
+            }
+
+      - name: ❌ Fail if critical/high found
+        if: steps.audit.outputs.critical > 0 || steps.audit.outputs.high > 0
+        run: exit 1
+
+  summary:
+    name: "Check Summary"
+    runs-on: ubuntu-latest
+    needs: [lint-and-format, pr-validation, dependency-check]
+    if: always()
+
+    steps:
+      - name: 🎯 Set status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const lintPassed = '${{ needs.lint-and-format.result }}' === 'success';
+            const prPassed = '${{ needs.pr-validation.result }}' !== 'failure';
+            const depPassed = '${{ needs.dependency-check.result }}' === 'success';
+            
+            let message = '## ✅ PR Checks Summary\n\n';
+            message += `${lintPassed ? '✅' : '❌'} Code Quality\n`;
+            message += `${prPassed ? '✅' : '⚠️'} PR Structure\n`;
+            message += `${depPassed ? '✅' : '❌'} Dependencies\n`;
+            
+            if (!lintPassed || !depPassed) {
+              core.setFailed('PR checks did not pass');
+            } else {
+              core.notice('All PR checks passed!');
+            }

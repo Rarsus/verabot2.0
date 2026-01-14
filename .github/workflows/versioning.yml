@@ -1,0 +1,331 @@
+name: Versioning - Semantic Release Management
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release type (auto, patch, minor, major)'
+        required: true
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - patch
+          - minor
+          - major
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  analyze-commits:
+    name: "Analyze Commits for Version"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    outputs:
+      current-version: ${{ steps.version.outputs.current-version }}
+      new-version: ${{ steps.version.outputs.new-version }}
+      release-type: ${{ steps.version.outputs.release-type }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
+      should-release: ${{ steps.version.outputs.should-release }}
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: 🏷️ Get current version
+        id: current
+        run: |
+          CURRENT_VERSION=$(cat package.json | grep '"version"' | head -1 | awk -F'"' '{print $4}')
+          echo "current-version=${CURRENT_VERSION}" >> $GITHUB_OUTPUT
+          echo "Current version: ${CURRENT_VERSION}"
+
+      - name: 📝 Analyze commits
+        id: version
+        run: |
+          # Get commits since last tag
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          
+          if [ -z "$LAST_TAG" ]; then
+            COMMIT_RANGE="HEAD"
+          else
+            COMMIT_RANGE="${LAST_TAG}..HEAD"
+          fi
+          
+          echo "Analyzing commits in range: $COMMIT_RANGE"
+          
+          # Analyze commit types
+          BREAKING=$(git log $COMMIT_RANGE --pretty=format:"%B" 2>/dev/null | grep -c "BREAKING CHANGE\|breaking:" || echo "0")
+          FEATURES=$(git log $COMMIT_RANGE --pretty=format:"%s" 2>/dev/null | grep -c "^feat(" || echo "0")
+          FIXES=$(git log $COMMIT_RANGE --pretty=format:"%s" 2>/dev/null | grep -c "^fix(" || echo "0")
+          
+          echo "Breaking changes: $BREAKING"
+          echo "Features: $FEATURES"
+          echo "Fixes: $FIXES"
+          
+          # Determine version bump
+          CURRENT_VERSION=${{ steps.current.outputs.current-version }}
+          RELEASE_TYPE="${{ github.event.inputs.release_type }}"
+          
+          if [ "$RELEASE_TYPE" = "auto" ]; then
+            if [ "$BREAKING" -gt 0 ]; then
+              RELEASE_TYPE="major"
+            elif [ "$FEATURES" -gt 0 ]; then
+              RELEASE_TYPE="minor"
+            elif [ "$FIXES" -gt 0 ]; then
+              RELEASE_TYPE="patch"
+            else
+              RELEASE_TYPE="none"
+            fi
+          fi
+          
+          echo "Release type: $RELEASE_TYPE"
+          
+          # Calculate new version using npm version (dry-run)
+          if [ "$RELEASE_TYPE" != "none" ]; then
+            NEW_VERSION=$(npm version $RELEASE_TYPE --no-git-tag-version 2>/dev/null | grep -oP 'v\K[0-9.]+' | head -1 || echo "")
+            git checkout package.json package-lock.json 2>/dev/null || true
+            SHOULD_RELEASE="true"
+          else
+            NEW_VERSION=""
+            SHOULD_RELEASE="false"
+          fi
+          
+          echo "New version: $NEW_VERSION"
+          echo ""
+          
+          echo "current-version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "new-version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "release-type=$RELEASE_TYPE" >> $GITHUB_OUTPUT
+          echo "should-release=$SHOULD_RELEASE" >> $GITHUB_OUTPUT
+
+      - name: 📋 Generate changelog
+        id: changelog
+        if: steps.version.outputs.should-release == 'true'
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          NEW_VERSION=${{ steps.version.outputs.new-version }}
+          RELEASE_TYPE=${{ steps.version.outputs.release-type }}
+          
+          if [ -z "$LAST_TAG" ]; then
+            COMMIT_RANGE="HEAD"
+          else
+            COMMIT_RANGE="${LAST_TAG}..HEAD"
+          fi
+          
+          CHANGELOG="## [${NEW_VERSION}] - $(date +%Y-%m-%d)
+
+### ${RELEASE_TYPE^} Release
+
+"
+          
+          # Breaking changes
+          BREAKING=$(git log $COMMIT_RANGE --pretty=format:"%B" 2>/dev/null | grep -A2 "BREAKING CHANGE" | grep -v "^--$" | sort -u)
+          if [ ! -z "$BREAKING" ]; then
+            CHANGELOG="${CHANGELOG}### 🚨 Breaking Changes
+${BREAKING}
+
+"
+          fi
+          
+          # Features
+          FEATURES=$(git log $COMMIT_RANGE --pretty=format:"- %s" 2>/dev/null | grep "^- feat(" | sort -u)
+          if [ ! -z "$FEATURES" ]; then
+            CHANGELOG="${CHANGELOG}### ✨ Features
+${FEATURES}
+
+"
+          fi
+          
+          # Fixes
+          FIXES=$(git log $COMMIT_RANGE --pretty=format:"- %s" 2>/dev/null | grep "^- fix(" | sort -u)
+          if [ ! -z "$FIXES" ]; then
+            CHANGELOG="${CHANGELOG}### 🐛 Bug Fixes
+${FIXES}
+
+"
+          fi
+          
+          # Performance
+          PERF=$(git log $COMMIT_RANGE --pretty=format:"- %s" 2>/dev/null | grep "^- perf(" | sort -u)
+          if [ ! -z "$PERF" ]; then
+            CHANGELOG="${CHANGELOG}### ⚡ Performance
+${PERF}
+
+"
+          fi
+          
+          # Save changelog
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          echo "Generated changelog:"
+          echo "$CHANGELOG"
+
+      - name: 📊 Summary
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const currentVersion = '${{ steps.current.outputs.current-version }}';
+            const newVersion = '${{ steps.version.outputs.new-version }}';
+            const releaseType = '${{ steps.version.outputs.release-type }}';
+            const shouldRelease = '${{ steps.version.outputs.should-release }}' === 'true';
+            
+            let summary = '## 📦 Version Analysis\n\n';
+            summary += `**Current Version**: ${currentVersion}\n`;
+            summary += `**Release Type**: ${releaseType}\n`;
+            
+            if (shouldRelease) {
+              summary += `**New Version**: ${newVersion} ✅\n`;
+              summary += '\n**This will trigger a new release.**\n';
+            } else {
+              summary += '\n**No version bump required.**\n';
+              summary += 'No breaking changes, features, or fixes detected since last release.\n';
+            }
+            
+            core.notice(summary);
+
+  create-release:
+    name: "Create Release"
+    runs-on: ubuntu-latest
+    needs: analyze-commits
+    if: needs.analyze-commits.outputs.should-release == 'true'
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: 🔧 Configure Git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+      - name: 📝 Update version in package.json
+        run: |
+          NEW_VERSION=${{ needs.analyze-commits.outputs.new-version }}
+          npm version $NEW_VERSION --no-git-tag-version
+          echo "Updated package.json to version $NEW_VERSION"
+
+      - name: 🏷️ Create git tag
+        id: tag
+        run: |
+          NEW_VERSION=${{ needs.analyze-commits.outputs.new-version }}
+          TAG="v${NEW_VERSION}"
+          
+          git add package.json package-lock.json
+          git commit -m "chore: release version $NEW_VERSION" || true
+          
+          git tag -a "$TAG" -m "Release version $NEW_VERSION"
+          git push origin "$TAG"
+          
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Created and pushed tag: $TAG"
+
+      - name: 📚 Create GitHub Release
+        id: release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const newVersion = '${{ needs.analyze-commits.outputs.new-version }}';
+            const changelogText = `${{ needs.analyze-commits.outputs.changelog }}`;
+            const tag = 'v' + newVersion;
+            
+            try {
+              const release = await github.rest.repos.createRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag_name: tag,
+                name: `Release ${newVersion}`,
+                body: changelogText,
+                draft: false,
+                prerelease: false,
+                make_latest: 'true'
+              });
+              
+              core.setOutput('release_url', release.data.html_url);
+              core.notice(`✅ Release created: ${release.data.html_url}`);
+            } catch (error) {
+              core.warning(`Release creation warning: ${error.message}`);
+            }
+
+      - name: 📢 Announce Release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const newVersion = '${{ needs.analyze-commits.outputs.new-version }}';
+            const releaseType = '${{ needs.analyze-commits.outputs.release-type }}';
+            const releaseUrl = '${{ steps.release.outputs.release_url }}';
+            
+            let announcement = `## 🎉 New Release: ${newVersion}\n\n`;
+            announcement += `**Type**: ${releaseType}\n`;
+            announcement += `**Release**: [${newVersion}](${releaseUrl})\n\n`;
+            announcement += `### What's New\n`;
+            announcement += `${{ needs.analyze-commits.outputs.changelog }}\n`;
+            
+            core.notice(announcement);
+
+  notify-completion:
+    name: "Notify Completion"
+    runs-on: ubuntu-latest
+    needs: [analyze-commits, create-release]
+    if: always()
+
+    steps:
+      - name: 📊 Final Status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const analyzeResult = '${{ needs.analyze-commits.result }}';
+            const createResult = '${{ needs.create-release.result }}';
+            
+            let summary = '## 📦 Versioning Workflow Complete\n\n';
+            
+            if (analyzeResult === 'success') {
+              const shouldRelease = '${{ needs.analyze-commits.outputs.should-release }}' === 'true';
+              
+              if (shouldRelease) {
+                summary += '✅ Version Analysis: Complete\n';
+                summary += `📝 New Version: ${{ needs.analyze-commits.outputs.new-version }}\n`;
+                
+                if (createResult === 'success') {
+                  summary += '✅ Release Created: Success\n';
+                  summary += '🏷️ Git Tag: Created\n';
+                  summary += '📚 GitHub Release: Published\n';
+                } else {
+                  summary += '⚠️ Release Creation: Failed\n';
+                  summary += 'Please check the logs above.\n';
+                }
+              } else {
+                summary += '✅ No version bump required\n';
+                summary += 'No breaking changes or new features detected.\n';
+              }
+            } else {
+              summary += '❌ Version Analysis Failed\n';
+            }
+            
+            core.notice(summary);
