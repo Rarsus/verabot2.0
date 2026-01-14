@@ -1,3 +1,37 @@
+# [3.1.0](https://github.com/Rarsus/verabot2.0/compare/v3.0.0...v3.1.0) (2026-01-15)
+
+### Features
+
+* **Global Services (Phase 23.0):** Introduce GlobalProxyConfigService for centralized HTTP proxy configuration with AES-256-CBC encryption ([#48](https://github.com/Rarsus/verabot2.0/issues/48))
+* **Global Services (Phase 23.0):** Introduce GlobalUserCommunicationService for global user opt-in/opt-out preferences across all servers
+* **Service Refactoring:** Migrate CommunicationService to use GlobalUserCommunicationService (57% code reduction from 127→54 lines)
+* **Database Schema:** Add global_config table (key-value store) and user_communications table (global user preferences)
+
+### BREAKING CHANGES
+
+* **Deprecation Notice:** DatabaseService wrapper marked for removal in v4.0.0 (Q2 2026)
+  - Migration timeline: See [docs/reference/DB-DEPRECATION-TIMELINE.md](docs/reference/DB-DEPRECATION-TIMELINE.md)
+  - Use GuildAwareDatabaseService for guild-scoped data
+  - Use GlobalProxyConfigService for HTTP proxy settings
+  - Use GlobalUserCommunicationService for user communication preferences
+
+### Migration Required
+
+If using DatabaseService wrapper directly:
+1. For guild-specific data: Replace with `GuildAwareDatabaseService`
+2. For global proxy settings: Replace with `GlobalProxyConfigService`
+3. For user preferences: Replace with `GlobalUserCommunicationService`
+
+See [docs/reference/GLOBAL-SERVICES-MIGRATION-GUIDE.md](docs/reference/GLOBAL-SERVICES-MIGRATION-GUIDE.md) for detailed migration examples.
+
+### Test Coverage
+
+- Added 82 comprehensive tests for new services (100% passing)
+- All 2827 existing tests continue to pass (zero regressions)
+- New coverage: GlobalProxyConfigService (40 tests), GlobalUserCommunicationService (42 tests)
+
+---
+
 # [3.0.0](https://github.com/Rarsus/verabot2.0/compare/v2.21.0...v3.0.0) (2026-01-13)
 
 

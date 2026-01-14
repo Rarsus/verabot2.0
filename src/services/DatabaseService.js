@@ -1,3 +1,35 @@
+/**
+ * ⚠️  DEPRECATED: Database Service Wrapper
+ *
+ * This service is DEPRECATED as of v3.1.0 and will be removed in v4.0.0 (Q2 2026).
+ *
+ * DEPRECATION TIMELINE:
+ * - v3.0.0 (Dec 2024): Introduced guild-aware services (GuildAwareDatabaseService, GlobalProxyConfigService, GlobalUserCommunicationService)
+ * - v3.1.0 (Jan 2026): Marked for deprecation; new code uses specialized services
+ * - v4.0.0 (Q2 2026): REMOVAL - DatabaseService wrapper will be deleted entirely
+ *
+ * USE INSTEAD:
+ * - For guild-specific data: GuildAwareDatabaseService (src/services/GuildAwareDatabaseService.js)
+ * - For global HTTP proxy settings: GlobalProxyConfigService (src/services/GlobalProxyConfigService.js)
+ * - For global user communication preferences: GlobalUserCommunicationService (src/services/GlobalUserCommunicationService.js)
+ * - For raw database access: Implement direct SQLite3 connection (avoid generic wrapper)
+ *
+ * WHY DEPRECATION?
+ * - ✅ Guild-aware services provide better isolation and security
+ * - ✅ Specialized services have clearer purpose and better API design
+ * - ✅ Generic wrapper pattern causes confusion about data scope (guild vs global)
+ * - ✅ Enables easier testing and mocking of specific functionality
+ *
+ * MIGRATION STATUS (v3.1.0):
+ * ✅ CommunicationService → GlobalUserCommunicationService
+ * ⏳ ReminderNotificationService → awaiting guild-aware refactoring
+ * 🔒 ProxyConfigService → kept with DatabaseService (webhook proxy is application-global)
+ * ✅ All quote commands → GuildAwareDatabaseService
+ *
+ * See: docs/reference/DB-DEPRECATION-TIMELINE.md for detailed migration guide
+ * See: docs/reference/GLOBAL-SERVICES-MIGRATION-GUIDE.md for service usage examples
+ */
+
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
