@@ -1,21 +1,19 @@
 /**
- * Global Proxy Configuration Service (Phase 23.0)
+ * Global Proxy Configuration Service (Phase 23.0 EXPANDED)
  * 
- * Manages global proxy settings for the Discord bot.
+ * Consolidated service managing ALL global proxy configuration:
+ * - HTTP Proxy: URL, username, password, enabled state
+ * - Webhook Proxy: URL, token, secret, monitored channels, enabled state
+ * 
  * All credentials are encrypted before storage.
- * Configuration is cached in memory for performance.
+ * Configuration is cached in memory for performance (5-minute TTL).
  * 
  * Storage: Global root database (not guild-scoped)
  * Table: global_config (key-value pairs)
  * 
- * Provides:
- * - Proxy URL management (http://proxy:port)
- * - Proxy username management (encrypted)
- * - Proxy password management (encrypted)
- * - Proxy enable/disable toggle
- * - Full configuration retrieval
- * - Configuration validation
- * - Cleanup operations
+ * Replaces:
+ * - ProxyConfigService (webhook proxy)
+ * - HTTP proxy wrapper functionality
  */
 
 const crypto = require('crypto');
@@ -29,6 +27,21 @@ const ENCRYPTION_KEY = crypto
 
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 const ALGORITHM = 'aes-256-cbc';
+
+// Configuration keys
+const CONFIG_KEYS = {
+  // HTTP Proxy
+  HTTP_PROXY_URL: 'http_proxy_url',
+  HTTP_PROXY_USERNAME: 'http_proxy_username',
+  HTTP_PROXY_PASSWORD: 'http_proxy_password',
+  HTTP_PROXY_ENABLED: 'http_proxy_enabled',
+  // Webhook Proxy
+  WEBHOOK_URL: 'webhook_url',
+  WEBHOOK_TOKEN: 'webhook_token',
+  WEBHOOK_SECRET: 'webhook_secret',
+  WEBHOOK_MONITORED_CHANNELS: 'webhook_monitored_channels',
+  WEBHOOK_ENABLED: 'webhook_enabled',
+};
 
 class GlobalProxyConfigService {
   constructor() {
@@ -49,7 +62,8 @@ class GlobalProxyConfigService {
    * @private
    */
   _encrypt(text) {
-    if (!text) return null;
+    // Allow empty string, but reject null/undefined
+    if (text === null || text === undefined) return null;
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv(ALGORITHM, ENCRYPTION_KEY, iv);
     let encrypted = cipher.update(text, 'utf8', 'hex');
@@ -62,7 +76,8 @@ class GlobalProxyConfigService {
    * @private
    */
   _decrypt(encrypted) {
-    if (!encrypted) return null;
+    // Allow decryption of all non-null/undefined values
+    if (encrypted === null || encrypted === undefined) return null;
     const parts = encrypted.split(':');
     const iv = Buffer.from(parts[0], 'hex');
     const decipher = crypto.createDecipheriv(ALGORITHM, ENCRYPTION_KEY, iv);
@@ -139,8 +154,7 @@ class GlobalProxyConfigService {
    */
   async getProxyUrl() {
     try {
-      const value = await this._getDbValue('proxy_url');
-      return value;
+      return await this._getDbValue(CONFIG_KEYS.HTTP_PROXY_URL);
     } catch (err) {
       console.error('GlobalProxyConfigService.getProxyUrl error:', err);
       throw err;
@@ -150,15 +164,17 @@ class GlobalProxyConfigService {
   /**
    * Set proxy URL
    * @param {string} url - Proxy URL (e.g., http://proxy.example.com:8080)
-   * @throws {Error} If URL is invalid
    */
   async setProxyUrl(url) {
-    if (!url || typeof url !== 'string' || url.trim().length === 0) {
-      throw new Error('Proxy URL must be a non-empty string');
-    }
-
     try {
-      await this._setDbValue('proxy_url', url.trim());
+      // Only delete on null/undefined
+      // Empty string should be stored as-is
+      if (url === null || url === undefined) {
+        await this._deleteDbValue(CONFIG_KEYS.HTTP_PROXY_URL);
+      } else {
+        // Store as-is, including empty string and whitespace
+        await this._setDbValue(CONFIG_KEYS.HTTP_PROXY_URL, url);
+      }
     } catch (err) {
       console.error('GlobalProxyConfigService.setProxyUrl error:', err);
       throw err;
@@ -171,8 +187,8 @@ class GlobalProxyConfigService {
    */
   async getProxyUsername() {
     try {
-      const value = await this._getDbValue('proxy_username');
-      return value;
+      const encrypted = await this._getDbValue(CONFIG_KEYS.HTTP_PROXY_USERNAME);
+      return encrypted ? this._decrypt(encrypted) : null;
     } catch (err) {
       console.error('GlobalProxyConfigService.getProxyUsername error:', err);
       throw err;
@@ -180,17 +196,18 @@ class GlobalProxyConfigService {
   }
 
   /**
-   * Set proxy username
-   * @param {string} username - Proxy username
-   * @throws {Error} If username is invalid
+   * Set proxy username (encrypted)
+   * @param {string} username - Username to encrypt and store
    */
   async setProxyUsername(username) {
-    if (!username || typeof username !== 'string' || username.trim().length === 0) {
-      throw new Error('Proxy username must be a non-empty string');
-    }
-
     try {
-      await this._setDbValue('proxy_username', username.trim());
+      if (username === null || username === undefined) {
+        await this._deleteDbValue(CONFIG_KEYS.HTTP_PROXY_USERNAME);
+      } else {
+        // Allow empty string - encrypt it
+        const encrypted = this._encrypt(username);
+        await this._setDbValue(CONFIG_KEYS.HTTP_PROXY_USERNAME, encrypted);
+      }
     } catch (err) {
       console.error('GlobalProxyConfigService.setProxyUsername error:', err);
       throw err;
@@ -203,7 +220,7 @@ class GlobalProxyConfigService {
    */
   async getProxyPassword() {
     try {
-      const encrypted = await this._getDbValue('proxy_password');
+      const encrypted = await this._getDbValue(CONFIG_KEYS.HTTP_PROXY_PASSWORD);
       return encrypted ? this._decrypt(encrypted) : null;
     } catch (err) {
       console.error('GlobalProxyConfigService.getProxyPassword error:', err);
@@ -212,18 +229,18 @@ class GlobalProxyConfigService {
   }
 
   /**
-   * Set proxy password (encrypted before storage)
-   * @param {string} password - Proxy password
-   * @throws {Error} If password is invalid
+   * Set HTTP proxy password (encrypted)
+   * @param {string} password - Password to encrypt and store
    */
   async setProxyPassword(password) {
-    if (!password || typeof password !== 'string' || password.length === 0) {
-      throw new Error('Proxy password must be a non-empty string');
-    }
-
     try {
-      const encrypted = this._encrypt(password);
-      await this._setDbValue('proxy_password', encrypted);
+      if (password === null || password === undefined) {
+        await this._deleteDbValue(CONFIG_KEYS.HTTP_PROXY_PASSWORD);
+      } else {
+        // Allow empty string - encrypt it
+        const encrypted = this._encrypt(password);
+        await this._setDbValue(CONFIG_KEYS.HTTP_PROXY_PASSWORD, encrypted);
+      }
     } catch (err) {
       console.error('GlobalProxyConfigService.setProxyPassword error:', err);
       throw err;
@@ -236,7 +253,7 @@ class GlobalProxyConfigService {
    */
   async isProxyEnabled() {
     try {
-      const value = await this._getDbValue('proxy_enabled');
+      const value = await this._getDbValue(CONFIG_KEYS.HTTP_PROXY_ENABLED);
       return value === '1' || value === 1;
     } catch (err) {
       console.error('GlobalProxyConfigService.isProxyEnabled error:', err);
@@ -250,7 +267,7 @@ class GlobalProxyConfigService {
    */
   async setProxyEnabled(enabled) {
     try {
-      await this._setDbValue('proxy_enabled', enabled ? '1' : '0');
+      await this._setDbValue(CONFIG_KEYS.HTTP_PROXY_ENABLED, enabled ? '1' : '0');
     } catch (err) {
       console.error('GlobalProxyConfigService.setProxyEnabled error:', err);
       throw err;
@@ -283,56 +300,421 @@ class GlobalProxyConfigService {
   }
 
   /**
-   * Delete all proxy configuration
-   * @returns {Promise<void>}
+   * Get all configuration values from database
+   * @private
    */
-  async deleteAllProxyConfig() {
+  async _getAllDbValues() {
+    return new Promise((resolve, reject) => {
+      const db = this._getDb();
+      db.all(
+        'SELECT key, value FROM global_config',
+        [],
+        (err, rows) => {
+          if (err) reject(err);
+          else {
+            const result = {};
+            (rows || []).forEach((row) => {
+              result[row.key] = row.value;
+            });
+            resolve(result);
+          }
+        }
+      );
+    });
+  }
+
+  // =====================================================================
+  // WEBHOOK PROXY METHODS
+  // =====================================================================
+
+  /**
+   * Get webhook URL
+   * @returns {Promise<string|null>}
+   */
+  async getWebhookUrl() {
     try {
-      const keys = ['proxy_url', 'proxy_username', 'proxy_password', 'proxy_enabled'];
-      await Promise.all(keys.map((key) => this._deleteDbValue(key)));
+      return await this._getDbValue(CONFIG_KEYS.WEBHOOK_URL);
     } catch (err) {
-      console.error('GlobalProxyConfigService.deleteAllProxyConfig error:', err);
+      console.error('GlobalProxyConfigService.getWebhookUrl error:', err);
+      return null;
+    }
+  }
+
+  /**
+   * Set webhook URL
+   * @param {string} url - Webhook URL
+   */
+  async setWebhookUrl(url) {
+    try {
+      // Only delete on null/undefined
+      // Empty string should be stored as-is
+      if (url === null || url === undefined) {
+        await this._deleteDbValue(CONFIG_KEYS.WEBHOOK_URL);
+      } else {
+        // Store as-is, including empty string and whitespace
+        await this._setDbValue(CONFIG_KEYS.WEBHOOK_URL, url);
+      }
+    } catch (err) {
+      console.error('GlobalProxyConfigService.setWebhookUrl error:', err);
       throw err;
     }
   }
 
   /**
-   * Validate proxy configuration
-   * @returns {Promise<Object>} { valid: boolean, errors: string[] }
+   * Get webhook token (decrypted)
+   * @returns {Promise<string|null>}
+   */
+  async getWebhookToken() {
+    try {
+      const encrypted = await this._getDbValue(CONFIG_KEYS.WEBHOOK_TOKEN);
+      return encrypted ? this._decrypt(encrypted) : null;
+    } catch (err) {
+      console.error('GlobalProxyConfigService.getWebhookToken error:', err);
+      return null;
+    }
+  }
+
+  /**
+   * Set webhook token (encrypted)
+   * @param {string} token - Token to encrypt and store
+   */
+  async setWebhookToken(token) {
+    try {
+      if (token === null || token === undefined) {
+        await this._deleteDbValue(CONFIG_KEYS.WEBHOOK_TOKEN);
+      } else {
+        // Allow empty string - encrypt it
+        const encrypted = this._encrypt(token);
+        await this._setDbValue(CONFIG_KEYS.WEBHOOK_TOKEN, encrypted);
+      }
+    } catch (err) {
+      console.error('GlobalProxyConfigService.setWebhookToken error:', err);
+      throw err;
+    }
+  }
+
+  /**
+   * Get webhook secret (decrypted)
+   * @returns {Promise<string|null>}
+   */
+  async getWebhookSecret() {
+    try {
+      const encrypted = await this._getDbValue(CONFIG_KEYS.WEBHOOK_SECRET);
+      return encrypted ? this._decrypt(encrypted) : null;
+    } catch (err) {
+      console.error('GlobalProxyConfigService.getWebhookSecret error:', err);
+      return null;
+    }
+  }
+
+  /**
+   * Set webhook secret (encrypted)
+   * @param {string} secret - Secret to encrypt and store
+   */
+  async setWebhookSecret(secret) {
+    try {
+      if (secret === null || secret === undefined) {
+        await this._deleteDbValue(CONFIG_KEYS.WEBHOOK_SECRET);
+      } else {
+        // Allow empty string - encrypt it
+        const encrypted = this._encrypt(secret);
+        await this._setDbValue(CONFIG_KEYS.WEBHOOK_SECRET, encrypted);
+      }
+    } catch (err) {
+      console.error('GlobalProxyConfigService.setWebhookSecret error:', err);
+      throw err;
+    }
+  }
+
+  /**
+   * Get monitored channels array
+   * @returns {Promise<Array<string>>}
+   */
+  async getMonitoredChannels() {
+    try {
+      const value = await this._getDbValue(CONFIG_KEYS.WEBHOOK_MONITORED_CHANNELS);
+      if (!value) return [];
+      return JSON.parse(value);
+    } catch (err) {
+      console.error('GlobalProxyConfigService.getMonitoredChannels error:', err);
+      return [];
+    }
+  }
+
+  /**
+   * Set monitored channels array
+   * @param {Array<string>} channels - Channel IDs to monitor
+   */
+  async setMonitoredChannels(channels) {
+    try {
+      if (!channels || channels.length === 0) {
+        await this._deleteDbValue(CONFIG_KEYS.WEBHOOK_MONITORED_CHANNELS);
+      } else {
+        const value = JSON.stringify(channels);
+        await this._setDbValue(CONFIG_KEYS.WEBHOOK_MONITORED_CHANNELS, value);
+      }
+    } catch (err) {
+      console.error('GlobalProxyConfigService.setMonitoredChannels error:', err);
+      throw err;
+    }
+  }
+
+  /**
+   * Add single channel to monitored list
+   * @param {string} channelId - Channel ID to add
+   */
+  async addMonitoredChannel(channelId) {
+    try {
+      const channels = await this.getMonitoredChannels();
+      if (!channels.includes(channelId)) {
+        channels.push(channelId);
+        await this.setMonitoredChannels(channels);
+      }
+    } catch (err) {
+      console.error('GlobalProxyConfigService.addMonitoredChannel error:', err);
+      throw err;
+    }
+  }
+
+  /**
+   * Remove single channel from monitored list
+   * @param {string} channelId - Channel ID to remove
+   */
+  async removeMonitoredChannel(channelId) {
+    try {
+      const channels = await this.getMonitoredChannels();
+      const filtered = channels.filter((id) => id !== channelId);
+      if (filtered.length === 0) {
+        await this._deleteDbValue(CONFIG_KEYS.WEBHOOK_MONITORED_CHANNELS);
+      } else {
+        await this.setMonitoredChannels(filtered);
+      }
+    } catch (err) {
+      console.error('GlobalProxyConfigService.removeMonitoredChannel error:', err);
+      throw err;
+    }
+  }
+
+  /**
+   * Check if webhook is enabled
+   * @returns {Promise<boolean>}
+   */
+  async isWebhookEnabled() {
+    try {
+      const value = await this._getDbValue(CONFIG_KEYS.WEBHOOK_ENABLED);
+      return value === '1' || value === 1;
+    } catch (err) {
+      console.error('GlobalProxyConfigService.isWebhookEnabled error:', err);
+      return false;
+    }
+  }
+
+  /**
+   * Set webhook enabled state
+   * @param {boolean} enabled
+   */
+  async setWebhookEnabled(enabled) {
+    try {
+      await this._setDbValue(CONFIG_KEYS.WEBHOOK_ENABLED, enabled ? '1' : '0');
+    } catch (err) {
+      console.error('GlobalProxyConfigService.setWebhookEnabled error:', err);
+      throw err;
+    }
+  }
+
+  // =====================================================================
+  // UNIFIED CONFIGURATION METHODS
+  // =====================================================================
+
+  /**
+   * Get all configuration (without sensitive data like passwords/tokens/secrets)
+   * @returns {Promise<Object>}
+   */
+  async getAllConfig() {
+    try {
+      const all = await this._getAllDbValues();
+
+      const httpPassword = all[CONFIG_KEYS.HTTP_PROXY_PASSWORD];
+      const webhookToken = all[CONFIG_KEYS.WEBHOOK_TOKEN];
+      const webhookSecret = all[CONFIG_KEYS.WEBHOOK_SECRET];
+      
+      // Decrypt username since it's non-sensitive in the context of "all config"
+      const encryptedUsername = all[CONFIG_KEYS.HTTP_PROXY_USERNAME];
+      const username = encryptedUsername ? this._decrypt(encryptedUsername) : null;
+
+      const monitoredChannels = all[CONFIG_KEYS.WEBHOOK_MONITORED_CHANNELS]
+        ? JSON.parse(all[CONFIG_KEYS.WEBHOOK_MONITORED_CHANNELS])
+        : [];
+
+      return {
+        httpProxy: {
+          url: all[CONFIG_KEYS.HTTP_PROXY_URL] || null,
+          username: username,
+          enabled: (all[CONFIG_KEYS.HTTP_PROXY_ENABLED] === '1'),
+          hasPassword: !!httpPassword,
+        },
+        webhook: {
+          url: all[CONFIG_KEYS.WEBHOOK_URL] || null,
+          hasToken: !!webhookToken,
+          hasSecret: !!webhookSecret,
+          monitoredChannels,
+          enabled: (all[CONFIG_KEYS.WEBHOOK_ENABLED] === '1'),
+        },
+        lastUpdated: new Date().toISOString(),
+      };
+    } catch (err) {
+      console.error('GlobalProxyConfigService.getAllConfig error:', err);
+      throw err;
+    }
+  }
+
+  /**
+   * Get full configuration (with sensitive data - USE CAREFULLY)
+   * @returns {Promise<Object>}
+   */
+  async getFullConfig() {
+    try {
+      const [
+        httpProxyUrl,
+        httpProxyUsername,
+        httpProxyPassword,
+        httpProxyEnabled,
+        webhookUrl,
+        webhookToken,
+        webhookSecret,
+        monitoredChannels,
+        webhookEnabled,
+      ] = await Promise.all([
+        this.getProxyUrl(),
+        this.getProxyUsername(),
+        this.getProxyPassword(),
+        this.isProxyEnabled(),
+        this.getWebhookUrl(),
+        this.getWebhookToken(),
+        this.getWebhookSecret(),
+        this.getMonitoredChannels(),
+        this.isWebhookEnabled(),
+      ]);
+
+      return {
+        httpProxy: {
+          url: httpProxyUrl,
+          username: httpProxyUsername,
+          password: httpProxyPassword,
+          enabled: httpProxyEnabled,
+        },
+        webhook: {
+          url: webhookUrl,
+          token: webhookToken,
+          secret: webhookSecret,
+          monitoredChannels,
+          enabled: webhookEnabled,
+        },
+        lastUpdated: new Date().toISOString(),
+      };
+    } catch (err) {
+      console.error('GlobalProxyConfigService.getFullConfig error:', err);
+      throw err;
+    }
+  }
+
+  /**
+   * Delete HTTP proxy configuration only
+   * @returns {Promise<void>}
+   */
+  async deleteHttpProxyConfig() {
+    try {
+      const keys = [
+        CONFIG_KEYS.HTTP_PROXY_URL,
+        CONFIG_KEYS.HTTP_PROXY_USERNAME,
+        CONFIG_KEYS.HTTP_PROXY_PASSWORD,
+        CONFIG_KEYS.HTTP_PROXY_ENABLED,
+      ];
+      await Promise.all(keys.map((key) => this._deleteDbValue(key)));
+    } catch (err) {
+      console.error('GlobalProxyConfigService.deleteHttpProxyConfig error:', err);
+      throw err;
+    }
+  }
+
+  /**
+   * Delete webhook configuration only
+   * @returns {Promise<void>}
+   */
+  async deleteWebhookConfig() {
+    try {
+      const keys = [
+        CONFIG_KEYS.WEBHOOK_URL,
+        CONFIG_KEYS.WEBHOOK_TOKEN,
+        CONFIG_KEYS.WEBHOOK_SECRET,
+        CONFIG_KEYS.WEBHOOK_MONITORED_CHANNELS,
+        CONFIG_KEYS.WEBHOOK_ENABLED,
+      ];
+      await Promise.all(keys.map((key) => this._deleteDbValue(key)));
+    } catch (err) {
+      console.error('GlobalProxyConfigService.deleteWebhookConfig error:', err);
+      throw err;
+    }
+  }
+
+  /**
+   * Delete all configuration (legacy method for backward compatibility)
+   * @returns {Promise<void>}
+   */
+  async deleteAllProxyConfig() {
+    return this.deleteHttpProxyConfig();
+  }
+
+  /**
+   * Delete all configuration
+   * @returns {Promise<void>}
+   */
+  async deleteAllConfig() {
+    try {
+      await Promise.all([this.deleteHttpProxyConfig(), this.deleteWebhookConfig()]);
+    } catch (err) {
+      console.error('GlobalProxyConfigService.deleteAllConfig error:', err);
+      throw err;
+    }
+  }
+
+  /**
+   * Validate HTTP proxy configuration
+   * @returns {Promise<boolean>}
    */
   async validateProxyConfig() {
     try {
-      const config = await this.getFullProxyConfig();
-      const errors = [];
-
-      if (!config.url) {
-        errors.push('Proxy URL is required');
-      } else {
-        try {
-          new URL(config.url);
-        } catch (err) {
-          errors.push(`Invalid proxy URL format: ${err.message}`);
-        }
+      const url = await this.getProxyUrl();
+      if (!url) return false;
+      try {
+        new URL(url);
+        return true;
+      } catch (e) {
+        return false;
       }
-
-      if (config.username && config.username.trim().length === 0) {
-        errors.push('Proxy username cannot be empty if set');
-      }
-
-      if (config.password && config.password.trim().length === 0) {
-        errors.push('Proxy password cannot be empty if set');
-      }
-
-      return {
-        valid: errors.length === 0,
-        errors,
-      };
     } catch (err) {
       console.error('GlobalProxyConfigService.validateProxyConfig error:', err);
-      return {
-        valid: false,
-        errors: [err.message],
-      };
+      return false;
+    }
+  }
+
+  /**
+   * Validate webhook configuration
+   * @returns {Promise<boolean>}
+   */
+  async validateWebhookConfig() {
+    try {
+      const url = await this.getWebhookUrl();
+      if (!url) return false;
+      try {
+        new URL(url);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    } catch (err) {
+      console.error('GlobalProxyConfigService.validateWebhookConfig error:', err);
+      return false;
     }
   }
 

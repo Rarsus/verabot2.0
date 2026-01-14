@@ -62,6 +62,24 @@ function isDiscordId(val) {
 }
 
 /**
+ * Initialize database and schema (for testing)
+ * @returns {Promise<void>}
+ */
+async function initialize() {
+  return new Promise((resolve, reject) => {
+    const db = getDatabase();
+    if (!db) {
+      reject(new Error('Failed to get database connection'));
+      return;
+    }
+
+    setupSchema(db)
+      .then(() => resolve())
+      .catch(reject);
+  });
+}
+
+/**
  * Initialize SQLite database
  * DEPRECATED: This creates a root-level database.
  * Use GuildDatabaseManager for guild-specific databases instead.
@@ -459,6 +477,7 @@ function closeDatabase() {
 }
 
 module.exports = {
+  initialize,
   initializeDatabase,
   setupSchema,
   getDatabase,
