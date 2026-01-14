@@ -1,47 +1,64 @@
-# Database Module (db.js) - Deprecation Timeline
+# Database Service - Deprecation Timeline
 
 **Status:** ⚠️ DEPRECATED (January 2026)  
-**Removal Target:** v0.3.0 (March 2026)  
-**Timeline:** 2 months
+**Current Release:** v3.1.0 (January 15, 2026)  
+**Removal Target:** v4.0.0 (Q2 2026)  
+**Timeline:** ~4 months
 
 ## Overview
 
-The legacy `src/db.js` wrapper module is being deprecated in favor of guild-aware services. This document outlines the timeline, migration path, and rationale for this change.
+The legacy `DatabaseService` wrapper module is being deprecated in favor of specialized global services and guild-aware services. This document outlines the timeline, migration path, and rationale for this change.
+
+### What's Happening?
+
+**v3.1.0 (NOW):** Three new specialized services introduced:
+- `GlobalProxyConfigService` - HTTP proxy configuration with encryption
+- `GlobalUserCommunicationService` - User opt-in/opt-out preferences
+- `CommunicationService` migrated to use GlobalUserCommunicationService
+
+**v4.0.0 (Q2 2026):** DatabaseService wrapper will be removed entirely.
 
 ## Timeline
 
-### Phase 1: Deprecation Notice (NOW - January 2026)
+### Phase 1: Deprecation Introduction (v3.1.0 - January 2026)
 
-- ✅ **COMPLETED**: Add deprecation warning to src/db.js header
+- ✅ **COMPLETED**: Create GlobalProxyConfigService with encryption
+- ✅ **COMPLETED**: Create GlobalUserCommunicationService for user preferences
+- ✅ **COMPLETED**: Migrate CommunicationService to use GlobalUserCommunicationService
+- ✅ **COMPLETED**: Add deprecation warning to DatabaseService header
+- ✅ **COMPLETED**: Create GLOBAL-SERVICES-MIGRATION-GUIDE.md
+- ✅ **COMPLETED**: Update CHANGELOG.md with breaking changes notice
 - ✅ **COMPLETED**: Update .github/copilot-instructions.md
-- ✅ **COMPLETED**: Update documentation with migration guide
-- ⏳ **IN PROGRESS**: Communicate deprecation to team
 
-**Actions:**
+**What Works:**
+- All 2827 existing tests passing
+- Services fully implemented and tested (82 new tests)
+- CommunicationService refactored to use new service
+- Proxy commands kept as-is (per architecture decision)
 
-- All new code must use guild-aware services
-- Existing code using db.js continues to work (backward compatible)
-- Clear migration instructions provided
+### Phase 2: Migration Period (v3.2.0-v3.9.x - Feb-May 2026)
 
-### Phase 2: Warning Period (February 2026)
+- ⏳ **PENDING**: Migrate ReminderNotificationService to guild-aware pattern
+- ⏳ **PENDING**: Create any additional specialized services as needed
+- ⏳ **PENDING**: Monitor for edge cases and new use patterns
 
-- Monitor usage of db.js across codebase
-- Support team members migrating to new services
-- Update any remaining documentation
+**Expected Actions:**
+- Any new code must use specialized services or guild-aware services
+- Existing code using DatabaseService continues working
+- Detailed migration examples provided
 
-**If you find db.js usage:**
+### Phase 3: Final Removal (v4.0.0 - Q2 2026)
 
-1. Replace with appropriate guild-aware service
-2. Add guildId parameter to all method calls
-3. Test guild isolation (A != B in different guilds)
+- Remove src/services/DatabaseService.js entirely
+- Remove all wrapper imports
+- Update package version to v4.0.0
+- Archive this timeline document
 
-### Phase 3: Removal (March 2026 - v0.3.0)
-
-- Remove src/db.js entirely
-- Remove all references from documentation
-- Update package version to v0.3.0
+**Breaking Change Notice:**
+This will be released as v4.0.0 (major version) to clearly indicate breaking changes.
 
 ## Why the Deprecation?
+
 
 ### Problems with db.js
 
@@ -217,23 +234,35 @@ const result = await guildDbService.executeQuery(guildId, sql, params);
 
 ## Status of Migration
 
-### Completed ✅
+### Completed (v3.1.0) ✅
 
-- All 11 quote commands migrated to QuoteService
-- Reminder commands already using GuildAwareReminderService
-- No remaining code depends on db.js wrapper
+- GlobalProxyConfigService created and fully tested (40 tests)
+- GlobalUserCommunicationService created and fully tested (42 tests)
+- CommunicationService migrated to use GlobalUserCommunicationService
+- DatabaseService marked with deprecation warning and migration guidance
+- GLOBAL-SERVICES-MIGRATION-GUIDE.md created with detailed examples
+- All 2827 tests passing (zero regressions)
+- CHANGELOG.md updated with breaking changes notice
 
-### In Progress ⏳
+### In Progress (v3.2.0) ⏳
 
-- Deprecation notice added to db.js
-- Documentation updated
-- Copilot instructions updated
+- [ ] ReminderNotificationService refactoring to guild-aware pattern
+- [ ] Additional specialized services as needed
+- [ ] Documentation updates for new services
 
-### Upcoming (February 2026)
+### Upcoming (v3.9.x before v4.0.0)
 
-- Monitor for any emergency db.js usage
-- Support team migration if needed
-- Finalize removal in v0.3.0
+- [ ] Final migration validation
+- [ ] Edge case handling
+- [ ] Performance testing with new services
+- [ ] Documentation review
+
+### Migration Complete at v4.0.0 🎯
+
+- DatabaseService.js will be permanently removed
+- Breaking change: all imports must use new services
+- Version bumped to 4.0.0 to signal major changes
+
 
 ## FAQ
 
@@ -286,5 +315,7 @@ If you encounter issues migrating from db.js to guild-aware services:
 
 ---
 
-**Last Updated:** January 3, 2026  
-**Timeline Status:** Phase 1 (Deprecation Notice) ✅ Complete
+**Last Updated:** January 15, 2026 (Phase 23.0 Complete)  
+**Timeline Status:** Phase 1 (Deprecation Introduction) ✅ Complete  
+**Next Phase:** Phase 2 (Migration Period) - Pending ReminderNotificationService refactoring
+

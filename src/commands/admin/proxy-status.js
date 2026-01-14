@@ -8,11 +8,7 @@ const buildCommandOptions = require('../../core/CommandOptions');
 const { EmbedBuilder } = require('discord.js');
 const { sendError } = require('../../utils/helpers/response-helpers');
 const { checkAdminPermission } = require('../../utils/proxy-helpers');
-const ProxyConfigService = require('../../services/ProxyConfigService');
-const database = require('../../services/DatabaseService');
-
-// Create proxy config service instance
-const proxyConfig = new ProxyConfigService(database);
+const GlobalProxyConfigService = require('../../services/GlobalProxyConfigService');
 
 // Define command options
 const { data, options } = buildCommandOptions(
@@ -53,7 +49,7 @@ class ProxyStatusCommand extends Command {
     }
 
     try {
-      const config = await proxyConfig.getAllConfig();
+      const config = await GlobalProxyConfigService.getAllConfig();
 
       const embed = new EmbedBuilder()
         .setTitle('🔗 Webhook Proxy Status')

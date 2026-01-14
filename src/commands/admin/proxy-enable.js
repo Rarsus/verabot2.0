@@ -7,11 +7,7 @@ const Command = require('../../core/CommandBase');
 const buildCommandOptions = require('../../core/CommandOptions');
 const { sendSuccess, sendError } = require('../../utils/helpers/response-helpers');
 const { checkAdminPermission } = require('../../utils/proxy-helpers');
-const ProxyConfigService = require('../../services/ProxyConfigService');
-const database = require('../../services/DatabaseService');
-
-// Create proxy config service instance
-const proxyConfig = new ProxyConfigService(database);
+const GlobalProxyConfigService = require('../../services/GlobalProxyConfigService');
 
 // Define command options
 const { data, options } = buildCommandOptions('proxy-enable', 'Enable or disable the webhook proxy (Admin only)', [
@@ -57,7 +53,7 @@ class ProxyEnableCommand extends Command {
     const enabled = interaction.options.getBoolean('enabled');
 
     try {
-      await proxyConfig.setProxyEnabled(enabled);
+      await GlobalProxyConfigService.setProxyEnabled(enabled);
 
       const status = enabled ? 'enabled' : 'disabled';
       const emoji = enabled ? '✅' : '⏸️';
