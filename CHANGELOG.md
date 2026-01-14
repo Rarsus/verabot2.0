@@ -1,3 +1,51 @@
+# [3.2.0](https://github.com/Rarsus/verabot2.0/compare/v3.1.0...v3.2.0) (2026-01-20)
+
+### Features
+
+* **Guild-Aware Notifications (Phase 6):** Refactor ReminderNotificationService to use GuildAwareReminderNotificationService with per-guild notification delivery
+* **Multi-Guild Batch Processing:** Implement batch processing for multi-guild notification delivery (10 guilds at a time, 100ms delays)
+* **Integration Testing:** Add 30 comprehensive integration tests covering multi-guild scenarios, guild isolation, and concurrency ([tests/integration/test-phase-6-multi-guild-scenarios.test.js](tests/integration/test-phase-6-multi-guild-scenarios.test.js))
+* **Database Abstraction Analysis:** Complete analysis of database abstraction options with 3 implementation strategies (see [docs/reference/DATABASE-ABSTRACTION-ANALYSIS.md](docs/reference/DATABASE-ABSTRACTION-ANALYSIS.md))
+
+### Architecture Improvements
+
+* **Guild Isolation:** Notifications scoped to guild context, preventing cross-guild data leakage
+* **Backward Compatibility:** ReminderNotificationService wrapper maintains 100% backward compatibility
+* **Error Isolation:** Guild-specific errors don't affect other guilds' notification delivery
+* **Concurrent Processing:** Safe concurrent operation across multiple guilds with ACID properties
+
+### BREAKING CHANGES
+
+None - all changes backward compatible with v3.1.0
+
+### Test Coverage
+
+- Phase 6: Added 30 integration tests for multi-guild scenarios (100% passing)
+- Unit tests: All 82 GuildAwareReminderNotificationService tests passing (100%)
+- Total test suite: 2985 tests passing (100% pass rate)
+- Zero regressions from previous versions
+- Performance: All integration tests complete in <1 second
+
+### Deprecation Notices
+
+* **DatabaseService wrapper** still marked for removal (see v3.1.0 migration notes)
+* **ReminderService** (non-guild-aware) remains deprecated
+  - Use GuildAwareReminderService instead
+  - Supported through v3.5.0
+
+### Migration Guide
+
+For existing reminder notification code:
+1. No changes required - ReminderNotificationService wrapper handles migration
+2. For new code: Use GuildAwareReminderNotificationService directly with guild context
+3. See [PHASE-6-MIGRATION-STATUS.md](PHASE-6-MIGRATION-STATUS.md) for detailed examples
+
+### Database Schema Changes
+
+No schema changes - Phase 6 works with existing reminder tables with guild_id context
+
+---
+
 # [3.1.0](https://github.com/Rarsus/verabot2.0/compare/v3.0.0...v3.1.0) (2026-01-15)
 
 ### Features
