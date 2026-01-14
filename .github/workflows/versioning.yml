@@ -100,7 +100,7 @@ jobs:
           if [ "$RELEASE_TYPE" != "none" ]; then
             # Run npm version to calculate new version
             NPM_OUTPUT=$(npm version $RELEASE_TYPE --no-git-tag-version 2>&1)
-            EXTRACT_VERSION=$(echo "$NPM_OUTPUT" | grep -oP 'v\K[0-9.]+' | head -1 || echo "")
+            EXTRACT_VERSION=$(echo "$NPM_OUTPUT" | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || echo "")
             
             if [ -z "$EXTRACT_VERSION" ]; then
               echo "ERROR: Failed to extract version from npm output: $NPM_OUTPUT"
