@@ -295,9 +295,44 @@ class GuildDatabaseManager {
 
       // Checkpoint to flush to disk
       await this._runAsync(db, 'PRAGMA wal_checkpoint(TRUNCATE)');
+
+      // Run migrations to add any missing columns
+      await this._runMigrations(db);
     } catch (error) {
       logError('GuildDatabaseManager._initializeSchema', error, ERROR_LEVELS.CRITICAL);
       throw error;
+    }
+  }
+
+  /**
+   * Run migrations to add missing columns to existing tables
+   * @private
+   * @param {sqlite3.Database} db - Database connection
+   * @returns {Promise<void>}
+   */
+  async _runMigrations(db) {
+    try {
+      // Get existing columns in user_communications table
+      const columns = await new Promise((resolve) => {
+        db.all('PRAGMA table_info(user_communications)', (err, cols) => {
+          resolve(cols || []);
+        });
+      });
+
+      const columnNames = columns.map((col) => col.name);
+
+      // Add opted_in column if missing
+      if (!columnNames.includes('opted_in')) {
+        await this._runAsync(db, 'ALTER TABLE user_communications ADD COLUMN opted_in INTEGER DEFAULT 0');
+      }
+
+      // Add preferences column if missing
+      if (!columnNames.includes('preferences')) {
+        await this._runAsync(db, "ALTER TABLE user_communications ADD COLUMN preferences TEXT DEFAULT '{}'");
+      }
+    } catch (error) {
+      // Silently log migration errors - they're not critical
+      logError('GuildDatabaseManager._runMigrations', error, ERROR_LEVELS.LOW);
     }
   }
 
