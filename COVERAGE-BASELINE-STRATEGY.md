@@ -21,6 +21,7 @@ The CI/CD pipeline uses a **dynamic baseline** approach for code coverage thresh
 ## How It Works
 
 ### Phase 1: Establish Baseline ✅ CURRENT
+
 ```
 Tests run → Coverage measured at 79.5% / 82.7% / 74.7%
     ↓
