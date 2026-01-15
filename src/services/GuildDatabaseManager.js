@@ -107,8 +107,12 @@ class GuildDatabaseManager {
           // Enable foreign keys
           await this._runAsync(db, 'PRAGMA foreign_keys = ON');
 
-          // Initialize schema
+          // Initialize schema (for new databases)
           await this._initializeSchema(db, guildId);
+
+          // Run migrations (for both new and existing databases)
+          // This ensures existing databases get schema fixes
+          await this._runMigrations(db);
 
           resolve(db);
         } catch (error) {
