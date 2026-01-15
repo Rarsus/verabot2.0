@@ -276,40 +276,209 @@ jobs:
       - name: 🏷️ Create git tag
         id: tag
         run: |
+          set -e  # Exit on first error
+          
           NEW_VERSION=${{ needs.analyze-commits.outputs.new-version }}
           TAG="v${NEW_VERSION}"
           
+          echo "═══════════════════════════════════════════════"
+          echo "🏷️  GIT TAG CREATION"
+          echo "═══════════════════════════════════════════════"
+          
           # Validate NEW_VERSION is proper semver
           if ! [[ "$NEW_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "ERROR: Invalid version tag: '$NEW_VERSION' (expected X.Y.Z format)"
+            echo "❌ ERROR: Invalid version tag: '$NEW_VERSION' (expected X.Y.Z format)"
             exit 1
           fi
           
           # Verify package.json has correct version
           PACKAGE_VERSION=$(cat package.json | grep '"version"' | head -1 | awk -F'"' '{print $4}')
           if [ "$PACKAGE_VERSION" != "$NEW_VERSION" ]; then
-            echo "ERROR: package.json version ($PACKAGE_VERSION) doesn't match new version ($NEW_VERSION)"
+            echo "❌ ERROR: package.json version ($PACKAGE_VERSION) doesn't match new version ($NEW_VERSION)"
             exit 1
           fi
           
-          git add package.json package-lock.json
-          git commit -m "chore: release version $NEW_VERSION" || true
+          echo "✓ Version validation passed: $NEW_VERSION"
           
-          # Push the commit to the main branch
-          git push origin HEAD:main
+          # Check current git status before commit
+          echo ""
+          echo "📝 Current git status:"
+          git status --short
+          
+          # Commit version changes
+          echo ""
+          echo "💾 Committing version changes..."
+          git add package.json package-lock.json
+          if git commit -m "chore: release version $NEW_VERSION"; then
+            echo "✓ Commit created successfully"
+            COMMIT_CREATED=true
+          else
+            echo "⚠️  No changes to commit (files already updated)"
+            COMMIT_CREATED=false
+          fi
+          
+          # Push the commit to the main branch with explicit error handling
+          echo ""
+          echo "📤 Pushing commit to origin/main..."
+          echo "Current branch: $(git branch --show-current)"
+          echo "Remote: $(git config --get remote.origin.url)"
+          
+          if git push origin HEAD:main 2>&1; then
+            echo "✓ Successfully pushed commit to origin/main"
+            PUSH_SUCCESS=true
+          else
+            PUSH_ERROR=$?
+            echo "❌ FAILED to push commit to origin/main (exit code: $PUSH_ERROR)"
+            echo "Attempting to diagnose the issue..."
+            
+            # Diagnostic information
+            echo ""
+            echo "📊 Git log (last 5 commits):"
+            git log --oneline -5 || echo "Failed to get git log"
+            
+            echo ""
+            echo "📊 Remote info:"
+            git remote -v || echo "Failed to get remotes"
+            
+            echo ""
+            echo "📊 Current HEAD:"
+            git rev-parse HEAD || echo "Failed to get HEAD"
+            
+            PUSH_SUCCESS=false
+          fi
           
           # Check if tag already exists
+          echo ""
+          echo "🏷️  Checking for existing tag: $TAG"
           if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "⚠️ Tag $TAG already exists, skipping tag creation"
+            echo "⚠️  Tag $TAG already exists, skipping tag creation"
             echo "tag-exists=true" >> $GITHUB_OUTPUT
+            TAG_CREATED=false
           else
-            git tag -a "$TAG" -m "Release version $NEW_VERSION"
-            git push origin "$TAG"
-            echo "tag-exists=false" >> $GITHUB_OUTPUT
-            echo "✅ Created and pushed tag: $TAG"
+            # Create and push the tag
+            echo "📝 Creating tag $TAG..."
+            if git tag -a "$TAG" -m "Release version $NEW_VERSION"; then
+              echo "✓ Tag created locally: $TAG"
+              
+              echo "📤 Pushing tag to origin..."
+              if git push origin "$TAG" 2>&1; then
+                echo "✓ Successfully pushed tag to origin"
+                echo "tag-exists=false" >> $GITHUB_OUTPUT
+                TAG_CREATED=true
+              else
+                TAG_PUSH_ERROR=$?
+                echo "❌ FAILED to push tag (exit code: $TAG_PUSH_ERROR)"
+                TAG_CREATED=false
+                exit 1
+              fi
+            else
+              echo "❌ FAILED to create tag"
+              exit 1
+            fi
+          fi
+          
+          # Summary
+          echo ""
+          echo "═══════════════════════════════════════════════"
+          echo "📊 SUMMARY"
+          echo "═══════════════════════════════════════════════"
+          echo "Tag: $TAG"
+          echo "Commit pushed: $PUSH_SUCCESS"
+          echo "Tag created: $TAG_CREATED"
+          
+          if [ "$PUSH_SUCCESS" = false ]; then
+            echo ""
+            echo "⚠️  WARNING: Commit was not successfully pushed to origin/main!"
+            echo "The tag was still created, but manual intervention may be needed."
+            echo "Check the logs above for error details."
           fi
           
           echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: ✅ Validate Release Integrity
+        id: validate
+        shell: bash
+        run: |
+          set -e
+          
+          echo "══════════════════════════════════════════════════════════"
+          echo "🔍 VALIDATING RELEASE INTEGRITY"
+          echo "══════════════════════════════════════════════════════════"
+          
+          TAG="v${{ needs.analyze-commits.outputs.new-version }}"
+          
+          # Check 1: Local tag exists
+          echo ""
+          echo "✓ Checking local tag..."
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "  ✅ Local tag exists: $TAG"
+            echo "local_tag_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "  ❌ Local tag MISSING: $TAG"
+            echo "local_tag_exists=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check 2: Remote tag exists
+          echo ""
+          echo "✓ Checking remote tag..."
+          git fetch origin refs/tags/$TAG:refs/tags/$TAG 2>/dev/null || true
+          if git rev-parse $TAG >/dev/null 2>&1; then
+            echo "  ✅ Remote tag exists: $TAG"
+            echo "remote_tag_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "  ⚠️  Remote tag NOT found (may sync shortly)"
+            echo "remote_tag_exists=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check 3: Chore commit exists locally
+          echo ""
+          echo "✓ Checking chore commit..."
+          CHORE_FOUND=$(git log --oneline -20 | grep -c "chore: release" || echo 0)
+          if [ "$CHORE_FOUND" -gt 0 ]; then
+            CHORE_COMMIT=$(git log --oneline -20 | grep "chore: release" | head -1)
+            echo "  ✅ Chore commit found: $CHORE_COMMIT"
+            echo "chore_commit_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "  ⚠️  Chore commit NOT in recent history"
+            echo "chore_commit_exists=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check 4: package.json version matches
+          echo ""
+          echo "✓ Checking version sync..."
+          PKG_VERSION=$(grep '"version"' package.json | head -1 | cut -d'"' -f4)
+          EXPECTED_VERSION="${{ needs.analyze-commits.outputs.new-version }}"
+          if [ "$PKG_VERSION" = "$EXPECTED_VERSION" ]; then
+            echo "  ✅ package.json version matches: $PKG_VERSION"
+            echo "version_sync=true" >> $GITHUB_OUTPUT
+          else
+            echo "  ❌ Version mismatch! Expected: $EXPECTED_VERSION, Found: $PKG_VERSION"
+            echo "version_sync=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Summary
+          echo ""
+          echo "──────────────────────────────────────────────────────────"
+          echo "📊 VALIDATION SUMMARY"
+          echo "──────────────────────────────────────────────────────────"
+          LOCAL_TAG=$(cat $GITHUB_OUTPUT | grep "local_tag_exists=" | cut -d'=' -f2)
+          REMOTE_TAG=$(cat $GITHUB_OUTPUT | grep "remote_tag_exists=" | cut -d'=' -f2)
+          CHORE=$(cat $GITHUB_OUTPUT | grep "chore_commit_exists=" | cut -d'=' -f2)
+          VERSION=$(cat $GITHUB_OUTPUT | grep "version_sync=" | cut -d'=' -f2)
+          
+          echo "Local tag:        $([ "$LOCAL_TAG" = "true" ] && echo "✅" || echo "❌")"
+          echo "Remote tag:       $([ "$REMOTE_TAG" = "true" ] && echo "✅" || echo "⚠️ ")"
+          echo "Chore commit:     $([ "$CHORE" = "true" ] && echo "✅" || echo "⚠️ ")"
+          echo "Version sync:     $([ "$VERSION" = "true" ] && echo "✅" || echo "❌")"
+          
+          if [ "$LOCAL_TAG" = "false" ] || [ "$VERSION" = "false" ]; then
+            echo ""
+            echo "⚠️  CRITICAL: Release integrity check failed!"
+            exit 1
+          fi
+          
+          echo ""
+          echo "✅ All critical checks passed"
 
       - name: 📚 Create GitHub Release
         id: release
@@ -400,6 +569,7 @@ jobs:
           script: |
             const analyzeResult = '${{ needs.analyze-commits.result }}';
             const createResult = '${{ needs.create-release.result }}';
+            const validateResult = '${{ needs.create-release.result }}';
             
             let summary = '## 📦 Versioning Workflow Complete\n\n';
             
@@ -414,6 +584,22 @@ jobs:
                   summary += '✅ Release Created: Success\n';
                   summary += '🏷️ Git Tag: Created\n';
                   summary += '📚 GitHub Release: Published\n';
+                  
+                  // Add validation status
+                  const localTag = '${{ steps.validate.outputs.local_tag_exists }}' === 'true';
+                  const remoteTag = '${{ steps.validate.outputs.remote_tag_exists }}' === 'true';
+                  const choreCommit = '${{ steps.validate.outputs.chore_commit_exists }}' === 'true';
+                  const versionSync = '${{ steps.validate.outputs.version_sync }}' === 'true';
+                  
+                  summary += '\n### Integrity Validation\n';
+                  summary += `${localTag ? '✅' : '❌'} Local tag created\n`;
+                  summary += `${remoteTag ? '✅' : '⚠️'} Remote tag synced\n`;
+                  summary += `${choreCommit ? '✅' : '⚠️'} Chore commit exists\n`;
+                  summary += `${versionSync ? '✅' : '❌'} Version synchronized\n`;
+                  
+                  if (!versionSync) {
+                    summary += '\n⚠️ **ACTION REQUIRED**: Version sync failed. See logs for details.\n';
+                  }
                 } else {
                   summary += '⚠️ Release Creation: Failed\n';
                   summary += 'Please check the logs above.\n';
