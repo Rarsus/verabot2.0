@@ -23,14 +23,14 @@ VeraBot2.0 is an advanced Discord bot with organized commands, quote management 
 - Quote management system (add, search, rate, tag, export)
 - AI-powered poem generation via HuggingFace
 - SQLite database with automatic schema management
-- Comprehensive testing suite with 100% passing tests (74 tests)
+- Comprehensive testing suite with 100% passing tests (3000+ tests across 67 test suites)
 - Modern architecture with Command pattern and utility modules
 
 ## Technology Stack
 
 **Core Technologies:**
 
-- **Runtime:** Node.js 18+
+- **Runtime:** Node.js 20+ (minimum v20.0.0, npm >=10.0.0)
 - **Language:** JavaScript (ES2021)
 - **Framework:** Discord.js v14.11.0
 - **Database:** SQLite3 v5.1.7
@@ -40,7 +40,7 @@ VeraBot2.0 is an advanced Discord bot with organized commands, quote management 
 **Development Tools:**
 
 - **Linting:** ESLint v8.48.0
-- **Testing:** Custom test framework (74 comprehensive tests)
+- **Testing:** Jest test framework (3000+ comprehensive tests across 67 test suites)
 - **Code Quality:** Pre-commit hooks with Husky
 - **Containerization:** Docker & Docker Compose
 
@@ -259,7 +259,7 @@ await db.addQuote(text, author); // No guild isolation!
 
 - db.js is marked **DEPRECATED** as of January 2026
 - All new code MUST use guild-aware services
-- db.js will be removed in v0.3.0 (March 2026)
+- db.js will be fully removed in v4.0.0
 
 See `docs/reference/DB-DEPRECATION-TIMELINE.md` for detailed migration guide.
 
@@ -725,29 +725,46 @@ HUGGINGFACE_API_KEY=optional_key          # For AI poem generation
 
 ## Documentation Resources
 
-**Documentation Standards:**
+**Documentation Standards & Navigation:**
 
 - [DOCUMENT-NAMING-CONVENTION.md](../../DOCUMENT-NAMING-CONVENTION.md) - Complete naming convention guide (follow this for all new docs)
-- [docs/INDEX.md](../../docs/INDEX.md) - Master documentation index
+- [DOCUMENTATION-INDEX.md](../../DOCUMENTATION-INDEX.md) - Master root-level documentation index
+- [docs/INDEX.md](../../docs/INDEX.md) - Complete docs/ folder navigation
 
 **Development Guides (docs/user-guides/):**
 
-- [creating-commands.md](../../docs/user-guides/creating-commands.md) - Command creation guide
-- [testing-guide.md](../../docs/user-guides/testing-guide.md) - Testing with TDD
-- [huggingface-setup.md](../../docs/user-guides/huggingface-setup.md) - AI setup
-- [docker-setup.md](../../docs/user-guides/docker-setup.md) - Docker containerization
+- [01-CREATING-COMMANDS.md](../../docs/user-guides/01-CREATING-COMMANDS.md) - Command creation guide
+- [02-TESTING-GUIDE.md](../../docs/user-guides/02-TESTING-GUIDE.md) - Testing with TDD
+- [DOCKER-SETUP.md](../../docs/user-guides/DOCKER-SETUP.md) - Docker containerization
+- [HUGGINGFACE-SETUP.md](../../docs/user-guides/HUGGINGFACE-SETUP.md) - AI setup
 
-**Technical Reference (docs/reference/):**
+**Technical Reference (docs/reference/ - Organized into 6 subcategories as of Jan 15):**
 
-- [ARCHITECTURE.md](../../docs/reference/ARCHITECTURE.md) - System design details
-- [REFACTORING-GUIDE.md](../../docs/reference/REFACTORING-GUIDE.md) - Before/after examples
-- [TDD-QUICK-REFERENCE.md](../../docs/reference/TDD-QUICK-REFERENCE.md) - Testing patterns
+- [docs/reference/architecture/](../../docs/reference/architecture/) - System design and architecture
+- [docs/reference/database/](../../docs/reference/database/) - Database schemas and operations
+- [docs/reference/permissions/](../../docs/reference/permissions/) - Role-based access control
+- [docs/reference/configuration/](../../docs/reference/configuration/) - Configuration and setup
+- [docs/reference/quick-refs/](../../docs/reference/quick-refs/) - Quick reference guides
+- [docs/reference/reports/](../../docs/reference/reports/) - Analysis and audit reports
 
-**Process & Planning (Root Level):**
+**Testing Documentation (docs/testing/ - Consolidated Jan 15):**
 
-- [PHASE-22.3-COVERAGE-EXPANSION-PLAN.md](../../PHASE-22.3-COVERAGE-EXPANSION-PLAN.md) - Current phase plan
-- [TEST-NAMING-CONVENTION-GUIDE.md](../../TEST-NAMING-CONVENTION-GUIDE.md) - Test naming standards
-- [DEFINITION-OF-DONE.md](../../DEFINITION-OF-DONE.md) - DoD criteria
+- [test-naming-convention-guide.md](../../docs/testing/test-naming-convention-guide.md) - Test naming standards
+- [test-file-audit-report.md](../../docs/testing/test-file-audit-report.md) - Test file organization
+- [test-coverage-baseline-strategy.md](../../docs/testing/test-coverage-baseline-strategy.md) - Coverage strategy
+
+**Current Phase Work (Root Level - Phase 23.1):**
+
+- [PHASE-23.1-FINAL-STATUS-REPORT.md](../../PHASE-23.1-FINAL-STATUS-REPORT.md) - Latest phase status (✅ COMPLETE)
+- [PHASE-23.0-COMPLETION-REPORT.md](../../PHASE-23.0-COMPLETION-REPORT.md) - Phase 23.0 summary
+- [DEFINITION-OF-DONE.md](../../DEFINITION-OF-DONE.md) - Development standards
+
+**Documentation Reorganization (Jan 15, 2026):**
+
+- [ANALYSIS-SUMMARY.md](../../ANALYSIS-SUMMARY.md) - Analysis of all 73 documentation files
+- [REORGANIZATION-EXECUTION-COMPLETE.md](../../REORGANIZATION-EXECUTION-COMPLETE.md) - Execution report (6 phases)
+- [GITHUB-ISSUES-CREATED-SUMMARY.md](../../GITHUB-ISSUES-CREATED-SUMMARY.md) - Issues #61-67 details
+- [docs/archived/](../../docs/archived/) - Historical documentation (PHASE-6, PHASE-22.x, PHASE-1)
 
 **External Resources:**
 
@@ -852,16 +869,17 @@ When renaming or moving documents:
 
 ## Version Information
 
-- **Current Version:** v0.1.0 (December 2024)
-- **Last Updated:** January 5, 2026
-- **Node.js:** 18+ required
+- **Current Version:** v3.4.0 (January 2026)
+- **Last Updated:** January 15, 2026
+- **Node.js:** 20+ required (minimum v20.0.0, npm >=10.0.0)
 - **Discord.js:** 14.11.0
-- **Major Refactoring:** Completed (27% code reduction, Guild Isolation)
+- **Major Refactoring:** Completed (Guild Isolation, Multi-Database Support, Phase 6)
 - **Test Coverage:**
-  - Current: 79.5% (lines) | 82.7% (functions) | 74.7% (branches)
-  - Target: 90%+ (lines) | 95%+ (functions) | 85%+ (branches)
-  - Tests: 500+ passing across 32 test suites (100% pass rate)
-- **TDD Framework:** Mandatory for all new code (updated January 5, 2026)
+  - Current: 3000+ tests across 67 test suites (100% pass rate)
+  - Tests: 3012 passing tests in all categories
+  - Zero test failures, zero regressions
+  - Total time: ~25 seconds
+- **TDD Framework:** Mandatory for all new code (enforced since January 2026)
 
 ## Tips for Copilot Usage
 

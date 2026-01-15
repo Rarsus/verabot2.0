@@ -1,7 +1,7 @@
 # VeraBot 2.0 Documentation Index
 
-**Last Updated:** January 5, 2026  
-**Status:** 🟢 Phase 22.3f COMPLETE - 1922 Tests Passing  
+**Last Updated:** January 15, 2026  
+**Status:** 🟢 Documentation Fully Reorganized & Aligned with Convention  
 
 ---
 
@@ -12,212 +12,269 @@
 2. **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
 3. **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** - Community standards
 
-### 📊 Current Work (Phase 22.3 - Complete)
-- **[PHASE-22.3f-COMPLETION-REPORT.md](PHASE-22.3f-COMPLETION-REPORT.md)** - ✅ COMPLETE (104 tests, WebhookListener + DashboardAuth)
-- **[PHASE-22.3f-PLANNING.md](PHASE-22.3f-PLANNING.md)** - Phase 22.3f detailed planning
-- **[PHASE-22.3-COVERAGE-EXPANSION-PLAN.md](PHASE-22.3-COVERAGE-EXPANSION-PLAN.md)** - Phase 22.3 overall plan
-- **[PHASE-22.2-SESSION-SUMMARY.md](PHASE-22.2-SESSION-SUMMARY.md)** - Previous phase (CacheManager - 100% tests)
+### 📊 Current Work (Phase 23.1 - Complete)
+- **[PHASE-23.1-FINAL-STATUS-REPORT.md](PHASE-23.1-FINAL-STATUS-REPORT.md)** - ✅ COMPLETE (latest)
+- **[PHASE-23.1-COMPLETION-REPORT.md](PHASE-23.1-COMPLETION-REPORT.md)** - Phase completion details
+- **[PHASE-23.0-COMPLETION-REPORT.md](PHASE-23.0-COMPLETION-REPORT.md)** - Phase 23.0 summary
 
-### 📚 Development Resources
-- **[COMMAND-REFERENCE-QUICK.md](COMMAND-REFERENCE-QUICK.md)** - Quick command reference
+### 📚 Standards & Documentation
+- **[DOCUMENT-NAMING-CONVENTION.md](DOCUMENT-NAMING-CONVENTION.md)** - Documentation naming standards
 - **[DEFINITION-OF-DONE.md](DEFINITION-OF-DONE.md)** - Definition of done criteria
-- **[TEST-NAMING-CONVENTION-GUIDE.md](TEST-NAMING-CONVENTION-GUIDE.md)** - Test naming standards
+- **[docs/testing/test-naming-convention-guide.md](docs/testing/test-naming-convention-guide.md)** - Test naming standards
 
-### 📝 Archived Documentation
-- **[_archive/INDEX.md](_archive/INDEX.md)** - Archive organization and history
-- **[_archive/phase-22.1a/](_archive/phase-22.1a/)** - Phase 22.1a (97 tests, 95.9% pass)
-- **[_archive/phase-22.2/](_archive/phase-22.2/)** - Phase 22.2 (45 tests, 100% pass)
-- **[_archive/other-historical/](_archive/other-historical/)** - Historical reference
+### 🔍 Recent Analysis
+- **[ANALYSIS-SUMMARY.md](ANALYSIS-SUMMARY.md)** - Documentation analysis summary (Jan 15, 2026)
+- **[GITHUB-ISSUES-CREATED-SUMMARY.md](GITHUB-ISSUES-CREATED-SUMMARY.md)** - GitHub issues #61-67
+- **[COMMAND-REFERENCE-QUICK.md](COMMAND-REFERENCE-QUICK.md)** - Quick command reference
+
+### 📁 Documentation Organization
+- **[docs/archived/](docs/archived/)** - Historical phases (PHASE-6, PHASE-22.x, PHASE-1)
+- **[docs/reference/](docs/reference/)** - Technical references (organized into 6 categories)
+- **[docs/testing/](docs/testing/)** - Testing documentation (consolidated Jan 15)
 
 ---
 
-## Documentation Structure
+## Documentation Structure (Reorganized January 15, 2026)
 
-### Core Documentation (In Repository Root)
+### Root-Level Documentation (Active & Core)
 
-| Document | Purpose | Last Updated |
-|----------|---------|--------------|
-| **README.md** | Project overview, setup, features | Jan 13, 2026 |
-| **CHANGELOG.md** | Version history and updates | Jan 13, 2026 |
-| **CONTRIBUTING.md** | Developer guidelines | Jan 10, 2026 |
-| **CODE_OF_CONDUCT.md** | Community standards | Jan 7, 2026 |
+**Project Governance:**
+- README.md, CHANGELOG.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md
 
-### Active Project Documentation
+**Standards & Conventions:**
+- DOCUMENT-NAMING-CONVENTION.md
+- DEFINITION-OF-DONE.md
+- COMMAND-REFERENCE-QUICK.md
 
-| Document | Purpose | Status | Last Updated |
-|----------|---------|--------|--------------|
-| **PHASE-22.3f-COMPLETION-REPORT.md** | Phase 22.3f final report (104 tests) | ✅ Complete | Jan 5, 2026 |
-| **PHASE-22.3f-PLANNING.md** | Detailed planning and strategy | ✅ Complete | Jan 5, 2026 |
-| **PHASE-22.3-COVERAGE-EXPANSION-PLAN.md** | Overall Phase 22.3 objectives | ✅ Complete | Jan 13, 2026 |
-| **PHASE-22.2-SESSION-SUMMARY.md** | Phase 22.2 completion (CacheManager) | ✅ Complete | Jan 13, 2026 |
-| **DEFINITION-OF-DONE.md** | Acceptance criteria | Reference | Jan 12, 2026 |
+**Current Work (Phase 23.1):**
+- PHASE-23.1-FINAL-STATUS-REPORT.md
+- PHASE-23.1-COMPLETION-REPORT.md
+- PHASE-23.1-EXECUTION-SUMMARY.md
+- PHASE-23.1-POST-MERGE-SUMMARY.md
+- PHASE-23.1-PROJECT-RECORDS.md
+- PHASE-23.1-PR-SUMMARY.md
 
-### Test Documentation
+**Current Phase (Phase 23.0):**
+- PHASE-23.0-COMPLETION-REPORT.md
+- PHASE-23.0-EXPANDED-SERVICE-SPEC.md
+- PHASE-23.0-GLOBAL-SERVICES-IMPLEMENTATION-PLAN.md
 
-| Document | Purpose | Status |
-|----------|---------|--------|
-| **TEST-NAMING-CONVENTION-GUIDE.md** | Test naming standards | Active |
-| **TEST-NAMING-CONVENTION-EXECUTIVE-SUMMARY.md** | Summary of conventions | Reference |
-| **TEST-NAMING-MIGRATION-EXECUTION-PLAN.md** | Migration planning | Reference |
-| **TESTING-INITIATIVE-STATUS-JAN-7.md** | Testing status snapshot | Reference |
+**Active Design & Monitoring:**
+- CI-CD-WORKFLOW-MONITORING.md
+- CICD-ANALYSIS-AND-REDESIGN.md
+- DEPRECATED-CODE-MIGRATION-AUDIT.md
 
-### Development Guides (in `/docs/guides/`)
+**Analysis & Tracking:**
+- ANALYSIS-SUMMARY.md
+- DOCUMENTATION-ANALYSIS-COMPREHENSIVE.md
+- GITHUB-ISSUES-CREATED-SUMMARY.md
 
-- **01-CREATING-COMMANDS.md** - Command creation guide
-- **02-TESTING-GUIDE.md** - TDD testing guide
-- **03-HUGGINGFACE-SETUP.md** - AI integration setup
+---
 
-### Technical Reference (in `/docs/reference/`)
+## docs/ Directory Structure (Fully Organized)
 
-- **ARCHITECTURE.md** - System architecture
-- **REFACTORING-GUIDE.md** - Code refactoring patterns
-- **TDD-QUICK-REFERENCE.md** - TDD patterns and examples
+### docs/admin-guides/
+Administrator how-to guides
+- admin-communication-commands.md
+- automatic-registration-quick-start.md
+
+### docs/user-guides/
+End-user guides and tutorials (13 files)
+- creating-commands.md
+- dashboard-access-configuration.md
+- dashboard-login-troubleshooting.md
+- discord-oauth-redirect-setup.md
+- docker-setup.md, docker-workflow.md
+- huggingface-setup.md
+- opt-in-system.md
+- proxy-setup.md
+- reminder-system.md
+- resolution-helpers-guide.md
+- slash-commands-troubleshooting.md
+- testing-guide.md
+- **oauth-login-troubleshooting.md** *(NEW - Jan 15)*
+
+### docs/guides/
+Developer process and workflow guides (9 files)
+- dashboard-setup.md
+- external-websocket-setup.md
+- git-workflow-guide.md
+- oauth-login-flow-fix.md
+- **ci-cd-migration.md** *(NEW - Jan 15)*
+- **scripts-improvements-guide.md** *(NEW - Jan 15)*
+- **scripts-refactoring-guide.md** *(NEW - Jan 15)*
+- **workflow-improvements-guide.md** *(NEW - Jan 15)*
+- **workflow-diagnostics-guide.md** *(NEW - Jan 15)*
+
+### docs/reference/ (NOW ORGANIZED INTO 6 SUBCATEGORIES)
+
+#### database/ - Database specification & schema
+- database-guild-isolation-analysis.md
+- database-migration-fixes.md
+- database-migrations.md
+- database-optimization.md
+- db-deprecation-timeline.md
+- multi-database-implementation.md
+- reminder-schema.md
+
+#### permissions/ - Permission system & roles
+- permission-model.md, permission-system-summary.md
+- permissions-index.md, permissions-matrix.md
+- permissions-overview.md, permissions-quick-reference.md
+- permissions-visual.md
+- role-based-permissions-complete.md
+- role-based-permissions-proposal.md
+- role-implementation-phase1.md, role-implementation-phase2.md
+- role-permission-system-status.md
+
+#### configuration/ - Configuration & environment
+- **configuration-audit-2026.md** *(NEW - Jan 15)*
+- **configuration-guide.md** *(NEW - Jan 15)*
+- env-security-reference.md
+
+#### architecture/ - System architecture & patterns
+- architecture-patterns-visual.md
+- architecture.md
+- command-database-patterns-analysis.md
+- feature-modules.md
+- global-services-migration-guide.md
+- refactoring-guide.md
+- tdd-quick-reference.md
+
+#### quick-refs/ - Quick reference guides
+- quick-reference.md
+- COMMAND-REFERENCE-QUICK.md *(from root)*
+
+#### reports/ - Analysis reports & audits
+- deprecated-code-audit.md
+- database-abstraction-analysis.md
+- scripts-analysis-report.md
+- security.md
+- PHASE completion reports
+- analysis options
+
+### docs/architecture/
+System design & architecture (3 files)
+- architecture-overview.md
+- folder-structure-analysis.md
+- role-quick-update-guide.md
+
+### docs/best-practices/
+Coding standards & best practices (13 files)
+- ci-cd-setup.md, ci-cd.md
+- **ci-cd-quick-reference.md** *(NEW - Jan 15)*
+- code-quality.md
+- coverage-setup.md
+- error-handling.md
+- github-actions.md
+- performance-monitoring.md
+- security-hardening.md
+- semantic-release-setup.md
+- stability-checklist.md
+- test-coverage-overview.md, test-summary-latest.md
+
+### docs/testing/ (NEWLY ORGANIZED - Jan 15, 2026)
+Testing frameworks, patterns & guides (7 consolidated files)
+- **test-naming-convention-guide.md** *(moved Jan 15)*
+- **test-naming-convention-migration-plan.md** *(moved Jan 15)*
+- **test-file-audit-report.md** *(moved Jan 15)*
+- **test-coverage-baseline-strategy.md** *(moved Jan 15)*
+- TEST-COVERAGE-OVERVIEW.md *(moved Jan 15)*
+- TEST-MAINTENANCE-GUIDE.md *(moved Jan 15)*
+- TEST-SUMMARY-LATEST.md *(moved Jan 15)*
+
+### docs/archived/
+Historical and superseded documentation
+- **PHASE-6/** - Phase 6 (7 files) *(moved Jan 15)*
+- **PHASE-22.4/** - Phase 22.4 (1 file) *(moved Jan 15)*
+- **PHASE-22.6b/** - Phase 22.6b (1 file) *(moved Jan 15)*
+- **PHASE-22.6c/** - Phase 22.6c (1 file) *(moved Jan 15)*
+- **PHASE-22.6d/** - Phase 22.6d (2 files) *(moved Jan 15)*
+- **PHASE-22.8/** - Phase 22.8 (2 files) *(moved Jan 15)*
+- **PHASE-1/** - Phase 1 metrics (1 file) *(moved Jan 15)*
+- Other historical documentation (8+ files) *(moved Jan 15)*
 
 ---
 
 ## By Use Case
 
 ### 👨‍💻 I want to contribute code
-1. Read: [CONTRIBUTING.md](CONTRIBUTING.md)
-2. Read: [DEFINITION-OF-DONE.md](DEFINITION-OF-DONE.md)
-3. Reference: [docs/guides/01-CREATING-COMMANDS.md](docs/guides/01-CREATING-COMMANDS.md)
-4. Reference: [docs/guides/02-TESTING-GUIDE.md](docs/guides/02-TESTING-GUIDE.md)
+1. **[CONTRIBUTING.md](CONTRIBUTING.md)** - Start here
+2. **[DEFINITION-OF-DONE.md](DEFINITION-OF-DONE.md)** - Definition of done
+3. **[docs/reference/architecture/](docs/reference/architecture/)** - System design
+4. **[docs/best-practices/](docs/best-practices/)** - Coding standards
 
-### 🧪 I want to understand testing
-1. Read: [PHASE-22.3-COVERAGE-EXPANSION-PLAN.md](PHASE-22.3-COVERAGE-EXPANSION-PLAN.md) (coverage goals)
-2. Read: [PHASE-22.2-SESSION-SUMMARY.md](PHASE-22.2-SESSION-SUMMARY.md) (latest phase)
-3. Reference: [docs/guides/02-TESTING-GUIDE.md](docs/guides/02-TESTING-GUIDE.md) (TDD patterns)
-4. Reference: [TEST-NAMING-CONVENTION-GUIDE.md](TEST-NAMING-CONVENTION-GUIDE.md) (naming)
+### 🧪 I want to write tests
+1. **[docs/testing/test-naming-convention-guide.md](docs/testing/test-naming-convention-guide.md)** - Test naming
+2. **[docs/reference/architecture/tdd-quick-reference.md](docs/reference/architecture/tdd-quick-reference.md)** - TDD patterns
+3. **[docs/testing/](docs/testing/)** - All testing guides
 
-### 📊 I want to understand project status
-1. Read: [README.md](README.md) - Overview
-2. Read: [PHASE-22.3-COVERAGE-EXPANSION-PLAN.md](PHASE-22.3-COVERAGE-EXPANSION-PLAN.md) - Current phase
-3. Check: [PHASE-22.2-SESSION-SUMMARY.md](PHASE-22.2-SESSION-SUMMARY.md) - Latest completion
-4. Archive: [_archive/INDEX.md](_archive/INDEX.md) - Historical context
+### 🚀 I want to deploy or set up infrastructure
+1. **[docs/user-guides/docker-setup.md](docs/user-guides/docker-setup.md)** - Docker setup
+2. **[docs/guides/ci-cd-migration.md](docs/guides/ci-cd-migration.md)** - CI/CD setup
+3. **[docs/best-practices/ci-cd-quick-reference.md](docs/best-practices/ci-cd-quick-reference.md)** - CI/CD reference
 
-### 🔧 I want to set up the project
-1. Read: [README.md](README.md)
-2. Reference: [CONTRIBUTING.md](CONTRIBUTING.md)
-3. Setup: [docs/guides/03-HUGGINGFACE-SETUP.md](docs/guides/03-HUGGINGFACE-SETUP.md) (optional)
+### 🔐 I want to understand permissions
+1. **[docs/reference/permissions/permissions-quick-reference.md](docs/reference/permissions/permissions-quick-reference.md)** - Quick start
+2. **[docs/reference/permissions/permissions-matrix.md](docs/reference/permissions/permissions-matrix.md)** - Full matrix
+3. **[docs/reference/permissions/](docs/reference/permissions/)** - All permission docs
 
-### 📚 I want to understand architecture
-1. Read: [docs/reference/ARCHITECTURE.md](docs/reference/ARCHITECTURE.md)
-2. Reference: [docs/reference/REFACTORING-GUIDE.md](docs/reference/REFACTORING-GUIDE.md)
-3. Reference: [.github/copilot-instructions.md](.github/copilot-instructions.md) (detailed design)
+### 📊 I want to understand the database
+1. **[docs/reference/database/database-guild-isolation-analysis.md](docs/reference/database/database-guild-isolation-analysis.md)** - Guild isolation
+2. **[docs/reference/database/db-deprecation-timeline.md](docs/reference/database/db-deprecation-timeline.md)** - Deprecation info
+3. **[docs/reference/database/](docs/reference/database/)** - All database docs
 
----
-
-## Phase Progress Timeline
-
-### ✅ Completed Phases
-
-**Phase 22.1a** (Jan 5-6, 2026)
-- Added 97 comprehensive tests
-- Achieved 95.9% pass rate
-- Documentation: [_archive/phase-22.1a/](_archive/phase-22.1a/)
-
-**Phase 22.2** (Jan 6-7, 2026)
-- Added 45 deterministic tests (100% pass rate)
-- Fixed 8 remaining timing failures (Session 2)
-- Achieved 100% test pass rate
-- Documentation: [_archive/phase-22.2/](_archive/phase-22.2/)
-- Current Summary: [PHASE-22.2-SESSION-SUMMARY.md](PHASE-22.2-SESSION-SUMMARY.md)
-
-### 🟡 Current Phase
-
-**Phase 22.3** (Jan 13-17, 2026)
-- Focus: Coverage expansion (79.5% → 85%+)
-- Plan: [PHASE-22.3-COVERAGE-EXPANSION-PLAN.md](PHASE-22.3-COVERAGE-EXPANSION-PLAN.md)
-- Target: 65-95 new tests for branch/function/edge case coverage
-
-### 📋 Upcoming Phases
-
-**Phase 22.4** - Performance Optimization Testing  
-**Phase 22.5** - Production Readiness  
+### 🎯 I want to see what's being worked on
+1. **[PHASE-23.1-FINAL-STATUS-REPORT.md](PHASE-23.1-FINAL-STATUS-REPORT.md)** - Current phase
+2. **[GITHUB-ISSUES-CREATED-SUMMARY.md](GITHUB-ISSUES-CREATED-SUMMARY.md)** - Active issues
+3. **[ANALYSIS-SUMMARY.md](ANALYSIS-SUMMARY.md)** - Priorities
 
 ---
 
-## Current Metrics
+## Recent Changes (January 15, 2026)
 
-### Test Suite Status
-```
-Total Tests:        1097
-Passing:            1097 (100% ✅)
-Failing:            0
-Test Suites:        25 all passing
-Test Pass Rate:     100%
-```
+### ✅ Documentation Reorganization Complete
 
-### Coverage Status (Post-Phase 22.2)
-```
-Lines:      79.5%  (Target: 85%+)  ← Phase 22.3 Focus
-Functions:  82.7%  (Target: 95%+)  ← Phase 22.3 Focus
-Branches:   74.7%  (Target: 85%+)  ← Phase 22.3 Focus
-```
+**Executed Actions:**
+1. ✅ Archived 15+ historical phase documents
+2. ✅ Moved CI/CD guides to proper locations
+3. ✅ Moved system architecture docs to docs/
+4. ✅ Created 6 subcategories in docs/reference/ (database, permissions, configuration, architecture, quick-refs, reports)
+5. ✅ Consolidated testing docs in docs/testing/
+6. ✅ Moved test naming convention guide from root to docs/testing/
+7. ✅ Created GitHub issues #61-67 for unaddressed problems
 
-### Code Quality
-```
-ESLint Errors:      0
-ESLint Warnings:    0
-Code Style:         100% compliant
-Regressions:        0
-Flaky Tests:        0
-```
+**Results:**
+- 42 valid & current documents maintained
+- 18 documents reorganized to proper locations
+- 13 obsolete documents archived
+- Root documentation simplified to 12 core files
+- docs/reference/ split from 39 flat files into 6 organized categories
+- docs/testing/ created with 7 consolidated test docs
 
 ---
 
-## Documentation Maintenance
+## Documentation Statistics
 
-### Current Policies
-1. **Active documentation** stays in repository root
-2. **Completed phase docs** archived to `_archive/phase-XX/`
-3. **Historical docs** archived to `_archive/other-historical/`
-4. **Development guides** stay in `docs/guides/`
-5. **Technical reference** stays in `docs/reference/`
-
-### Update Schedule
-- Phase plans: Updated at phase start
-- Phase summaries: Updated at phase completion
-- Status documents: Updated daily during active phases
-- Archive index: Updated when new phase is archived
-
-### Next Archival
-Phase 22.3 documentation will be archived after completion on Jan 17, 2026
+**Root-level documents:** 12 (governance & current work)  
+**docs/ subdirectories:** 9 (admin-guides, user-guides, guides, reference, architecture, best-practices, testing, archived)  
+**docs/reference/ subcategories:** 6 (database, permissions, configuration, architecture, quick-refs, reports)  
+**Total documented guides:** 50+  
+**Last reorganized:** January 15, 2026  
 
 ---
 
-## Key Documents by Category
+## Quick Links by Role
 
-### Planning Documents
-- **PHASE-22.3-COVERAGE-EXPANSION-PLAN.md** - Current phase plan
-- **_archive/phase-22.2/PHASE-22.2-KICKOFF.md** - Previous phase plan
-- **_archive/phase-22.2/PHASE-22-ROADMAP.md** - Phase 22 roadmap
-
-### Completion Reports
-- **PHASE-22.2-SESSION-SUMMARY.md** - Latest completion summary
-- **_archive/phase-22.1a/PHASE-22.1a-COMPLETION-REPORT.md** - Phase 22.1a report
-- **_archive/phase-22.2/PHASE-22.2-COMPLETION-REPORT.md** - Phase 22.2 report
-
-### Quality Standards
-- **DEFINITION-OF-DONE.md** - Definition of done
-- **TEST-NAMING-CONVENTION-GUIDE.md** - Test naming standards
-- **.github/copilot-instructions.md** - Development standards
-
-### Quick References
-- **COMMAND-REFERENCE-QUICK.md** - Command reference
-- **TEST-NAMING-CONVENTION-EXECUTIVE-SUMMARY.md** - Test conventions summary
-- **_archive/phase-22.2/PHASE-22.2-QUICK-REFERENCE.md** - Phase 22.2 quick ref
+**Project Leads:** [PHASE-23.1-FINAL-STATUS-REPORT.md](PHASE-23.1-FINAL-STATUS-REPORT.md)  
+**Developers:** [CONTRIBUTING.md](CONTRIBUTING.md) → [docs/guides/](docs/guides/)  
+**QA/Testers:** [docs/testing/](docs/testing/)  
+**DevOps/Infrastructure:** [docs/guides/ci-cd-migration.md](docs/guides/ci-cd-migration.md)  
+**System Architects:** [docs/reference/architecture/](docs/reference/architecture/)  
 
 ---
 
-## Contacts & Support
-
-- **Primary Repo:** https://github.com/Rarsus/verabot2.0
-- **Issues:** GitHub Issues
-- **Development:** See [CONTRIBUTING.md](CONTRIBUTING.md)
-
----
-
-**Last Updated:** January 13, 2026  
-**Next Update:** During Phase 22.3 completion (Jan 17, 2026)
+**Documentation Status:** ✅ Fully Reorganized & Aligned with Convention (Jan 15, 2026)  
+**Maintained By:** GitHub Copilot  
+**Next Review:** Quarterly (per DOCUMENT-NAMING-CONVENTION.md)
 
