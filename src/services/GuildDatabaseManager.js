@@ -271,12 +271,11 @@ class GuildDatabaseManager {
         `
         CREATE TABLE IF NOT EXISTS user_communications (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          userId TEXT NOT NULL,
+          userId TEXT NOT NULL UNIQUE,
           opted_in INTEGER DEFAULT 0,
           preferences TEXT DEFAULT '{}',
           createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-          updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-          UNIQUE(userId)
+          updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
       `
       );
@@ -330,9 +329,101 @@ class GuildDatabaseManager {
       if (!columnNames.includes('preferences')) {
         await this._runAsync(db, "ALTER TABLE user_communications ADD COLUMN preferences TEXT DEFAULT '{}'");
       }
+
+      // Fix UNIQUE constraint on userId if using old table-level constraint
+      // Check if table has the old schema (table constraint instead of column constraint)
+      try {
+        // Try to insert a test to see if ON CONFLICT works
+        await new Promise((resolve) => {
+          db.run(
+            `INSERT INTO user_communications (userId, opted_in, createdAt, updatedAt)
+             VALUES ('_migration_test_', 0, datetime('now'), datetime('now'))
+             ON CONFLICT(userId) DO UPDATE SET opted_in = 0`,
+            (err) => {
+              // If error, we need to migrate the schema
+              if (err && err.message.includes('ON CONFLICT clause does not match')) {
+                this._fixUserIdUniqueConstraint(db).catch((migErr) => {
+                  logError('GuildDatabaseManager._fixUserIdUniqueConstraint', migErr, ERROR_LEVELS.MEDIUM);
+                });
+              }
+              // Clean up test record
+              db.run("DELETE FROM user_communications WHERE userId = '_migration_test_'", () => {
+                resolve();
+              });
+            }
+          );
+        });
+      } catch (error) {
+        logError('GuildDatabaseManager._runMigrations.uniqueCheck', error, ERROR_LEVELS.LOW);
+      }
     } catch (error) {
       // Silently log migration errors - they're not critical
       logError('GuildDatabaseManager._runMigrations', error, ERROR_LEVELS.LOW);
+    }
+  }
+
+  /**
+   * Fix old table-level UNIQUE constraint to column-level constraint
+   * SQLite doesn't support altering constraints, so we recreate the table
+   * @private
+   * @param {sqlite3.Database} db - Database connection
+   * @returns {Promise<void>}
+   */
+  async _fixUserIdUniqueConstraint(db) {
+    try {
+      // Check if migration was already done
+      const constraints = await new Promise((resolve) => {
+        db.all("SELECT sql FROM sqlite_master WHERE type='table' AND name='user_communications'", (err, rows) => {
+          resolve(rows || []);
+        });
+      });
+
+      if (constraints.length === 0) {
+        return; // Table doesn't exist, nothing to fix
+      }
+
+      const tableSql = constraints[0].sql;
+      if (!tableSql || tableSql.includes('UNIQUE(userId)')) {
+        // Table has old constraint, need to recreate it
+        await this._runAsync(db, 'BEGIN TRANSACTION');
+
+        try {
+          // Create new table with correct schema
+          await this._runAsync(
+            db,
+            `
+            CREATE TABLE user_communications_new (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              userId TEXT NOT NULL UNIQUE,
+              opted_in INTEGER DEFAULT 0,
+              preferences TEXT DEFAULT '{}',
+              createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+              updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+          `
+          );
+
+          // Copy data from old table
+          await this._runAsync(
+            db,
+            'INSERT INTO user_communications_new SELECT id, userId, opted_in, preferences, createdAt, updatedAt FROM user_communications'
+          );
+
+          // Drop old table
+          await this._runAsync(db, 'DROP TABLE user_communications');
+
+          // Rename new table
+          await this._runAsync(db, 'ALTER TABLE user_communications_new RENAME TO user_communications');
+
+          await this._runAsync(db, 'COMMIT');
+        } catch (error) {
+          await this._runAsync(db, 'ROLLBACK');
+          throw error;
+        }
+      }
+    } catch (error) {
+      logError('GuildDatabaseManager._fixUserIdUniqueConstraint', error, ERROR_LEVELS.MEDIUM);
+      throw error;
     }
   }
 
