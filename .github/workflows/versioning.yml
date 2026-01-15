@@ -3,6 +3,8 @@ name: Versioning - Semantic Release Management
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '.github/workflows/**'
   workflow_dispatch:
     inputs:
       release_type:
@@ -293,11 +295,21 @@ jobs:
           git add package.json package-lock.json
           git commit -m "chore: release version $NEW_VERSION" || true
           
-          git tag -a "$TAG" -m "Release version $NEW_VERSION"
-          git push origin "$TAG"
+          # Push the commit to the main branch
+          git push origin HEAD:main
+          
+          # Check if tag already exists
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "⚠️ Tag $TAG already exists, skipping tag creation"
+            echo "tag-exists=true" >> $GITHUB_OUTPUT
+          else
+            git tag -a "$TAG" -m "Release version $NEW_VERSION"
+            git push origin "$TAG"
+            echo "tag-exists=false" >> $GITHUB_OUTPUT
+            echo "✅ Created and pushed tag: $TAG"
+          fi
           
           echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "✅ Created and pushed tag: $TAG"
 
       - name: 📚 Create GitHub Release
         id: release
@@ -308,23 +320,55 @@ jobs:
             const newVersion = '${{ needs.analyze-commits.outputs.new-version }}';
             const changelogText = `${{ needs.analyze-commits.outputs.changelog }}`;
             const tag = 'v' + newVersion;
+            const tagExists = '${{ steps.tag.outputs.tag-exists }}' === 'true';
             
             try {
-              const release = await github.rest.repos.createRelease({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                tag_name: tag,
-                name: `Release ${newVersion}`,
-                body: changelogText,
-                draft: false,
-                prerelease: false,
-                make_latest: 'true'
-              });
+              // Check if release already exists
+              let release;
+              try {
+                const existingRelease = await github.rest.repos.getReleaseByTag({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  tag: tag
+                });
+                
+                if (existingRelease && existingRelease.status === 200) {
+                  core.info(`Release for ${tag} already exists, updating it`);
+                  release = await github.rest.repos.updateRelease({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    release_id: existingRelease.data.id,
+                    tag_name: tag,
+                    name: `Release ${newVersion}`,
+                    body: changelogText,
+                    draft: false,
+                    prerelease: false,
+                    make_latest: 'true'
+                  });
+                }
+              } catch (getReleaseError) {
+                // Release doesn't exist, create it
+                if (getReleaseError.status === 404 || !tagExists) {
+                  core.info(`Creating new release for ${tag}`);
+                  release = await github.rest.repos.createRelease({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    tag_name: tag,
+                    name: `Release ${newVersion}`,
+                    body: changelogText,
+                    draft: false,
+                    prerelease: false,
+                    make_latest: 'true'
+                  });
+                } else {
+                  throw getReleaseError;
+                }
+              }
               
               core.setOutput('release_url', release.data.html_url);
-              core.notice(`✅ Release created: ${release.data.html_url}`);
+              core.notice(`✅ Release processed: ${release.data.html_url}`);
             } catch (error) {
-              core.warning(`Release creation warning: ${error.message}`);
+              core.warning(`Release processing warning: ${error.message}`);
             }
 
       - name: 📢 Announce Release
