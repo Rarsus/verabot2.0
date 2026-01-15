@@ -81,7 +81,11 @@ jobs:
           
           # Determine version bump
           CURRENT_VERSION=${{ steps.current.outputs.current-version }}
+          # Default to "auto" for push events, use input for manual workflow_dispatch
           RELEASE_TYPE="${{ github.event.inputs.release_type }}"
+          if [ -z "$RELEASE_TYPE" ] || [ "$RELEASE_TYPE" = "null" ]; then
+            RELEASE_TYPE="auto"
+          fi
           
           if [ "$RELEASE_TYPE" = "auto" ]; then
             if [ "$BREAKING" -gt 0 ]; then
