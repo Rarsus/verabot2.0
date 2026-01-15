@@ -1,7 +1,12 @@
 ﻿# Stage 1: Build dependencies
 FROM node:20-alpine AS dependencies
 WORKDIR /app
+
+# Copy package files and scripts (needed for preinstall hook)
 COPY package.json package-lock.json* ./
+COPY scripts/ ./scripts/
+
+# Install production dependencies
 RUN npm ci --only=production
 
 # Stage 2: Runtime
