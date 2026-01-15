@@ -1,5 +1,5 @@
 # Stage 1: Build React frontend
-FROM node:18-alpine AS frontend-build
+FROM node:20-alpine AS frontend-build
 WORKDIR /app/dashboard
 COPY package*.json ./
 RUN npm ci
@@ -7,14 +7,14 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Setup Node.js backend
-FROM node:18-alpine AS backend
+FROM node:20-alpine AS backend
 WORKDIR /app/server
 COPY server/package*.json ./
 RUN npm ci --only=production
 COPY server/ .
 
 # Stage 3: Final production image
-FROM node:18-alpine
+FROM node:20-alpine
 WORKDIR /app
 
 # Install dependencies for serving

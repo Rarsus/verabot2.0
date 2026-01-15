@@ -2,14 +2,16 @@ const express = require('express');
 const router = express.Router();
 const botService = require('../services/bot-service');
 const { authMiddleware } = require('../middleware/auth');
+const { authorizationMiddleware } = require('../middleware/authorization');
 
 /**
  * Proxy all authenticated requests to the bot API
  * This allows the frontend to communicate with the bot through this server
  */
 
-// Apply authentication to all API routes
+// Apply authentication and authorization to all API routes
 router.use(authMiddleware);
+router.use(authorizationMiddleware);
 
 /**
  * GET /api/bot/*
@@ -18,7 +20,12 @@ router.use(authMiddleware);
 router.all('/bot/*', async (req, res) => {
   try {
     const path = req.path.replace('/bot', '/api/bot');
-    const result = await botService.proxyRequest(req.method, path, req.body);
+    // Get request headers but exclude Authorization (bot-service will add its own with BOT_API_TOKEN)
+    const headers = { ...req.headers };
+    delete headers.authorization; // Remove user's JWT token (lowercase)
+    delete headers.Authorization; // Remove user's JWT token (uppercase, just in case)
+    
+    const result = await botService.proxyRequest(req.method, path, req.body, headers);
     res.json(result);
   } catch (error) {
     console.error('Bot API proxy error:', error.message);
@@ -36,7 +43,11 @@ router.all('/bot/*', async (req, res) => {
 router.all('/quotes/*', async (req, res) => {
   try {
     const path = req.path.replace('/quotes', '/api/quotes');
-    const result = await botService.proxyRequest(req.method, path, req.body);
+    // Get request headers but exclude Authorization (bot-service will add its own with BOT_API_TOKEN)
+    const headers = { ...req.headers };
+    delete headers.authorization; // Remove user's JWT token
+    
+    const result = await botService.proxyRequest(req.method, path, req.body, headers);
     res.json(result);
   } catch (error) {
     console.error('Quote API proxy error:', error.message);
@@ -54,7 +65,11 @@ router.all('/quotes/*', async (req, res) => {
 router.all('/websocket/*', async (req, res) => {
   try {
     const path = req.path.replace('/websocket', '/api/websocket');
-    const result = await botService.proxyRequest(req.method, path, req.body);
+    // Get request headers but exclude Authorization (bot-service will add its own with BOT_API_TOKEN)
+    const headers = { ...req.headers };
+    delete headers.authorization; // Remove user's JWT token
+    
+    const result = await botService.proxyRequest(req.method, path, req.body, headers);
     res.json(result);
   } catch (error) {
     console.error('WebSocket API proxy error:', error.message);

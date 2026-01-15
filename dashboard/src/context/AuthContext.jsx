@@ -6,35 +6,53 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('auth_token'));
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // Check URL for token from OAuth callback
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
-    const oauthError = params.get('error');
+    // No need to check URL anymore - the server sets an HTTP-only cookie
+    // axios will automatically send it with requests
+    const storedToken = localStorage.getItem('auth_token');
+    console.log('AuthContext: Checking authentication...');
 
-    if (token) {
-      // Remove token from URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-
-      // Store token and authenticate
-      localStorage.setItem('auth_token', token);
-      setIsAuthenticated(true);
-
-      // Fetch user info
+    // Check if we have a token in localStorage
+    if (storedToken) {
+      console.log('✓ Token found in localStorage');
+      // Verify it's still valid
       authAPI
-        .getUser()
+        .verify()
         .then((response) => {
+          console.log('✓ Token verified');
           setUser(response.data.user);
+          setIsAuthenticated(true);
+          setLoading(false);
         })
-        .catch(() => {
-          // Failed to get user info, but keep token
+        .catch((err) => {
+          console.warn('⚠️  Token verification failed:', err.response?.status);
+          localStorage.removeItem('auth_token');
+          setIsAuthenticated(false);
+          setLoading(false);
         });
-    } else if (oauthError) {
-      setError(`OAuth error: ${oauthError}`);
-      window.history.replaceState({}, document.title, '/login');
+    } else {
+      // No token in localStorage, try to verify with cookie
+      console.log('No token in localStorage, trying cookie-based auth...');
+      authAPI
+        .verify()
+        .then((response) => {
+          console.log('✓ Cookie-based authentication successful');
+          // Store token in localStorage if verification succeeds
+          // Actually, we can't do this since we got here without a token in localStorage
+          // But axios will keep sending the cookie automatically
+          setUser(response.data.user);
+          setIsAuthenticated(true);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log('Not authenticated (expected on first visit)');
+          setIsAuthenticated(false);
+          setLoading(false);
+        });
     }
   }, []);
 
@@ -46,8 +64,13 @@ export function AuthProvider({ children }) {
     try {
       const response = await authAPI.getLoginUrl();
       if (response.data.authUrl) {
+        console.log('✓ Got OAuth URL, redirecting...');
+        console.log('URL:', response.data.authUrl);
         // Redirect to Discord OAuth
-        window.location.href = response.data.authUrl;
+        // Using a small delay to ensure UI updates
+        setTimeout(() => {
+          window.location.href = response.data.authUrl;
+        }, 100);
       } else {
         throw new Error('Failed to get authorization URL');
       }

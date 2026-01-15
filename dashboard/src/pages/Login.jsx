@@ -1,16 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Loader } from 'lucide-react';
 import Alert from '../components/Alert';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
-  const [error, setError] = useState(null);
-  const { loginWithDiscord, loading } = useAuth();
+  const [localError, setLocalError] = useState(null);
+  const { loginWithDiscord, loading, error: authError } = useAuth();
+
+  // Display errors from auth context
+  useEffect(() => {
+    if (authError) {
+      setLocalError(authError);
+    }
+  }, [authError]);
 
   const handleDiscordLogin = () => {
-    setError(null);
+    setLocalError(null);
     loginWithDiscord();
   };
+
+  const displayError = localError || authError;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center px-4">
@@ -21,7 +30,7 @@ export default function Login() {
             <p className="text-gray-600 mt-2">Admin Management Panel</p>
           </div>
 
-          {error && <Alert type="error" message={error} onDismiss={() => setError(null)} />}
+          {displayError && <Alert type="error" message={displayError} onDismiss={() => setLocalError(null)} />}
 
           <div className="space-y-4">
             <button

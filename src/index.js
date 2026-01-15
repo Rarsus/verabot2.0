@@ -201,7 +201,7 @@ client.once('clientReady', async () => {
       // Dashboard routes with authentication
       app.use(
         '/api',
-        dashboardAuth.verifyToken.bind(dashboardAuth),
+        dashboardAuth.verifyBotToken.bind(dashboardAuth),
         dashboardAuth.logAccess.bind(dashboardAuth),
         dashboardRoutes
       );

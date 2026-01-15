@@ -20,6 +20,10 @@ class BotService {
 
     // Add request interceptor for authentication
     this.api.interceptors.request.use((config) => {
+      // Always set the bot API token, removing any user JWT that may have been passed
+      delete config.headers.Authorization;
+      delete config.headers.authorization;
+      
       if (this.botApiToken) {
         config.headers.Authorization = `Bearer ${this.botApiToken}`;
       }
@@ -90,15 +94,20 @@ class BotService {
    * @param {string} method - HTTP method
    * @param {string} path - API path
    * @param {Object} data - Request data
+   * @param {Object} headers - Optional headers to forward (excluding Authorization)
    * @returns {Promise<Object>} API response
    */
-  async proxyRequest(method, path, data = null) {
+  async proxyRequest(method, path, data = null, headers = {}) {
     try {
-      const response = await this.api.request({
+      // Create config with provided headers, but Authorization will be added by interceptor
+      const config = {
         method,
         url: path,
         data,
-      });
+        headers: headers, // Forward relevant headers, but not Authorization
+      };
+      
+      const response = await this.api.request(config);
       return response.data;
     } catch (error) {
       console.error(`Error proxying ${method} ${path}:`, error.message);

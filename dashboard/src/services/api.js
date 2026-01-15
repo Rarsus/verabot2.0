@@ -24,9 +24,13 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Only redirect on 401 if we're not in the auth flow (not checking token)
     if (error.response?.status === 401) {
-      localStorage.removeItem('auth_token');
-      window.location.href = '/login';
+      const isAuthEndpoint = error.config?.url?.includes('/auth/');
+      if (!isAuthEndpoint) {
+        localStorage.removeItem('auth_token');
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

@@ -1,37 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="VeraBot2.0 Test Suite" tests="16" failures="0" errors="0" time="0.645">
-  <testsuite name="GuildDatabaseManager._runMigrations()" errors="0" failures="0" skipped="0" timestamp="2026-01-15T19:16:25" time="0.599" tests="16">
-    <testcase classname="GuildDatabaseManager._runMigrations() › happy path" name="should add opted_in column when missing" time="0.071">
+<testsuites name="VeraBot2.0 Test Suite" tests="27" failures="0" errors="0" time="1.085">
+  <testsuite name="GuildDatabaseManager migration on existing database access" errors="0" failures="0" skipped="0" timestamp="2026-01-15T19:25:59" time="0.698" tests="3">
+    <testcase classname="GuildDatabaseManager migration on existing database access › migration on existing database access" name="should run migrations when accessing existing database with old schema" time="0.427">
     </testcase>
-    <testcase classname="GuildDatabaseManager._runMigrations() › happy path" name="should add preferences column when missing" time="0.005">
+    <testcase classname="GuildDatabaseManager migration on existing database access › migration on existing database access" name="should handle migration gracefully if table does not exist" time="0.045">
     </testcase>
-    <testcase classname="GuildDatabaseManager._runMigrations() › happy path" name="should add both columns in a single migration run" time="0.004">
+    <testcase classname="GuildDatabaseManager migration on existing database access › migration on existing database access" name="should not re-run migration on subsequent access" time="0.079">
     </testcase>
-    <testcase classname="GuildDatabaseManager._runMigrations() › happy path" name="should set opted_in default value to 0" time="0.005">
+  </testsuite>
+  <testsuite name="GuildDatabaseManager._runMigrations()" errors="0" failures="0" skipped="0" timestamp="2026-01-15T19:25:59" time="0.214" tests="16">
+    <testcase classname="GuildDatabaseManager._runMigrations() › happy path" name="should add opted_in column when missing" time="0.013">
     </testcase>
-    <testcase classname="GuildDatabaseManager._runMigrations() › happy path" name="should set preferences default value to empty JSON" time="0.004">
+    <testcase classname="GuildDatabaseManager._runMigrations() › happy path" name="should add preferences column when missing" time="0.008">
+    </testcase>
+    <testcase classname="GuildDatabaseManager._runMigrations() › happy path" name="should add both columns in a single migration run" time="0.008">
+    </testcase>
+    <testcase classname="GuildDatabaseManager._runMigrations() › happy path" name="should set opted_in default value to 0" time="0.012">
+    </testcase>
+    <testcase classname="GuildDatabaseManager._runMigrations() › happy path" name="should set preferences default value to empty JSON" time="0.006">
     </testcase>
     <testcase classname="GuildDatabaseManager._runMigrations() › idempotent behavior" name="should not fail when columns already exist" time="0.004">
     </testcase>
-    <testcase classname="GuildDatabaseManager._runMigrations() › idempotent behavior" name="should handle running migration twice" time="0.004">
+    <testcase classname="GuildDatabaseManager._runMigrations() › idempotent behavior" name="should handle running migration twice" time="0.006">
     </testcase>
-    <testcase classname="GuildDatabaseManager._runMigrations() › idempotent behavior" name="should handle partial column existence (opted_in exists, preferences missing)" time="0.004">
+    <testcase classname="GuildDatabaseManager._runMigrations() › idempotent behavior" name="should handle partial column existence (opted_in exists, preferences missing)" time="0.005">
     </testcase>
-    <testcase classname="GuildDatabaseManager._runMigrations() › error handling" name="should not throw error if table does not exist" time="0.017">
+    <testcase classname="GuildDatabaseManager._runMigrations() › error handling" name="should not throw error if table does not exist" time="0.02">
     </testcase>
-    <testcase classname="GuildDatabaseManager._runMigrations() › error handling" name="should handle database query errors gracefully" time="0.021">
+    <testcase classname="GuildDatabaseManager._runMigrations() › error handling" name="should handle database query errors gracefully" time="0.02">
     </testcase>
-    <testcase classname="GuildDatabaseManager._runMigrations() › data preservation" name="should preserve existing data when adding columns" time="0.005">
+    <testcase classname="GuildDatabaseManager._runMigrations() › data preservation" name="should preserve existing data when adding columns" time="0.006">
     </testcase>
-    <testcase classname="GuildDatabaseManager._runMigrations() › data preservation" name="should set default values for migrated columns on existing rows" time="0.004">
+    <testcase classname="GuildDatabaseManager._runMigrations() › data preservation" name="should set default values for migrated columns on existing rows" time="0.006">
     </testcase>
     <testcase classname="GuildDatabaseManager._runMigrations() › integration with GuildDatabaseManager lifecycle" name="should work with _runAsync helper method" time="0.002">
     </testcase>
-    <testcase classname="GuildDatabaseManager._runMigrations() › integration with GuildDatabaseManager lifecycle" name="should complete without hanging or blocking" time="0.004">
+    <testcase classname="GuildDatabaseManager._runMigrations() › integration with GuildDatabaseManager lifecycle" name="should complete without hanging or blocking" time="0.005">
     </testcase>
-    <testcase classname="GuildDatabaseManager._runMigrations() › column properties" name="opted_in column should have correct type and default" time="0.004">
+    <testcase classname="GuildDatabaseManager._runMigrations() › column properties" name="opted_in column should have correct type and default" time="0.005">
     </testcase>
-    <testcase classname="GuildDatabaseManager._runMigrations() › column properties" name="preferences column should have correct type and default" time="0.004">
+    <testcase classname="GuildDatabaseManager._runMigrations() › column properties" name="preferences column should have correct type and default" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="user_communications ON CONFLICT functionality" errors="0" failures="0" skipped="0" timestamp="2026-01-15T19:26:00" time="0.106" tests="8">
+    <testcase classname="user_communications ON CONFLICT functionality › INSERT with ON CONFLICT" name="should insert new user with opted_in=1" time="0.007">
+    </testcase>
+    <testcase classname="user_communications ON CONFLICT functionality › INSERT with ON CONFLICT" name="should update opted_in when user already exists" time="0.005">
+    </testcase>
+    <testcase classname="user_communications ON CONFLICT functionality › INSERT with ON CONFLICT" name="should handle opted_in=0 (opt-out) via ON CONFLICT" time="0.005">
+    </testcase>
+    <testcase classname="user_communications ON CONFLICT functionality › INSERT with ON CONFLICT" name="should not allow duplicate userId without conflict handling" time="0.008">
+    </testcase>
+    <testcase classname="user_communications ON CONFLICT functionality › schema verification" name="should have UNIQUE constraint on userId column" time="0.003">
+    </testcase>
+    <testcase classname="user_communications ON CONFLICT functionality › schema verification" name="column info should show userId as NOT NULL and UNIQUE" time="0.003">
+    </testcase>
+    <testcase classname="user_communications ON CONFLICT functionality › concurrent operations" name="should handle rapid opt-in/opt-out cycles" time="0.007">
+    </testcase>
+    <testcase classname="user_communications ON CONFLICT functionality › concurrent operations" name="should maintain data integrity across multiple users" time="0.005">
     </testcase>
   </testsuite>
 </testsuites>

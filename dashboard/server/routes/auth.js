@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const oauthService = require('../services/oauth-service');
 const botService = require('../services/bot-service');
+const authorizationService = require('../services/authorization-service');
 const { authMiddleware } = require('../middleware/auth');
 
 /**
@@ -54,13 +55,30 @@ router.get('/callback', async (req, res) => {
     // Fetch user's guilds
     const guilds = await oauthService.fetchUserGuilds(tokenData.access_token);
 
-    // Verify user has admin access (optional, can be enforced)
-    // const isAdmin = await botService.verifyAdminAccess(user.id, guilds);
+    console.log(`✓ OAuth callback for user ${user.id} (${user.username})`);
+
+    // Check if user is allowed to access the dashboard
+    const allowedUsers = authorizationService.getAllowedUsers();
+    const isAllowed = authorizationService.isUserAllowed(user.id);
+    
+    console.log(`  Allowed users configured: ${allowedUsers.length > 0 ? allowedUsers.join(', ') : 'none'}`);
+    console.log(`  User ${user.id} allowed: ${isAllowed}`);
+    
+    if (!isAllowed) {
+      const dashboardUrl = process.env.DASHBOARD_URL || 'http://localhost:5000';
+      const errorMsg = allowedUsers.length === 0 
+        ? 'No users configured' 
+        : 'User not in allowlist';
+      console.warn(`⚠️  Access denied for user ${user.id} (${user.username}): ${errorMsg}`);
+      return res.redirect(
+        `${dashboardUrl}/login?error=${encodeURIComponent(errorMsg)}`
+      );
+    }
 
     // Generate JWT token
     const jwtToken = oauthService.generateJWT(user, tokenData.access_token);
 
-    // Set secure HTTP-only cookie
+    // Set secure HTTP-only cookie - axios will send this automatically
     res.cookie('auth_token', jwtToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -68,11 +86,17 @@ router.get('/callback', async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    // Redirect to dashboard
+    // Just redirect to dashboard - don't include token in URL
+    // The cookie will be sent automatically with API requests
     const dashboardUrl = process.env.DASHBOARD_URL || 'http://localhost:5000';
-    res.redirect(`${dashboardUrl}/?token=${jwtToken}`);
+    console.log(`✓ Redirecting to: ${dashboardUrl}/dashboard`);
+    res.redirect(`${dashboardUrl}/dashboard`);
   } catch (error) {
-    console.error('OAuth callback error:', error.message);
+    console.error('❌ OAuth callback error:', error.message);
+    console.error('   Full error:', error);
+    if (error.response?.data) {
+      console.error('   Response data:', error.response.data);
+    }
     const dashboardUrl = process.env.DASHBOARD_URL || 'http://localhost:5000';
     res.redirect(`${dashboardUrl}/login?error=authentication_failed`);
   }

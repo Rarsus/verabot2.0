@@ -17,6 +17,11 @@ class OAuthService {
     if (!this.clientId || !this.clientSecret) {
       console.warn('⚠️  Discord OAuth not configured. Set DISCORD_CLIENT_ID and DISCORD_CLIENT_SECRET');
     }
+    
+    console.log('✓ OAuth Service initialized');
+    console.log(`  Client ID: ${this.clientId}`);
+    console.log(`  Redirect URI: ${this.redirectUri}`);
+    console.log(`  Scopes: ${this.scopes.join(', ')}`);
   }
 
   /**
@@ -41,6 +46,11 @@ class OAuthService {
    */
   async exchangeCodeForToken(code) {
     try {
+      console.log('📝 Exchanging authorization code for token...');
+      console.log('   Code:', code.substring(0, 10) + '...');
+      console.log('   Client ID:', this.clientId);
+      console.log('   Redirect URI:', this.redirectUri);
+
       const params = new URLSearchParams({
         client_id: this.clientId,
         client_secret: this.clientSecret,
@@ -55,10 +65,14 @@ class OAuthService {
         },
       });
 
+      console.log('✓ Token exchanged successfully');
       return response.data;
     } catch (error) {
-      console.error('Error exchanging code for token:', error.response?.data || error.message);
-      throw new Error('Failed to exchange authorization code');
+      console.error('❌ Error exchanging code for token:');
+      console.error('   Message:', error.message);
+      console.error('   Response status:', error.response?.status);
+      console.error('   Response data:', error.response?.data);
+      throw error;
     }
   }
 

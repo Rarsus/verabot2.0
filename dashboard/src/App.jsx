@@ -19,6 +19,8 @@ function ProtectedRoute({ children }) {
 }
 
 function AppRoutes() {
+  const { isAuthenticated, loading } = useAuth();
+
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
@@ -30,7 +32,23 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route path="/" element={<Navigate to="/dashboard" />} />
+      {/* Root route - redirect to dashboard if authenticated, login if not */}
+      <Route
+        path="/"
+        element={
+          loading ? (
+            <div className="flex items-center justify-center h-screen">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+          ) : isAuthenticated ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+      {/* Catch all other routes */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
