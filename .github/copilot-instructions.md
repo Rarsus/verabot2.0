@@ -1,5 +1,18 @@
 # Copilot Instructions for VeraBot2.0
 
+## ⚠️ CRITICAL: Test-Driven Development (TDD) is MANDATORY
+
+**Copilot MUST follow TDD principles for ALL code changes.** This is non-negotiable.
+
+- Every new function, method, class, service, or feature MUST have tests written FIRST
+- Tests are written in the RED phase (failing tests)
+- Then code is implemented to make tests pass (GREEN phase)
+- Then code is refactored while maintaining test pass rate (REFACTOR phase)
+
+**If Copilot implements code without writing tests first, the pull request will be rejected.**
+
+See detailed instructions in: **Test-Driven Development (TDD) - MANDATORY** section below.
+
 ## Project Overview
 
 VeraBot2.0 is an advanced Discord bot with organized commands, quote management system, and modern architecture. It features slash commands, legacy prefix commands, comprehensive testing, and database integration. The bot is built with a focus on maintainability, testability, and developer experience through reusable utility modules and consistent patterns.
@@ -252,7 +265,35 @@ See `docs/reference/DB-DEPRECATION-TIMELINE.md` for detailed migration guide.
 
 ### Test-Driven Development (TDD) - MANDATORY
 
-**ALL new code MUST follow strict Test-Driven Development principles:**
+**⚠️ CRITICAL: COPILOT MUST FOLLOW TDD FOR ALL CODE CHANGES**
+
+This is **NON-NEGOTIABLE**. Every code change, bug fix, feature, or implementation MUST follow the TDD workflow below. No exceptions.
+
+**What triggers TDD requirement:**
+- ✅ Creating new functions, methods, or classes
+- ✅ Creating new services or utilities
+- ✅ Adding new features or commands
+- ✅ Fixing bugs (write test that reproduces bug first)
+- ✅ Refactoring existing code
+- ✅ Adding database migrations
+
+**What does NOT require TDD:**
+- ❌ Configuration file changes (`.env`, `.yml`, etc.)
+- ❌ Documentation updates
+- ❌ Dependency upgrades (unless code changes required)
+
+**Copilot Workflow (MANDATORY):**
+
+1. **BEFORE ANY CODE:** Ask user confirmation or proceed with explicit TDD workflow statement
+2. **Create test file FIRST** - No implementation until tests exist
+3. **Write RED phase tests** - All tests should initially FAIL
+4. **Run tests** - Verify RED phase (tests fail as expected)
+5. **Implement GREEN phase** - Write minimal code to pass tests
+6. **Run tests again** - Verify GREEN phase (all tests pass)
+7. **Check coverage** - Verify coverage meets thresholds
+8. **Commit with message** - Include test file and implementation together
+
+**All new code MUST follow strict Test-Driven Development principles:**
 
 #### TDD Workflow (RED → GREEN → REFACTOR)
 
