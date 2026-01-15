@@ -21,10 +21,10 @@ WORKDIR /app
 RUN apk add --no-cache dumb-init
 
 # Copy backend
-COPY --from=backend /app/server /app
+COPY --from=backend /app/server /app/server
 
-# Copy frontend build
-COPY --from=frontend-build /app/dashboard/dist /app/public
+# Copy frontend build to the location server.js expects
+COPY --from=frontend-build /app/dashboard/dist /app/dist
 
 # Set environment
 ENV NODE_ENV=production
@@ -39,4 +39,4 @@ EXPOSE 5000
 
 # Run with dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
-CMD ["node", "server.js"]
+CMD ["node", "server/server.js"]
