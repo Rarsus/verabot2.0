@@ -25,10 +25,16 @@
     "test:coverage": "jest --coverage",
     "test:security": "jest --testNamePattern='security|validation'",
     "test:integration": "jest tests/integration --verbose",
+<<<<<<< HEAD
     "coverage": "node scripts/coverage.js --all",
     "coverage:report": "node scripts/coverage.js --report",
     "coverage:check": "node scripts/coverage.js --validate",
     "coverage:validate": "node scripts/coverage.js --validate",
+=======
+    "coverage:report": "node scripts/coverage.js --report",
+    "coverage:check": "node scripts/coverage.js --validate",
+    "coverage:validate": "node scripts/coverage.js --all",
+>>>>>>> origin/main
     "coverage:baseline": "node scripts/coverage.js --baseline",
     "coverage:compare": "node scripts/coverage.js --compare",
     "coverage:all": "node scripts/coverage.js --all",
