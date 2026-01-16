@@ -2,9 +2,9 @@
 
 This folder contains utility scripts for the VeraBot 2.0 project. All scripts are organized by category and functionality.
 
-**Last Updated:** January 13, 2026  
-**Total Scripts:** 33 (12 active, 10 deprecated, 8 archived candidates)  
-**Status:** Under refactoring - See `SCRIPTS-ANALYSIS-REPORT.md`
+**Last Updated:** January 16, 2026 (Phase 3)  
+**Total Scripts:** 21 (Phase 3: Consolidation in progress)  
+**Status:** Phase 3 consolidation complete - deprecated scripts marked
 
 ---
 
@@ -42,21 +42,27 @@ This folder contains utility scripts for the VeraBot 2.0 project. All scripts ar
 
 ## Script Categories
 
-### 1. Quality & Testing (`coverage-*.js`, `validate-*.js`)
+### 1. Quality & Testing (`coverage.js`, `validate-*.js`)
 
 Scripts for code quality, testing, and coverage management.
 
-#### Coverage Tracking System
+#### Coverage Management System (Consolidated in Phase 3)
 ```bash
 npm run coverage:report      # Generate and report coverage
-npm run coverage:check       # Display current coverage
-npm run coverage:validate    # Validate against targets
+npm run coverage:check       # Validate coverage against targets
+npm run coverage:validate    # Full validation report
 npm run coverage:baseline    # Set new baseline
+npm run coverage:compare     # Compare to baseline
+npm run coverage:all         # Comprehensive report
 ```
 
-**Files:**
-- `coverage-tracking.js` - Core coverage tracking
-- `validate-coverage.js` - Coverage validation & reporting
+**Primary File:**
+- `coverage.js` - Unified coverage management (consolidated from coverage-unified.js and coverage-tracking.js)
+
+**Additional Files:**
+- `validate-coverage.js` - Coverage roadmap tracker (separate from coverage.js)
+- `coverage-unified.js` - **DEPRECATED** (redirects to coverage.js)
+- `coverage-tracking.js` - **DEPRECATED** (redirects to coverage.js)
 
 **Features:**
 - Generate Jest coverage reports
@@ -64,6 +70,7 @@ npm run coverage:baseline    # Set new baseline
 - Compare against baseline
 - Color-coded output (red/yellow/green)
 - Per-module coverage analysis
+- Consolidated from multiple scripts in Phase 3
 
 **Configuration:** See `.scripts-config.json` for coverage targets
 
@@ -194,19 +201,22 @@ npm run db:rollback
 
 ---
 
-### 6. Deprecated Scripts (Archive Candidates)
+### 6. Deprecated/Obsolete Scripts (Phase 3)
 
-The following scripts are outdated and should be archived:
+The following scripts are marked as deprecated/obsolete and will be archived in Phase 4:
 
-- `test-*.js` files (8 total) - Old manual TDD tests (replaced by Jest)
-- `test-imports.js` - References deprecated db module
-- `generate-test-docs.js` - Incompatible with Jest format
-- `update-test-docs.js` - Outdated test documentation
-- `test-summary.js` - Shows old metrics from Phase 22.0
+**Consolidated Scripts:**
+- `coverage-unified.js` - **DEPRECATED** (use coverage.js instead)
+- `coverage-tracking.js` - **DEPRECATED** (use coverage.js instead)
 
-**Status:** Should be moved to `_archive/scripts/old-manual-tests/`
+**Obsolete Scripts:**
+- `jest-migration-helper.js` - **OBSOLETE** (Jest migration complete)
 
-**Reason:** Replaced by Jest testing framework with 1922+ tests
+**Archived Scripts:**
+- `test-*.js` files (8 total) - Old manual tests (in `_archive/scripts/old-manual-tests/`)
+
+**Status:** Phase 3 consolidation complete  
+**Next Step:** Phase 4 will move deprecated scripts to archive
 
 ---
 
@@ -471,14 +481,28 @@ npm run db:migrate:status
 5. Add error handling and validation
 6. Test thoroughly
 
-### Script Refactoring (In Progress)
+### Script Refactoring (Phase 3 - COMPLETE)
 
-See `SCRIPTS-ANALYSIS-REPORT.md` for full analysis and improvement roadmap.
+**Phase 1 (Assessment): Complete**
+- Analyzed all 21 scripts
+- Identified duplicates and obsolete scripts
 
-**Current Status:**
-- Phase 1 (Critical Fixes): In progress
-- Phase 2 (Medium-Term): Planned
-- Phase 3 (Enhancements): Future
+**Phase 2 (Modernization): Complete**
+- Added centralized error handling
+- Created lib/error-handler.js utility
+- Enhanced scripts with TDD approach
+- 295 new tests added
+
+**Phase 3 (Consolidation): COMPLETE**
+- ✅ Consolidated coverage-unified.js + coverage-tracking.js → coverage.js
+- ✅ Marked obsolete jest-migration-helper.js for archival
+- ✅ Updated package.json to use coverage.js
+- ✅ Added 20 consolidation tests (3327 total tests passing)
+- ✅ Updated documentation
+
+**Phase 4 (Archival): Next**
+- Move deprecated scripts to _archive/
+- Final script count: ~17 scripts
 
 ---
 
@@ -503,6 +527,6 @@ If you encounter issues with scripts:
 
 ---
 
-**Last Updated:** January 13, 2026  
-**Maintenance Status:** Active (refactoring in progress)  
-**Questions?** See SCRIPTS-ANALYSIS-REPORT.md for detailed information.
+**Last Updated:** January 16, 2026 (Phase 3 Complete)  
+**Maintenance Status:** Active (Phase 3 consolidation complete, Phase 4 next)  
+**Questions?** See PHASE-1-SCRIPTS-ASSESSMENT.md and PHASE-2-COMPLETION-SUMMARY.md for details.

@@ -1,6 +1,9 @@
 /**
- * Jest Migration Helper Script
- * Converts custom test runner to Jest format
+ * OBSOLETE: Jest Migration Helper Script
+ * Migration already complete - all tests now use Jest
+ * 
+ * This file will be archived in Phase 4.
+ * Jest migration was completed in Phase 2.
  */
 
 const fs = require('fs');

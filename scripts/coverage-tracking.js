@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 
 /**
- * Coverage Tracking System
- * Tracks, reports, and analyzes code coverage metrics
- * Usage: node scripts/coverage-tracking.js [--baseline|--compare|--report]
+ * DEPRECATED: This script has been consolidated into coverage.js
+ * 
+ * Use coverage.js instead:
+ *   node scripts/coverage.js [--report|--validate|--baseline|--compare|--all]
+ * 
+ * This file will be removed in Phase 4 (archival).
+ * For now, it redirects to coverage.js for backward compatibility.
  */
 
 const fs = require('fs');
