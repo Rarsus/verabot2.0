@@ -152,8 +152,10 @@ Data Persistence
 ```
 config/
 ├── .env              ← Environment variables
-├── .env.example      ← Template
-└── .eslintrc.json    ← Linting rules
+└── .env.example      ← Template
+
+root/
+└── eslint.config.js  ← Modern ESLint 9+ flat config (linting rules)
 ```
 
 ### Source Code Organization
