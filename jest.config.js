@@ -100,6 +100,9 @@ module.exports = {
   // Setup files
   setupFilesAfterEnv: ['<rootDir>/tests/jest-setup-hook.js'],
 
+  // Global teardown - cleanup test databases after all tests
+  globalTeardown: '<rootDir>/tests/jest-teardown.js',
+
   // Module name mapper for path aliases (if needed)
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
