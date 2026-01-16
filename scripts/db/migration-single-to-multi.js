@@ -28,11 +28,22 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 const GuildDatabaseManager = require('../../src/services/GuildDatabaseManager');
+const { createErrorContext, logErrorWithContext, handleFileError } = require('../lib/error-handler');
 
 // Configuration
 const SINGLE_DB_PATH = path.join(__dirname, '../../data/db/quotes.db');
 const BACKUP_DIR = path.join(__dirname, '../../data/db/backups');
 const GUILDS_DIR = path.join(__dirname, '../../data/db/guilds');
+
+// Migration state for checkpointing
+const CHECKPOINT_FILE = path.join(__dirname, '../../.migration-checkpoint.json');
+let migrationState = {
+  startTime: null,
+  lastGuild: null,
+  successCount: 0,
+  failedCount: 0,
+  totalGuilds: 0
+};
 
 // Colors for output
 const colors = {
@@ -56,11 +67,80 @@ const log = {
 };
 
 /**
+ * Save migration checkpoint to file for resume capability
+ */
+function saveCheckpoint() {
+  try {
+    if (!fs.existsSync(path.dirname(CHECKPOINT_FILE))) {
+      fs.mkdirSync(path.dirname(CHECKPOINT_FILE), { recursive: true });
+    }
+    fs.writeFileSync(CHECKPOINT_FILE, JSON.stringify(migrationState, null, 2));
+  } catch (error) {
+    const context = createErrorContext('migration-single-to-multi.js', 'saving checkpoint', {
+      checkpointFile: CHECKPOINT_FILE
+    });
+    logErrorWithContext(error, context);
+  }
+}
+
+/**
+ * Load migration checkpoint if it exists
+ */
+function loadCheckpoint() {
+  try {
+    if (fs.existsSync(CHECKPOINT_FILE)) {
+      const data = fs.readFileSync(CHECKPOINT_FILE, 'utf8');
+      migrationState = JSON.parse(data);
+      log.info(`Resuming migration from checkpoint: last guild was ${migrationState.lastGuild}`);
+      return true;
+    }
+  } catch (error) {
+    const context = createErrorContext('migration-single-to-multi.js', 'loading checkpoint', {
+      checkpointFile: CHECKPOINT_FILE
+    });
+    logErrorWithContext(error, context);
+  }
+  return false;
+}
+
+/**
+ * Clear checkpoint file on successful completion
+ */
+function clearCheckpoint() {
+  try {
+    if (fs.existsSync(CHECKPOINT_FILE)) {
+      fs.unlinkSync(CHECKPOINT_FILE);
+    }
+  } catch (error) {
+    const context = createErrorContext('migration-single-to-multi.js', 'clearing checkpoint', {});
+    logErrorWithContext(error, context);
+  }
+}
+
+/**
  * Check if single database exists
  */
 function checkSourceDatabase() {
-  if (!fs.existsSync(SINGLE_DB_PATH)) {
-    log.error('Source database not found: ' + SINGLE_DB_PATH);
+  try {
+    if (!fs.existsSync(SINGLE_DB_PATH)) {
+      const error = new Error(`ENOENT: source database not found at ${SINGLE_DB_PATH}`);
+      const context = createErrorContext('migration-single-to-multi.js', 'checking source database', {
+        expectedPath: SINGLE_DB_PATH
+      });
+      logErrorWithContext(error, context);
+      process.exit(1);
+    }
+
+    // Try to verify database is accessible
+    const stat = fs.statSync(SINGLE_DB_PATH);
+    if (!stat.isFile()) {
+      throw new Error('Source database path is not a file');
+    }
+  } catch (error) {
+    const context = createErrorContext('migration-single-to-multi.js', 'verifying source database access', {
+      path: SINGLE_DB_PATH
+    });
+    logErrorWithContext(error, context);
     process.exit(1);
   }
   log.success('Source database found');
@@ -70,30 +150,64 @@ function checkSourceDatabase() {
  * Create backup of original database
  */
 function backupOriginalDatabase() {
-  if (!fs.existsSync(BACKUP_DIR)) {
-    fs.mkdirSync(BACKUP_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(BACKUP_DIR)) {
+      fs.mkdirSync(BACKUP_DIR, { recursive: true });
+    }
+
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const backupPath = path.join(BACKUP_DIR, `quotes_${timestamp}.db.backup`);
+
+    // Verify we have space before copying
+    const stats = fs.statSync(SINGLE_DB_PATH);
+    const backupDirStats = fs.statSync(BACKUP_DIR);
+    
+    if (stats.size > backupDirStats.space) {
+      throw new Error('ENOSPC: insufficient disk space for backup');
+    }
+
+    fs.copyFileSync(SINGLE_DB_PATH, backupPath);
+    log.success(`Backup created: ${backupPath}`);
+
+    return backupPath;
+  } catch (error) {
+    const context = createErrorContext('migration-single-to-multi.js', 'backing up original database', {
+      sourceDb: SINGLE_DB_PATH,
+      backupDir: BACKUP_DIR
+    });
+    logErrorWithContext(error, context);
+    process.exit(1);
   }
-
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const backupPath = path.join(BACKUP_DIR, `quotes_${timestamp}.db.backup`);
-
-  fs.copyFileSync(SINGLE_DB_PATH, backupPath);
-  log.success(`Backup created: ${backupPath}`);
-
-  return backupPath;
 }
 
 /**
- * Open database connection
+ * Open database connection with error handling
  */
 function openDatabase(dbPath) {
   return new Promise((resolve, reject) => {
     const db = new sqlite3.Database(dbPath, (err) => {
       if (err) {
+        if (err.message.includes('SQLITE_CANTOPEN')) {
+          const context = createErrorContext('migration-single-to-multi.js', 'opening database', {
+            dbPath,
+            cause: 'Cannot open database file'
+          });
+          logErrorWithContext(err, context);
+        } else if (err.message.includes('SQLITE_READONLY')) {
+          const context = createErrorContext('migration-single-to-multi.js', 'opening database', {
+            dbPath,
+            cause: 'Database is read-only'
+          });
+          logErrorWithContext(err, context);
+        }
         reject(err);
       } else {
-        db.run('PRAGMA foreign_keys = ON', () => {
-          resolve(db);
+        db.run('PRAGMA foreign_keys = ON', (pragmaErr) => {
+          if (pragmaErr) {
+            reject(pragmaErr);
+          } else {
+            resolve(db);
+          }
         });
       }
     });
