@@ -63,40 +63,17 @@ module.exports = [
 
 ---
 
-### Legacy Backup: `.eslintrc.json` (Root)
+### Legacy Backup: `.eslintrc.json` (Root) - REMOVED
 
-**Purpose:** Backward compatibility with ESLint 8 and older IDE integrations.
+**Status:** ⚠️ **REMOVED** - This legacy configuration file has been removed as of January 2026.
 
-**Location:** `/.eslintrc.json` (297 bytes)
+**Reason:** ESLint 9+ uses the modern flat config format (`eslint.config.js`). The legacy `.eslintrc.json` format is no longer needed and was causing duplicate configuration issues.
 
-**Content:**
-```json
-{
-  "root": true,
-  "env": {
-    "node": true,
-    "es2021": true
-  },
-  "extends": ["eslint:recommended"],
-  "parserOptions": {
-    "ecmaVersion": 2021
-  },
-  "rules": {
-    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
-    "no-console": "off",
-    "semi": ["error", "always"]
-  }
-}
-```
+**Migration:** All ESLint rules and configuration are now in `eslint.config.js` (primary and only config file).
 
-**How to Modify:**
-1. Edit `.eslintrc.json` for legacy support
-2. Also update `eslint.config.js` (primary config)
-3. This file is synchronized with eslint.config.js rules
+**Tool Support:** ✅ ESLint 9+ (flat config only)
 
-**Tool Support:** ✅ ESLint 8.x (legacy) and IDEs
-
-**Note:** If ESLint 9+ is configured, primary config is `eslint.config.js`. This file is backup only.
+---
 
 ---
 
@@ -383,7 +360,7 @@ dist/
 ### To Add a New Configuration Setting:
 
 1. **Identify the Config File:**
-   - Code style → `eslint.config.js` + `.eslintrc.json`
+   - Code style → `eslint.config.js` (modern ESLint 9+ flat config)
    - Testing → `jest.config.js`
    - Dependencies → `package.json`
    - Environment → `.env.example` + `.env`
@@ -415,8 +392,7 @@ dist/
 
 ```
 verabot2.0/
-├── eslint.config.js           ← Primary ESLint (9+)
-├── .eslintrc.json             ← Backup ESLint (8.x / IDE)
+├── eslint.config.js           ← Primary ESLint 9+ flat config (only)
 ├── jest.config.js             ← Jest test configuration
 ├── package.json               ← npm configuration
 ├── .env.example               ← Environment template (commit)
@@ -443,7 +419,7 @@ verabot2.0/
 - Use environment variables for secrets (.env.example only)
 - Document configuration changes in git commits
 - Test configuration changes before committing
-- Keep multiple configs synchronized (eslint.config.js ↔ .eslintrc.json)
+- Use modern ESLint 9+ flat config format (eslint.config.js)
 
 ### ❌ DON'T:
 - Commit `.env` or other secret files

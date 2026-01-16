@@ -7,7 +7,7 @@ verabot2.0/
 ├── Root Config Files
 │   ├── package.json, package-lock.json
 │   ├── .env, .env.example
-│   ├── .eslintrc.json, .eslintignore
+│   ├── eslint.config.js (modern ESLint 9+ flat config)
 │   ├── .gitignore, .gitattributes
 │   ├── Dockerfile, docker-compose.yml
 │   ├── .dockerignore
@@ -113,10 +113,11 @@ verabot2.0/
 verabot2.0/
 ├── .github/
 ├── .husky/
-├── config/                          ← NEW: Config files
+├── config/                          ← Config files (environment only)
 │   ├── .env
-│   ├── .env.example
-│   └── .eslintrc.json
+│   └── .env.example
+│
+├── eslint.config.js                 ← Root: ESLint 9+ flat config
 │
 ├── data/                            ← Keep as-is
 │   ├── quotes.db
@@ -194,14 +195,11 @@ verabot2.0/
 ├── .github/
 ├── .husky/
 ├── .editorconfig                    ← NEW
+├── eslint.config.js                 ← Root: ESLint 9+ flat config
 │
 ├── config/                          ← Configuration
 │   ├── .env
 │   ├── .env.example
-│   ├── .eslintrc.json
-│   ├── eslint/
-│   │   ├── base.js
-│   │   └── rules.js
 │   └── jest.config.js               ← If using Jest
 │
 ├── public/                          ← NEW: Public assets (if needed)
@@ -340,8 +338,8 @@ verabot2.0/
 mkdir -p config
 mv .env config/.env
 mv .env.example config/.env.example
-mv .eslintrc.json config/.eslintrc.json
-# Update paths in package.json and .husky/pre-commit
+# Note: .eslintrc.json removed - using modern eslint.config.js instead
+# Update paths in package.json and .husky/pre-commit if needed
 ```
 
 **Impact:** Cleaner root directory

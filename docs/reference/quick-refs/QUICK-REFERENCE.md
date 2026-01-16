@@ -7,7 +7,7 @@
 ```
 .env                      → config/.env
 .env.example              → config/.env.example
-.eslintrc.json            → config/.eslintrc.json
+eslint.config.js          → Root (ESLint 9+ modern flat config - only config)
 ```
 
 ### Source Code
