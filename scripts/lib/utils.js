@@ -99,6 +99,48 @@ function subheader(text) {
 }
 
 /**
+ * Check if file exists
+ * @param {string} filePath - Path to check
+ * @returns {boolean} True if file exists
+ */
+function fileExists(filePath) {
+  if (!filePath || typeof filePath !== 'string') return false;
+  try {
+    return fs.existsSync(filePath) && fs.statSync(filePath).isFile();
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
+ * Check if directory exists
+ * @param {string} dirPath - Path to check
+ * @returns {boolean} True if directory exists
+ */
+function dirExists(dirPath) {
+  if (!dirPath || typeof dirPath !== 'string') return false;
+  try {
+    return fs.existsSync(dirPath) && fs.statSync(dirPath).isDirectory();
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
+ * Check if path exists (file or directory)
+ * @param {string} pathToCheck - Path to check
+ * @returns {boolean} True if path exists
+ */
+function pathExists(pathToCheck) {
+  if (!pathToCheck || typeof pathToCheck !== 'string') return false;
+  try {
+    return fs.existsSync(pathToCheck);
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
  * Read JSON file safely
  * @param {string} filePath - Path to JSON file
  * @param {*} defaultValue - Default value if file not found
@@ -180,7 +222,30 @@ function runScript(name, fn, exitOnError = true) {
 }
 
 /**
- * Execute command and return output
+ * Execute command synchronously and return output
+ * @param {string} command - Command to execute
+ * @param {Object} options - Execution options
+ * @param {boolean} options.silent - Suppress stderr output
+ * @param {string} options.cwd - Working directory
+ * @returns {string} Command output (stdout)
+ */
+function execCommand(command, options = {}) {
+  const { execSync } = require('child_process');
+  try {
+    const output = execSync(command, {
+      encoding: 'utf8',
+      stdio: options.silent ? 'pipe' : ['pipe', 'pipe', 'inherit'],
+      cwd: options.cwd,
+      ...options,
+    });
+    return output;
+  } catch (error) {
+    throw error;
+  }
+}
+
+/**
+ * Execute command and return output (async)
  * @param {string} command - Command to execute
  * @param {Object} options - exec options
  * @returns {Promise<string>} Command output
@@ -310,12 +375,16 @@ module.exports = {
   // File operations
   readJSON,
   writeJSON,
+  fileExists,
+  dirExists,
+  pathExists,
 
   // Module loading
   safeRequire,
 
   // Script execution
   runScript,
+  execCommand,
   execAsync,
   exit,
 

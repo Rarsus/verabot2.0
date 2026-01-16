@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 
 /**
- * Unified Coverage Reporting System
- * Reports code coverage of ALL non-archived test scripts
+ * DEPRECATED: This script has been consolidated into coverage.js
  * 
- * Usage:
+ * Use coverage.js instead:
  *   npm run coverage:report      - Generate and display coverage
  *   npm run coverage:validate    - Validate against targets
  *   npm run coverage:baseline    - Set baseline
  *   npm run coverage:compare     - Compare to baseline
  *   npm run coverage:all         - Full coverage report
+ * 
+ * This file will be removed in Phase 4 (archival).
+ * For now, it redirects to coverage.js for backward compatibility.
  */
 
 const fs = require('fs');
