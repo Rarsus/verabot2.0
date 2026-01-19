@@ -12,8 +12,23 @@
 2. **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
 3. **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** - Community standards
 
-### 📊 Current Work (Phase 23.1 - Complete)
-- **[PHASE-23.1-FINAL-STATUS-REPORT.md](PHASE-23.1-FINAL-STATUS-REPORT.md)** - ✅ COMPLETE (latest)
+### � Upcoming Work (Phase 9 - Planning Complete)
+**Phase 9: Node.js 22+ Migration**
+- **[PHASE-9-NODE-22-MIGRATION-PLAN.md](PHASE-9-NODE-22-MIGRATION-PLAN.md)** - ✅ COMPLETE Phase 9 planning (7 tasks, Q1 2026)
+
+### �📊 Current Work (Phase 8 - Complete)
+**Phase 8: Dependency Audit & Security Hardening**
+- **[PHASE-8-COMPLETION-REPORT.md](PHASE-8-COMPLETION-REPORT.md)** - ✅ COMPLETE Phase 8 summary
+- **[PHASE-8-DEPLOYMENT-SUMMARY.md](PHASE-8-DEPLOYMENT-SUMMARY.md)** - Deployment procedures & rollback plan
+- **[DEPENDENCY-AUDIT-REPORT.md](DEPENDENCY-AUDIT-REPORT.md)** - Complete vulnerability audit (21 CVEs)
+- **[DISCORD-JS-V15-INVESTIGATION.md](DISCORD-JS-V15-INVESTIGATION.md)** - Discord.js v15 compatibility analysis
+- **[NODE-22-MIGRATION-ANALYSIS.md](NODE-22-MIGRATION-ANALYSIS.md)** - Node.js 22+ strategic assessment
+- **[TASK-89-COMPLETION-REPORT.md](TASK-89-COMPLETION-REPORT.md)** - Production dependency updates
+- **[TASK-91-COMPLETION-REPORT.md](TASK-91-COMPLETION-REPORT.md)** - DevOps dependency updates
+- **[TASK-92-IMPLEMENTATION-STRATEGY.md](TASK-92-IMPLEMENTATION-STRATEGY.md)** - Long-term procedures & automation
+
+### 📊 Previous Work (Phase 23.1 - Complete)
+- **[PHASE-23.1-FINAL-STATUS-REPORT.md](PHASE-23.1-FINAL-STATUS-REPORT.md)** - ✅ COMPLETE (previous)
 - **[PHASE-23.1-COMPLETION-REPORT.md](PHASE-23.1-COMPLETION-REPORT.md)** - Phase completion details
 - **[PHASE-23.0-COMPLETION-REPORT.md](PHASE-23.0-COMPLETION-REPORT.md)** - Phase 23.0 summary
 
@@ -22,7 +37,10 @@
 - **[DEFINITION-OF-DONE.md](DEFINITION-OF-DONE.md)** - Definition of done criteria
 - **[docs/testing/test-naming-convention-guide.md](docs/testing/test-naming-convention-guide.md)** - Test naming standards
 
-### 🔍 Recent Analysis
+### 🔍 Recent Analysis & Deliverables
+- **[PHASE-8-COMPLETION-REPORT.md](PHASE-8-COMPLETION-REPORT.md)** - Phase 8 executive summary (Jan 19, 2026)
+- **[DEPENDENCY-AUDIT-REPORT.md](DEPENDENCY-AUDIT-REPORT.md)** - Security audit (21 vulnerabilities documented)
+- **[TASK-92-IMPLEMENTATION-STRATEGY.md](TASK-92-IMPLEMENTATION-STRATEGY.md)** - Dependency management procedures (800+ lines)
 - **[ANALYSIS-SUMMARY.md](ANALYSIS-SUMMARY.md)** - Documentation analysis summary (Jan 15, 2026)
 - **[GITHUB-ISSUES-CREATED-SUMMARY.md](GITHUB-ISSUES-CREATED-SUMMARY.md)** - GitHub issues #61-67
 - **[COMMAND-REFERENCE-QUICK.md](COMMAND-REFERENCE-QUICK.md)** - Quick command reference
