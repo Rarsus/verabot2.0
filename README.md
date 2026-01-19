@@ -110,8 +110,9 @@ npm start
 - **[DEFINITION-OF-DONE.md](DEFINITION-OF-DONE.md)** - Development standards
 
 **Current Phase:**
-- **[PHASE-23.1-FINAL-STATUS-REPORT.md](PHASE-23.1-FINAL-STATUS-REPORT.md)** - Latest phase status (✅ COMPLETE)
-- **[PHASE-23.0-COMPLETION-REPORT.md](PHASE-23.0-COMPLETION-REPORT.md)** - Previous phase summary
+- **[PHASE-9-NODE-22-MIGRATION-PLAN.md](PHASE-9-NODE-22-MIGRATION-PLAN.md)** - Node.js 22 migration planning
+- **[PHASE-9-GIT-RENAME-DETECTION-COMPLETION.md](PHASE-9-GIT-RENAME-DETECTION-COMPLETION.md)** - Git rename detection feature
+- **[PHASE-8-COMPLETION-REPORT.md](PHASE-8-COMPLETION-REPORT.md)** - Phase 8 completion summary
 
 **Documentation Standards:**
 - **[DOCUMENT-NAMING-CONVENTION.md](DOCUMENT-NAMING-CONVENTION.md)** - Documentation naming standards
@@ -124,7 +125,7 @@ Complete documentation is organized in the [docs/](docs/) folder and root level:
 **Root Level (Active & Core):**
 - Project governance: README.md, CHANGELOG.md, CONTRIBUTING.md
 - Standards: DOCUMENT-NAMING-CONVENTION.md, DEFINITION-OF-DONE.md
-- Current work: PHASE-23.x documents
+- Current work: PHASE-9 (Node.js 22 migration, Git rename detection)
 - Analysis: ANALYSIS-SUMMARY.md, GITHUB-ISSUES-CREATED-SUMMARY.md
 
 **[docs/ Directory:**
@@ -256,7 +257,7 @@ Tests are organized by functional category for better maintainability:
 - **Utils** - Helper function tests
 - **Integration** - Cross-module workflow tests
 
-For detailed testing guidance, see [docs/user-guides/02-TESTING-GUIDE.md](docs/user-guides/02-TESTING-GUIDE.md) and [docs/testing/](docs/testing/).
+For detailed testing guidance, see [docs/user-guides/testing-guide.md](docs/user-guides/testing-guide.md) and [docs/testing/](docs/testing/).
 
 | Category | Files | Tests | Status |
 |----------|-------|-------|--------|
@@ -446,7 +447,7 @@ quote_tags
 - **Helper & Utilities:** 12 tests
 - **Estimated Coverage:** ~40-50%
 
-See [docs/TEST-COVERAGE-OVERVIEW.md](docs/TEST-COVERAGE-OVERVIEW.md) for detailed analysis.
+See [docs/testing/TEST-COVERAGE-OVERVIEW.md](docs/testing/TEST-COVERAGE-OVERVIEW.md) for detailed analysis.
 
 ---
 

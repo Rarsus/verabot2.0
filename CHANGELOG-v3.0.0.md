@@ -36,9 +36,9 @@ v0.2.0 represents the completion of the Comprehensive Test Coverage Initiative (
 - Performance monitoring in tests
 
 ### 📚 Complete Documentation
-- [TEST-NAMING-CONVENTION-GUIDE.md](TEST-NAMING-CONVENTION-GUIDE.md) - Test naming standards
-- [PHASE-22.8-COVERAGE-REPORT.md](PHASE-22.8-COVERAGE-REPORT.md) - Coverage analysis
-- [CODE-COVERAGE-ANALYSIS-PLAN.md](CODE-COVERAGE-ANALYSIS-PLAN.md) - Coverage roadmap
+- [docs/testing/test-naming-convention-guide.md](docs/testing/test-naming-convention-guide.md) - Test naming standards
+- [docs/testing/TEST-COVERAGE-OVERVIEW.md](docs/testing/TEST-COVERAGE-OVERVIEW.md) - Coverage analysis
+- [docs/testing/test-coverage-baseline-strategy.md](docs/testing/test-coverage-baseline-strategy.md) - Coverage roadmap
 - [docs/testing/](docs/testing/) - Complete testing documentation
 
 ## Breaking Changes
@@ -179,11 +179,11 @@ All guild data must be migrated to include `guildId` on first run (automatic).
 ### New Guides
 - [docs/testing/TEST-MAINTENANCE-GUIDE.md](docs/testing/TEST-MAINTENANCE-GUIDE.md) - Maintaining test suite
 - [docs/testing/TEST-COVERAGE-OVERVIEW.md](docs/testing/TEST-COVERAGE-OVERVIEW.md) - Coverage details
-- [docs/guides/test-driven-development.md](docs/guides/test-driven-development.md) - TDD approach
+- [docs/user-guides/testing-guide.md](docs/user-guides/testing-guide.md) - TDD approach
 
 ### Updated Guides
 - [docs/user-guides/creating-commands.md](docs/user-guides/creating-commands.md) - New patterns
-- [docs/reference/ARCHITECTURE.md](docs/reference/ARCHITECTURE.md) - Guild isolation details
+- [docs/reference/architecture/ARCHITECTURE.md](docs/reference/architecture/ARCHITECTURE.md) - Guild isolation details
 - [docs/best-practices/](docs/best-practices/) - Updated standards
 
 ### Reference Documentation

@@ -744,9 +744,9 @@ Track these metrics to improve DoD compliance:
 ## XII. Related Documents
 
 - 📖 [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute
-- 🧪 [TEST-NAMING-CONVENTION-GUIDE.md](TEST-NAMING-CONVENTION-GUIDE.md) - Test standards
-- 📚 [docs/user-guides/02-TESTING-GUIDE.md](docs/user-guides/02-TESTING-GUIDE.md) - Testing tutorial
-- 🏗️ [docs/reference/ARCHITECTURE.md](docs/reference/ARCHITECTURE.md) - System design
+- 🧪 [docs/testing/test-naming-convention-guide.md](docs/testing/test-naming-convention-guide.md) - Test standards
+- 📚 [docs/user-guides/testing-guide.md](docs/user-guides/testing-guide.md) - Testing tutorial
+- 🏗️ [docs/reference/architecture/ARCHITECTURE.md](docs/reference/architecture/ARCHITECTURE.md) - System design
 
 ---
 

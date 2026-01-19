@@ -86,11 +86,9 @@ No schema changes - Phase 6 works with existing reminder tables with guild_id co
 
 ### Documentation
 
-* [PHASE-6-PLANNING.md](PHASE-6-PLANNING.md) - Comprehensive Phase 6 architecture and roadmap
-* [PHASE-6-EXECUTION-SUMMARY.md](PHASE-6-EXECUTION-SUMMARY.md) - Detailed execution and verification results
-* [PHASE-6-PR-SUMMARY.md](PHASE-6-PR-SUMMARY.md) - PR summary with architecture validation
 * [GUILD-AWARE-MIGRATION-GUIDE.md](GUILD-AWARE-MIGRATION-GUIDE.md) - Developer migration guide
 * [REMINDER-REMOVAL-ROADMAP.md](REMINDER-REMOVAL-ROADMAP.md) - Deprecation timeline for v3.7.0
+* [docs/reference/architecture/GLOBAL-SERVICES-MIGRATION-GUIDE.md](docs/reference/architecture/GLOBAL-SERVICES-MIGRATION-GUIDE.md) - Guild-aware service migration
 
 ---
 
@@ -123,7 +121,7 @@ No schema changes - Phase 6 works with existing reminder tables with guild_id co
 If using ProxyConfigService (removed in 3.1.0):
 1. Replace with GlobalProxyConfigService
 2. All methods are the same - direct drop-in replacement
-3. See [docs/reference/GLOBAL-SERVICES-MIGRATION-GUIDE.md](docs/reference/GLOBAL-SERVICES-MIGRATION-GUIDE.md)
+3. See [docs/reference/architecture/GLOBAL-SERVICES-MIGRATION-GUIDE.md](docs/reference/architecture/GLOBAL-SERVICES-MIGRATION-GUIDE.md)
 
 If using DatabaseService wrapper directly:
 1. For guild-specific data: Replace with `GuildAwareDatabaseService`
