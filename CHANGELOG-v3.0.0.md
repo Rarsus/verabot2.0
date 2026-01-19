@@ -188,7 +188,7 @@ All guild data must be migrated to include `guildId` on first run (automatic).
 
 ### Reference Documentation
 - [COMMAND-REFERENCE-QUICK.md](COMMAND-REFERENCE-QUICK.md) - Quick command lookup
-- [TEST-NAMING-CONVENTION-GUIDE.md](TEST-NAMING-CONVENTION-GUIDE.md) - Test file naming
+- [docs/testing/test-naming-convention-guide.md](docs/testing/test-naming-convention-guide.md) - Test file naming
 - [DEFINITION-OF-DONE.md](DEFINITION-OF-DONE.md) - Feature completion criteria
 
 ## Deprecations

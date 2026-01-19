@@ -208,7 +208,7 @@ Use the navigation by role above to find exactly what you need.
 If you need more context:
 
 - See the "Related Documentation" section in any file
-- Check main [PERMISSION-MODEL.md](../PERMISSION-MODEL.md) for architecture
+- Check main [PERMISSION-MODEL.md](./PERMISSION-MODEL.md) for architecture
 - Review individual command files in `src/commands/`
 
 ---
@@ -416,10 +416,9 @@ If you need more context:
 
 Within VeraBot Documentation:
 
-- [PERMISSION-MODEL.md](../PERMISSION-MODEL.md) - Architecture & design
-- [SECURITY.md](../SECURITY.md) - Security best practices
-- [guides/06-ADMIN-COMMUNICATION-COMMANDS.md](../guides/06-ADMIN-COMMUNICATION-COMMANDS.md) - Admin commands guide
-- [guides/04-REMINDER-SYSTEM.md](../guides/04-REMINDER-SYSTEM.md) - Reminder system details
+- [PERMISSION-MODEL.md](./PERMISSION-MODEL.md) - Architecture & design
+- [Admin Communication Commands Guide](../../admin-guides/admin-communication-commands.md) - Admin commands guide
+- [Reminder System Guide](../../user-guides/reminder-system.md) - Reminder system details
 
 External Resources:
 

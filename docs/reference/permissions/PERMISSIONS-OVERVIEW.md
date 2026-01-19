@@ -620,7 +620,6 @@ See the table in each command stack section above.
 
 ## Related Documentation
 
-- [PERMISSION-MODEL.md](PERMISSION-MODEL.md) - Detailed permission architecture
-- [SECURITY.md](SECURITY.md) - Security best practices
-- [guides/06-ADMIN-COMMUNICATION-COMMANDS.md](guides/06-ADMIN-COMMUNICATION-COMMANDS.md) - Admin command usage
-- [guides/04-REMINDER-SYSTEM.md](guides/04-REMINDER-SYSTEM.md) - Reminder system (with opt-in)
+- [PERMISSION-MODEL.md](./PERMISSION-MODEL.md) - Detailed permission architecture
+- [Admin Communication Commands Guide](../../admin-guides/admin-communication-commands.md) - Admin command usage
+- [Reminder System Guide](../../user-guides/reminder-system.md) - Reminder system (with opt-in)

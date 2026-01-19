@@ -246,7 +246,7 @@ const result = await guildDbService.executeQuery(guildId, sql, params);
 ## Documentation References
 
 - [COMMAND-DATABASE-PATTERNS-ANALYSIS.md](./COMMAND-DATABASE-PATTERNS-ANALYSIS.md) - Architectural analysis
-- [ARCHITECTURE-PATTERNS-VISUAL.md](./ARCHITECTURE-PATTERNS-VISUAL.md) - Visual comparison
+- [ARCHITECTURE-PATTERNS-VISUAL.md](./architecture/ARCHITECTURE-PATTERNS-VISUAL.md) - Visual comparison
 - [.github/copilot-instructions.md](../../.github/copilot-instructions.md) - Development guide
 - [src/services/QuoteService.js](../../src/services/QuoteService.js) - Implementation reference
 - [src/services/GuildAwareReminderService.js](../../src/services/GuildAwareReminderService.js) - Reminder service

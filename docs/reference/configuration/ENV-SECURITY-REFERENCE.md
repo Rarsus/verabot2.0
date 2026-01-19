@@ -279,7 +279,4 @@ Rotate secrets regularly:
 
 ## Related Documentation
 
-- [Configuration Analysis](../CONFIGURATION-ANALYSIS.md)
-- [Security Guide](../SECURITY.md)
-- [Security Hardening](../SECURITY-HARDENING.md)
-- [Setup Guide](../../README.md)
+- [Setup Guide](../../../README.md)

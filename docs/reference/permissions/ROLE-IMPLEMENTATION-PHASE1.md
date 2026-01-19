@@ -274,8 +274,7 @@ console.log(cmds.length); // Number visible to user
 
 ## 🎓 Next Read
 
-- [ROLE-BASED-PERMISSIONS-PROPOSAL.md](../ROLE-BASED-PERMISSIONS-PROPOSAL.md) - Full system design
-- [COMMAND-VISIBILITY-FILTERING.md](../COMMAND-VISIBILITY-FILTERING.md) - Visibility details
+- [ROLE-BASED-PERMISSIONS-PROPOSAL.md](./ROLE-BASED-PERMISSIONS-PROPOSAL.md) - Full system design
 - RolePermissionService source code for implementation details
 
 ---

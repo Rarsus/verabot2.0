@@ -291,9 +291,8 @@ const db = new sqlite3.Database('./data/db/quotes.db');
 
 ## See Also
 
-- [DB-DEPRECATION-TIMELINE.md](DB-DEPRECATION-TIMELINE.md) - Complete deprecation timeline
-- [ARCHITECTURE.md](ARCHITECTURE.md) - System architecture overview
-- [GuildAwareDatabaseService documentation](../reference/GuildAwareDatabaseService.md)
+- [DB-DEPRECATION-TIMELINE.md](../DB-DEPRECATION-TIMELINE.md) - Complete deprecation timeline
+- [ARCHITECTURE-OVERVIEW.md](./ARCHITECTURE-OVERVIEW.md) - System architecture overview
 - `.github/copilot-instructions.md` - Updated service usage patterns
 
 ## Questions or Issues?
@@ -301,5 +300,5 @@ const db = new sqlite3.Database('./data/db/quotes.db');
 For migration help:
 1. Review this guide completely
 2. Check example code in tests: `tests/unit/services/test-global-*.test.js`
-3. Review [DEFINITION-OF-DONE.md](../../DEFINITION-OF-DONE.md) for code standards
+3. Review [DEFINITION-OF-DONE.md](../../../DEFINITION-OF-DONE.md) for code standards
 4. Open an issue with specific migration questions

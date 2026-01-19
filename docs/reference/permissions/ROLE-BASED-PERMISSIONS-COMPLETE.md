@@ -121,7 +121,7 @@ permissions: {
 - Increased complexity threshold to 25 (was 18)
 - Justification: Permission enforcement logic naturally requires higher complexity
 
-**File: `docs/PHASE-3-PERMISSION-ENFORCEMENT.md` (Created)**
+**Implementation Complete**
 
 - Comprehensive documentation of enforcement system
 - Flow diagrams and code examples
@@ -474,7 +474,7 @@ Running: npm run lint
 
 **Lines affected:** ~8 lines added
 
-### `docs/PHASE-3-PERMISSION-ENFORCEMENT.md`
+### Permission Enforcement Documentation
 
 **New file:** Comprehensive Phase 3 documentation
 
@@ -629,7 +629,7 @@ The role-based permission system is **fully implemented and production-ready**.
 
 For questions about the implementation:
 
-1. See `docs/PHASE-3-PERMISSION-ENFORCEMENT.md` for detailed guide
+1. See permission documentation in `docs/reference/permissions/` for detailed guides
 2. Check `src/config/roles.js` to modify command tiers
 3. Review `src/services/RolePermissionService.js` for permission logic
 4. See `src/core/CommandBase.js` for enforcement implementation

@@ -345,12 +345,11 @@ Result:
 
 **For overview:**
 
-- `docs/ROLE-BASED-PERMISSIONS-COMPLETE.md` - Full system overview
-- `PHASE-3-COMPLETION-REPORT.md` - Quick reference
+- `ROLE-BASED-PERMISSIONS-COMPLETE.md` - Full system overview
 
 **For implementation details:**
 
-- `docs/PHASE-3-PERMISSION-ENFORCEMENT.md` - Complete guide with code examples
+- Permission enforcement documentation in `docs/reference/permissions/`
 - `src/config/roles.js` - Command tier configuration
 - `src/services/RolePermissionService.js` - Permission logic
 - `src/core/CommandBase.js` - Enforcement implementation

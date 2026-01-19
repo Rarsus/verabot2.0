@@ -226,13 +226,10 @@ const types = require('../../types');
 → `tests/fixtures/`
 
 **Add documentation**
-→ `docs/` (with appropriate subfolder)
+→ `docs/` (with appropriate subfolder per [DOCUMENT-NAMING-CONVENTION.md](../../../DOCUMENT-NAMING-CONVENTION.md))
 
 **Add development scripts**
 → `scripts/dev/`
-
-**Add build scripts**
-→ `scripts/build/`
 
 **Add seed data**
 → `data/seeds/`
@@ -474,7 +471,5 @@ npm run lint  # Now checks src/, tests/, scripts/ all correctly
 
 ## Need More Info?
 
-- 📖 [Architecture Overview](architecture/ARCHITECTURE-OVERVIEW.md) - Detailed architecture
-- 📋 [Folder Structure Analysis](architecture/FOLDER-STRUCTURE-ANALYSIS.md) - Organization rationale
-- 🚀 [CI/CD Quick Start](CI-CD-QUICK-START.md) - Deployment pipeline
-- ✅ [Stability Checklist](STABILITY-CHECKLIST.md) - Operations guide
+- 📖 [Architecture Overview](../architecture/ARCHITECTURE-OVERVIEW.md) - Detailed architecture
+- 🚀 [CI/CD Quick Start](../../../CI-CD-WORKFLOW-MONITORING.md) - Deployment pipeline

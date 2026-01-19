@@ -353,4 +353,4 @@ REMINDER_NOTIFICATION_CHANNEL=111222333444555
 - **[PERMISSIONS-OVERVIEW.md](PERMISSIONS-OVERVIEW.md)** - Complete detailed reference
 - **[PERMISSIONS-QUICK-REFERENCE.md](PERMISSIONS-QUICK-REFERENCE.md)** - Quick lookup guide
 - **[PERMISSIONS-MATRIX.md](PERMISSIONS-MATRIX.md)** - Full command matrix table
-- **[PERMISSION-MODEL.md](../PERMISSION-MODEL.md)** - Architecture & design details
+- **[PERMISSION-MODEL.md](./PERMISSION-MODEL.md)** - Architecture & design details
