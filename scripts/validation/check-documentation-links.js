@@ -329,7 +329,7 @@ function findCaseInsensitivePath(targetPath) {
           current = path.join(current, match);
           continue;
         }
-      } catch (error) {
+      } catch (_error) { // eslint-disable-line no-unused-vars
         // Directory doesn't exist
         return null;
       }
