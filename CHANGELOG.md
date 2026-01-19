@@ -1,3 +1,34 @@
+# [3.7.0](https://github.com/Rarsus/verabot2.0/compare/v3.6.0...v3.7.0) (2026-01-19)
+
+### Breaking Changes
+
+* **refactor!:** Remove deprecated `src/services/ReminderService.js` - Use `src/services/GuildAwareReminderService.js` instead
+* **refactor!:** Remove deprecated `src/utils/command-base.js` - Use `src/core/CommandBase.js` instead
+* **refactor!:** Remove deprecated `src/db.js` - Use guild-aware services instead
+* **refactor!:** Remove deprecated `src/utils/error-handler.js` - Use `src/middleware/errorHandler.js` instead
+
+### Architecture Improvements
+
+* **Code Cleanup:** Removed 671 lines of deprecated code (all already unused in v3.6.0)
+* **Module Clarity:** Eliminated duplicate code paths and confused imports
+* **Developer Experience:** Reduced module surface, clearer IDE navigation
+* **Zero Impact:** All migrations completed in v3.6.0 - v3.7.0 is cleanup only
+
+### Test Coverage
+
+* 3352 tests passing (maintained from v3.6.0)
+* 100% of active code covered
+* 0 ESLint errors
+* Verified no regressions from code removal
+
+### Documentation
+
+* See `GUILD-AWARE-MIGRATION-GUIDE.md` for migration instructions
+* See `REMINDER-REMOVAL-ROADMAP.md` for cleanup planning details
+* See `DEPRECATED-CODE-MIGRATION-AUDIT.md` for complete audit results
+
+---
+
 # [3.6.0](https://github.com/Rarsus/verabot2.0/compare/v3.5.0...v3.6.0) (2026-01-19)
 
 ### Features
