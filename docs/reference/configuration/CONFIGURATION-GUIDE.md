@@ -445,8 +445,7 @@ verabot2.0/
 
 ## For More Information
 
-- **Document Naming:** See [DOCUMENT-NAMING-CONVENTION.md](DOCUMENT-NAMING-CONVENTION.md)
-- **Configuration Audit:** See [CONFIGURATION-AUDIT-REPORT.md](CONFIGURATION-AUDIT-REPORT.md)
+- **Document Naming:** See [DOCUMENT-NAMING-CONVENTION.md](../../../DOCUMENT-NAMING-CONVENTION.md)
 - **ESLint Rules:** https://eslint.org/docs/rules/
 - **Jest Options:** https://jestjs.io/docs/configuration
 - **Docker Guide:** https://docs.docker.com/

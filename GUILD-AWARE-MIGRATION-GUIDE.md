@@ -581,10 +581,9 @@ For issues or questions about migration:
 
 ## Related Documentation
 
-- [PHASE-6-PLANNING.md](PHASE-6-PLANNING.md) - Architecture design
-- [PHASE-6-EXECUTION-SUMMARY.md](PHASE-6-EXECUTION-SUMMARY.md) - Verification results
+- [docs/reference/architecture/GLOBAL-SERVICES-MIGRATION-GUIDE.md](docs/reference/architecture/GLOBAL-SERVICES-MIGRATION-GUIDE.md) - Guild-aware services
 - [REMINDER-REMOVAL-ROADMAP.md](REMINDER-REMOVAL-ROADMAP.md) - Deprecation timeline
-- [Copilot Instructions](/.github/copilot-instructions.md) - Development guidelines
+- [DEFINITION-OF-DONE.md](DEFINITION-OF-DONE.md) - Development guidelines
 
 ---
 

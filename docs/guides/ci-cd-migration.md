@@ -445,13 +445,12 @@ Migration is **successful** when:
 
 ## 📄 Related Documents
 
-- [CICD-ANALYSIS-AND-REDESIGN.md](./CICD-ANALYSIS-AND-REDESIGN.md) - Full technical analysis
-- [CICD-IMPLEMENTATION-SUMMARY.md](./CICD-IMPLEMENTATION-SUMMARY.md) - Implementation details
-- [.github/workflows/pr-checks.yml](./.github/workflows/pr-checks.yml) - PR validation workflow
-- [.github/workflows/testing.yml](./.github/workflows/testing.yml) - Testing workflow
-- [.github/workflows/security.yml](./.github/workflows/security.yml) - Security scanning workflow
-- [.github/workflows/documentation.yml](./.github/workflows/documentation.yml) - Documentation validation
-- [.github/workflows/deploy.yml](./.github/workflows/deploy.yml) - Deployment workflow
+- [CICD-ANALYSIS-AND-REDESIGN.md](../../CICD-ANALYSIS-AND-REDESIGN.md) - Full technical analysis
+- [../../.github/workflows/pr-checks.yml](../../.github/workflows/pr-checks.yml) - PR validation workflow
+- [../../.github/workflows/testing.yml](../../.github/workflows/testing.yml) - Testing workflow
+- [../../.github/workflows/security.yml](../../.github/workflows/security.yml) - Security scanning workflow
+- [../../.github/workflows/documentation.yml](../../.github/workflows/documentation.yml) - Documentation validation
+- [../../.github/workflows/deploy.yml](../../.github/workflows/deploy.yml) - Deployment workflow
 
 ---
 

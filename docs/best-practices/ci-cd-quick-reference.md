@@ -247,9 +247,8 @@ const quote = await quoteService.getQuote(guildId, id);
 
 ## 📚 Reference Documents
 
-- **Full Analysis**: [CICD-ANALYSIS-AND-REDESIGN.md](./CICD-ANALYSIS-AND-REDESIGN.md)
-- **Implementation Details**: [CICD-IMPLEMENTATION-SUMMARY.md](./CICD-IMPLEMENTATION-SUMMARY.md)
-- **Migration Guide**: [CICD-MIGRATION-GUIDE.md](./CICD-MIGRATION-GUIDE.md)
+- **Full Analysis**: [CICD-ANALYSIS-AND-REDESIGN.md](../../CICD-ANALYSIS-AND-REDESIGN.md)
+- **Migration Guide**: [ci-cd-migration.md](../guides/ci-cd-migration.md)
 - **Workflow Files**: `.github/workflows/`
 
 ---

@@ -11,6 +11,23 @@
  *   node scripts/validation/check-documentation-links.js --fix (auto-fix broken links)
  *   node scripts/validation/check-documentation-links.js --ignore-archived (skip archived docs)
  *   node scripts/validation/check-documentation-links.js --fix --ignore-archived (both)
+ * 
+ * Ignore Configuration:
+ *   Create a .link-validator-ignore.json file in the project root to ignore specific
+ *   broken links that are tracked in GitHub issues.
+ *   See .link-validator-ignore.json.example for format.
+ * 
+ *   Example ignore rule:
+ *   {
+ *     "ignoreRules": [
+ *       {
+ *         "file": "docs/reference/INDEX.md",
+ *         "exactLink": "project/REFACTORING-COMPLETE.md",
+ *         "issue": "123",
+ *         "comment": "Tracked for removal in issue #123"
+ *       }
+ *     ]
+ *   }
  */
 
 const fs = require('fs');
@@ -23,6 +40,65 @@ const IGNORE_PATTERNS = ['node_modules', '.git', '.next', 'dist', 'build'];
 const EXCLUDE_ARCHIVED = process.argv.includes('--ignore-archived');
 const ENABLE_FIX = process.argv.includes('--fix');
 const DETECT_RENAMES = process.argv.includes('--detect-renames') || ENABLE_FIX;
+const IGNORE_CONFIG_FILE = path.join(ROOT_DIR, '.link-validator-ignore.json');
+
+// Load ignore configuration from .link-validator-ignore.json
+let ignoreConfig = { ignoreRules: [] };
+try {
+  if (fs.existsSync(IGNORE_CONFIG_FILE)) {
+    const configContent = fs.readFileSync(IGNORE_CONFIG_FILE, 'utf-8');
+    ignoreConfig = JSON.parse(configContent);
+  }
+} catch (error) {
+  console.warn(`⚠️  Warning: Failed to load ignore config: ${error.message}`);
+}
+
+// Files that contain example/placeholder links (not actual navigation)
+const EXAMPLE_FILES = [
+  'GIT-RENAME-DETECTION-FEATURE.md',
+  'LINK-VALIDATOR-AUTO-FIX-FEATURE.md'
+];
+
+// Patterns for example/placeholder links that should be ignored
+const EXAMPLE_LINK_PATTERNS = [
+  /^\.\.\/getting-started\.md$/,
+  /^\.\.\/intro\/quickstart\.md$/,
+  /^filepath(#anchor)?$/,
+  /^path\/to\/file\.md$/,
+  /^\.\/WORKFLOW-DIAGNOSTICS-GUIDE\.md$/,
+  /^\.\/workflow-diagnostics-guide\.md$/,
+  /^url$/
+];
+
+// Files in archived sections (lower priority warnings)
+const ARCHIVED_PATTERNS = [
+  /scripts\/archived\//,
+  /tests\/_archive\//,
+  /docs\/archived\//
+];
+
+// Technical spec files where src/ paths are code examples, not links
+const TECHNICAL_SPEC_FILES = [
+  'docs/reference/OPTION2-MULTI-DATABASE-IMPLEMENTATION.md',
+  'docs/reference/architecture/MULTI-DATABASE-IMPLEMENTATION.md',
+  'docs/reference/database/DATABASE-MIGRATION-FIXES.md',
+  'docs/reference/database/DATABASE-OPTIMIZATION.md',
+  'docs/reference/permissions/PERMISSION-MODEL.md',
+  'docs/reference/permissions/ROLE-PERMISSION-SYSTEM-STATUS.md'
+];
+
+// Patterns for code example paths (not actual links)
+const CODE_EXAMPLE_PATTERNS = [
+  /^src\//,
+  /^tests\//,
+  /^\.\/?src\//,
+  /^\/src\//,
+  /^\/data\//,
+  /^\/scripts\//,
+  /^\/docs\//,
+  /^\.\/?\.github\//,
+  /^\.env$/
+];
 
 /**
  * Extract all markdown links from file content
@@ -42,12 +118,116 @@ function findMarkdownLinks(content) {
 }
 
 /**
+ * Check if a link should be ignored based on ignore configuration
+ * @param {string} link - Link to check
+ * @param {string} sourceFile - Source file containing the link
+ * @returns {Object|null} Ignore info with GitHub issue reference if should be ignored, null otherwise
+ */
+function checkIgnoreConfig(link, sourceFile) {
+  const relPath = path.relative(ROOT_DIR, sourceFile);
+  
+  // Check each ignore rule
+  for (const rule of ignoreConfig.ignoreRules || []) {
+    let matches = false;
+    
+    // Check file pattern
+    if (rule.file) {
+      const filePattern = new RegExp(rule.file);
+      if (!filePattern.test(relPath)) {
+        continue;
+      }
+    }
+    
+    // Check link pattern
+    if (rule.link) {
+      const linkPattern = new RegExp(rule.link);
+      if (!linkPattern.test(link)) {
+        continue;
+      }
+    }
+    
+    // Check exact match
+    if (rule.exactFile && rule.exactFile !== relPath) {
+      continue;
+    }
+    
+    if (rule.exactLink && rule.exactLink !== link) {
+      continue;
+    }
+    
+    // If we get here, the rule matches
+    matches = true;
+    
+    if (matches) {
+      return {
+        reason: 'config-ignore',
+        category: `GitHub Issue (${rule.issue || 'Tracked'})`,
+        issue: rule.issue,
+        comment: rule.comment || 'Tracked in GitHub issue'
+      };
+    }
+  }
+  
+  return null;
+}
+
+/**
+ * Check if a link should be ignored based on patterns
+ * @param {string} link - Link to check
+ * @param {string} sourceFile - Source file containing the link
+ * @returns {Object|null} Ignore info if should be ignored, null otherwise
+ */
+function shouldIgnoreLink(link, sourceFile) {
+  const fileName = path.basename(sourceFile);
+  const relPath = path.relative(ROOT_DIR, sourceFile);
+  
+  // First check the ignore configuration file
+  const configIgnore = checkIgnoreConfig(link, sourceFile);
+  if (configIgnore) {
+    return configIgnore;
+  }
+  
+  // Check if this is an example/placeholder link in feature documentation
+  if (EXAMPLE_FILES.includes(fileName)) {
+    for (const pattern of EXAMPLE_LINK_PATTERNS) {
+      if (pattern.test(link)) {
+        return { reason: 'example', category: 'Feature Documentation (Example Link)' };
+      }
+    }
+  }
+  
+  // Check if this is a code example path in technical specs
+  for (const specFile of TECHNICAL_SPEC_FILES) {
+    if (relPath === specFile || relPath.endsWith(specFile)) {
+      for (const pattern of CODE_EXAMPLE_PATTERNS) {
+        if (pattern.test(link)) {
+          return { reason: 'code-example', category: 'Technical Spec (Code Example)' };
+        }
+      }
+    }
+  }
+  
+  // Check if link is in archived documentation
+  for (const pattern of ARCHIVED_PATTERNS) {
+    if (pattern.test(relPath)) {
+      // Only mark as info if it references Phase documents or deleted files
+      if (link.includes('PHASE-') || link.includes('TEST-FILE-AUDIT')) {
+        return { reason: 'archived', category: 'Archived Documentation (Historical Reference)' };
+      }
+    }
+  }
+  
+  return null;
+}
+
+/**
  * Check if a link is broken
  * @param {string} link - Link to check
  * @param {string} baseDir - Base directory for resolving relative paths
+ * @param {string} sourceFile - Source file containing the link
  * @returns {Object} Result with status and resolved path
  */
-function checkLink(link, baseDir) {
+function checkLink(link, baseDir, sourceFile) {
   // Skip external links
   if (link.startsWith('http://') || link.startsWith('https://')) {
     return { valid: true, type: 'external', link };
@@ -68,6 +248,20 @@ function checkLink(link, baseDir) {
   
   if (!filePath) {
     return { valid: true, type: 'anchor-only', link };
+  }
+  
+  // Check if this link should be ignored
+  const ignoreInfo = shouldIgnoreLink(link, sourceFile);
+  if (ignoreInfo) {
+    return {
+      valid: true,
+      type: 'ignored',
+      link,
+      ignoreReason: ignoreInfo.reason,
+      category: ignoreInfo.category,
+      issue: ignoreInfo.issue,
+      comment: ignoreInfo.comment
+    };
   }
   
   // Resolve relative path
@@ -528,12 +722,15 @@ function validateDocumentation() {
     valid: 0,
     broken: 0,
     external: 0,
+    ignored: 0,
     fixed: 0,
-    byFile: {}
+    byFile: {},
+    ignoredByCategory: {}
   };
   
   const brokenLinks = {};
   const fixedLinks = [];
+  const ignoredLinks = {};
   
   // Check each file
   for (const mdFile of mdFiles) {
@@ -550,10 +747,30 @@ function validateDocumentation() {
       
       for (const link of links) {
         results.total++;
-        const checkResult = checkLink(link, fileDir);
+        const checkResult = checkLink(link, fileDir, mdFile);
         
         if (checkResult.type === 'external') {
           results.external++;
+        } else if (checkResult.type === 'ignored') {
+          results.ignored++;
+          // Track ignored links by category
+          const category = checkResult.category || 'Other';
+          if (!results.ignoredByCategory[category]) {
+            results.ignoredByCategory[category] = 0;
+          }
+          results.ignoredByCategory[category]++;
+          
+          // Track ignored links by file
+          if (!ignoredLinks[relPath]) {
+            ignoredLinks[relPath] = [];
+          }
+          ignoredLinks[relPath].push({
+            link: checkResult.link,
+            reason: checkResult.ignoreReason,
+            category: checkResult.category,
+            issue: checkResult.issue,
+            comment: checkResult.comment
+          });
         } else if (checkResult.valid) {
           results.valid++;
         } else {
@@ -586,8 +803,8 @@ function validateDocumentation() {
           const updatedBrokenLinks = [];
           
           for (const link of updatedLinks) {
-            const checkResult = checkLink(link, fileDir);
-            if (checkResult.type !== 'external' && !checkResult.valid) {
+            const checkResult = checkLink(link, fileDir, mdFile);
+            if (checkResult.type !== 'external' && checkResult.type !== 'ignored' && !checkResult.valid) {
               updatedBrokenLinks.push({
                 link: checkResult.link,
                 resolvedPath: checkResult.resolvedPath
@@ -619,6 +836,7 @@ function validateDocumentation() {
   console.log(`Total links scanned:     ${results.total}`);
   console.log(`Valid links:             ${results.valid}`);
   console.log(`External links:          ${results.external}`);
+  console.log(`Ignored links:           ${results.ignored}`);
   console.log(`Broken links:            ${results.broken}`);
   console.log(`Files with broken links: ${Object.keys(brokenLinks).length}`);
   
@@ -626,6 +844,48 @@ function validateDocumentation() {
     console.log(`Links fixed:             ${results.fixed}`);
   }
   console.log();
+  
+  // Print ignored links by category
+  if (results.ignored > 0) {
+    console.log('ℹ️  IGNORED LINKS BY CATEGORY\n');
+    for (const [category, count] of Object.entries(results.ignoredByCategory)) {
+      console.log(`   ${category}: ${count} links`);
+    }
+    console.log();
+    
+    // Print details of GitHub issue tracked links
+    const issueTrackedLinks = [];
+    for (const [file, links] of Object.entries(ignoredLinks)) {
+      for (const linkInfo of links) {
+        if (linkInfo.issue) {
+          issueTrackedLinks.push({ file, ...linkInfo });
+        }
+      }
+    }
+    
+    if (issueTrackedLinks.length > 0) {
+      console.log('🔗 LINKS TRACKED IN GITHUB ISSUES\n');
+      const byIssue = {};
+      for (const tracked of issueTrackedLinks) {
+        if (!byIssue[tracked.issue]) {
+          byIssue[tracked.issue] = [];
+        }
+        byIssue[tracked.issue].push(tracked);
+      }
+      
+      for (const [issue, links] of Object.entries(byIssue)) {
+        console.log(`   Issue #${issue}: ${links.length} link(s)`);
+        for (const link of links) {
+          console.log(`      📄 ${link.file}`);
+          console.log(`         ${link.link}`);
+          if (link.comment) {
+            console.log(`         💬 ${link.comment}`);
+          }
+        }
+      }
+      console.log();
+    }
+  }
   
   // Print fixed links if any
   if (fixedLinks.length > 0) {

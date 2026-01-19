@@ -252,7 +252,7 @@ If coverage is below thresholds:
 
 - [c8 Documentation](https://github.com/bcoe/c8)
 - [V8 Coverage Guide](https://v8.dev/blog/javascript-code-coverage)
-- [Testing Best Practices](../guides/02-TESTING-GUIDE.md)
+- [Testing Best Practices](../user-guides/testing-guide.md)
 - [Contributing Guide](../../CONTRIBUTING.md)
 
 ## Support

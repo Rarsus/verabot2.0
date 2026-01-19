@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Configuration file for ignoring specific broken links tracked in GitHub issues",
+  "ignoreRules": [
+    {
+      "comment": "Example: Ignore specific link in a file",
+      "file": "docs/reference/INDEX.md",
+      "exactLink": "project/REFACTORING-COMPLETE.md",
+      "issue": "123",
+      "reason": "Project directory links tracked for removal"
+    },
+    {
+      "comment": "Example: Ignore all links matching pattern in any file",
+      "link": "^project/.*\\.md$",
+      "issue": "123",
+      "reason": "All project directory references"
+    },
+    {
+      "comment": "Example: Ignore specific file pattern with specific link pattern",
+      "file": "docs/user-guides/.*\\.md$",
+      "link": "SLASH-COMMANDS.*\\.md$",
+      "issue": "124",
+      "reason": "Docker workflow documentation being refactored"
+    },
+    {
+      "comment": "Example: Ignore exact file and exact link combination",
+      "exactFile": "docs/user-guides/docker-workflow.md",
+      "exactLink": "CONFIGURATION-ANALYSIS.md",
+      "issue": "125",
+      "reason": "Configuration analysis document moved"
+    }
+  ]
+}

@@ -4,26 +4,66 @@ This directory contains automated scripts for validating and maintaining documen
 
 ## Available Scripts
 
-### 1. check-links.js
+### 1. check-documentation-links.js
 
-Validates all internal and external links in markdown files.
+Validates all internal markdown links in the documentation with auto-fix capabilities and GitHub issue tracking.
 
 **Usage:**
 
 ```bash
-npm run docs:links
+npm run validate:links                    # Validate links
+npm run validate:links -- --fix          # Auto-fix broken links
+npm run validate:links -- --ignore-archived  # Skip archived docs
 ```
 
 **Features:**
 
 - Scans all markdown files in the repository
 - Checks internal file references
-- Validates external URLs (with configurable timeout)
-- Generates detailed reports of broken links
-- Distinguishes between internal and external link failures
+- Auto-fixes case-sensitivity issues and git renames
+- Categorizes and ignores non-critical links:
+  - Example/placeholder links in feature documentation
+  - Code example paths in technical specifications
+  - Historical Phase references in archived documentation
+- **GitHub Issue Tracking**: Ignore specific broken links tracked in GitHub issues
+- Generates detailed reports with categories
 
-**Configuration:**
-Edit `.markdown-link-check.json` to customize behavior.
+**GitHub Issue Tracking:**
+
+Create a `.link-validator-ignore.json` file in the project root to ignore specific broken links that are tracked in GitHub issues. See `.link-validator-ignore.json.example` for format.
+
+Example:
+```json
+{
+  "ignoreRules": [
+    {
+      "file": "docs/reference/INDEX.md",
+      "exactLink": "project/REFACTORING-COMPLETE.md",
+      "issue": "123",
+      "comment": "Tracked for removal in issue #123"
+    },
+    {
+      "link": "^project/.*\\.md$",
+      "issue": "123",
+      "reason": "All project directory references"
+    }
+  ]
+}
+```
+
+**Rule Options:**
+- `file`: Regex pattern to match source file path
+- `exactFile`: Exact source file path (no pattern matching)
+- `link`: Regex pattern to match broken link
+- `exactLink`: Exact link text (no pattern matching)
+- `issue`: GitHub issue number tracking this broken link
+- `comment`: Optional description of why link is ignored
+
+The validator will show these ignored links in a separate "LINKS TRACKED IN GITHUB ISSUES" section with issue numbers and counts.
+
+### 2. check-links.js
+
+Legacy link checker (consider using check-documentation-links.js instead).
 
 ### 2. check-version.js
 

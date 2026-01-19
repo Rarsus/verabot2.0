@@ -434,10 +434,10 @@ git checkout scripts/test-imports.js
 
 ## References
 
-- [SCRIPTS-ANALYSIS-REPORT.md](../SCRIPTS-ANALYSIS-REPORT.md) - Full analysis
-- [scripts/README.md](./README.md) - Usage guide
-- [.scripts-config.json](../.scripts-config.json) - Configuration
-- [scripts/lib/utils.js](./lib/utils.js) - Utilities module
+- [scripts-analysis-report.md](../reference/reports/scripts-analysis-report.md) - Full analysis
+- [scripts/README.md](../../scripts/README.md) - Usage guide
+- [.scripts-config.json](../../.scripts-config.json) - Configuration
+- [scripts/lib/utils.js](../../scripts/lib/utils.js) - Utilities module
 
 ---
 

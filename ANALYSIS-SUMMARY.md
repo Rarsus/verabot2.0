@@ -117,22 +117,15 @@ Comprehensive analysis of **73 documentation files** across root and docs/ folde
 ## 📚 Detailed Analysis Documents
 
 ### Main Analysis
-📄 **[DOCUMENTATION-ANALYSIS-COMPREHENSIVE.md](DOCUMENTATION-ANALYSIS-COMPREHENSIVE.md)**
-- Complete audit of all 73 files
-- Detailed findings for each document category
-- Full reorganization plan with phases
-- File-by-file recommendations
-- Naming convention alignment
+This file (ANALYSIS-SUMMARY.md) provides a complete audit of documentation files with reorganization recommendations.
 
 ### Supporting Documents (Already Exist)
 - [DATABASE-SPECIFICATION-REMINDER.md](DATABASE-SPECIFICATION-REMINDER.md) - Feature proposal
 - [DEPRECATED-CODE-MIGRATION-AUDIT.md](DEPRECATED-CODE-MIGRATION-AUDIT.md) - Migration audit
 - [CICD-ANALYSIS-AND-REDESIGN.md](CICD-ANALYSIS-AND-REDESIGN.md) - CI/CD improvements
-- [CONFIGURATION-AUDIT-REPORT.md](CONFIGURATION-AUDIT-REPORT.md) - Config audit
-- [SCRIPTS-ANALYSIS-REPORT.md](SCRIPTS-ANALYSIS-REPORT.md) - Scripts analysis
-- [SCRIPTS-IMPROVEMENTS-SUMMARY.md](SCRIPTS-IMPROVEMENTS-SUMMARY.md) - Scripts improvements
-- [SCRIPTS-REFACTORING-GUIDE.md](SCRIPTS-REFACTORING-GUIDE.md) - Scripts guide
-- [OAUTH-DEBUGGING.md](OAUTH-DEBUGGING.md) - OAuth troubleshooting
+- [docs/reference/reports/scripts-analysis-report.md](docs/reference/reports/scripts-analysis-report.md) - Scripts analysis
+- [docs/guides/scripts-improvements-guide.md](docs/guides/scripts-improvements-guide.md) - Scripts improvements
+- [docs/guides/scripts-refactoring-guide.md](docs/guides/scripts-refactoring-guide.md) - Scripts guide
 
 ---
 
@@ -269,7 +262,7 @@ Comprehensive analysis of **73 documentation files** across root and docs/ folde
 
 All findings, recommendations, and detailed analysis are documented in:
 
-- **[DOCUMENTATION-ANALYSIS-COMPREHENSIVE.md](DOCUMENTATION-ANALYSIS-COMPREHENSIVE.md)** - Main analysis (start here)
+- **[ANALYSIS-SUMMARY.md](ANALYSIS-SUMMARY.md)** - Main analysis (this file)
 - **[GITHUB-ISSUES-CREATED-SUMMARY.md](GITHUB-ISSUES-CREATED-SUMMARY.md)** - Issues with links and details
 - **GitHub Issues #61-67** - Individual issue tracking
 

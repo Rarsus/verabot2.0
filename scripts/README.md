@@ -484,7 +484,7 @@ See `SCRIPTS-ANALYSIS-REPORT.md` for full analysis and improvement roadmap.
 
 ## References
 
-- [SCRIPTS-ANALYSIS-REPORT.md](../SCRIPTS-ANALYSIS-REPORT.md) - Comprehensive analysis
+- [scripts-analysis-report.md](../docs/reference/reports/scripts-analysis-report.md) - Comprehensive analysis
 - [package.json](../package.json) - Script definitions
 - [.scripts-config.json](../.scripts-config.json) - Configuration
 - [scripts/lib/utils.js](./lib/utils.js) - Utility module

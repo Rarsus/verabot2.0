@@ -164,7 +164,7 @@ You've prioritized **GDPR Compliance and Complete Data Isolation**, making Optio
 - Remove directory = all guild data gone
 - No orphaned data cleanup needed
 
-**See:** [OPTION2-MULTI-DATABASE-IMPLEMENTATION.md](OPTION2-MULTI-DATABASE-IMPLEMENTATION.md) for complete implementation guide.
+**See:** [OPTION2-MULTI-DATABASE-IMPLEMENTATION.md](../OPTION2-MULTI-DATABASE-IMPLEMENTATION.md) for complete implementation guide.
 
 ### New Directory Structure
 

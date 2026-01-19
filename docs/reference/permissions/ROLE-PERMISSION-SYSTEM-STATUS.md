@@ -207,12 +207,12 @@ The permission system is **ready to configure** but **not yet enforced**.
 
 **Completed Documentation:**
 
-- ✅ [INFRASTRUCTURE-FIXES-COMPLETED.md](INFRASTRUCTURE-FIXES-COMPLETED.md) - Node.js upgrade & linting
-- ✅ [PHASE-2-COMMAND-INTEGRATION-COMPLETED.md](PHASE-2-COMMAND-INTEGRATION-COMPLETED.md) - All command updates
+- ✅ Infrastructure fixes completed - Node.js upgrade & linting
+- ✅ Phase 2 command integration completed - All command updates
 
 **Available References:**
 
-- ✅ [ROLE-BASED-PERMISSIONS-PROPOSAL.md](../docs/reference/ROLE-BASED-PERMISSIONS-PROPOSAL.md) - Original design
+- ✅ [ROLE-BASED-PERMISSIONS-PROPOSAL.md](./ROLE-BASED-PERMISSIONS-PROPOSAL.md) - Original design
 - ✅ [src/config/roles.js](../src/config/roles.js) - Configuration file
 - ✅ [src/services/RolePermissionService.js](../src/services/RolePermissionService.js) - Service implementation
 

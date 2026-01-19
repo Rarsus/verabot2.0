@@ -349,8 +349,8 @@ async function listReminders(interaction) {
 
 ### Documentation
 - [GUILD-AWARE-MIGRATION-GUIDE.md](GUILD-AWARE-MIGRATION-GUIDE.md) - Detailed migration steps
-- [PHASE-6-PLANNING.md](PHASE-6-PLANNING.md) - Architecture overview
-- [Copilot Instructions](/.github/copilot-instructions.md) - Development guidelines
+- [docs/reference/architecture/GLOBAL-SERVICES-MIGRATION-GUIDE.md](docs/reference/architecture/GLOBAL-SERVICES-MIGRATION-GUIDE.md) - Guild-aware services
+- [DEFINITION-OF-DONE.md](DEFINITION-OF-DONE.md) - Development guidelines
 
 ### Code Examples
 - `src/services/GuildAwareReminderService.js` - Implementation reference

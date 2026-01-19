@@ -27,10 +27,10 @@
 - **[TASK-91-COMPLETION-REPORT.md](TASK-91-COMPLETION-REPORT.md)** - DevOps dependency updates
 - **[TASK-92-IMPLEMENTATION-STRATEGY.md](TASK-92-IMPLEMENTATION-STRATEGY.md)** - Long-term procedures & automation
 
-### 📊 Previous Work (Phase 23.1 - Complete)
-- **[PHASE-23.1-FINAL-STATUS-REPORT.md](PHASE-23.1-FINAL-STATUS-REPORT.md)** - ✅ COMPLETE (previous)
-- **[PHASE-23.1-COMPLETION-REPORT.md](PHASE-23.1-COMPLETION-REPORT.md)** - Phase completion details
-- **[PHASE-23.0-COMPLETION-REPORT.md](PHASE-23.0-COMPLETION-REPORT.md)** - Phase 23.0 summary
+### 📊 Previous Work (Completed Phases)
+- **[PHASE-9-NODE-22-MIGRATION-PLAN.md](PHASE-9-NODE-22-MIGRATION-PLAN.md)** - Node.js 22 migration planning
+- **[PHASE-9-GIT-RENAME-DETECTION-COMPLETION.md](PHASE-9-GIT-RENAME-DETECTION-COMPLETION.md)** - Git rename detection
+- **[PHASE-8-COMPLETION-REPORT.md](PHASE-8-COMPLETION-REPORT.md)** - Phase 8 completion
 
 ### 📚 Standards & Documentation
 - **[DOCUMENT-NAMING-CONVENTION.md](DOCUMENT-NAMING-CONVENTION.md)** - Documentation naming standards
@@ -64,18 +64,11 @@
 - DEFINITION-OF-DONE.md
 - COMMAND-REFERENCE-QUICK.md
 
-**Current Work (Phase 23.1):**
-- PHASE-23.1-FINAL-STATUS-REPORT.md
-- PHASE-23.1-COMPLETION-REPORT.md
-- PHASE-23.1-EXECUTION-SUMMARY.md
-- PHASE-23.1-POST-MERGE-SUMMARY.md
-- PHASE-23.1-PROJECT-RECORDS.md
-- PHASE-23.1-PR-SUMMARY.md
-
-**Current Phase (Phase 23.0):**
-- PHASE-23.0-COMPLETION-REPORT.md
-- PHASE-23.0-EXPANDED-SERVICE-SPEC.md
-- PHASE-23.0-GLOBAL-SERVICES-IMPLEMENTATION-PLAN.md
+**Current Work (Phase 9):**
+- PHASE-9-NODE-22-MIGRATION-PLAN.md
+- PHASE-9-GIT-RENAME-DETECTION-COMPLETION.md
+- PHASE-8-COMPLETION-REPORT.md
+- PHASE-8-DEPLOYMENT-SUMMARY.md
 
 **Active Design & Monitoring:**
 - CI-CD-WORKFLOW-MONITORING.md
@@ -243,7 +236,7 @@ Historical and superseded documentation
 3. **[docs/reference/database/](docs/reference/database/)** - All database docs
 
 ### 🎯 I want to see what's being worked on
-1. **[PHASE-23.1-FINAL-STATUS-REPORT.md](PHASE-23.1-FINAL-STATUS-REPORT.md)** - Current phase
+1. **[PHASE-9-NODE-22-MIGRATION-PLAN.md](PHASE-9-NODE-22-MIGRATION-PLAN.md)** - Current phase planning
 2. **[GITHUB-ISSUES-CREATED-SUMMARY.md](GITHUB-ISSUES-CREATED-SUMMARY.md)** - Active issues
 3. **[ANALYSIS-SUMMARY.md](ANALYSIS-SUMMARY.md)** - Priorities
 
@@ -284,7 +277,7 @@ Historical and superseded documentation
 
 ## Quick Links by Role
 
-**Project Leads:** [PHASE-23.1-FINAL-STATUS-REPORT.md](PHASE-23.1-FINAL-STATUS-REPORT.md)  
+**Project Leads:** [PHASE-9-NODE-22-MIGRATION-PLAN.md](PHASE-9-NODE-22-MIGRATION-PLAN.md)  
 **Developers:** [CONTRIBUTING.md](CONTRIBUTING.md) → [docs/guides/](docs/guides/)  
 **QA/Testers:** [docs/testing/](docs/testing/)  
 **DevOps/Infrastructure:** [docs/guides/ci-cd-migration.md](docs/guides/ci-cd-migration.md)  
