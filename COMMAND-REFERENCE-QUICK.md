@@ -248,4 +248,4 @@ Before broadcast:
 
 ---
 
-**Need more help?** See [RESOLUTION-HELPERS-GUIDE.md](docs/guides/RESOLUTION-HELPERS-GUIDE.md) for full documentation.
+**Need more help?** See [RESOLUTION-HELPERS-GUIDE.md](docs/user-guides/resolution-helpers-guide.md) for full documentation.
