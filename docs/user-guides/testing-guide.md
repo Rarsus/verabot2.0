@@ -438,8 +438,8 @@ git commit -m "feat: Add feature with TDD"
 ## Resources
 
 - [Jest Documentation](https://jestjs.io/)
-- [Test-Driven Development Reference](../reference/TDD-QUICK-REFERENCE.md)
-- [Coverage Analysis](../../CODE-COVERAGE-ANALYSIS-PLAN.md)
+- [Test-Driven Development Reference](../reference/quick-refs/TDD-QUICK-REFERENCE.md)
+- [Coverage Analysis](../testing/test-coverage-baseline-strategy.md)
 
 ---
 
