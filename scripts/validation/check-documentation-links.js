@@ -24,6 +24,53 @@ const EXCLUDE_ARCHIVED = process.argv.includes('--ignore-archived');
 const ENABLE_FIX = process.argv.includes('--fix');
 const DETECT_RENAMES = process.argv.includes('--detect-renames') || ENABLE_FIX;
 
+// Files that contain example/placeholder links (not actual navigation)
+const EXAMPLE_FILES = [
+  'GIT-RENAME-DETECTION-FEATURE.md',
+  'LINK-VALIDATOR-AUTO-FIX-FEATURE.md'
+];
+
+// Patterns for example/placeholder links that should be ignored
+const EXAMPLE_LINK_PATTERNS = [
+  /^\.\.\/getting-started\.md$/,
+  /^\.\.\/intro\/quickstart\.md$/,
+  /^filepath(#anchor)?$/,
+  /^path\/to\/file\.md$/,
+  /^\.\/WORKFLOW-DIAGNOSTICS-GUIDE\.md$/,
+  /^\.\/workflow-diagnostics-guide\.md$/,
+  /^url$/
+];
+
+// Files in archived sections (lower priority warnings)
+const ARCHIVED_PATTERNS = [
+  /scripts\/archived\//,
+  /tests\/_archive\//,
+  /docs\/archived\//
+];
+
+// Technical spec files where src/ paths are code examples, not links
+const TECHNICAL_SPEC_FILES = [
+  'docs/reference/OPTION2-MULTI-DATABASE-IMPLEMENTATION.md',
+  'docs/reference/architecture/MULTI-DATABASE-IMPLEMENTATION.md',
+  'docs/reference/database/DATABASE-MIGRATION-FIXES.md',
+  'docs/reference/database/DATABASE-OPTIMIZATION.md',
+  'docs/reference/permissions/PERMISSION-MODEL.md',
+  'docs/reference/permissions/ROLE-PERMISSION-SYSTEM-STATUS.md'
+];
+
+// Patterns for code example paths (not actual links)
+const CODE_EXAMPLE_PATTERNS = [
+  /^src\//,
+  /^tests\//,
+  /^\.\/?src\//,
+  /^\/src\//,
+  /^\/data\//,
+  /^\/scripts\//,
+  /^\/docs\//,
+  /^\.\/?\.github\//,
+  /^\.env$/
+];
+
 /**
  * Extract all markdown links from file content
  * @param {string} content - File content
@@ -42,12 +89,56 @@ function findMarkdownLinks(content) {
 }
 
 /**
+ * Check if a link should be ignored based on patterns
+ * @param {string} link - Link to check
+ * @param {string} sourceFile - Source file containing the link
+ * @returns {Object|null} Ignore info if should be ignored, null otherwise
+ */
+function shouldIgnoreLink(link, sourceFile) {
+  const fileName = path.basename(sourceFile);
+  const relPath = path.relative(ROOT_DIR, sourceFile);
+  
+  // Check if this is an example/placeholder link in feature documentation
+  if (EXAMPLE_FILES.includes(fileName)) {
+    for (const pattern of EXAMPLE_LINK_PATTERNS) {
+      if (pattern.test(link)) {
+        return { reason: 'example', category: 'Feature Documentation (Example Link)' };
+      }
+    }
+  }
+  
+  // Check if this is a code example path in technical specs
+  for (const specFile of TECHNICAL_SPEC_FILES) {
+    if (relPath === specFile || relPath.endsWith(specFile)) {
+      for (const pattern of CODE_EXAMPLE_PATTERNS) {
+        if (pattern.test(link)) {
+          return { reason: 'code-example', category: 'Technical Spec (Code Example)' };
+        }
+      }
+    }
+  }
+  
+  // Check if link is in archived documentation
+  for (const pattern of ARCHIVED_PATTERNS) {
+    if (pattern.test(relPath)) {
+      // Only mark as info if it references Phase documents or deleted files
+      if (link.includes('PHASE-') || link.includes('TEST-FILE-AUDIT')) {
+        return { reason: 'archived', category: 'Archived Documentation (Historical Reference)' };
+      }
+    }
+  }
+  
+  return null;
+}
+
+/**
  * Check if a link is broken
  * @param {string} link - Link to check
  * @param {string} baseDir - Base directory for resolving relative paths
+ * @param {string} sourceFile - Source file containing the link
  * @returns {Object} Result with status and resolved path
  */
-function checkLink(link, baseDir) {
+function checkLink(link, baseDir, sourceFile) {
   // Skip external links
   if (link.startsWith('http://') || link.startsWith('https://')) {
     return { valid: true, type: 'external', link };
@@ -68,6 +159,18 @@ function checkLink(link, baseDir) {
   
   if (!filePath) {
     return { valid: true, type: 'anchor-only', link };
+  }
+  
+  // Check if this link should be ignored
+  const ignoreInfo = shouldIgnoreLink(link, sourceFile);
+  if (ignoreInfo) {
+    return {
+      valid: true,
+      type: 'ignored',
+      link,
+      ignoreReason: ignoreInfo.reason,
+      category: ignoreInfo.category
+    };
   }
   
   // Resolve relative path
@@ -528,12 +631,15 @@ function validateDocumentation() {
     valid: 0,
     broken: 0,
     external: 0,
+    ignored: 0,
     fixed: 0,
-    byFile: {}
+    byFile: {},
+    ignoredByCategory: {}
   };
   
   const brokenLinks = {};
   const fixedLinks = [];
+  const ignoredLinks = {};
   
   // Check each file
   for (const mdFile of mdFiles) {
@@ -550,10 +656,28 @@ function validateDocumentation() {
       
       for (const link of links) {
         results.total++;
-        const checkResult = checkLink(link, fileDir);
+        const checkResult = checkLink(link, fileDir, mdFile);
         
         if (checkResult.type === 'external') {
           results.external++;
+        } else if (checkResult.type === 'ignored') {
+          results.ignored++;
+          // Track ignored links by category
+          const category = checkResult.category || 'Other';
+          if (!results.ignoredByCategory[category]) {
+            results.ignoredByCategory[category] = 0;
+          }
+          results.ignoredByCategory[category]++;
+          
+          // Track ignored links by file
+          if (!ignoredLinks[relPath]) {
+            ignoredLinks[relPath] = [];
+          }
+          ignoredLinks[relPath].push({
+            link: checkResult.link,
+            reason: checkResult.ignoreReason,
+            category: checkResult.category
+          });
         } else if (checkResult.valid) {
           results.valid++;
         } else {
@@ -586,8 +710,8 @@ function validateDocumentation() {
           const updatedBrokenLinks = [];
           
           for (const link of updatedLinks) {
-            const checkResult = checkLink(link, fileDir);
-            if (checkResult.type !== 'external' && !checkResult.valid) {
+            const checkResult = checkLink(link, fileDir, mdFile);
+            if (checkResult.type !== 'external' && checkResult.type !== 'ignored' && !checkResult.valid) {
               updatedBrokenLinks.push({
                 link: checkResult.link,
                 resolvedPath: checkResult.resolvedPath
@@ -619,6 +743,7 @@ function validateDocumentation() {
   console.log(`Total links scanned:     ${results.total}`);
   console.log(`Valid links:             ${results.valid}`);
   console.log(`External links:          ${results.external}`);
+  console.log(`Ignored links:           ${results.ignored}`);
   console.log(`Broken links:            ${results.broken}`);
   console.log(`Files with broken links: ${Object.keys(brokenLinks).length}`);
   
@@ -626,6 +751,15 @@ function validateDocumentation() {
     console.log(`Links fixed:             ${results.fixed}`);
   }
   console.log();
+  
+  // Print ignored links by category
+  if (results.ignored > 0) {
+    console.log('ℹ️  IGNORED LINKS BY CATEGORY\n');
+    for (const [category, count] of Object.entries(results.ignoredByCategory)) {
+      console.log(`   ${category}: ${count} links`);
+    }
+    console.log();
+  }
   
   // Print fixed links if any
   if (fixedLinks.length > 0) {
