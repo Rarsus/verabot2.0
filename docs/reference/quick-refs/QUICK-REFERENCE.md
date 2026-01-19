@@ -48,7 +48,7 @@ Test runner               → tests/unit/run-tests.js
 ### Scripts
 
 ```
-Test documentation gen    → scripts/build/generate-test-docs.js
+Test documentation gen    → ARCHIVED (scripts/archived/generate-test-docs.js)
 Development scripts       → scripts/dev/
 CI/CD scripts            → scripts/ci/
 ```

@@ -45,7 +45,6 @@
     "db:migrate": "node scripts/db/migrate.js",
     "db:migrate:status": "node scripts/db/migrate-status.js",
     "db:rollback": "node scripts/db/rollback.js",
-    "perf:monitor": "node scripts/performance/show-metrics.js",
     "release": "semantic-release",
     "release:dry": "semantic-release --dry-run",
     "release:check": "node scripts/validation/check-version.js",

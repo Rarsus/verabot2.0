@@ -76,16 +76,16 @@ Standard schema replicated for each guild database:
 - `reminder_notifications` - Reminder delivery tracking
 - `user_communications` - User opt-in/opt-out preferences
 
-#### 3. Migration Script ([scripts/db/migration-single-to-multi.js](scripts/db/migration-single-to-multi.js))
+#### 3. Migration Script ([scripts/archived/migration-single-to-multi.js](scripts/archived/migration-single-to-multi.js))
 
 Converts from single-database to multi-database architecture:
 
 ```bash
 # Migrate all guilds from single database
-node scripts/db/migration-single-to-multi.js
+node scripts/archived/migration-single-to-multi.js
 
 # Migrate specific guild only
-node scripts/db/migration-single-to-multi.js 123456789
+node scripts/archived/migration-single-to-multi.js 123456789
 ```
 
 **Process:**
@@ -257,7 +257,7 @@ Run the migration script to convert existing single database to multi-database:
 
 ```bash
 # Creates backups and migrates all data
-node scripts/db/migration-single-to-multi.js
+node scripts/archived/migration-single-to-multi.js
 ```
 
 **Steps:**
@@ -392,7 +392,7 @@ The old guild-aware single-database approach (Phase 3.5) is still available:
 ## Support
 
 - **Documentation:** [docs/reference/OPTION2-MULTI-DATABASE-IMPLEMENTATION.md](docs/reference/OPTION2-MULTI-DATABASE-IMPLEMENTATION.md)
-- **Migration Script:** [scripts/db/migration-single-to-multi.js](scripts/db/migration-single-to-multi.js)
+- **Migration Script:** [scripts/archived/migration-single-to-multi.js](scripts/archived/migration-single-to-multi.js)
 - **Manager Service:** [src/services/GuildDatabaseManager.js](src/services/GuildDatabaseManager.js)
 - **Schema:** [data/db/\_schema/schema.sql](data/db/_schema/schema.sql)
 

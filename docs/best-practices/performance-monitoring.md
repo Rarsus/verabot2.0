@@ -28,7 +28,9 @@ setInterval(() => {
 ### CLI Command
 
 ```bash
-npm run perf:monitor
+# Note: The perf:monitor script has been archived (scripts/archived/show-metrics.js)
+# Performance monitoring is now integrated into CI/CD workflows
+# Use GitHub Actions logs or npm run test -- --coverage for metrics
 ```
 
 ## Metrics Interpretation
