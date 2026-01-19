@@ -1,0 +1,25 @@
+{
+  "ignoreRules": [
+    {
+      "comment": "Project directory references in INDEX.md - tracked for removal",
+      "file": "docs/reference/INDEX.md",
+      "link": "^project/.*\\.md",
+      "issue": "68",
+      "reason": "Project directory documentation structure being refactored"
+    },
+    {
+      "comment": "Docker workflow references to deleted configuration files",
+      "exactFile": "docs/user-guides/docker-workflow.md",
+      "link": "(SLASH-COMMANDS|CONFIGURATION-ANALYSIS)",
+      "issue": "69",
+      "reason": "Docker workflow documentation being updated"
+    },
+    {
+      "comment": "Dashboard configuration broken paths",
+      "file": "docs/user-guides/dashboard.*\\.md",
+      "link": "(discord-oauth-setup|dashboard\\.md|security\\.md)",
+      "issue": "70",
+      "reason": "Dashboard documentation paths being corrected"
+    }
+  ]
+}

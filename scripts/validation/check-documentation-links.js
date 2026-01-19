@@ -11,6 +11,23 @@
  *   node scripts/validation/check-documentation-links.js --fix (auto-fix broken links)
  *   node scripts/validation/check-documentation-links.js --ignore-archived (skip archived docs)
  *   node scripts/validation/check-documentation-links.js --fix --ignore-archived (both)
+ * 
+ * Ignore Configuration:
+ *   Create a .link-validator-ignore.json file in the project root to ignore specific
+ *   broken links that are tracked in GitHub issues.
+ *   See .link-validator-ignore.json.example for format.
+ * 
+ *   Example ignore rule:
+ *   {
+ *     "ignoreRules": [
+ *       {
+ *         "file": "docs/reference/INDEX.md",
+ *         "exactLink": "project/REFACTORING-COMPLETE.md",
+ *         "issue": "123",
+ *         "comment": "Tracked for removal in issue #123"
+ *       }
+ *     ]
+ *   }
  */
 
 const fs = require('fs');
@@ -23,6 +40,18 @@ const IGNORE_PATTERNS = ['node_modules', '.git', '.next', 'dist', 'build'];
 const EXCLUDE_ARCHIVED = process.argv.includes('--ignore-archived');
 const ENABLE_FIX = process.argv.includes('--fix');
 const DETECT_RENAMES = process.argv.includes('--detect-renames') || ENABLE_FIX;
+const IGNORE_CONFIG_FILE = path.join(ROOT_DIR, '.link-validator-ignore.json');
+
+// Load ignore configuration from .link-validator-ignore.json
+let ignoreConfig = { ignoreRules: [] };
+try {
+  if (fs.existsSync(IGNORE_CONFIG_FILE)) {
+    const configContent = fs.readFileSync(IGNORE_CONFIG_FILE, 'utf-8');
+    ignoreConfig = JSON.parse(configContent);
+  }
+} catch (error) {
+  console.warn(`⚠️  Warning: Failed to load ignore config: ${error.message}`);
+}
 
 // Files that contain example/placeholder links (not actual navigation)
 const EXAMPLE_FILES = [
@@ -89,6 +118,60 @@ function findMarkdownLinks(content) {
 }
 
 /**
+ * Check if a link should be ignored based on ignore configuration
+ * @param {string} link - Link to check
+ * @param {string} sourceFile - Source file containing the link
+ * @returns {Object|null} Ignore info with GitHub issue reference if should be ignored, null otherwise
+ */
+function checkIgnoreConfig(link, sourceFile) {
+  const relPath = path.relative(ROOT_DIR, sourceFile);
+  
+  // Check each ignore rule
+  for (const rule of ignoreConfig.ignoreRules || []) {
+    let matches = false;
+    
+    // Check file pattern
+    if (rule.file) {
+      const filePattern = new RegExp(rule.file);
+      if (!filePattern.test(relPath)) {
+        continue;
+      }
+    }
+    
+    // Check link pattern
+    if (rule.link) {
+      const linkPattern = new RegExp(rule.link);
+      if (!linkPattern.test(link)) {
+        continue;
+      }
+    }
+    
+    // Check exact match
+    if (rule.exactFile && rule.exactFile !== relPath) {
+      continue;
+    }
+    
+    if (rule.exactLink && rule.exactLink !== link) {
+      continue;
+    }
+    
+    // If we get here, the rule matches
+    matches = true;
+    
+    if (matches) {
+      return {
+        reason: 'config-ignore',
+        category: `GitHub Issue (${rule.issue || 'Tracked'})`,
+        issue: rule.issue,
+        comment: rule.comment || 'Tracked in GitHub issue'
+      };
+    }
+  }
+  
+  return null;
+}
+
+/**
  * Check if a link should be ignored based on patterns
  * @param {string} link - Link to check
  * @param {string} sourceFile - Source file containing the link
@@ -97,6 +180,12 @@ function findMarkdownLinks(content) {
 function shouldIgnoreLink(link, sourceFile) {
   const fileName = path.basename(sourceFile);
   const relPath = path.relative(ROOT_DIR, sourceFile);
+  
+  // First check the ignore configuration file
+  const configIgnore = checkIgnoreConfig(link, sourceFile);
+  if (configIgnore) {
+    return configIgnore;
+  }
   
   // Check if this is an example/placeholder link in feature documentation
   if (EXAMPLE_FILES.includes(fileName)) {
@@ -169,7 +258,9 @@ function checkLink(link, baseDir, sourceFile) {
       type: 'ignored',
       link,
       ignoreReason: ignoreInfo.reason,
-      category: ignoreInfo.category
+      category: ignoreInfo.category,
+      issue: ignoreInfo.issue,
+      comment: ignoreInfo.comment
     };
   }
   
@@ -676,7 +767,9 @@ function validateDocumentation() {
           ignoredLinks[relPath].push({
             link: checkResult.link,
             reason: checkResult.ignoreReason,
-            category: checkResult.category
+            category: checkResult.category,
+            issue: checkResult.issue,
+            comment: checkResult.comment
           });
         } else if (checkResult.valid) {
           results.valid++;
@@ -759,6 +852,39 @@ function validateDocumentation() {
       console.log(`   ${category}: ${count} links`);
     }
     console.log();
+    
+    // Print details of GitHub issue tracked links
+    const issueTrackedLinks = [];
+    for (const [file, links] of Object.entries(ignoredLinks)) {
+      for (const linkInfo of links) {
+        if (linkInfo.issue) {
+          issueTrackedLinks.push({ file, ...linkInfo });
+        }
+      }
+    }
+    
+    if (issueTrackedLinks.length > 0) {
+      console.log('🔗 LINKS TRACKED IN GITHUB ISSUES\n');
+      const byIssue = {};
+      for (const tracked of issueTrackedLinks) {
+        if (!byIssue[tracked.issue]) {
+          byIssue[tracked.issue] = [];
+        }
+        byIssue[tracked.issue].push(tracked);
+      }
+      
+      for (const [issue, links] of Object.entries(byIssue)) {
+        console.log(`   Issue #${issue}: ${links.length} link(s)`);
+        for (const link of links) {
+          console.log(`      📄 ${link.file}`);
+          console.log(`         ${link.link}`);
+          if (link.comment) {
+            console.log(`         💬 ${link.comment}`);
+          }
+        }
+      }
+      console.log();
+    }
   }
   
   // Print fixed links if any
