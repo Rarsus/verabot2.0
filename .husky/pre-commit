@@ -1,5 +1,5 @@
 #!/bin/sh
-# Pre-commit hook: Run linter before commit
+# Pre-commit hook: Run linter and documentation link validator before commit
 # Tests are run in CI to avoid blocking development
 
 echo "🔍 Running pre-commit checks..."
@@ -10,6 +10,14 @@ npm run lint -- --max-warnings=50
 if [ $? -ne 0 ]; then
   echo "❌ Linting failed. Commit aborted."
   echo "Run 'npm run lint:fix' to auto-fix issues."
+  exit 1
+fi
+
+echo ""
+echo "🔗 Validating documentation links..."
+npm run validate:links
+if [ $? -ne 0 ]; then
+  echo "❌ Documentation links are broken. Please fix them or update references."
   exit 1
 fi
 

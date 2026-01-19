@@ -66,7 +66,7 @@ The GitHub Actions versioning workflow has been enhanced with comprehensive erro
 
 **New Files Created**:
 
-1. **[WORKFLOW-DIAGNOSTICS-GUIDE.md](WORKFLOW-DIAGNOSTICS-GUIDE.md)**
+1. **[WORKFLOW-DIAGNOSTICS-GUIDE.md](workflow-diagnostics-guide.md)**
    - Complete guide to understanding the enhanced workflow
    - Explains each improvement and what it validates
    - Troubleshooting guide for common scenarios
@@ -220,7 +220,7 @@ The enhanced workflow now catches these scenarios:
 ## Documentation References
 
 - **Quick Reference**: [WORKFLOW-IMPROVEMENTS-QUICK-REF.md](WORKFLOW-IMPROVEMENTS-QUICK-REF.md)
-- **Full Guide**: [WORKFLOW-DIAGNOSTICS-GUIDE.md](WORKFLOW-DIAGNOSTICS-GUIDE.md)
+- **Full Guide**: [WORKFLOW-DIAGNOSTICS-GUIDE.md](workflow-diagnostics-guide.md)
 - **Workflow File**: [.github/workflows/versioning.yml](.github/workflows/versioning.yml)
 - **Release Changelog**: [CHANGELOG.md](CHANGELOG.md)
 

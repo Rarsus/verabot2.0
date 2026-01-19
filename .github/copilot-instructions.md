@@ -733,10 +733,10 @@ HUGGINGFACE_API_KEY=optional_key          # For AI poem generation
 
 **Development Guides (docs/user-guides/):**
 
-- [01-CREATING-COMMANDS.md](../../docs/user-guides/01-CREATING-COMMANDS.md) - Command creation guide
-- [02-TESTING-GUIDE.md](../../docs/user-guides/02-TESTING-GUIDE.md) - Testing with TDD
-- [DOCKER-SETUP.md](../../docs/user-guides/DOCKER-SETUP.md) - Docker containerization
-- [HUGGINGFACE-SETUP.md](../../docs/user-guides/HUGGINGFACE-SETUP.md) - AI setup
+- [creating-commands.md](../../docs/user-guides/creating-commands.md) - Command creation guide
+- [testing-guide.md](../../docs/user-guides/testing-guide.md) - Testing with TDD
+- [docker-setup.md](../../docs/user-guides/docker-setup.md) - Docker containerization
+- [huggingface-setup.md](../../docs/user-guides/huggingface-setup.md) - AI setup
 
 **Technical Reference (docs/reference/ - Organized into 6 subcategories as of Jan 15):**
 

@@ -224,7 +224,7 @@ Historical and superseded documentation
 
 ### 🧪 I want to write tests
 1. **[docs/testing/test-naming-convention-guide.md](docs/testing/test-naming-convention-guide.md)** - Test naming
-2. **[docs/reference/architecture/tdd-quick-reference.md](docs/reference/architecture/tdd-quick-reference.md)** - TDD patterns
+2. **[docs/reference/quick-refs/TDD-QUICK-REFERENCE.md](docs/reference/quick-refs/TDD-QUICK-REFERENCE.md)** - TDD patterns
 3. **[docs/testing/](docs/testing/)** - All testing guides
 
 ### 🚀 I want to deploy or set up infrastructure
@@ -233,13 +233,13 @@ Historical and superseded documentation
 3. **[docs/best-practices/ci-cd-quick-reference.md](docs/best-practices/ci-cd-quick-reference.md)** - CI/CD reference
 
 ### 🔐 I want to understand permissions
-1. **[docs/reference/permissions/permissions-quick-reference.md](docs/reference/permissions/permissions-quick-reference.md)** - Quick start
-2. **[docs/reference/permissions/permissions-matrix.md](docs/reference/permissions/permissions-matrix.md)** - Full matrix
+1. **[docs/reference/permissions/PERMISSIONS-QUICK-REFERENCE.md](docs/reference/permissions/PERMISSIONS-QUICK-REFERENCE.md)** - Quick start
+2. **[docs/reference/permissions/PERMISSIONS-MATRIX.md](docs/reference/permissions/PERMISSIONS-MATRIX.md)** - Full matrix
 3. **[docs/reference/permissions/](docs/reference/permissions/)** - All permission docs
 
 ### 📊 I want to understand the database
-1. **[docs/reference/database/database-guild-isolation-analysis.md](docs/reference/database/database-guild-isolation-analysis.md)** - Guild isolation
-2. **[docs/reference/database/db-deprecation-timeline.md](docs/reference/database/db-deprecation-timeline.md)** - Deprecation info
+1. **[docs/reference/database/DATABASE-GUILD-ISOLATION-ANALYSIS.md](docs/reference/database/DATABASE-GUILD-ISOLATION-ANALYSIS.md)** - Guild isolation
+2. **[docs/reference/DB-DEPRECATION-TIMELINE.md](docs/reference/DB-DEPRECATION-TIMELINE.md)** - Deprecation info
 3. **[docs/reference/database/](docs/reference/database/)** - All database docs
 
 ### 🎯 I want to see what's being worked on

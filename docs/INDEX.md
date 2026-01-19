@@ -13,7 +13,7 @@ Complete navigation for all VeraBot2.0 documentation within docs/ folder. See [.
 
 **New to VeraBot2.0?**
 1. [CONTRIBUTING.md](../CONTRIBUTING.md) - Start here
-2. [reference/architecture/architecture.md](reference/architecture/architecture.md) - Learn the system
+2. [reference/architecture/ARCHITECTURE.md](reference/architecture/ARCHITECTURE.md) - Learn the system
 3. [user-guides/creating-commands.md](user-guides/creating-commands.md) - Create your first command
 
 **Want to Deploy or Configure?**
@@ -61,42 +61,41 @@ Development workflow and infrastructure guides:
 ### reference/ - Technical Reference (6 Subcategories)
 
 #### reference/database/ - Database Specification & Schema
-- database-guild-isolation-analysis.md - Guild isolation
-- database-migration-fixes.md - Migration fixes
-- database-migrations.md - Migration guide
-- database-optimization.md - Performance optimization
-- db-deprecation-timeline.md - Deprecation schedule
-- multi-database-implementation.md - Multi-DB support
-- reminder-schema.md - Reminder database schema
+- DATABASE-GUILD-ISOLATION-ANALYSIS.md - Guild isolation
+- DATABASE-MIGRATION-FIXES.md - Migration fixes
+- DATABASE-MIGRATIONS.md - Migration guide
+- DATABASE-OPTIMIZATION.md - Performance optimization
+- (See also: [DB-DEPRECATION-TIMELINE.md](reference/DB-DEPRECATION-TIMELINE.md) - Deprecation schedule)
+- MULTI-DATABASE-IMPLEMENTATION.md - Multi-DB support
+- REMINDER-SCHEMA.md - Reminder database schema
 
 #### reference/permissions/ - Permission System & Roles
-- permission-model.md - Permission model
-- permission-system-summary.md - System overview
-- permissions-index.md - Permissions index
-- permissions-matrix.md - Roles matrix
-- permissions-overview.md - Overview
-- permissions-quick-reference.md - Quick reference
-- permissions-visual.md - Visual guide
-- role-based-permissions-complete.md - Full implementation
-- role-permission-system-status.md - Current status
+- PERMISSION-MODEL.md - Permission model
+- PERMISSION-SYSTEM-SUMMARY.md - System overview
+- PERMISSIONS-INDEX.md - Permissions index
+- PERMISSIONS-MATRIX.md - Roles matrix
+- PERMISSIONS-OVERVIEW.md - Overview
+- PERMISSIONS-QUICK-REFERENCE.md - Quick reference
+- PERMISSIONS-VISUAL.md - Visual guide
+- ROLE-BASED-PERMISSIONS-COMPLETE.md - Full implementation
+- ROLE-PERMISSION-SYSTEM-STATUS.md - Current status
 
 #### reference/configuration/ - Configuration & Environment
-- configuration-audit-2026.md - Configuration audit *(NEW - Jan 15)*
-- configuration-guide.md - Configuration guide *(NEW - Jan 15)*
-- env-security-reference.md - Environment security
+- CONFIGURATION-GUIDE.md - Configuration guide *(NEW - Jan 15)*
+- ENV-SECURITY-REFERENCE.md - Environment security
 
 #### reference/architecture/ - System Architecture & Patterns
-- architecture-patterns-visual.md - Visual patterns
-- architecture.md - Main architecture
-- command-database-patterns-analysis.md - Command patterns
-- feature-modules.md - Feature modules
-- global-services-migration-guide.md - Service migration
-- refactoring-guide.md - Refactoring patterns
-- tdd-quick-reference.md - TDD patterns
+- ARCHITECTURE-PATTERNS-VISUAL.md - Visual patterns
+- ARCHITECTURE.md - Main architecture
+- COMMAND-DATABASE-PATTERNS-ANALYSIS.md - Command patterns
+- FEATURE-MODULES.md - Feature modules
+- GLOBAL-SERVICES-MIGRATION-GUIDE.md - Service migration
+- REFACTORING-GUIDE.md - Refactoring patterns
+- (See also: [reference/quick-refs/TDD-QUICK-REFERENCE.md](reference/quick-refs/TDD-QUICK-REFERENCE.md) - TDD patterns)
 
 #### reference/quick-refs/ - Quick Reference Guides
-- quick-reference.md - General reference
-- command-reference-quick.md - Commands quick ref
+- QUICK-REFERENCE.md - General reference
+- TDD-QUICK-REFERENCE.md - TDD patterns
 
 #### reference/reports/ - Analysis Reports & Audits
 - deprecated-code-audit.md - Deprecated code audit
@@ -153,7 +152,7 @@ Testing documentation consolidated in one place:
 
 ### 🧪 I want to write tests
 1. [testing/test-naming-convention-guide.md](testing/test-naming-convention-guide.md) - Test naming
-2. [reference/architecture/tdd-quick-reference.md](reference/architecture/tdd-quick-reference.md) - TDD patterns
+2. [reference/quick-refs/TDD-QUICK-REFERENCE.md](reference/quick-refs/TDD-QUICK-REFERENCE.md) - TDD patterns
 3. [testing/](testing/) - All testing guides
 
 ### 🚀 I want to deploy infrastructure
@@ -162,13 +161,13 @@ Testing documentation consolidated in one place:
 3. [best-practices/ci-cd-quick-reference.md](best-practices/ci-cd-quick-reference.md) - CI/CD reference
 
 ### 🔐 I want to understand permissions
-1. [reference/permissions/permissions-quick-reference.md](reference/permissions/permissions-quick-reference.md) - Quick start
-2. [reference/permissions/permissions-matrix.md](reference/permissions/permissions-matrix.md) - Full matrix
+1. [reference/permissions/PERMISSIONS-QUICK-REFERENCE.md](reference/permissions/PERMISSIONS-QUICK-REFERENCE.md) - Quick start
+2. [reference/permissions/PERMISSIONS-MATRIX.md](reference/permissions/PERMISSIONS-MATRIX.md) - Full matrix
 3. [reference/permissions/](reference/permissions/) - All permission docs
 
 ### 📊 I want to understand the database
-1. [reference/database/database-guild-isolation-analysis.md](reference/database/database-guild-isolation-analysis.md) - Guild isolation
-2. [reference/database/db-deprecation-timeline.md](reference/database/db-deprecation-timeline.md) - Deprecation info
+1. [reference/database/DATABASE-GUILD-ISOLATION-ANALYSIS.md](reference/database/DATABASE-GUILD-ISOLATION-ANALYSIS.md) - Guild isolation
+2. [reference/database/DB-DEPRECATION-TIMELINE.md](reference/DB-DEPRECATION-TIMELINE.md) - Deprecation info
 3. [reference/database/](reference/database/) - All database docs
 
 ---
@@ -199,8 +198,8 @@ For root-level documentation including phases and standards, see:
 **See also:** [../DOCUMENTATION-INDEX.md](../DOCUMENTATION-INDEX.md) for root-level docs  
 **Maintained By:** GitHub Copilot
 | ------------------------------------------------------------------------------------------- | ---------------------- | ------ |
-| [06-ADMIN-COMMUNICATION-COMMANDS.md](admin-guides/06-ADMIN-COMMUNICATION-COMMANDS.md)       | Admin commands         | 15 min |
-| [AUTOMATIC-REGISTRATION-QUICK-START.md](admin-guides/AUTOMATIC-REGISTRATION-QUICK-START.md) | Auto-register commands | 5 min  |
+| [admin-communication-commands.md](admin-guides/admin-communication-commands.md)       | Admin commands         | 15 min |
+| [automatic-registration-quick-start.md](admin-guides/automatic-registration-quick-start.md) | Auto-register commands | 5 min  |
 
 ---
 
@@ -210,8 +209,8 @@ Deep dives into system design:
 
 | Document                                                                  | Topic                       |
 | ------------------------------------------------------------------------- | --------------------------- |
-| [ARCHITECTURE-OVERVIEW.md](architecture/ARCHITECTURE-OVERVIEW.md)         | System design and patterns  |
-| [FOLDER-STRUCTURE-ANALYSIS.md](architecture/FOLDER-STRUCTURE-ANALYSIS.md) | Project folder organization |
+| [reference/architecture/ARCHITECTURE.md](reference/architecture/ARCHITECTURE.md)         | System design and patterns  |
+| [folder-structure-analysis.md](architecture/folder-structure-analysis.md) | Project folder organization |
 
 ---
 
@@ -222,32 +221,32 @@ Technical reference and API docs:
 **Permission System (Latest)**
 | Document | Purpose |
 |----------|---------|
-| [PHASE-3-PERMISSION-ENFORCEMENT.md](reference/PHASE-3-PERMISSION-ENFORCEMENT.md) | Permission enforcement implementation |
-| [ROLE-BASED-PERMISSIONS-COMPLETE.md](reference/ROLE-BASED-PERMISSIONS-COMPLETE.md) | Complete permission system overview |
+| [PHASE-3-PERMISSION-ENFORCEMENT.md](reference/reports/PHASE-3-PERMISSION-ENFORCEMENT.md) | Permission enforcement implementation |
+| [reference/permissions/ROLE-BASED-PERMISSIONS-COMPLETE.md](reference/permissions/ROLE-BASED-PERMISSIONS-COMPLETE.md) | Complete permission system overview |
 
 **Database & Configuration**
 | Document | Purpose |
 |----------|---------|
-| [DB-DEPRECATION-TIMELINE.md](reference/DB-DEPRECATION-TIMELINE.md) | Legacy db.js deprecation (READ THIS!) |
-| [DATABASE-MIGRATIONS.md](reference/DATABASE-MIGRATIONS.md) | Database schema changes |
-| [DATABASE-OPTIMIZATION.md](reference/DATABASE-OPTIMIZATION.md) | Database performance tuning |
-| [DATABASE-MIGRATION-FIXES.md](reference/DATABASE-MIGRATION-FIXES.md) | Migration troubleshooting |
+| [reference/DB-DEPRECATION-TIMELINE.md](reference/DB-DEPRECATION-TIMELINE.md) | Legacy db.js deprecation (READ THIS!) |
+| [reference/database/DATABASE-MIGRATIONS.md](reference/database/DATABASE-MIGRATIONS.md) | Database schema changes |
+| [reference/database/DATABASE-OPTIMIZATION.md](reference/database/DATABASE-OPTIMIZATION.md) | Database performance tuning |
+| [reference/database/DATABASE-MIGRATION-FIXES.md](reference/database/DATABASE-MIGRATION-FIXES.md) | Migration troubleshooting |
 
 **Permissions Deep Dive**
 | Document | Purpose |
 |----------|---------|
-| [PERMISSION-MODEL.md](reference/PERMISSION-MODEL.md) | Permission system design |
-| [PERMISSIONS-INDEX.md](reference/PERMISSIONS-INDEX.md) | Permission reference index |
-| [PERMISSIONS-MATRIX.md](reference/PERMISSIONS-MATRIX.md) | Permission matrix reference |
-| [PERMISSIONS-OVERVIEW.md](reference/PERMISSIONS-OVERVIEW.md) | Permission system overview |
-| [PERMISSIONS-QUICK-REFERENCE.md](reference/PERMISSIONS-QUICK-REFERENCE.md) | Quick permission reference |
+| [reference/permissions/PERMISSION-MODEL.md](reference/permissions/PERMISSION-MODEL.md) | Permission system design |
+| [reference/permissions/PERMISSIONS-INDEX.md](reference/permissions/PERMISSIONS-INDEX.md) | Permission reference index |
+| [reference/permissions/PERMISSIONS-MATRIX.md](reference/permissions/PERMISSIONS-MATRIX.md) | Permission matrix reference |
+| [reference/permissions/PERMISSIONS-OVERVIEW.md](reference/permissions/PERMISSIONS-OVERVIEW.md) | Permission system overview |
+| [reference/permissions/PERMISSIONS-QUICK-REFERENCE.md](reference/permissions/PERMISSIONS-QUICK-REFERENCE.md) | Quick permission reference |
 
 **Security & Operations**
 | Document | Purpose |
 |----------|---------|
-| [SECURITY.md](reference/SECURITY.md) | Security best practices |
-| [FEATURE-MODULES.md](reference/FEATURE-MODULES.md) | Feature module reference |
-| [QUICK-REFERENCE.md](reference/QUICK-REFERENCE.md) | Quick reference guide |
+| [SECURITY.md](reference/reports/SECURITY.md) | Security best practices |
+| [reference/architecture/FEATURE-MODULES.md](reference/architecture/FEATURE-MODULES.md) | Feature module reference |
+| [reference/quick-refs/QUICK-REFERENCE.md](reference/quick-refs/QUICK-REFERENCE.md) | Quick reference guide |
 
 ---
 
@@ -257,18 +256,18 @@ Recommended practices and standards (Updated: Phase 19):
 
 | Document                                                              | Topic                          | Status           |
 | --------------------------------------------------------------------- | ------------------------------ | ---------------- |
-| [CI-CD.md](best-practices/CI-CD.md)                                   | CI/CD setup & workflows        | ✅ Phase 19      |
-| [CODE-QUALITY.md](best-practices/CODE-QUALITY.md)                     | Code quality standards         | ✅ Phase 19      |
-| [COVERAGE-SETUP.md](best-practices/COVERAGE-SETUP.md)                 | Test coverage setup (Jest)     | ✅ Phase 19      |
-| [ERROR-HANDLING.md](best-practices/ERROR-HANDLING.md)                 | Error handling patterns        | ✅ Current       |
-| [GITHUB-ACTIONS.md](best-practices/GITHUB-ACTIONS.md)                 | GitHub Actions reference       | ✅ Current       |
-| [PERFORMANCE-MONITORING.md](best-practices/PERFORMANCE-MONITORING.md) | Performance monitoring         | ✅ Current       |
-| [SECURITY-HARDENING.md](best-practices/SECURITY-HARDENING.md)         | Security hardening guide       | ✅ Current       |
-| [SEMANTIC-RELEASE-SETUP.md](best-practices/SEMANTIC-RELEASE-SETUP.md) | Semantic versioning setup      | ✅ Current       |
-| [STABILITY-CHECKLIST.md](best-practices/STABILITY-CHECKLIST.md)       | Stability verification         | ✅ Current       |
-| [TEST-COVERAGE-OVERVIEW.md](best-practices/TEST-COVERAGE-OVERVIEW.md) | Test coverage analysis (Phase 19) | ✅ Phase 19      |
-| [TEST-SUMMARY-LATEST.md](best-practices/TEST-SUMMARY-LATEST.md)       | Test results (1,896+ passing)  | ✅ Phase 19      |
-| [TEST-MAINTENANCE-GUIDE.md](best-practices/TEST-MAINTENANCE-GUIDE.md) | Test maintenance procedures    | ✅ Current       |
+| [ci-cd.md](best-practices/ci-cd.md)                                   | CI/CD setup & workflows        | ✅ Phase 19      |
+| [code-quality.md](best-practices/code-quality.md)                     | Code quality standards         | ✅ Phase 19      |
+| [coverage-setup.md](best-practices/coverage-setup.md)                 | Test coverage setup (Jest)     | ✅ Phase 19      |
+| [error-handling.md](best-practices/error-handling.md)                 | Error handling patterns        | ✅ Current       |
+| [github-actions.md](best-practices/github-actions.md)                 | GitHub Actions reference       | ✅ Current       |
+| [performance-monitoring.md](best-practices/performance-monitoring.md) | Performance monitoring         | ✅ Current       |
+| [security-hardening.md](best-practices/security-hardening.md)         | Security hardening guide       | ✅ Current       |
+| [semantic-release-setup.md](best-practices/semantic-release-setup.md) | Semantic versioning setup      | ✅ Current       |
+| [stability-checklist.md](best-practices/stability-checklist.md)       | Stability verification         | ✅ Current       |
+| [test-coverage-overview.md](best-practices/test-coverage-overview.md) | Test coverage analysis (Phase 19) | ✅ Phase 19      |
+| [test-summary-latest.md](best-practices/test-summary-latest.md)       | Test results (1,896+ passing)  | ✅ Phase 19      |
+| [TEST-MAINTENANCE-GUIDE.md](testing/TEST-MAINTENANCE-GUIDE.md) | Test maintenance procedures    | ✅ Current       |
 
 ---
 
@@ -294,57 +293,57 @@ Currently available in `api/` directory.
 
 **👨‍💻 Developer**
 
-- Creating commands? → [01-CREATING-COMMANDS.md](user-guides/01-CREATING-COMMANDS.md)
-- Writing tests? → [02-TESTING-GUIDE.md](user-guides/02-TESTING-GUIDE.md)
-- Understanding architecture? → [ARCHITECTURE-OVERVIEW.md](architecture/ARCHITECTURE-OVERVIEW.md)
+- Creating commands? → [user-guides/creating-commands.md](user-guides/creating-commands.md)
+- Writing tests? → [user-guides/testing-guide.md](user-guides/testing-guide.md)
+- Understanding architecture? → [reference/architecture/ARCHITECTURE.md](reference/architecture/ARCHITECTURE.md)
 
 **🛠️ DevOps/Operator**
 
-- Docker setup? → [DOCKER-SETUP.md](user-guides/DOCKER-SETUP.md)
-- CI/CD? → [CI-CD-SETUP.md](best-practices/CI-CD-SETUP.md)
-- Monitoring? → [PERFORMANCE-MONITORING.md](best-practices/PERFORMANCE-MONITORING.md)
+- Docker setup? → [docker-setup.md](user-guides/docker-setup.md)
+- CI/CD? → [ci-cd-setup.md](best-practices/ci-cd-setup.md)
+- Monitoring? → [performance-monitoring.md](best-practices/performance-monitoring.md)
 
 **🔐 Administrator**
 
-- Admin commands? → [06-ADMIN-COMMUNICATION-COMMANDS.md](admin-guides/06-ADMIN-COMMUNICATION-COMMANDS.md)
-- Permissions? → [ROLE-BASED-PERMISSIONS-COMPLETE.md](reference/ROLE-BASED-PERMISSIONS-COMPLETE.md)
-- Security? → [SECURITY-HARDENING.md](best-practices/SECURITY-HARDENING.md)
+- Admin commands? → [admin-communication-commands.md](admin-guides/admin-communication-commands.md)
+- Permissions? → [ROLE-BASED-PERMISSIONS-COMPLETE.md](reference/permissions/ROLE-BASED-PERMISSIONS-COMPLETE.md)
+- Security? → [security-hardening.md](best-practices/security-hardening.md)
 
 **📚 New Team Member**
 
 1. Project overview → Project root [README.md](../README.md)
-2. Architecture → [ARCHITECTURE-OVERVIEW.md](architecture/ARCHITECTURE-OVERVIEW.md)
-3. Command creation → [01-CREATING-COMMANDS.md](user-guides/01-CREATING-COMMANDS.md)
-4. Testing → [02-TESTING-GUIDE.md](user-guides/02-TESTING-GUIDE.md)
-5. Troubleshooting → [SLASH-COMMANDS-TROUBLESHOOTING.md](user-guides/SLASH-COMMANDS-TROUBLESHOOTING.md)
+2. Architecture → [architecture-overview.md](architecture/architecture-overview.md)
+3. Command creation → [creating-commands.md](user-guides/creating-commands.md)
+4. Testing → [testing-guide.md](user-guides/testing-guide.md)
+5. Troubleshooting → [slash-commands-troubleshooting.md](user-guides/slash-commands-troubleshooting.md)
 
 ### By Topic
 
 **Permission System**
 
-- Getting started → [ROLE-BASED-PERMISSIONS-COMPLETE.md](reference/ROLE-BASED-PERMISSIONS-COMPLETE.md)
-- Implementation details → [PHASE-3-PERMISSION-ENFORCEMENT.md](reference/PHASE-3-PERMISSION-ENFORCEMENT.md)
-- Quick reference → [PERMISSIONS-QUICK-REFERENCE.md](reference/PERMISSIONS-QUICK-REFERENCE.md)
+- Getting started → [ROLE-BASED-PERMISSIONS-COMPLETE.md](reference/permissions/ROLE-BASED-PERMISSIONS-COMPLETE.md)
+- Implementation details → [PHASE-3-PERMISSION-ENFORCEMENT.md](reference/reports/PHASE-3-PERMISSION-ENFORCEMENT.md)
+- Quick reference → [PERMISSIONS-QUICK-REFERENCE.md](reference/permissions/PERMISSIONS-QUICK-REFERENCE.md)
 
 **Commands & Slash Commands**
 
-- Creating → [01-CREATING-COMMANDS.md](user-guides/01-CREATING-COMMANDS.md)
-- Troubleshooting → [SLASH-COMMANDS-TROUBLESHOOTING.md](user-guides/SLASH-COMMANDS-TROUBLESHOOTING.md)
+- Creating → [CREATING-COMMANDS.md](user-guides/creating-commands.md)
+- Troubleshooting → [SLASH-COMMANDS-TROUBLESHOOTING.md](user-guides/slash-commands-troubleshooting.md)
 
 **Database**
 
-- Migrations → [DATABASE-MIGRATIONS.md](reference/DATABASE-MIGRATIONS.md)
-- Optimization → [DATABASE-OPTIMIZATION.md](reference/DATABASE-OPTIMIZATION.md)
+- Migrations → [DATABASE-MIGRATIONS.md](reference/database/DATABASE-MIGRATIONS.md)
+- Optimization → [DATABASE-OPTIMIZATION.md](reference/database/DATABASE-OPTIMIZATION.md)
 
 **Deployment**
 
-- Docker → [DOCKER-SETUP.md](user-guides/DOCKER-SETUP.md)
-- CI/CD → [CI-CD-SETUP.md](best-practices/CI-CD-SETUP.md)
+- Docker → [docker-setup.md](user-guides/docker-setup.md)
+- CI/CD → [ci-cd-setup.md](best-practices/ci-cd-setup.md)
 
 **Testing**
 
-- Getting started → [02-TESTING-GUIDE.md](user-guides/02-TESTING-GUIDE.md)
-- Coverage setup → [COVERAGE-SETUP.md](best-practices/COVERAGE-SETUP.md)
+- Getting started → [testing-guide.md](user-guides/testing-guide.md)
+- Coverage setup → [coverage-setup.md](best-practices/coverage-setup.md)
 
 ---
 
@@ -353,34 +352,34 @@ Currently available in `api/` directory.
 ```
 docs/
 ├── user-guides/              # Step-by-step guides for developers
-│   ├── 01-CREATING-COMMANDS.md
-│   ├── 02-TESTING-GUIDE.md
-│   ├── 03-HUGGINGFACE-SETUP.md
-│   ├── 04-PROXY-SETUP.md
-│   ├── 05-REMINDER-SYSTEM.md
-│   ├── DOCKER-SETUP.md
-│   ├── DOCKER-WORKFLOW.md
-│   ├── OPT-IN-SYSTEM.md
-│   ├── RESOLUTION-HELPERS-GUIDE.md
-│   └── SLASH-COMMANDS-TROUBLESHOOTING.md
+│   ├── creating-commands.md
+│   ├── testing-guide.md
+│   ├── huggingface-setup.md
+│   ├── proxy-setup.md
+│   ├── reminder-system.md
+│   ├── docker-setup.md
+│   ├── docker-workflow.md
+│   ├── opt-in-system.md
+│   ├── resolution-helpers-guide.md
+│   └── slash-commands-troubleshooting.md
 ├── admin-guides/             # Admin and operator guides
 │   ├── 06-ADMIN-COMMUNICATION-COMMANDS.md
 │   └── AUTOMATIC-REGISTRATION-QUICK-START.md
 ├── architecture/             # System design and structure
 │   ├── ARCHITECTURE-OVERVIEW.md
-│   └── FOLDER-STRUCTURE-ANALYSIS.md
+│   └── folder-structure-analysis.md
 ├── best-practices/           # Recommended practices
-│   ├── CI-CD-QUICK-START.md
-│   ├── CODE-QUALITY.md
-│   ├── ERROR-HANDLING.md
-│   ├── SECURITY-HARDENING.md
-│   ├── STABILITY-CHECKLIST.md
+│   ├── ci-cd-quick-reference.md
+│   ├── code-quality.md
+│   ├── error-handling.md
+│   ├── security-hardening.md
+│   ├── stability-checklist.md
 │   └── ... (13 total)
 ├── reference/                # Technical reference
 │   ├── PHASE-3-PERMISSION-ENFORCEMENT.md
 │   ├── ROLE-BASED-PERMISSIONS-COMPLETE.md
-│   ├── DATABASE-MIGRATIONS.md
-│   ├── PERMISSIONS-QUICK-REFERENCE.md
+│   ├── DATABASE-MIGRATIONS.md (in database/ subdirectory)
+│   ├── PERMISSIONS-QUICK-REFERENCE.md (in permissions/ subdirectory)
 │   ├── SECURITY.md
 │   └── ... (18 total)
 ├── tutorials/                # In-depth learning materials
@@ -395,7 +394,7 @@ docs/
 ## 🔗 External Resources
 
 - **[Project README](../README.md)** - Project overview and quick start
-- **[Copilot Instructions](./.github/copilot-instructions.md)** - AI assistant guidelines
+- **[Copilot Instructions](../.github/copilot-instructions.md)** - AI assistant guidelines
 - **[Contributing Guide](../CONTRIBUTING.md)** - Contribution standards
 
 ---
@@ -407,7 +406,7 @@ docs/
 1. Check the [Directory Structure](#-directory-structure) above
 2. Use Ctrl+F to search this file
 3. Check [archived/](archived/) for historical documentation
-4. Review the [Troubleshooting Guide](user-guides/SLASH-COMMANDS-TROUBLESHOOTING.md)
+4. Review the [Troubleshooting Guide](user-guides/slash-commands-troubleshooting.md)
 
 **Links not working?**
 

@@ -61,7 +61,7 @@ npm start
 - **Automatic delivery** via DM or channel announcements
 - **Notification history** and retry logic
 
-[📖 Read the Reminder System Guide](docs/user-guides/05-REMINDER-SYSTEM.md)
+[📖 Read the Reminder System Guide](docs/user-guides/reminder-system.md)
 
 ### 💬 Bi-Directional Message Proxy
 
@@ -73,7 +73,7 @@ npm start
 - **Automatic retry logic** for failed webhook requests
 - **Channel-specific monitoring** for fine-grained control
 
-[📖 Read the Proxy Setup Guide](docs/user-guides/04-PROXY-SETUP.md)
+[📖 Read the Proxy Setup Guide](docs/user-guides/proxy-setup.md)
 
 ### 🤖 AI Integration
 
@@ -145,11 +145,11 @@ Complete documentation is organized in the [docs/](docs/) folder and root level:
 
 ### 🚀 Quick Links
 
-- **New developer?** → [docs/user-guides/01-CREATING-COMMANDS.md](docs/user-guides/01-CREATING-COMMANDS.md)
-- **Set up Docker?** → [docs/user-guides/DOCKER-SETUP.md](docs/user-guides/DOCKER-SETUP.md)
+- **New developer?** → [docs/user-guides/creating-commands.md](docs/user-guides/creating-commands.md)
+- **Set up Docker?** → [docs/user-guides/docker-setup.md](docs/user-guides/docker-setup.md)
 - **Learn architecture?** → [docs/reference/architecture/ARCHITECTURE.md](docs/reference/architecture/ARCHITECTURE.md)
 - **Admin commands?** → [docs/admin-guides/admin-communication-commands.md](docs/admin-guides/admin-communication-commands.md)
-- **Testing guide?** → [docs/user-guides/02-TESTING-GUIDE.md](docs/user-guides/02-TESTING-GUIDE.md)
+- **Testing guide?** → [docs/user-guides/testing-guide.md](docs/user-guides/testing-guide.md)
 - **Database schema?** → [docs/reference/database/](docs/reference/database/)
 - **Permission system?** → [docs/reference/permissions/](docs/reference/permissions/)
 

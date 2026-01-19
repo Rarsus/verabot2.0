@@ -203,8 +203,8 @@ Practical examples...
 
 ## Related Documentation
 
-- [Architecture Overview](docs/architecture/ARCHITECTURE-OVERVIEW.md)
-- [Testing Guide](docs/guides/02-TESTING-GUIDE.md)
+- [Architecture Overview](docs/reference/architecture/ARCHITECTURE.md)
+- [Testing Guide](docs/user-guides/testing-guide.md)
 ```
 
 #### 4. Code Examples
@@ -278,7 +278,7 @@ Common issues...
 
 ## Next Steps
 
-- [Testing Guide](docs/guides/02-TESTING-GUIDE.md)
+- [Testing Guide](docs/user-guides/testing-guide.md)
 ```
 
 #### Reference Docs (`docs/reference/`)
@@ -321,7 +321,7 @@ Technical overview...
 
 ## Related References
 
-- [Architecture Reference](docs/reference/ARCHITECTURE.md)
+- [Architecture Reference](docs/reference/architecture/ARCHITECTURE.md)
 
 ````
 
@@ -413,7 +413,7 @@ Add a new quote to the database.
 
 **Related:**
 
-- [Creating Commands Guide](docs/guides/01-CREATING-COMMANDS.md)
+- [Creating Commands Guide](docs/user-guides/creating-commands.md)
 
 ````
 
@@ -436,11 +436,11 @@ The reminder system allows users to schedule notifications.
 
 ### Usage
 
-See [Creating Commands Guide](docs/guides/01-CREATING-COMMANDS.md)
+See [Creating Commands Guide](docs/user-guides/creating-commands.md)
 
 ### Database Schema
 
-See [Architecture Reference](docs/reference/ARCHITECTURE.md)
+See [Architecture Reference](docs/reference/architecture/ARCHITECTURE.md)
 ````
 
 ### Getting Help
