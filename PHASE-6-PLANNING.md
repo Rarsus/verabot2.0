@@ -104,13 +104,13 @@ Phase 6 completes the full guild-aware architecture migration for reminder notif
 
 ### Phase 6.3: Integration & Release
 **Effort:** 1 day  
-**Goal:** Merge to main and release v3.2.0
+**Goal:** Merge to main and release v3.6.0
 
 #### Tasks:
 1. Run full test suite (target 100% pass)
 2. Create PR to main
 3. Merge after review
-4. Tag v3.2.0
+4. Tag v3.6.0
 5. Document as Phase 6 complete
 
 ---
@@ -277,7 +277,7 @@ Start scheduler every 30 seconds:
 
 ## Deprecation Timeline
 
-### v3.2.0 (This Release - Jan 2026)
+### v3.6.0 (This Release - Jan 2026)
 - ✅ ReminderService marked DEPRECATED
 - ✅ All code uses guild-aware services
 - ✅ Clear migration guide provided
@@ -301,7 +301,7 @@ Start scheduler every 30 seconds:
 4. ⏳ Performance testing
 5. ⏳ Create documentation
 6. ⏳ Merge to main
-7. ⏳ Release v3.2.0
+7. ⏳ Release v3.6.0
 
 ---
 

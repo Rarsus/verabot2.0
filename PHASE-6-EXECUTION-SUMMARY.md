@@ -226,7 +226,7 @@ If User not found in Guild A:
 - [ ] Create PR to main
 - [ ] Code review (if needed)
 - [ ] Merge to main
-- [ ] Tag v3.2.0
+- [ ] Tag v3.6.0
 - [ ] Update release notes
 
 ---
@@ -254,13 +254,13 @@ If User not found in Guild A:
 
 ## Deprecation Status
 
-### Current (v3.2.0 - After This Release)
+### Current (v3.6.0 - After This Release)
 - ✅ `ReminderService` - DEPRECATED (wrapper exists)
 - ✅ `ReminderNotificationService` - Wrapper but functional
 - ✅ `GuildAwareReminderService` - **PREFERRED** ✅
 - ✅ `GuildAwareReminderNotificationService` - **PREFERRED** ✅
 
-### v0.3.0 (March 2026)
+### v3.7.0 (Next Major Release)
 - ❌ `ReminderService` - WILL BE REMOVED
 - Only GuildAwareReminderService remains
 
@@ -337,15 +337,15 @@ The ReminderNotificationService is production-ready with:
 1. ✅ Tests created and verified
 2. ⏳ Create PR to main (next action)
 3. ⏳ Merge to main
-4. ⏳ Tag v3.2.0
+4. ⏳ Tag v3.6.0
 5. ⏳ Document completion
 
 ---
 
 **Phase Status:** ✅ VERIFICATION COMPLETE  
 **Architecture Status:** ✅ PRODUCTION-READY  
-**Release Status:** ⏳ READY FOR v3.2.0  
+**Release Status:** ⏳ READY FOR v3.6.0  
 
 **Verified by:** GitHub Copilot (TDD-first approach)  
-**Date:** January 19, 2026  
+**Date:** January 19, 2026
 **Branch:** `feature/phase-6-reminder-service-refactoring`
