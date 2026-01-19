@@ -8,7 +8,7 @@
 
 ## Summary
 
-Based on the comprehensive documentation analysis (see [DOCUMENTATION-ANALYSIS-COMPREHENSIVE.md](DOCUMENTATION-ANALYSIS-COMPREHENSIVE.md)), 7 GitHub issues have been created to track unaddressed problems, features, and improvements identified in the documentation.
+Based on the comprehensive documentation analysis (see [ANALYSIS-SUMMARY.md](ANALYSIS-SUMMARY.md)), 7 GitHub issues have been created to track unaddressed problems, features, and improvements identified in the documentation.
 
 ---
 
@@ -73,7 +73,7 @@ Based on the comprehensive documentation analysis (see [DOCUMENTATION-ANALYSIS-C
 **URL:** https://github.com/Rarsus/verabot2.0/issues/67  
 **Priority:** MEDIUM  
 **Type:** Code Quality / Configuration  
-**Source Document:** [CONFIGURATION-AUDIT-REPORT.md](CONFIGURATION-AUDIT-REPORT.md)
+**Source:** Configuration audit findings
 
 **Summary:** Remove duplicate ESLint configuration files (.eslintrc.json - root and config/) which are identical. Consolidate to single modern flat config (eslint.config.js).
 
@@ -93,9 +93,9 @@ Based on the comprehensive documentation analysis (see [DOCUMENTATION-ANALYSIS-C
 **Priority:** MEDIUM  
 **Type:** Infrastructure / Epic  
 **Source Document:** 
-- [SCRIPTS-ANALYSIS-REPORT.md](SCRIPTS-ANALYSIS-REPORT.md)
-- [SCRIPTS-IMPROVEMENTS-SUMMARY.md](SCRIPTS-IMPROVEMENTS-SUMMARY.md)
-- [SCRIPTS-REFACTORING-GUIDE.md](SCRIPTS-REFACTORING-GUIDE.md)
+- [docs/reference/reports/scripts-analysis-report.md](docs/reference/reports/scripts-analysis-report.md)
+- [docs/guides/scripts-improvements-guide.md](docs/guides/scripts-improvements-guide.md)
+- [docs/guides/scripts-refactoring-guide.md](docs/guides/scripts-refactoring-guide.md)
 
 **Summary:** Comprehensive refactoring of 33 scripts folder. 12 well-maintained, 10 need updates, 8 obsolete, 3 need verification. Includes implementation guidance for each category.
 
@@ -115,7 +115,7 @@ Based on the comprehensive documentation analysis (see [DOCUMENTATION-ANALYSIS-C
 **URL:** https://github.com/Rarsus/verabot2.0/issues/62  
 **Priority:** LOW  
 **Type:** Enhancement / Bug Fix  
-**Source Document:** [OAUTH-DEBUGGING.md](OAUTH-DEBUGGING.md)
+**Source:** OAuth troubleshooting findings
 
 **Summary:** Handle OAuth redirect issue when Discord desktop client is installed. Browser incorrectly opens Discord app instead of authorization page. Incognito mode workaround currently available.
 
@@ -190,17 +190,15 @@ Based on the comprehensive documentation analysis (see [DOCUMENTATION-ANALYSIS-C
 All analysis and recommendations are documented in:
 
 **Main Analysis:**
-- [DOCUMENTATION-ANALYSIS-COMPREHENSIVE.md](DOCUMENTATION-ANALYSIS-COMPREHENSIVE.md) - Complete audit, findings, and reorganization plan
+- [ANALYSIS-SUMMARY.md](ANALYSIS-SUMMARY.md) - Complete audit, findings, and reorganization plan
 
 **Specific Analysis Documents:**
 - [DATABASE-SPECIFICATION-REMINDER.md](DATABASE-SPECIFICATION-REMINDER.md)
 - [DEPRECATED-CODE-MIGRATION-AUDIT.md](DEPRECATED-CODE-MIGRATION-AUDIT.md)
 - [CICD-ANALYSIS-AND-REDESIGN.md](CICD-ANALYSIS-AND-REDESIGN.md)
-- [CONFIGURATION-AUDIT-REPORT.md](CONFIGURATION-AUDIT-REPORT.md)
-- [SCRIPTS-ANALYSIS-REPORT.md](SCRIPTS-ANALYSIS-REPORT.md)
-- [SCRIPTS-IMPROVEMENTS-SUMMARY.md](SCRIPTS-IMPROVEMENTS-SUMMARY.md)
-- [SCRIPTS-REFACTORING-GUIDE.md](SCRIPTS-REFACTORING-GUIDE.md)
-- [OAUTH-DEBUGGING.md](OAUTH-DEBUGGING.md)
+- [docs/reference/reports/scripts-analysis-report.md](docs/reference/reports/scripts-analysis-report.md)
+- [docs/guides/scripts-improvements-guide.md](docs/guides/scripts-improvements-guide.md)
+- [docs/guides/scripts-refactoring-guide.md](docs/guides/scripts-refactoring-guide.md)
 - [DASHBOARD-ACCESS-SETUP.md](DASHBOARD-ACCESS-SETUP.md)
 
 ---
@@ -212,7 +210,7 @@ The comprehensive analysis also identified:
 - ✅ **42 valid & current documents** (keep or reorganize)
 - ⚠️ **18 documents need reorganization** (move to proper locations per convention)
 - 📋 **13 documents should be archived** (historical/obsolete)
-- 🗂️ **Full reorganization plan** documented in DOCUMENTATION-ANALYSIS-COMPREHENSIVE.md
+- 🗂️ **Full reorganization plan** documented in [ANALYSIS-SUMMARY.md](ANALYSIS-SUMMARY.md)
 
 See the main analysis document for:
 - Detailed findings per document category

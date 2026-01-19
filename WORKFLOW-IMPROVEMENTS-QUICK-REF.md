@@ -56,7 +56,7 @@
 
 ```
 .github/workflows/versioning.yml        → Enhanced error handling
-WORKFLOW-DIAGNOSTICS-GUIDE.md           → Complete troubleshooting guide (NEW)
+docs/guides/workflow-diagnostics-guide.md → Complete troubleshooting guide (NEW)
 ```
 
 ## Commits Made
@@ -93,7 +93,7 @@ Then check:
 ## Need Help?
 
 1. **Quick issues**: See "Common Issues & Quick Fixes" table above
-2. **Detailed troubleshooting**: Read [WORKFLOW-DIAGNOSTICS-GUIDE.md](WORKFLOW-DIAGNOSTICS-GUIDE.md)
+2. **Detailed troubleshooting**: Read [docs/guides/workflow-diagnostics-guide.md](docs/guides/workflow-diagnostics-guide.md)
 3. **Workflow details**: See `.github/workflows/versioning.yml`
 
 ---
