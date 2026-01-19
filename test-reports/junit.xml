@@ -1,37 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="VeraBot2.0 Test Suite" tests="16" failures="0" errors="0" time="4.135">
-  <testsuite name="Link Validator - Auto-Fix Feature" errors="0" failures="0" skipped="0" timestamp="2026-01-19T15:08:12" time="0.188" tests="16">
-    <testcase classname="Link Validator - Auto-Fix Feature › findCaseInsensitiveMatch()" name="should find file with case mismatch" time="0.005">
+<testsuites name="VeraBot2.0 Test Suite" tests="15" failures="0" errors="0" time="0.778">
+  <testsuite name="Git Rename Detection - Link Validator Enhancement" errors="0" failures="0" skipped="0" timestamp="2026-01-19T15:22:31" time="0.729" tests="15">
+    <testcase classname="Git Rename Detection - Link Validator Enhancement › Git availability checks" name="should detect if git is available" time="0.031">
     </testcase>
-    <testcase classname="Link Validator - Auto-Fix Feature › findCaseInsensitiveMatch()" name="should find file in nested directories with case mismatch" time="0.007">
+    <testcase classname="Git Rename Detection - Link Validator Enhancement › Git availability checks" name="should return false for non-git directory" time="0.03">
     </testcase>
-    <testcase classname="Link Validator - Auto-Fix Feature › findCaseInsensitiveMatch()" name="should return null when no case-insensitive match exists" time="0.002">
+    <testcase classname="Git Rename Detection - Link Validator Enhancement › Git rename tracking" name="should track file rename via git" time="0.079">
     </testcase>
-    <testcase classname="Link Validator - Auto-Fix Feature › findCaseInsensitiveMatch()" name="should handle files with multiple case variations" time="0.003">
+    <testcase classname="Git Rename Detection - Link Validator Enhancement › Git rename tracking" name="should track file move to subdirectory" time="0.071">
     </testcase>
-    <testcase classname="Link Validator - Auto-Fix Feature › replaceLinkInFile()" name="should replace broken link with correct one" time="0.003">
+    <testcase classname="Git Rename Detection - Link Validator Enhancement › Git rename tracking" name="should track complex rename and move" time="0.078">
     </testcase>
-    <testcase classname="Link Validator - Auto-Fix Feature › replaceLinkInFile()" name="should replace all occurrences of broken link" time="0.002">
+    <testcase classname="Git Rename Detection - Link Validator Enhancement › Link fixing for renamed files" name="should contain proper link replacement logic" time="0.025">
     </testcase>
-    <testcase classname="Link Validator - Auto-Fix Feature › replaceLinkInFile()" name="should preserve anchor portions of links" time="0.002">
+    <testcase classname="Git Rename Detection - Link Validator Enhancement › Link fixing for renamed files" name="should preserve anchors when fixing links" time="0.025">
     </testcase>
-    <testcase classname="Link Validator - Auto-Fix Feature › replaceLinkInFile()" name="should not modify non-link text" time="0.002">
+    <testcase classname="Git Rename Detection - Link Validator Enhancement › Link fixing for renamed files" name="should handle multiple occurrences in single file" time="0.025">
     </testcase>
-    <testcase classname="Link Validator - Auto-Fix Feature › autoFixLinks()" name="should fix all broken links in a file with case mismatches" time="0.021">
+    <testcase classname="Git Rename Detection - Link Validator Enhancement › External link handling" name="should not modify http links" time="0.026">
     </testcase>
-    <testcase classname="Link Validator - Auto-Fix Feature › autoFixLinks()" name="should fix multiple broken links in one file" time="0.004">
+    <testcase classname="Git Rename Detection - Link Validator Enhancement › External link handling" name="should not modify https links" time="0.026">
     </testcase>
-    <testcase classname="Link Validator - Auto-Fix Feature › autoFixLinks()" name="should not fail on valid links" time="0.002">
+    <testcase classname="Git Rename Detection - Link Validator Enhancement › External link handling" name="should not modify email links" time="0.025">
     </testcase>
-    <testcase classname="Link Validator - Auto-Fix Feature › autoFixLinks()" name="should skip external links" time="0.002">
+    <testcase classname="Git Rename Detection - Link Validator Enhancement › External link handling" name="should not modify anchor-only links" time="0.024">
     </testcase>
-    <testcase classname="Link Validator - Auto-Fix Feature › autoFixLinks()" name="should skip anchor-only links" time="0.002">
+    <testcase classname="Git Rename Detection - Link Validator Enhancement › Validator integration scenarios" name="should detect broken links that need rename fixing" time="0.071">
     </testcase>
-    <testcase classname="Link Validator - Auto-Fix Feature › autoFixLinks()" name="should preserve relative path structure" time="0.003">
+    <testcase classname="Git Rename Detection - Link Validator Enhancement › Validator integration scenarios" name="should handle case-insensitive matching with renames" time="0.044">
     </testcase>
-    <testcase classname="Link Validator - Auto-Fix Feature › validateAndFixDocumentation()" name="should return summary with fix count" time="0.002">
-    </testcase>
-    <testcase classname="Link Validator - Auto-Fix Feature › validateAndFixDocumentation()" name="should only fix when --fix flag is enabled" time="0.003">
+    <testcase classname="Git Rename Detection - Link Validator Enhancement › Validator integration scenarios" name="should document git rename detection feature usage" time="0.023">
     </testcase>
   </testsuite>
 </testsuites>

@@ -15,13 +15,14 @@
 
 const fs = require('fs');
 const path = require('path');
-const { pathToFileURL } = require('url');
+const { execSync } = require('child_process');
 
 // Configuration
 const ROOT_DIR = path.resolve(__dirname, '../../');
 const IGNORE_PATTERNS = ['node_modules', '.git', '.next', 'dist', 'build'];
 const EXCLUDE_ARCHIVED = process.argv.includes('--ignore-archived');
 const ENABLE_FIX = process.argv.includes('--fix');
+const DETECT_RENAMES = process.argv.includes('--detect-renames') || ENABLE_FIX;
 
 /**
  * Extract all markdown links from file content
@@ -82,6 +83,187 @@ function checkLink(link, baseDir) {
     filePath,
     resolvedPath
   };
+}
+
+/**
+ * Detect if a file was renamed or moved in git history
+ * @param {string} fileName - Original file name/path
+ * @returns {string|null} New file path if renamed, null otherwise
+ */
+function detectRenamedFile(fileName) {
+  try {
+    // Get the latest rename/move for this file
+    const output = execSync(
+      `git log --all --follow --name-status --diff-filter=R -- "${fileName}" 2>/dev/null | head -3`,
+      { cwd: ROOT_DIR, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }
+    ).trim();
+
+    if (!output) return null;
+
+    const lines = output.split('\n');
+    for (const line of lines) {
+      if (line.startsWith('R')) {
+        const parts = line.split('\t');
+        if (parts.length === 3 && parts[1] === fileName) {
+          return parts[2];
+        }
+      }
+    }
+    return null;
+  } catch (_e) { // eslint-disable-line no-unused-vars
+    return null;
+  }
+}
+
+/**
+ * Get the latest rename/move for a file from git
+ * @param {string} originalPath - Original file path
+ * @returns {string|null} Current file path if renamed, null otherwise
+ */
+// eslint-disable-next-line no-unused-vars
+function getLatestRename(originalPath) {
+  try {
+    // Use git follow to track through renames
+    const output = execSync(
+      `git log --all --follow --pretty=format:%H -- "${originalPath}" 2>/dev/null | head -1`,
+      { cwd: ROOT_DIR, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }
+    ).trim();
+
+    if (!output) return null;
+
+    // Get the current name at the latest commit
+    const currentOutput = execSync(
+      `git ls-tree -r HEAD --name-only 2>/dev/null | grep -i "$(basename ${originalPath})"`,
+      { cwd: ROOT_DIR, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }
+    ).trim();
+
+    if (currentOutput) {
+      const lines = currentOutput.split('\n');
+      return lines[0] || null;
+    }
+    return null;
+  } catch (_e) { // eslint-disable-line no-unused-vars
+    return null;
+  }
+}
+
+/**
+ * Find a file by old name in git history
+ * @param {string} fileName - File name to search for
+ * @returns {Object|null} Object with oldPath and newPath, or null
+ */
+// eslint-disable-next-line no-unused-vars
+function findMovedFileInGit(fileName) {
+  try {
+    const output = execSync(
+      `git log --all --follow --name-status -- "${fileName}" 2>/dev/null`,
+      { cwd: ROOT_DIR, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }
+    ).trim();
+
+    if (!output) return null;
+
+    const lines = output.split('\n');
+    for (const line of lines) {
+      if (line.startsWith('R')) {
+        const parts = line.split('\t');
+        if (parts.length === 3 && parts[1] === fileName) {
+          return { oldPath: parts[1], newPath: parts[2] };
+        }
+      }
+    }
+    return null;
+  } catch (_e) { // eslint-disable-line no-unused-vars
+    return null;
+  }
+}
+
+/**
+ * Get full rename history for a file
+ * @param {string} fileName - File name
+ * @returns {Array} Array of rename operations
+ */
+function getGitRenameHistory(fileName) {
+  try {
+    const output = execSync(
+      `git log --all --follow --name-status --diff-filter=R -- "${fileName}" 2>/dev/null`,
+      { cwd: ROOT_DIR, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }
+    ).trim();
+
+    if (!output) return [];
+
+    const history = [];
+    const lines = output.split('\n');
+
+    for (const line of lines) {
+      if (line.startsWith('R')) {
+        const parts = line.split('\t');
+        if (parts.length === 3) {
+          history.push({ oldPath: parts[1], newPath: parts[2] });
+        }
+      }
+    }
+
+    return history;
+  } catch (_e) { // eslint-disable-line no-unused-vars
+    return [];
+  }
+}
+
+/**
+ * Validate if a link points to a moved/renamed file
+ * @param {string} link - Link to check
+ * @returns {Object|null} Object with isMoved, oldPath, newPath or null
+ */
+// eslint-disable-next-line no-unused-vars
+function validateMovedFileLink(link) {
+  const filePath = link.split('#')[0];
+
+  try {
+    const history = getGitRenameHistory(filePath);
+    if (history.length > 0) {
+      return {
+        isMoved: true,
+        oldPath: filePath,
+        newPath: history[0].newPath
+      };
+    }
+    return null;
+  } catch (_e) { // eslint-disable-line no-unused-vars
+    return null;
+  }
+}
+
+/**
+ * Fix a link pointing to a moved/renamed file
+ * @param {string} mdFile - Markdown file to fix
+ * @param {string} oldLink - Old link
+ * @param {string} newLink - New link to replace with
+ * @returns {boolean} True if fix was applied
+ */
+function fixLinkForMovedFile(mdFile, oldLink, newLink) {
+  if (oldLink.startsWith('http') || oldLink.startsWith('mailto:')) {
+    return false;
+  }
+
+  try {
+    let content = fs.readFileSync(mdFile, 'utf-8');
+    const originalContent = content;
+
+    // Escape special regex characters in oldLink
+    const escapedOldLink = oldLink.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // eslint-disable-next-line security/detect-non-literal-regexp
+    const regex = new RegExp(`\\]\\(${escapedOldLink}`, 'g');
+
+    content = content.replace(regex, `](${newLink}`);
+
+    if (content !== originalContent) {
+      fs.writeFileSync(mdFile, content, 'utf-8');
+      return true;
+    }
+    return false;
+  } catch (_e) { // eslint-disable-line no-unused-vars
+    return false;
+  }
 }
 
 /**
@@ -189,7 +371,7 @@ function findCaseInsensitiveMatch(brokenPath) {
     }
     
     return null;
-  } catch (error) {
+  } catch (_error) { // eslint-disable-line no-unused-vars
     return null;
   }
 }
@@ -209,6 +391,7 @@ function replaceLinkInFile(mdFile, oldLink, newLink) {
     
     // Handle links with and without anchors
     // Pattern: ](oldLink) or ](oldLink#anchor)
+    // eslint-disable-next-line security/detect-non-literal-regexp
     const linkPattern = new RegExp(`\\]\\(${escapedLink}(?:(#[^)]+))?\\)`, 'g');
     
     content = content.replace(linkPattern, (match, anchor) => {
@@ -216,22 +399,23 @@ function replaceLinkInFile(mdFile, oldLink, newLink) {
     });
     
     fs.writeFileSync(mdFile, content, 'utf-8');
-  } catch (error) {
+  } catch (_error) { // eslint-disable-line no-unused-vars
     // Silently skip if file can't be written
   }
 }
 
 /**
  * Auto-fix links in a markdown file
- * Attempts to fix broken links by finding case-insensitive matches
+ * Attempts to fix broken links by finding case-insensitive matches or git renames
  * @param {string} mdFile - Path to markdown file
- * @param {string} baseDir - Base directory for resolving relative paths
+ * @param {string} _baseDir - Base directory for resolving relative paths
  * @returns {Object} Summary of fixes
  */
-function autoFixLinks(mdFile, baseDir) {
+function autoFixLinks(mdFile, _baseDir) {
   const results = {
     count: 0,
-    fixes: []
+    fixes: [],
+    renamedFiles: []
   };
   
   try {
@@ -263,7 +447,7 @@ function autoFixLinks(mdFile, baseDir) {
         continue;
       }
       
-      // Try to find case-insensitive match
+      // Try to find case-insensitive match first
       const fixedPath = findCaseInsensitiveMatch(resolvedPath);
       
       if (fixedPath) {
@@ -283,16 +467,51 @@ function autoFixLinks(mdFile, baseDir) {
           results.fixes.push({
             oldLink: link,
             newLink: newLinkWithAnchor,
-            file: path.relative(ROOT_DIR, mdFile)
+            file: path.relative(ROOT_DIR, mdFile),
+            reason: 'case-insensitive-match'
           });
+        }
+      } else if (DETECT_RENAMES) {
+        // Try to find renamed file in git
+        const renamedPath = detectRenamedFile(filePath);
+        
+        if (renamedPath) {
+          // Calculate new relative path
+          const newRelativePath = path.relative(fileDir, path.resolve(ROOT_DIR, renamedPath));
+          const prefix = filePath.startsWith('./') ? './' : '';
+          const newLink = prefix + newRelativePath.replace(/\\/g, '/');
+          
+          // Build new link with anchor if present
+          const newLinkWithAnchor = anchor ? `${newLink}#${anchor}` : newLink;
+          
+          if (newLinkWithAnchor !== link) {
+            fixLinkForMovedFile(mdFile, link, newLinkWithAnchor);
+            results.count++;
+            results.fixes.push({
+              oldLink: link,
+              newLink: newLinkWithAnchor,
+              file: path.relative(ROOT_DIR, mdFile),
+              reason: 'git-rename',
+              renamedFrom: filePath,
+              renamedTo: renamedPath
+            });
+            
+            results.renamedFiles.push({
+              oldPath: filePath,
+              newPath: renamedPath
+            });
+          }
         }
       }
     }
-  } catch (error) {
+  } catch (_error) { // eslint-disable-line no-unused-vars
     // Silently handle errors
   }
   
   return results;
+}
+
+/**  return results;
 }
 
 /**
@@ -414,8 +633,12 @@ function validateDocumentation() {
     for (const fixedFile of fixedLinks) {
       console.log(`📄 ${fixedFile.file}`);
       for (const fix of fixedFile.fixes) {
+        const reason = fix.reason === 'git-rename' 
+          ? `🔄 git rename (${fix.renamedFrom} → ${fix.renamedTo})`
+          : '📁 case-insensitive';
         console.log(`   ✓ ${fix.oldLink}`);
         console.log(`     → ${fix.newLink}`);
+        console.log(`     [${reason}]`);
       }
       console.log();
     }

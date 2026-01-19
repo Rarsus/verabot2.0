@@ -40,7 +40,7 @@ data/db/
 
 ### Key Components
 
-#### 1. GuildDatabaseManager ([src/services/GuildDatabaseManager.js](src/services/GuildDatabaseManager.js))
+#### 1. GuildDatabaseManager ([src/services/GuildDatabaseManager.js](/src/services/GuildDatabaseManager.js))
 
 Manages per-guild database connections with:
 
@@ -63,7 +63,7 @@ db.run('INSERT INTO quotes (text, author, addedAt) VALUES (?, ?, ?)', [text, aut
 await manager.deleteGuildDatabase('123456789');
 ```
 
-#### 2. Schema Template ([data/db/\_schema/schema.sql](data/db/_schema/schema.sql))
+#### 2. Schema Template ([data/db/\_schema/schema.sql](/data/db/_schema/schema.sql))
 
 Standard schema replicated for each guild database:
 
@@ -76,7 +76,7 @@ Standard schema replicated for each guild database:
 - `reminder_notifications` - Reminder delivery tracking
 - `user_communications` - User opt-in/opt-out preferences
 
-#### 3. Migration Script ([scripts/archived/migration-single-to-multi.js](scripts/archived/migration-single-to-multi.js))
+#### 3. Migration Script ([scripts/archived/migration-single-to-multi.js](/scripts/archived/migration-single-to-multi.js))
 
 Converts from single-database to multi-database architecture:
 
@@ -391,9 +391,9 @@ The old guild-aware single-database approach (Phase 3.5) is still available:
 
 ## Support
 
-- **Documentation:** [docs/reference/OPTION2-MULTI-DATABASE-IMPLEMENTATION.md](docs/reference/OPTION2-MULTI-DATABASE-IMPLEMENTATION.md)
-- **Migration Script:** [scripts/archived/migration-single-to-multi.js](scripts/archived/migration-single-to-multi.js)
-- **Manager Service:** [src/services/GuildDatabaseManager.js](src/services/GuildDatabaseManager.js)
+- **Documentation:** [docs/reference/OPTION2-MULTI-DATABASE-IMPLEMENTATION.md](/docs/reference/OPTION2-MULTI-DATABASE-IMPLEMENTATION.md)
+- **Migration Script:** [scripts/archived/migration-single-to-multi.js](/scripts/archived/migration-single-to-multi.js)
+- **Manager Service:** [src/services/GuildDatabaseManager.js](/src/services/GuildDatabaseManager.js)
 - **Schema:** [data/db/\_schema/schema.sql](data/db/_schema/schema.sql)
 
 ---
