@@ -125,4 +125,4 @@ DASHBOARD_ADMIN_USERS=123456789012345678,111111111111111111
 
 - Full documentation: [Dashboard Access Configuration](docs/user-guides/dashboard-access-configuration.md)
 - Discord user ID help: https://discord.com/developers
-- Security best practices: [Security Guide](docs/best-practices/security.md)
+- Security best practices: [Security Guide](docs/best-practices/security-hardening.md)

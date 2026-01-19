@@ -219,10 +219,10 @@ The enhanced workflow now catches these scenarios:
 
 ## Documentation References
 
-- **Quick Reference**: [WORKFLOW-IMPROVEMENTS-QUICK-REF.md](WORKFLOW-IMPROVEMENTS-QUICK-REF.md)
-- **Full Guide**: [WORKFLOW-DIAGNOSTICS-GUIDE.md](workflow-diagnostics-guide.md)
-- **Workflow File**: [.github/workflows/versioning.yml](.github/workflows/versioning.yml)
-- **Release Changelog**: [CHANGELOG.md](CHANGELOG.md)
+- **Quick Reference**: [WORKFLOW-IMPROVEMENTS-QUICK-REF.md](../../WORKFLOW-IMPROVEMENTS-QUICK-REF.md)
+- **Full Guide**: [workflow-diagnostics-guide.md](workflow-diagnostics-guide.md)
+- **Workflow File**: [.github/workflows/versioning.yml](../../.github/workflows/versioning.yml)
+- **Release Changelog**: [CHANGELOG.md](../../CHANGELOG.md)
 
 ## Summary
 
