@@ -20,6 +20,37 @@
       "link": "(discord-oauth-setup|dashboard\\.md|security\\.md)",
       "issue": "70",
       "reason": "Dashboard documentation paths being corrected"
+    },
+    {
+      "comment": "Broken documentation links across multiple files",
+      "files": [
+        "docs/guides/workflow-improvements-guide.md",
+        "docs/reference/architecture/GLOBAL-SERVICES-MIGRATION-GUIDE.md",
+        "docs/reference/architecture/MULTI-DATABASE-IMPLEMENTATION.md",
+        "docs/reference/database/DATABASE-MIGRATION-FIXES.md",
+        "docs/reference/database/DATABASE-OPTIMIZATION.md",
+        "docs/reference/permissions/ROLE-PERMISSION-SYSTEM-STATUS.md",
+        "docs/reference/quick-refs/QUICK-REFERENCE.md",
+        "docs/reference/reports/scripts-analysis-report.md",
+        "docs/testing/TEST-MAINTENANCE-GUIDE.md",
+        "docs/user-guides/dashboard-login-troubleshooting.md",
+        "docs/user-guides/docker-workflow.md"
+      ],
+      "links": [
+        "WORKFLOW-IMPROVEMENTS-QUICK-REF\\.md",
+        "ARCHITECTURE-OVERVIEW\\.md",
+        "data/db/_schema/schema\\.sql",
+        "\\.github/workflows/test-coverage\\.yml",
+        "PERFORMANCE-MONITORING\\.md",
+        "reference/ARCHITECTURE\\.md",
+        "src/(config/roles|services/RolePermissionService)\\.js",
+        "\\..?",
+        "PHASE-17-COMPLETION-REPORT\\.md",
+        "TEST-COVERAGE-ROADMAP\\.md",
+        "guides/(DOCKER-SETUP|SLASH-COMMANDS)"
+      ],
+      "issue": "95",
+      "reason": "Path resolution and missing file references - comprehensive fix needed"
     }
   ]
 }
