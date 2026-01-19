@@ -1,18 +1,37 @@
 #!/usr/bin/env node
 
 /**
- * Command Validation Script
- * Validates command file structure and exports
+ * Consolidated Validator Script
+ * Phase 3: Scripts Consolidation
+ * Merges: validate-commands.js + run-tests.js
+ * 
+ * Validates command file structure and runs tests
  * Updated to work with modern CommandBase patterns
+ * 
+ * Usage:
+ *   node scripts/validate-commands.js [--commands|--test|--lint|--all]
+ *   npm run validate:commands         - Validate commands only
+ *   npm run test                      - Run tests via Jest
+ *   npm run validate                  - Full validation
  */
 
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 const utils = require('./lib/utils');
 
 const { header, subheader, success, error } = utils;
 
+// Parse command line arguments
+const mode = process.argv[2] || '--commands';
+const verbose = process.argv.includes('--verbose');
+const quiet = process.argv.includes('--quiet');
+
 const commandsPath = path.join(__dirname, '..', 'src', 'commands');
+
+// ============================================================================
+// COMMAND VALIDATION (from validate-commands.js)
+// ============================================================================
 
 /**
  * Recursively find all command files
@@ -117,15 +136,15 @@ function validateCommand(filePath) {
 }
 
 /**
- * Main validation function
+ * Validate commands
  */
-function main() {
+function validateCommands() {
   console.log(header('Command Validation Report'));
 
   // Check if commands directory exists
   if (!fs.existsSync(commandsPath)) {
     console.error(error(`Commands directory not found: ${commandsPath}`));
-    process.exit(1);
+    return false;
   }
 
   console.log(`Scanning: ${commandsPath}\n`);
@@ -135,7 +154,7 @@ function main() {
 
   if (files.length === 0) {
     console.error(error('No command files found'));
-    process.exit(1);
+    return false;
   }
 
   console.log(`Found ${files.length} command file(s)\n`);
@@ -179,14 +198,117 @@ function main() {
   console.log(subheader('Summary'));
   if (invalid.length === 0) {
     console.log(success(`All ${valid.length} command(s) are valid`));
-    process.exit(0);
+    return true;
   } else {
-    console.log(
-      error(`Validation failed: ${invalid.length} command(s) have errors`),
-    );
+    console.log(error(`Validation failed: ${invalid.length} command(s) have errors`));
+    return false;
+  }
+}
+
+// ============================================================================
+// TEST RUNNING (from run-tests.js)
+// ============================================================================
+
+/**
+ * Run Jest tests
+ */
+function runTests() {
+  console.log(header('Running Test Suite'));
+  try {
+    const cmd = verbose ? 'npm run test:verbose' : 'npm test';
+    execSync(cmd, { stdio: 'inherit' });
+    return true;
+  } catch (error) {
+    console.error(error(`Test suite failed`));
+    return false;
+  }
+}
+
+/**
+ * Run ESLint
+ */
+function runLint() {
+  console.log(header('Running ESLint'));
+  try {
+    execSync('npm run lint', { stdio: 'inherit' });
+    return true;
+  } catch (error) {
+    console.error(error(`Linting failed`));
+    return false;
+  }
+}
+
+// ============================================================================
+// MODE HANDLERS
+// ============================================================================
+
+/**
+ * Show help
+ */
+function showHelp() {
+  console.log(`
+${utils.header('Consolidated Validator Script')}
+
+Usage: node scripts/validate-commands.js [MODE]
+
+Modes:
+  --commands    Validate command files only (default)
+  --test        Run test suite
+  --lint        Run ESLint
+  --all         Run all validations
+  --help, -h    Show this help
+
+npm Scripts:
+  npm run validate:commands   - Validate commands
+  npm test                    - Run tests
+  npm run validate            - Run all validations
+
+Options:
+  --verbose     Show detailed output
+  --quiet       Suppress non-error output
+
+Examples:
+  npm run validate:commands
+  node scripts/validate-commands.js --test --verbose
+  npm run validate
+`);
+}
+
+/**
+ * Main entry point
+ */
+function main() {
+  let allPass = true;
+
+  try {
+    switch (mode) {
+      case '--commands':
+        allPass = validateCommands();
+        break;
+      case '--test':
+        allPass = runTests();
+        break;
+      case '--lint':
+        allPass = runLint();
+        break;
+      case '--all':
+        allPass = validateCommands() && runTests() && runLint();
+        break;
+      case '--help':
+      case '-h':
+        showHelp();
+        return;
+      default:
+        console.error(error(`Unknown mode: ${mode}`));
+        showHelp();
+        process.exit(1);
+    }
+
+    process.exit(allPass ? 0 : 1);
+  } catch (err) {
+    console.error(error(`Fatal error: ${err.message}`));
     process.exit(1);
   }
 }
 
-// Run validation
 main();
