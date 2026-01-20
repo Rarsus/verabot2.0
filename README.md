@@ -118,6 +118,52 @@ npm start
 - **[DOCUMENT-NAMING-CONVENTION.md](DOCUMENT-NAMING-CONVENTION.md)** - Documentation naming standards
 - **[docs/INDEX.md](docs/INDEX.md)** - Complete docs/ folder navigation
 
+## 📦 Using verabot-core
+
+**verabot-core** is now available as a standalone npm package with reusable Discord bot infrastructure:
+
+```bash
+npm install verabot-core
+```
+
+### Core Features
+
+- **CommandBase** - Automatic error handling for commands
+- **CommandOptions** - Unified builder for slash/prefix commands  
+- **EventBase** - Base class for event handlers
+- **Response Helpers** - Standardized Discord message formatting
+- **Database Services** - Guild-aware database abstraction
+- **Role Permission System** - 5-tier access control
+
+### Quick Command Example
+
+```javascript
+const { CommandBase, buildCommandOptions, sendSuccess } = require('verabot-core');
+
+const { data, options } = buildCommandOptions('greet', 'Greet a user', [
+  { name: 'target', type: 'user', required: true, description: 'User to greet' }
+]);
+
+class GreetCommand extends CommandBase {
+  constructor() {
+    super({ name: 'greet', description: 'Greet a user', data, options });
+  }
+
+  async executeInteraction(interaction) {
+    const target = interaction.options.getUser('target');
+    await sendSuccess(interaction, `Hello ${target.username}!`);
+  }
+}
+
+module.exports = new GreetCommand().register();
+```
+
+**Learn More:**
+- **[Core Extraction Guide](docs/guides/core-extraction-guide.md)** - Complete setup and migration guide
+- **[verabot-core API Reference](docs/reference/verabot-core-api.md)** - Full API documentation with examples
+
+---
+
 ### 📁 Documentation Organization (Reorganized Jan 15, 2026)
 
 Complete documentation is organized in the [docs/](docs/) folder and root level:

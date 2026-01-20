@@ -80,6 +80,85 @@ Users must migrate to the new OAuth2 system.
 - Follow the Command base class pattern for new commands
 - Use response helpers for Discord messages
 
+## Using verabot-core in Development
+
+**verabot-core** is a reusable package containing core Discord bot infrastructure. When developing VeraBot commands and features:
+
+### Import from verabot-core
+
+**For new commands:**
+
+```javascript
+// ✅ Correct - Use verabot-core
+const { CommandBase, buildCommandOptions, sendSuccess } = require('verabot-core');
+
+// ❌ Wrong - Don't use deprecated utilities
+const CommandBase = require('../utils/command-base');
+const { sendSuccess } = require('../utils/response-helpers');
+```
+
+### Available Modules
+
+```javascript
+// Core infrastructure
+const { 
+  CommandBase,           // Base class for commands
+  CommandOptions,        // Option builder
+  EventBase              // Event handler base
+} = require('verabot-core/core');
+
+// Services
+const { 
+  DatabaseService,              // Database operations
+  GuildAwareDatabaseService,    // Guild-scoped database
+  ValidationService,            // Input validation
+  RolePermissionService         // Role-based permissions
+} = require('verabot-core/services');
+
+// Helpers
+const {
+  sendSuccess,
+  sendError,
+  sendQuoteEmbed,
+  sendDM,
+  deferReply
+} = require('verabot-core/helpers/response-helpers');
+```
+
+### Service Availability
+
+When using services, be aware that:
+
+- **Always available**: DatabaseService, GuildAwareDatabaseService, ValidationService, DiscordService
+- **Conditionally available** (graceful degradation): RolePermissionService, GuildDatabaseManager
+- **Handling missing services**:
+
+```javascript
+try {
+  const { RolePermissionService } = require('verabot-core/services');
+  this.roleService = new RolePermissionService();
+} catch (error) {
+  // Service not available, use fallback or disable feature
+  this.roleService = null;
+}
+```
+
+### Testing verabot-core Changes
+
+If you modify verabot-core infrastructure:
+
+1. Update tests in `tests/unit/` and `tests/integration/`
+2. Run test suite: `npm test`
+3. Check coverage: `npm test -- --coverage`
+4. Validate ESLint: `npm run lint`
+5. Update documentation in `docs/guides/core-extraction-guide.md` or `docs/reference/verabot-core-api.md`
+
+### Documentation References
+
+- **[Core Extraction Guide](docs/guides/core-extraction-guide.md)** - Installation, setup, and patterns
+- **[verabot-core API Reference](docs/reference/verabot-core-api.md)** - Complete API documentation
+- **[Test-Driven Development Guide](.github/copilot-instructions.md)** - Testing standards
+
 ## Reporting Bugs
 
 - Check if the bug has not been reported in the [GitHub Issues](https://github.com/Rarsus/verabot2.0/issues).

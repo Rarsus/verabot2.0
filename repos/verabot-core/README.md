@@ -1,53 +1,53 @@
 # verabot-core
 
-Core bot functionality for Verabot - Discord bot with advanced command handling, event processing, and bot lifecycle management.
+Core infrastructure package for VeraBot - a Discord bot framework providing essential utilities for command building, database operations, and Discord interactions.
 
 ## Overview
 
-This repository contains the core Discord bot logic extracted from the main Verabot project as part of Epic #49 (Repository Separation). It handles:
+`verabot-core` provides reusable core modules extracted from VeraBot2.0:
 
-- **Discord Integration**: Connection, authentication, event handling
-- **Command Processing**: Slash commands and prefix commands
-- **Event Handlers**: Message events, reaction events, guild events
-- **Business Logic**: Quote management, reminders, AI integration
-- **Database Operations**: Guild-aware data access through shared utilities
+- **Core Infrastructure**: Command base classes, event handling, and option builders
+- **Database Services**: Guild-aware database operations with multi-database support
+- **Discord Services**: API helpers and response formatting
+- **Validation**: Input validation and role-based permissions
+- **Testing**: 80%+ code coverage with Jest test framework
 
-## Architecture
+## Module Structure
 
 ```
 src/
-├── index.js              # Bot entry point, event listeners
-├── register-commands.js  # Slash command registration
-├── core/                 # Core bot functionality
-├── commands/             # All bot commands
-├── services/             # Business logic services
-├── middleware/           # Request/event middleware
-├── utils/                # Utility functions
-└── lib/                  # Internal libraries
+├── core/                     # Core infrastructure
+│   ├── CommandBase.js        # Base class for commands
+│   ├── CommandOptions.js     # Option builder for commands
+│   ├── EventBase.js          # Base class for events
+│   └── index.js              # Core module exports
+├── services/                 # Database and business logic
+│   ├── DatabaseService.js    # Raw database operations
+│   ├── GuildAwareDatabaseService.js  # Guild-scoped database
+│   ├── GuildDatabaseManager.js       # Multi-database support
+│   ├── DiscordService.js     # Discord API helpers
+│   ├── ValidationService.js  # Input validation
+│   ├── RolePermissionService.js      # Permission checking
+│   └── index.js              # Services exports
+├── helpers/                  # Utility helpers
+│   ├── response-helpers.js   # Discord response formatting
+│   ├── api-helpers.js        # API interaction helpers
+│   └── index.js              # Helpers exports
+└── index.js                  # Main entry point
 ```
 
-## Prerequisites
-
-- **Node.js**: 20+ (minimum v20.0.0)
-- **npm**: 10.0.0+
-- **verabot-utils**: Installed as npm dependency
-- **Redis**: For caching and sessions
-- **PostgreSQL/SQLite**: For data persistence
-
-## Setup
-
-### Installation
+## Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/Rarsus/verabot-core.git
-cd verabot-core
+npm install verabot-core
+```
 
-# Install dependencies
-npm install
+## Requirements
 
-# Copy environment variables
-cp .env.example .env
+- Node.js 20.0.0 or higher
+- npm 10.0.0 or higher
+- discord.js ^14.11.0
+- verabot-utils ^1.0.0
 
 # Update .env with your configuration
 # - DISCORD_TOKEN
