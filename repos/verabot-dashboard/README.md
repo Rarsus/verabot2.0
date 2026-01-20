@@ -336,7 +336,7 @@ For issues, questions, or contributions:
 
 ## License
 
-MIT - See [LICENSE](../../LICENCE) file
+MIT - See [LICENSE](./LICENCE) file
 
 ---
 

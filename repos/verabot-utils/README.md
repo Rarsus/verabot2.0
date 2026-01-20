@@ -317,7 +317,7 @@ For issues or questions, create an issue or contact the development team.
 
 ## License
 
-MIT - See [LICENSE](../../LICENCE) file
+MIT - See [LICENSE](./LICENCE) file
 
 ---
 
