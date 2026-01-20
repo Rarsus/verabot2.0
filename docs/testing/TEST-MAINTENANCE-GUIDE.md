@@ -436,9 +436,9 @@ Before committing test changes:
 ## Support & Resources
 
 **Related Documents:**
-- [PHASE-17-COMPLETION-REPORT.md](PHASE-17-COMPLETION-REPORT.md) - Overview of test structure
-- [TEST-COVERAGE-ROADMAP.md](TEST-COVERAGE-ROADMAP.md) - Coverage improvement strategy
-- `.github/workflows/test.yml` - CI/CD pipeline configuration
+- [TEST-COVERAGE-OVERVIEW.md](./TEST-COVERAGE-OVERVIEW.md) - Overview of test coverage
+- [TEST-SUMMARY-LATEST.md](./TEST-SUMMARY-LATEST.md) - Latest test summary
+- `.github/workflows/testing.yml` - CI/CD pipeline configuration
 
 **Commands Reference:**
 ```bash

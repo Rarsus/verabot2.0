@@ -292,7 +292,7 @@ const db = new sqlite3.Database('./data/db/quotes.db');
 ## See Also
 
 - [DB-DEPRECATION-TIMELINE.md](../DB-DEPRECATION-TIMELINE.md) - Complete deprecation timeline
-- [ARCHITECTURE-OVERVIEW.md](./ARCHITECTURE-OVERVIEW.md) - System architecture overview
+- [ARCHITECTURE.md](./ARCHITECTURE.md) - System architecture overview
 - `.github/copilot-instructions.md` - Updated service usage patterns
 
 ## Questions or Issues?

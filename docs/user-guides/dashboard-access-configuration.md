@@ -230,6 +230,6 @@ Or if not configured:
 
 ## Related Documentation
 
-- [OAuth Configuration](../guides/discord-oauth-setup.md)
-- [Security Best Practices](../best-practices/security.md)
-- [Dashboard User Guide](../../docs/user-guides/dashboard.md)
+- [OAuth Configuration](../guides/oauth-login-flow-fix.md)
+- [Security Best Practices](../best-practices/security-hardening.md)
+- [Dashboard Setup Guide](../guides/dashboard-setup.md)

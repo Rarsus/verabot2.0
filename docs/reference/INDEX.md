@@ -27,10 +27,7 @@ Master index of all VeraBot2.0 documentation with full cross-references.
 
 | Document                                                           | Purpose                                   | Audience                     |
 | ------------------------------------------------------------------ | ----------------------------------------- | ---------------------------- |
-| <!-- [project/REFACTORING-COMPLETE.md](project/REFACTORING-COMPLETE.md) | Complete refactoring summary with metrics | Project Managers, Tech Leads --> |
-| <!-- [project/ACTION-PLAN.md](project/ACTION-PLAN.md)                   | Implementation strategy and phases        | Project Managers, Tech Leads --> |
-| <!-- [project/IMPROVEMENTS.md](project/IMPROVEMENTS.md)                 | Technical improvements analysis           | Tech Leads, Architects       --> |
-| <!-- [project/TDD-TEST-RESULTS.md](project/TDD-TEST-RESULTS.md)         | Detailed test analysis and coverage       | QA, Tech Leads               --> |
+<!-- These project/ references were removed - project docs are archived, use PHASE-* files instead -->
 | [../testing/TEST-COVERAGE-OVERVIEW.md](../testing/TEST-COVERAGE-OVERVIEW.md)             | **Comprehensive test coverage analysis**  | QA, Developers, Tech Leads   |
 | [../testing/TEST-SUMMARY-LATEST.md](../testing/TEST-SUMMARY-LATEST.md)                   | Latest test run results (auto-generated)  | QA, Developers               |
 
@@ -42,10 +39,10 @@ Master index of all VeraBot2.0 documentation with full cross-references.
 
 **Goals:** Understand what was done and why
 
-1. <!-- Start: [project/REFACTORING-COMPLETE.md](project/REFACTORING-COMPLETE.md) - Summary -->
+1. Summary: [../../README.md](../../README.md) - Project overview and latest status
 2. Metrics: [../../README.md](../../README.md#-code-quality-metrics) - Performance improvements
-3. <!-- Plan: [project/ACTION-PLAN.md](project/ACTION-PLAN.md) - How it was implemented -->
-4. <!-- Results: [project/TDD-TEST-RESULTS.md](project/TDD-TEST-RESULTS.md) - Quality metrics -->
+3. Coverage: [../testing/TEST-COVERAGE-OVERVIEW.md](../testing/TEST-COVERAGE-OVERVIEW.md) - Test coverage details
+4. Results: [../testing/TEST-SUMMARY-LATEST.md](../testing/TEST-SUMMARY-LATEST.md) - Latest test results
 
 ### Tech Lead
 
@@ -71,9 +68,8 @@ Master index of all VeraBot2.0 documentation with full cross-references.
 
 1. Testing: [../user-guides/testing-guide.md](../user-guides/testing-guide.md) - Testing approach
 2. Reference: [quick-refs/TDD-QUICK-REFERENCE.md](quick-refs/TDD-QUICK-REFERENCE.md) - Quick commands
-3. <!-- Results: [project/TDD-TEST-RESULTS.md](project/TDD-TEST-RESULTS.md) - Current status -->
-4. Coverage: [../testing/TEST-COVERAGE-OVERVIEW.md](../testing/TEST-COVERAGE-OVERVIEW.md) - **Comprehensive coverage analysis**
-5. Latest Results: [../testing/TEST-SUMMARY-LATEST.md](../testing/TEST-SUMMARY-LATEST.md) - Latest test runs
+3. Coverage: [../testing/TEST-COVERAGE-OVERVIEW.md](../testing/TEST-COVERAGE-OVERVIEW.md) - **Comprehensive coverage analysis**
+4. Latest Results: [../testing/TEST-SUMMARY-LATEST.md](../testing/TEST-SUMMARY-LATEST.md) - Latest test runs
 
 ### DevOps/Deployment
 
@@ -115,7 +111,6 @@ Master index of all VeraBot2.0 documentation with full cross-references.
 2. Patterns: [architecture/ARCHITECTURE.md](architecture/ARCHITECTURE.md#design-patterns)
 3. Utilities: [architecture/ARCHITECTURE.md](architecture/ARCHITECTURE.md#utility-modules)
 4. Examples: [architecture/REFACTORING-GUIDE.md](architecture/REFACTORING-GUIDE.md)
-5. <!-- Benefits: [project/IMPROVEMENTS.md](project/IMPROVEMENTS.md) -->
 
 **Key Concepts:**
 
@@ -141,7 +136,6 @@ Master index of all VeraBot2.0 documentation with full cross-references.
 **Quick Reference:**
 
 - Commands: [quick-refs/TDD-QUICK-REFERENCE.md](quick-refs/TDD-QUICK-REFERENCE.md)
-- <!-- Results: [project/TDD-TEST-RESULTS.md](project/TDD-TEST-RESULTS.md) -->
 
 ### Troubleshooting Issues
 
@@ -194,9 +188,7 @@ Master index of all VeraBot2.0 documentation with full cross-references.
 
 **Project Information:**
 
-- <!-- Refactoring summary: [project/REFACTORING-COMPLETE.md#summary](project/REFACTORING-COMPLETE.md#summary) -->
-- <!-- Code metrics: [project/REFACTORING-COMPLETE.md#code-metrics](project/REFACTORING-COMPLETE.md#code-metrics) -->
-- <!-- Improvements: [project/IMPROVEMENTS.md](project/IMPROVEMENTS.md) -->
+See root-level documentation (README.md, CHANGELOG.md, CONTRIBUTING.md)
 
 ---
 
@@ -271,7 +263,7 @@ Master index of all VeraBot2.0 documentation with full cross-references.
 - Want to Code? → [../user-guides/creating-commands.md#creating-your-first-command](../user-guides/creating-commands.md#creating-your-first-command)
 - Need to Test? → [../user-guides/testing-guide.md](../user-guides/testing-guide.md)
 - Want Architecture? → [architecture/ARCHITECTURE.md](architecture/ARCHITECTURE.md)
-- <!-- Project Metrics? → [project/REFACTORING-COMPLETE.md](project/REFACTORING-COMPLETE.md) -->
+- Want Test Details? → [../testing/TEST-COVERAGE-OVERVIEW.md](../testing/TEST-COVERAGE-OVERVIEW.md)
 
 ---
 

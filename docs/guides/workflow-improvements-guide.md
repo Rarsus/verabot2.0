@@ -73,7 +73,7 @@ The GitHub Actions versioning workflow has been enhanced with comprehensive erro
    - Future enhancement suggestions
    - ~275 lines of detailed documentation
 
-2. **[WORKFLOW-IMPROVEMENTS-QUICK-REF.md](WORKFLOW-IMPROVEMENTS-QUICK-REF.md)**
+2. **[WORKFLOW-IMPROVEMENTS-QUICK-REF.md](../../WORKFLOW-IMPROVEMENTS-QUICK-REF.md)**
    - Quick reference card for the improvements
    - Common issues and quick fixes
    - How to monitor workflow runs
