@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> - VeraBot Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <h1>🤖 VeraBot Dashboard</h1>
+      </div>
+      <div class="navbar-menu">
+        <a href="/">Home</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+      <div class="error-messages">
+        <div class="alert alert-error">
+          <h2><%= title %></h2>
+          <p><%= message %></p>
+          <% if (error) { %>
+            <details>
+              <summary>Error Details</summary>
+              <pre><%= error.stack %></pre>
+            </details>
+          <% } %>
+          <p><a href="/">← Back to Dashboard</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>&copy; 2024 VeraBot Dashboard. All rights reserved.</p>
+    </footer>
+  </div>
+</body>
+</html>

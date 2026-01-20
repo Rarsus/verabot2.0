@@ -5,7 +5,7 @@
  * TDD approach - tests written first
  */
 
-import { describe, it, expect, beforeEach } from '@jest/globals';
+import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 import DashboardController from '../../src/controllers/DashboardController.js';
 
 describe('DashboardController', () => {

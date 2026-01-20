@@ -13,6 +13,7 @@ module.exports = [
       'dist/**',
       'build/**',
       'dashboard/**',
+      'repos/verabot-dashboard/**', // Dashboard has its own ESLint config
       '.husky/**',
       '.github/**',
       '.vscode/**',

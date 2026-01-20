@@ -2,7 +2,7 @@
  * Jest Configuration for VeraBot Dashboard
  */
 
-export default {
+module.exports = {
   displayName: 'verabot-dashboard',
   testEnvironment: 'node',
   testMatch: ['**/tests/**/*.js'],
@@ -20,5 +20,10 @@ export default {
   },
   transform: {},
   testTimeout: 10000,
+  setupFilesAfterEnv: [],
+  globals: {
+    'ts-jest': {
+      useESM: true,
+    },
+  },
 };
-

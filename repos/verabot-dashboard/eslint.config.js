@@ -3,7 +3,7 @@
  * Configured for ES Modules
  */
 
-export default [
+module.exports = [
   {
     ignores: ['node_modules/', 'coverage/', 'dist/', '.git/'],
   },
