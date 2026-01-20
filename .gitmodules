@@ -1,0 +1,9 @@
+[submodule "repos/verabot-core"]
+	path = repos/verabot-core
+	url = https://github.com/Rarsus/verabot-core.git
+[submodule "repos/verabot-dashboard"]
+	path = repos/verabot-dashboard
+	url = https://github.com/Rarsus/verabot-dashboard.git
+[submodule "repos/verabot-utils"]
+	path = repos/verabot-utils
+	url = https://github.com/Rarsus/verabot-utils.git
