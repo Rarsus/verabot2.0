@@ -237,5 +237,5 @@ User1 is admin (all guilds), User2 only sees their own guilds.
 ## Related Documentation
 
 - [Dashboard Access Configuration](./dashboard-access-configuration.md)
-- [OAuth Setup Guide](./dashboard-oauth-setup.md)
-- [Security Best Practices](../best-practices/security.md)
+- [OAuth Setup Guide](../guides/oauth-login-flow-fix.md)
+- [Security Best Practices](../best-practices/security-hardening.md)

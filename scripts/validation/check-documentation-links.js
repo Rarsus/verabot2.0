@@ -44,6 +44,8 @@ const IGNORE_CONFIG_FILE = path.join(ROOT_DIR, '.link-validator-ignore.json');
 
 // Load ignore configuration from .link-validator-ignore.json
 let ignoreConfig = { ignoreRules: [] };
+const staleIgnoreRules = []; // Track stale ignore rules (from closed issues)
+
 try {
   if (fs.existsSync(IGNORE_CONFIG_FILE)) {
     const configContent = fs.readFileSync(IGNORE_CONFIG_FILE, 'utf-8');
@@ -51,6 +53,37 @@ try {
   }
 } catch (error) {
   console.warn(`⚠️  Warning: Failed to load ignore config: ${error.message}`);
+}
+
+/**
+ * Check if a GitHub issue is closed (cached to avoid API rate limits)
+ * @param {string} issueNumber - GitHub issue number
+ * @returns {boolean} True if issue is closed, false if open or unable to determine
+ */
+const issueStatusCache = {};
+function isGitHubIssueClosed(issueNumber) {
+  if (!issueNumber) return false;
+  
+  // Check cache first
+  if (issueStatusCache.hasOwnProperty(issueNumber)) {
+    return issueStatusCache[issueNumber];
+  }
+  
+  try {
+    // Try to use gh CLI if available
+    const output = execSync(
+      `gh issue view ${issueNumber} --json state --jq '.state' 2>/dev/null || echo 'unknown'`,
+      { cwd: ROOT_DIR, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }
+    ).trim();
+    
+    const isClosed = output === 'CLOSED';
+    issueStatusCache[issueNumber] = isClosed;
+    return isClosed;
+  } catch (error) {
+    // If gh CLI not available or error occurs, assume issue is open (don't warn)
+    issueStatusCache[issueNumber] = false;
+    return false;
+  }
 }
 
 // Files that contain example/placeholder links (not actual navigation)
@@ -110,7 +143,14 @@ function findMarkdownLinks(content) {
   const links = [];
   let match;
   
-  while ((match = linkPattern.exec(content)) !== null) {
+  // Remove code blocks and inline code to avoid finding links in examples
+  const cleanContent = content
+    // Remove code blocks (``` ... ```)
+    .replace(/```[\s\S]*?```/g, '')
+    // Remove inline code (` ... `)
+    .replace(/`[^`]+`/g, '');
+  
+  while ((match = linkPattern.exec(cleanContent)) !== null) {
     links.push(match[1]);
   }
   
@@ -159,11 +199,27 @@ function checkIgnoreConfig(link, sourceFile) {
     matches = true;
     
     if (matches) {
+      // Check if the issue for this rule is closed
+      const isClosed = rule.issue && isGitHubIssueClosed(rule.issue);
+      
+      // Track stale ignore rules (from closed issues)
+      if (isClosed) {
+        staleIgnoreRules.push({
+          issue: rule.issue,
+          file: relPath,
+          link,
+          reason: rule.reason || 'No reason provided'
+        });
+        // Don't ignore the link - let it be checked normally
+        return null;
+      }
+      
       return {
         reason: 'config-ignore',
-        category: `GitHub Issue (${rule.issue || 'Tracked'})`,
+        category: `GitHub Issue #${rule.issue || 'Tracked'}`,
         issue: rule.issue,
-        comment: rule.comment || 'Tracked in GitHub issue'
+        comment: rule.comment || 'Tracked in GitHub issue',
+        status: 'open'
       };
     }
   }
@@ -928,6 +984,24 @@ function validateDocumentation() {
     
     return 1; // Exit with error
   } else {
+    // Check for stale ignore rules (from closed GitHub issues)
+    if (staleIgnoreRules.length > 0) {
+      console.log('⚠️  STALE IGNORE CONFIGURATION (From Closed GitHub Issues)\n');
+      const uniqueIssues = [...new Set(staleIgnoreRules.map(r => r.issue))];
+      
+      for (const issue of uniqueIssues) {
+        const rules = staleIgnoreRules.filter(r => r.issue === issue);
+        console.log(`   Issue #${issue} (CLOSED) - ${rules.length} ignore rule(s):`);
+        for (const rule of rules) {
+          console.log(`      📄 ${rule.file}`);
+          console.log(`         Link: ${rule.link}`);
+          console.log(`         Reason: ${rule.reason}`);
+        }
+      }
+      console.log();
+      console.log('💡 Update or remove stale ignore rules from .link-validator-ignore.json\n');
+    }
+    
     console.log('✅ All links are valid!\n');
     return 0; // Success
   }
