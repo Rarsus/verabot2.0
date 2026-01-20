@@ -1,0 +1,22 @@
+# Development Dockerfile for verabot-dashboard
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+RUN apk add --no-cache curl git
+
+COPY package*.json ./
+RUN npm ci
+
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S dashboard -u 1001
+
+USER dashboard
+
+EXPOSE 8080
+
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+CMD ["npm", "run", "dev"]

@@ -1,0 +1,32 @@
+# Development Dockerfile for verabot-core
+# Includes hot-reloading with nodemon and development tools
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install development tools
+RUN apk add --no-cache \
+    curl \
+    git
+
+# Install dependencies
+COPY package*.json ./
+RUN npm ci
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S verabot -u 1001
+
+# Switch to non-root user
+USER verabot
+
+# Expose port for health checks and debugging
+EXPOSE 3001 9229
+
+# Health check
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:3001/health || exit 1
+
+# Default command: start with nodemon for development
+CMD ["npm", "run", "dev"]

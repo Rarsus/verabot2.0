@@ -1,0 +1,242 @@
+# Docker Compose for Production - Epic #49: Repository Separation
+# This file orchestrates all three sub-repositories for production deployment
+# Usage: docker-compose -f DOCKER-COMPOSE-PRODUCTION.yml up -d
+
+version: '3.9'
+
+services:
+  # ============================================================
+  # DATABASE SERVICE - PostgreSQL (Recommended for Production)
+  # ============================================================
+  database:
+    image: postgres:15-alpine
+    container_name: verabot-database-prod
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=verabot
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_INITDB_ARGS=-c shared_preload_libraries=pg_stat_statements -c max_connections=200
+    volumes:
+      - verabot-data-prod:/var/lib/postgresql/data
+      - ./backup:/backup  # Backup directory
+    ports:
+      - "5432:5432"
+    networks:
+      - verabot-network-prod
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================
+  # REDIS SERVICE - For Caching & Sessions
+  # ============================================================
+  redis:
+    image: redis:7-alpine
+    container_name: verabot-redis-prod
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data-prod:/data
+    networks:
+      - verabot-network-prod
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================
+  # SHARED UTILITIES SERVICE - verabot-utils
+  # Provides: Logging, Database abstraction, API helpers
+  # ============================================================
+  utilities:
+    image: rarsus/verabot-utils:latest
+    # Or build locally:
+    # build:
+    #   context: ./repos/verabot-utils
+    #   dockerfile: Dockerfile
+    container_name: verabot-utilities-prod
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - LOG_LEVEL=info
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@database:5432/verabot
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+    expose:
+      - "3000"
+    networks:
+      - verabot-network-prod
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================
+  # CORE BOT SERVICE - verabot-core
+  # Provides: Discord bot, command handling, event processing
+  # ============================================================
+  core-bot:
+    image: rarsus/verabot-core:latest
+    # Or build locally:
+    # build:
+    #   context: ./repos/verabot-core
+    #   dockerfile: Dockerfile
+    container_name: verabot-core-bot-prod
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - LOG_LEVEL=info
+      # Discord Bot Configuration
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - CLIENT_ID=${CLIENT_ID}
+      # Database Configuration
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@database:5432/verabot
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      # Service URLs
+      - UTILITIES_URL=http://utilities:3000
+      - DASHBOARD_URL=http://dashboard:8080
+      # Monitoring
+      - SENTRY_DSN=${SENTRY_DSN}
+      - DATADOG_API_KEY=${DATADOG_API_KEY}
+    expose:
+      - "3001"
+    networks:
+      - verabot-network-prod
+    depends_on:
+      utilities:
+        condition: service_healthy
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================
+  # DASHBOARD SERVICE - verabot-dashboard
+  # Provides: Web UI, OAuth, admin interface, REST API
+  # ============================================================
+  dashboard:
+    image: rarsus/verabot-dashboard:latest
+    # Or build locally:
+    # build:
+    #   context: ./repos/verabot-dashboard
+    #   dockerfile: Dockerfile
+    container_name: verabot-dashboard-prod
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - LOG_LEVEL=info
+      # Dashboard Configuration
+      - PORT=8080
+      - REACT_APP_API_URL=https://${DOMAIN}/api
+      # OAuth Configuration
+      - DISCORD_CLIENT_ID=${CLIENT_ID}
+      - DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET}
+      - OAUTH_REDIRECT_URI=https://${DOMAIN}/oauth/callback
+      # Database Configuration
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@database:5432/verabot
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      # Service URLs
+      - CORE_BOT_URL=http://core-bot:3001
+      - UTILITIES_URL=http://utilities:3000
+      # Security
+      - SESSION_SECRET=${SESSION_SECRET}
+      - JWT_SECRET=${JWT_SECRET}
+      # Monitoring
+      - SENTRY_DSN=${SENTRY_DSN}
+      - DATADOG_API_KEY=${DATADOG_API_KEY}
+    expose:
+      - "8080"
+    networks:
+      - verabot-network-prod
+    depends_on:
+      utilities:
+        condition: service_healthy
+      core-bot:
+        condition: service_healthy
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ============================================================
+  # REVERSE PROXY - Nginx (Optional - Recommended for Production)
+  # ============================================================
+  nginx:
+    image: nginx:alpine
+    container_name: verabot-nginx-prod
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    networks:
+      - verabot-network-prod
+    depends_on:
+      - dashboard
+      - core-bot
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  verabot-network-prod:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
+
+volumes:
+  verabot-data-prod:
+    driver: local
+  redis-data-prod:
+    driver: local

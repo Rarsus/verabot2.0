@@ -1,0 +1,207 @@
+# Docker Compose for Local Development - Epic #49: Repository Separation
+# This file orchestrates all three sub-repositories for integrated local development
+# Usage: docker-compose -f DOCKER-COMPOSE-LOCAL-DEVELOPMENT.yml up
+
+version: '3.9'
+
+services:
+  # ============================================================
+  # DATABASE SERVICE - Shared SQLite/PostgreSQL
+  # ============================================================
+  database:
+    image: sqlite:latest
+    # Alternative: use PostgreSQL for production-like development
+    # image: postgres:15-alpine
+    container_name: verabot-database
+    environment:
+      # SQLite (default)
+      - SQLITE_DB=/data/verabot.db
+      # PostgreSQL alternative (uncomment if switching)
+      # - POSTGRES_DB=verabot
+      # - POSTGRES_USER=verabot
+      # - POSTGRES_PASSWORD=verabot-dev-password
+      # - POSTGRES_INITDB_ARGS=-c shared_preload_libraries=pg_stat_statements
+    volumes:
+      - verabot-data:/data
+    ports:
+      - "5432:5432"  # PostgreSQL port (if using Postgres)
+    networks:
+      - verabot-network
+    healthcheck:
+      # SQLite: just check if file exists
+      test: ["CMD", "test", "-f", "/data/verabot.db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      # PostgreSQL alternative:
+      # test: ["CMD-SHELL", "pg_isready -U verabot"]
+
+  # ============================================================
+  # REDIS SERVICE - Caching & Session Store (Optional)
+  # ============================================================
+  redis:
+    image: redis:7-alpine
+    container_name: verabot-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - verabot-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: redis-server --appendonly yes
+
+  # ============================================================
+  # SHARED UTILITIES SERVICE - verabot-utils
+  # Provides: Logging, Database abstraction, API helpers
+  # ============================================================
+  utilities:
+    build:
+      context: ./repos/verabot-utils
+      dockerfile: Dockerfile.dev
+    container_name: verabot-utilities
+    environment:
+      - NODE_ENV=development
+      - DEBUG=verabot:*
+      - LOG_LEVEL=debug
+      - DATABASE_URL=sqlite:///data/verabot.db
+      # PostgreSQL alternative:
+      # - DATABASE_URL=postgresql://verabot:verabot-dev-password@database:5432/verabot
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./repos/verabot-utils/src:/app/src
+      - ./repos/verabot-utils/tests:/app/tests
+      - /app/node_modules  # Prevent host node_modules from overwriting container
+    ports:
+      - "3000:3000"  # Utilities API/health check port
+    networks:
+      - verabot-network
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: npm run dev
+
+  # ============================================================
+  # CORE BOT SERVICE - verabot-core
+  # Provides: Discord bot, command handling, event processing
+  # ============================================================
+  core-bot:
+    build:
+      context: ./repos/verabot-core
+      dockerfile: Dockerfile.dev
+    container_name: verabot-core-bot
+    environment:
+      - NODE_ENV=development
+      - DEBUG=verabot:*
+      - LOG_LEVEL=debug
+      # Discord Bot Configuration
+      - DISCORD_TOKEN=${DISCORD_TOKEN}  # From .env
+      - CLIENT_ID=${CLIENT_ID}          # From .env
+      - GUILD_ID=${GUILD_ID}            # From .env (optional, for faster registration)
+      - PREFIX=!
+      # Database Configuration
+      - DATABASE_URL=sqlite:///data/verabot.db
+      # PostgreSQL alternative:
+      # - DATABASE_URL=postgresql://verabot:verabot-dev-password@database:5432/verabot
+      - REDIS_URL=redis://redis:6379
+      # Service URLs
+      - UTILITIES_URL=http://utilities:3000
+      - DASHBOARD_URL=http://dashboard:8080
+    volumes:
+      - ./repos/verabot-core/src:/app/src
+      - ./repos/verabot-core/tests:/app/tests
+      - /app/node_modules
+    ports:
+      - "3001:3001"  # Bot health check/API port
+    networks:
+      - verabot-network
+    depends_on:
+      utilities:
+        condition: service_healthy
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: npm run dev
+
+  # ============================================================
+  # DASHBOARD SERVICE - verabot-dashboard
+  # Provides: Web UI, OAuth, admin interface, REST API
+  # ============================================================
+  dashboard:
+    build:
+      context: ./repos/verabot-dashboard
+      dockerfile: Dockerfile.dev
+    container_name: verabot-dashboard
+    environment:
+      - NODE_ENV=development
+      - DEBUG=verabot:*
+      - LOG_LEVEL=debug
+      # Dashboard Configuration
+      - PORT=8080
+      - REACT_APP_API_URL=http://localhost:8080/api
+      # OAuth Configuration
+      - DISCORD_CLIENT_ID=${CLIENT_ID}           # From .env
+      - DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET}  # From .env
+      - OAUTH_REDIRECT_URI=http://localhost:8080/oauth/callback
+      # Database Configuration
+      - DATABASE_URL=sqlite:///data/verabot.db
+      # PostgreSQL alternative:
+      # - DATABASE_URL=postgresql://verabot:verabot-dev-password@database:5432/verabot
+      - REDIS_URL=redis://redis:6379
+      # Service URLs
+      - CORE_BOT_URL=http://core-bot:3001
+      - UTILITIES_URL=http://utilities:3000
+    volumes:
+      - ./repos/verabot-dashboard/src:/app/src
+      - ./repos/verabot-dashboard/public:/app/public
+      - ./repos/verabot-dashboard/tests:/app/tests
+      - /app/node_modules
+    ports:
+      - "8080:8080"  # Frontend & API
+    networks:
+      - verabot-network
+    depends_on:
+      utilities:
+        condition: service_healthy
+      core-bot:
+        condition: service_healthy
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: npm run dev
+
+networks:
+  verabot-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  verabot-data:
+    driver: local
+  redis-data:
+    driver: local
