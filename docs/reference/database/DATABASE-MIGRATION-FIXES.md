@@ -186,7 +186,7 @@ To verify the fixes work:
 - [src/services/ProxyConfigService.js](src/services/ProxyConfigService.js) - Uses proxy_config
 - [src/services/DatabaseService.js](src/services/DatabaseService.js) - setupSchema() creates initial tables
 - [src/lib/schema-enhancement.js](src/lib/schema-enhancement.js) - Backup table creation
-- [.github/workflows/test-coverage.yml](.github/workflows/test-coverage.yml) - CI workflow
+- [.github/workflows/testing.yml](../../../.github/workflows/testing.yml) - CI workflow
 
 ## Summary
 

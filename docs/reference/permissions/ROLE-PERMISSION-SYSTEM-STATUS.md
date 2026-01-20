@@ -213,8 +213,8 @@ The permission system is **ready to configure** but **not yet enforced**.
 **Available References:**
 
 - ✅ [ROLE-BASED-PERMISSIONS-PROPOSAL.md](./ROLE-BASED-PERMISSIONS-PROPOSAL.md) - Original design
-- ✅ [src/config/roles.js](../src/config/roles.js) - Configuration file
-- ✅ [src/services/RolePermissionService.js](../src/services/RolePermissionService.js) - Service implementation
+- ✅ [src/config/roles.js](../../../src/config/roles.js) - Configuration file
+- ✅ [src/services/RolePermissionService.js](../../../src/services/RolePermissionService.js) - Service implementation
 
 ---
 

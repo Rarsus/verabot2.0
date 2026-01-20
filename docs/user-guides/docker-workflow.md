@@ -304,10 +304,8 @@ sudo systemctl enable docker
 
 ## 📞 Troubleshooting Quick Links
 
-- **Commands not showing?** → [SLASH-COMMANDS-QUICK-FIX.md](SLASH-COMMANDS-QUICK-FIX.md)
-- **Need detailed help?** → [guides/SLASH-COMMANDS-TROUBLESHOOTING.md](guides/SLASH-COMMANDS-TROUBLESHOOTING.md)
-- **Docker questions?** → [guides/DOCKER-SETUP.md](guides/DOCKER-SETUP.md)
-- **Configuration issues?** → [CONFIGURATION-ANALYSIS.md](CONFIGURATION-ANALYSIS.md)
+- **Docker questions?** → [docker-setup.md](./docker-setup.md)
+- **Having issues?** → See the Troubleshooting section above
 
 ---
 

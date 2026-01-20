@@ -279,5 +279,4 @@ console.log('Slow queries:', slowQueries);
 ## Additional Resources
 
 - [Database Migrations Guide](./DATABASE-MIGRATIONS.md)
-- [Performance Monitoring Guide](./PERFORMANCE-MONITORING.md)
-- [Architecture Documentation](./reference/ARCHITECTURE.md)
+- [Architecture Documentation](../architecture/ARCHITECTURE.md)
