@@ -232,8 +232,8 @@ class RolePermissionService {
    * @returns {Object} - Command config
    */
   getCommandConfig(commandName, guildId) {
-    // eslint-disable-next-line security/detect-object-injection
     // Check guild override
+    // eslint-disable-next-line security/detect-object-injection
     const guildOverride = this.roleConfig.guildOverrides[guildId];
     if (guildOverride?.commands?.[commandName]) {
       return guildOverride.commands[commandName];
