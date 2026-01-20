@@ -120,7 +120,7 @@ class GlobalProxyConfigService {
         (err) => {
           if (err) reject(err);
           else {
-            // Update cache
+            // Update cache - key is from internal config only, not user input
             this.cache[key] = value;
             this.cacheTTL[key] = Date.now() + CACHE_TTL;
             resolve();
@@ -140,6 +140,7 @@ class GlobalProxyConfigService {
       db.run('DELETE FROM global_config WHERE key = ?', [key], (err) => {
         if (err) reject(err);
         else {
+          // key is from internal config only, not user input
           delete this.cache[key];
           delete this.cacheTTL[key];
           resolve();

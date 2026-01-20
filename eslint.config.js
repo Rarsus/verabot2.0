@@ -110,7 +110,7 @@ module.exports = [
   },
   // Test files - more relaxed rules
   {
-    files: ['tests/**/*.js'],
+    files: ['tests/**/*.js', '**/tests/**/*.js', '**/*.test.js'],
     rules: {
       'no-unused-expressions': 'off',
       'max-lines-per-function': 'off',
@@ -122,6 +122,7 @@ module.exports = [
       'security/detect-unsafe-regex': 'off', // Test patterns are safe
       'security/detect-possible-timing-attacks': 'off', // Test assertions don't have real security impact
       'no-return-await': 'off', // Test mocks may need await for consistency
+      'no-unused-vars': 'off', // Tests have many intentionally unused parameters in mocks and catch blocks
     },
   },
   // Command files - allow higher complexity for feature-rich commands
@@ -180,13 +181,6 @@ module.exports = [
       complexity: ['warn', 20],
       'security/detect-object-injection': 'off', // Safe in utility context
       'security/detect-non-literal-fs-filename': 'off', // Utilities can use dynamic paths
-    },
-  },
-  // Test files - relaxed variable rules for test setup and mocks
-  {
-    files: ['tests/**/*.js'],
-    rules: {
-      'no-unused-vars': 'off', // Tests have many intentionally unused parameters in mocks and catch blocks
     },
   },
   // Script files - relaxed fs and complexity rules

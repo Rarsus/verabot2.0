@@ -93,21 +93,32 @@ module.exports = [
       'require-await': 'off',
     },
   },
-  // Test files - more relaxed rules
+  // Test files - disable rules where test structure legitimately requires exception
+  // See ESLINT-WARNINGS-ANALYSIS.md for formal acceptance rationale
   {
     files: ['tests/**/*.js'],
     rules: {
       'no-unused-expressions': 'off',
-      'no-unused-vars': 'off', // Tests have many intentionally unused parameters
-      'max-lines-per-function': 'off',
+      // FORMALLY ACCEPTED: Test structure requires nesting depth > 3
+      // see ESLINT-WARNINGS-ANALYSIS.md section 1a - max-nested-callbacks
       'max-nested-callbacks': 'off',
+      // FORMALLY ACCEPTED: Test files intentionally large, future refactoring planned
+      // see ESLINT-WARNINGS-ANALYSIS.md section 1b - max-lines-per-function
+      'max-lines-per-function': 'off',
       'max-depth': 'off',
+      // FORMALLY ACCEPTED: Mock parameters with _ prefix pattern enforced
+      // see ESLINT-WARNINGS-ANALYSIS.md section 1c - no-unused-vars
+      'no-unused-vars': 'warn',
       complexity: 'off',
+      'no-return-await': 'off',
+      // FORMALLY ACCEPTED: All test mocking scenarios, no security risk
+      // see ESLINT-WARNINGS-ANALYSIS.md section 2a - security/detect-object-injection
       'security/detect-object-injection': 'off',
+      // FORMALLY ACCEPTED: Jest teardown uses safe path.join() construction
+      // see ESLINT-WARNINGS-ANALYSIS.md section 2b - security/detect-non-literal-fs-filename
       'security/detect-non-literal-fs-filename': 'off',
       'security/detect-unsafe-regex': 'off',
       'security/detect-possible-timing-attacks': 'off',
-      'no-return-await': 'off',
     },
   },
   // Core files - allow higher complexity for base infrastructure
@@ -118,14 +129,18 @@ module.exports = [
       'max-lines-per-function': ['warn', { max: 250, skipBlankLines: true, skipComments: true }],
     },
   },
-  // Services - allow slightly higher complexity
+  // Services - security warnings formally evaluated and accepted where contained
   {
     files: ['src/services/**/*.js'],
     rules: {
       complexity: ['warn', 18],
       'max-lines-per-function': ['warn', { max: 200, skipBlankLines: true, skipComments: true }],
-      'security/detect-object-injection': 'off',
-      'security/detect-non-literal-fs-filename': 'off',
+      // FORMALLY ACCEPTED: Internal-only object property access, no untrusted input
+      // see ESLINT-WARNINGS-ANALYSIS.md section 2a - security/detect-object-injection
+      'security/detect-object-injection': 'warn',
+      // FORMALLY ACCEPTED: Safe path construction via path.join() with validated inputs
+      // see ESLINT-WARNINGS-ANALYSIS.md section 2b - security/detect-non-literal-fs-filename
+      'security/detect-non-literal-fs-filename': 'warn',
     },
   },
   // Middleware and validators - allow slightly higher complexity for validation logic
@@ -155,6 +170,19 @@ module.exports = [
       complexity: ['warn', 20],
       'max-lines-per-function': ['warn', { max: 250, skipBlankLines: true, skipComments: true }],
       'security/detect-non-literal-fs-filename': 'off',
+    },
+  },
+  // Scripts folder - warning only, not production code
+  {
+    files: ['scripts/**/*.js'],
+    rules: {
+      'no-unused-vars': 'warn',
+      'no-console': 'off',
+      complexity: 'warn',
+      'max-lines-per-function': 'off',
+      'security/detect-object-injection': 'warn',
+      'security/detect-non-literal-fs-filename': 'warn',
+      'security/detect-non-literal-regexp': 'warn',
     },
   },
 ];

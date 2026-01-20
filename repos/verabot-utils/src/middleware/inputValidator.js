@@ -15,7 +15,7 @@ const SQL_INJECTION_PATTERNS = [
   /(\s|^)(or|and)(\s|$).*?[=<>]/gi,
 ];
 
-// XSS patterns to detect
+// XSS patterns to detect - well-tested patterns, not user-generated
 const XSS_PATTERNS = [
   /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
   /<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi,
