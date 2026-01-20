@@ -239,7 +239,7 @@ node scripts/validation/update-badges.js
 ## Related Documentation
 
 - [CONTRIBUTING.md](../../CONTRIBUTING.md) - Documentation guidelines
-- [GitHub Actions Workflow](../../.github/workflows/validate-docs.yml)
+- [GitHub Actions Workflow](../../.github/workflows/documentation-validation.yml)
 - [Documentation Website](https://Rarsus.github.io/Verabot)
 
 ## Support

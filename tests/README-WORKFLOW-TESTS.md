@@ -59,5 +59,5 @@ If tests fail:
 
 ## Related Documentation
 
-- [CI/CD Setup Guide](../docs/CI-CD-SETUP.md) - Workflow explanations and troubleshooting
-- [GitHub Actions Guide](../docs/GITHUB-ACTIONS-GUIDE.md) - Workflow structure and tips
+- [CI/CD Setup Guide](../docs/best-practices/ci-cd-setup.md) - Workflow explanations and troubleshooting
+- [GitHub Actions Guide](../docs/best-practices/github-actions.md) - Workflow structure and tips
