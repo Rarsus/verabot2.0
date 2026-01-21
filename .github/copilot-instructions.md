@@ -1,5 +1,108 @@
 # Copilot Instructions for VeraBot2.0
 
+## ⚠️ CRITICAL: Submodule-Aware Development - MANDATORY
+
+**Copilot MUST be aware of the Git submodule structure and ALWAYS place code in the correct submodule.**
+
+Since January 21, 2026, VeraBot2.0 uses a modular architecture with independent Git submodules:
+
+```
+Main Repository (verabot2.0)
+├── repos/verabot-core/          # Core bot engine, services, middleware
+├── repos/verabot-dashboard/     # Web dashboard & UI components
+├── repos/verabot-utils/         # Shared utilities, database layer
+└── repos/verabot-commands/      # Commands module (Phase 2.5 - COMING)
+```
+
+### Submodule Responsibility Mapping
+
+**Where Code MUST Go:**
+
+| Code Type | Submodule | Reason |
+|-----------|-----------|--------|
+| Commands (all) | `repos/verabot-commands` (Phase 2.5) | Centralized command management |
+| Services (Database, Validation, etc.) | `repos/verabot-utils` | Shared across modules |
+| Middleware (error handling, logging) | `repos/verabot-core` | Core infrastructure |
+| Event Handlers | `repos/verabot-core` | Core bot functionality |
+| Dashboard/UI Components | `repos/verabot-dashboard` | Frontend only |
+| Response Helpers | `repos/verabot-utils` | Shared utilities |
+| Core Bot Logic | `repos/verabot-core` | Bot engine |
+| Tests | Same submodule as code | Co-locate with implementation |
+
+### Critical Rules for Module Placement
+
+1. **NEVER** put commands in `repos/verabot-core` (they belong in `repos/verabot-commands`)
+2. **NEVER** put shared utilities in individual command modules
+3. **NEVER** put database services anywhere except `repos/verabot-utils`
+4. **ALWAYS** verify the current submodule path before creating files
+5. **ALWAYS** ensure imports reference the correct submodule path
+6. **ALWAYS** keep shared code in `repos/verabot-utils` for reuse
+
+### Validating Module Placement
+
+Before implementing ANY code:
+
+```bash
+# Check current directory in submodule context
+pwd  # Should show one of:
+# /repos/verabot-core
+# /repos/verabot-dashboard
+# /repos/verabot-utils
+# /repos/verabot-commands  (Phase 2.5)
+
+# Verify this is correct for your code type
+# Use the responsibility mapping table above
+```
+
+### Import Guidelines for Submodules
+
+**From verabot-core to verabot-utils (CORRECT):**
+```javascript
+const DatabaseService = require('../../verabot-utils/src/services/DatabaseService');
+```
+
+**From commands to utils (CORRECT):**
+```javascript
+const { sendSuccess } = require('../../verabot-utils/src/utils/helpers/response-helpers');
+```
+
+**From verabot-core to commands (CORRECT):**
+```javascript
+const myCommand = require('../../verabot-commands/src/commands/category/my-command');
+```
+
+**❌ NEVER do this (INCORRECT):**
+```javascript
+// Don't import commands into core
+const myCommand = require('../commands/category/my-command');
+
+// Don't duplicate shared utilities
+const DatabaseService = require('../services/DatabaseService');  // Wrong location
+```
+
+### Phase 2.5 - Commands Module (COMING SOON)
+
+A dedicated `repos/verabot-commands` submodule is being created (Phase 2.5) to centralize all command code:
+
+**Future Structure:**
+```
+repos/verabot-commands/
+├── src/
+│   ├── commands/
+│   │   ├── misc/
+│   │   ├── quote-discovery/
+│   │   ├── quote-management/
+│   │   ├── quote-social/
+│   │   └── quote-export/
+│   ├── register-commands.js
+│   └── index.js
+└── tests/
+```
+
+**Until Phase 2.5 is complete:** Commands remain in `repos/verabot-core/src/commands/` but will be extracted during Phase 2.5.
+
+---
+
 ## ⚠️ CRITICAL: Test-Driven Development (TDD) is MANDATORY
 
 **Copilot MUST follow TDD principles for ALL code changes.** This is non-negotiable.
