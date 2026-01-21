@@ -1,5 +1,56 @@
 # Copilot Instructions for VeraBot2.0
 
+## ⚠️ CRITICAL: GitHub Issue Management - MANDATORY
+
+**Copilot MUST create issues in the correct repository and split issues that affect multiple repositories.**
+
+### Issue Repository Mapping
+
+**Where to Create Issues:**
+
+| Issue Type | Repository | Reason |
+|-----------|-----------|--------|
+| **Commands** (new, bugs, features) | `verabot-commands` | Commands are in their own module |
+| **Bot Core** (events, lifecycle, initialization) | `verabot-core` | Core bot functionality |
+| **Services** (database, validation, helpers) | `verabot-utils` | Shared services layer |
+| **Dashboard** (UI, styling, routes) | `verabot-dashboard` | Web UI components |
+| **Orchestration** (CI/CD, submodule mgmt, cross-module architecture) | `verabot2.0` | Main coordinator |
+| **Infrastructure** (dependencies, versioning, mono-repo structure) | `verabot2.0` | Main coordinator |
+
+### Issue Splitting Rules
+
+**When an issue touches MULTIPLE repositories:**
+
+1. **Create ONE parent issue in main repo (verabot2.0)**
+   - Title: Use `[MULTI-REPO]` prefix
+   - Description: List all affected repositories
+   - Mark as epic or use labels for tracking
+   - Reference all sub-issues
+
+2. **Create child issues in each affected submodule**
+   - Link to parent issue
+   - Include only work specific to that repository
+   - Ensure clear scope boundaries
+
+**Example:**
+
+```
+Parent Issue (Main Repo - verabot2.0):
+Title: [MULTI-REPO] Implement new quote caching system
+├─ Child Issue (verabot-utils): Add cache service
+├─ Child Issue (verabot-commands): Update quote commands to use cache
+└─ Child Issue (verabot-core): Update initialization for cache setup
+```
+
+### Issue Assignment Best Practices
+
+- **Single-repo issues** → Create directly in that repository
+- **Multi-repo issues** → Always create parent + children pattern
+- **Infrastructure issues** → Always in main repository (verabot2.0)
+- **Cross-cutting concerns** → Parent in main repo + specific issues in affected modules
+
+---
+
 ## ⚠️ CRITICAL: Submodule-Aware Development - MANDATORY
 
 **Copilot MUST be aware of the Git submodule structure and ALWAYS place code in the correct submodule.**
@@ -242,6 +293,78 @@ root/
 ```
 
 ## Coding Guidelines & Conventions
+
+### Code Style & Formatting
+
+**All repositories (main + submodules) use aligned code standards:**
+
+#### Prettier Configuration (Shared)
+All repositories use Prettier for consistent formatting:
+- **Semi-colons**: Required (true)
+- **Trailing commas**: ES5 style
+- **Single quotes**: Always
+- **Print width**: 120 characters
+- **Tab width**: 2 spaces
+- **No tabs**: Use spaces only
+- **Prose wrap**: Preserve
+
+**Apply Prettier consistently:**
+```bash
+# Format all files
+npm run format
+
+# OR in any submodule
+cd repos/verabot-core
+npm run format
+```
+
+#### ESLint Configuration (Shared Rules)
+
+**All repositories share core ESLint rules:**
+
+**Test Files** - Special exceptions for `tests/**/*.js`, `**/*.test.js`:
+```javascript
+{
+  'no-unused-expressions': 'off',
+  'max-lines-per-function': 'off',
+  'max-nested-callbacks': 'off',
+  'max-depth': 'off',
+  'complexity': 'off',
+  'security/detect-object-injection': 'off',
+  'security/detect-non-literal-fs-filename': 'off',
+  'security/detect-unsafe-regex': 'off',
+  'security/detect-possible-timing-attacks': 'off',
+  'no-return-await': 'off',
+  'no-unused-vars': 'off',
+}
+```
+
+**Rationale for test exceptions:**
+- Tests intentionally have complex nested structures (describe/it blocks)
+- Test assertions often use expressions that appear unused
+- Test mocks and fixtures have legitimate security bypass needs
+- Mock parameters are intentionally unused
+
+**Core Rules (ALL files except tests):**
+- `eqeqeq: ['error', 'always']` - Strict equality always
+- `no-eval: 'error'` - Never use eval
+- `no-console: 'off'` - Console logging allowed (development aids)
+- `no-unused-vars: ['warn', { argsIgnorePattern: '^_' }]` - Warn on unused (allow intentional with _)
+- `complexity: ['warn', 18]` - Warn if function exceeds complexity 18
+
+**Security Rules (ALL files, more lenient in tests):**
+- `security/detect-object-injection: 'warn'` - Warn on object injection patterns
+- `security/detect-non-literal-fs-filename: 'warn'` - Warn on dynamic file paths
+- `security/detect-unsafe-regex: 'warn'` - Warn on potentially unsafe regex
+
+#### Style Consistency Across Submodules
+
+**Variable naming:** camelCase (e.g., `userId`, `quoteText`)
+**Classes:** PascalCase (e.g., `CommandBase`, `MyCommand`)
+**Constants:** UPPER_SNAKE_CASE for true constants
+**Files:** kebab-case (e.g., `add-quote.js`, `command-base.js`)
+**Methods:** camelCase (e.g., `execute()`, `register()`)
+**Private fields:** Prefix with underscore (e.g., `_cache`, `_config`)
 
 ### Command Development
 
