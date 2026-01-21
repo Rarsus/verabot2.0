@@ -1,3 +1,10 @@
+# [4.8.0](https://github.com/Rarsus/verabot2.0/compare/v4.7.0...v4.8.0) (2026-01-21)
+
+
+### Features
+
+* Add release workflow and align configuration ([e714c41](https://github.com/Rarsus/verabot2.0/commit/e714c41beb3e709a21ec77e529b38ef31d577941))
+
 # [3.7.0](https://github.com/Rarsus/verabot2.0/compare/v3.6.0...v3.7.0) (2026-01-19)
 
 ### Breaking Changes
