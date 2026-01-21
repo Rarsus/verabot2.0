@@ -3,6 +3,12 @@
   "version": "4.7.0",
   "description": "Vera bot for Discord",
   "main": "index.js",
+  "workspaces": [
+    "repos/verabot-core",
+    "repos/verabot-utils",
+    "repos/verabot-dashboard",
+    "repos/verabot-commands"
+  ],
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=10.0.0"
