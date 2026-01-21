@@ -51,8 +51,17 @@ function findCommandFiles(dir, relativePath = '') {
   return files;
 }
 
+// Load commands from main repository
 const commandFiles = findCommandFiles(commandsPath);
-for (const file of commandFiles) {
+
+// Also load commands from verabot-commands submodule
+const submoduleCommandsPath = path.join(__dirname, '..', 'repos', 'verabot-commands', 'src', 'commands');
+const submoduleCommandFiles = findCommandFiles(submoduleCommandsPath);
+
+// Combine command files from both locations
+const allCommandFiles = [...commandFiles, ...submoduleCommandFiles];
+
+for (const file of allCommandFiles) {
   let cmd;
   try {
     cmd = require(file);
