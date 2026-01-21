@@ -7,3 +7,6 @@
 [submodule "repos/verabot-utils"]
 	path = repos/verabot-utils
 	url = https://github.com/Rarsus/verabot-utils.git
+[submodule "repos/verabot-commands"]
+	path = repos/verabot-commands
+	url = https://github.com/Rarsus/verabot-commands.git
