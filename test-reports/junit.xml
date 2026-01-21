@@ -1,35 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="VeraBot2.0 Test Suite" tests="15" failures="0" errors="0" time="0.778">
-  <testsuite name="Git Rename Detection - Link Validator Enhancement" errors="0" failures="0" skipped="0" timestamp="2026-01-19T15:22:31" time="0.729" tests="15">
-    <testcase classname="Git Rename Detection - Link Validator Enhancement › Git availability checks" name="should detect if git is available" time="0.031">
+<testsuites name="VeraBot2.0 Test Suite" tests="35" failures="0" errors="0" time="0.246">
+  <testsuite name="Submodule Migration Compatibility Tests" errors="0" failures="0" skipped="0" timestamp="2026-01-21T09:27:34" time="0.192" tests="35">
+    <testcase classname="Submodule Migration Compatibility Tests › 1. Submodule Structure Verification" name="should have all submodules initialized" time="0.004">
     </testcase>
-    <testcase classname="Git Rename Detection - Link Validator Enhancement › Git availability checks" name="should return false for non-git directory" time="0.03">
+    <testcase classname="Submodule Migration Compatibility Tests › 1. Submodule Structure Verification" name="should have package.json in each submodule" time="0.001">
     </testcase>
-    <testcase classname="Git Rename Detection - Link Validator Enhancement › Git rename tracking" name="should track file rename via git" time="0.079">
+    <testcase classname="Submodule Migration Compatibility Tests › 1. Submodule Structure Verification" name="should have src directory in each submodule" time="0.001">
     </testcase>
-    <testcase classname="Git Rename Detection - Link Validator Enhancement › Git rename tracking" name="should track file move to subdirectory" time="0.071">
+    <testcase classname="Submodule Migration Compatibility Tests › 1. Submodule Structure Verification" name="should have git repository in each submodule" time="0.001">
     </testcase>
-    <testcase classname="Git Rename Detection - Link Validator Enhancement › Git rename tracking" name="should track complex rename and move" time="0.078">
+    <testcase classname="Submodule Migration Compatibility Tests › 2. verabot-core Module Tests" name="should load verabot-core module" time="0.001">
     </testcase>
-    <testcase classname="Git Rename Detection - Link Validator Enhancement › Link fixing for renamed files" name="should contain proper link replacement logic" time="0.025">
+    <testcase classname="Submodule Migration Compatibility Tests › 2. verabot-core Module Tests" name="should export CommandBase class" time="0.001">
     </testcase>
-    <testcase classname="Git Rename Detection - Link Validator Enhancement › Link fixing for renamed files" name="should preserve anchors when fixing links" time="0.025">
+    <testcase classname="Submodule Migration Compatibility Tests › 2. verabot-core Module Tests" name="should export CommandOptions builder" time="0.001">
     </testcase>
-    <testcase classname="Git Rename Detection - Link Validator Enhancement › Link fixing for renamed files" name="should handle multiple occurrences in single file" time="0.025">
+    <testcase classname="Submodule Migration Compatibility Tests › 2. verabot-core Module Tests" name="should export EventBase class" time="0.001">
     </testcase>
-    <testcase classname="Git Rename Detection - Link Validator Enhancement › External link handling" name="should not modify http links" time="0.026">
+    <testcase classname="Submodule Migration Compatibility Tests › 2. verabot-core Module Tests" name="should re-export services from verabot-utils" time="0.002">
     </testcase>
-    <testcase classname="Git Rename Detection - Link Validator Enhancement › External link handling" name="should not modify https links" time="0.026">
+    <testcase classname="Submodule Migration Compatibility Tests › 2. verabot-core Module Tests" name="should have helpers module" time="0.002">
     </testcase>
-    <testcase classname="Git Rename Detection - Link Validator Enhancement › External link handling" name="should not modify email links" time="0.025">
+    <testcase classname="Submodule Migration Compatibility Tests › 3. verabot-utils Module Tests" name="should load verabot-utils module" time="0.001">
     </testcase>
-    <testcase classname="Git Rename Detection - Link Validator Enhancement › External link handling" name="should not modify anchor-only links" time="0.024">
+    <testcase classname="Submodule Migration Compatibility Tests › 3. verabot-utils Module Tests" name="should have DatabaseService" time="0.001">
     </testcase>
-    <testcase classname="Git Rename Detection - Link Validator Enhancement › Validator integration scenarios" name="should detect broken links that need rename fixing" time="0.071">
+    <testcase classname="Submodule Migration Compatibility Tests › 3. verabot-utils Module Tests" name="should have GuildAwareDatabaseService" time="0.001">
     </testcase>
-    <testcase classname="Git Rename Detection - Link Validator Enhancement › Validator integration scenarios" name="should handle case-insensitive matching with renames" time="0.044">
+    <testcase classname="Submodule Migration Compatibility Tests › 3. verabot-utils Module Tests" name="should have ValidationService" time="0">
     </testcase>
-    <testcase classname="Git Rename Detection - Link Validator Enhancement › Validator integration scenarios" name="should document git rename detection feature usage" time="0.023">
+    <testcase classname="Submodule Migration Compatibility Tests › 3. verabot-utils Module Tests" name="should have middleware" time="0.001">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 3. verabot-utils Module Tests" name="should have response helpers" time="0.001">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 4. verabot-dashboard Module Tests" name="should load verabot-dashboard module" time="0.001">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 4. verabot-dashboard Module Tests" name="should have views directory" time="0.002">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 4. verabot-dashboard Module Tests" name="should have public assets" time="0.001">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 4. verabot-dashboard Module Tests" name="should depend on verabot-utils in package.json" time="0.001">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 5. verabot-commands Module Tests" name="should load verabot-commands module" time="0.001">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 5. verabot-commands Module Tests" name="should depend on verabot-core in package.json" time="0.001">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 5. verabot-commands Module Tests" name="should depend on verabot-utils in package.json" time="0.001">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 6. Cross-Module Dependency Chain" name="should have correct dependency hierarchy" time="0.001">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 7. Package.json Validation" name="should have consistent Node.js version requirements" time="0.001">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 7. Package.json Validation" name="should have test scripts in each submodule" time="0.002">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 7. Package.json Validation" name="should have lint scripts in each submodule" time="0.001">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 7. Package.json Validation" name="should have format scripts in most submodules" time="0.001">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 8. Module Export Verification" name="should have index.js exports in verabot-core" time="0.001">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 8. Module Export Verification" name="should have index.js exports in verabot-utils" time="0.005">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 9. Test Infrastructure Validation" name="should have test directory in each submodule" time="0.001">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 9. Test Infrastructure Validation" name="should have jest.config.js in each submodule" time="0.001">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 10. Main Repository Integration" name="should have .gitmodules file" time="0.001">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 10. Main Repository Integration" name="should reference all submodules in .gitmodules" time="0">
+    </testcase>
+    <testcase classname="Submodule Migration Compatibility Tests › 10. Main Repository Integration" name="should have main package.json with proper structure" time="0">
     </testcase>
   </testsuite>
 </testsuites>
