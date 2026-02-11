@@ -607,7 +607,7 @@ module.exports = new MyCommand().register();
 
 ## 📚 Additional Resources
 
-- [Discord.js Documentation](https://discord.js.org/)
+- [Discord.js Documentation](https://discordjs.org/docs/packages/discord.js/main)
 - [Discord Developer Portal](https://discord.com/developers/applications)
 - [SQLite Documentation](https://www.sqlite.org/docs.html)
 
