@@ -74,7 +74,7 @@
     "jsonwebtoken": "^9.0.2",
     "node-fetch": "^2.6.9",
     "sqlite3": "^5.1.7",
-    "undici": "6.23.0"
+    "undici": "7.18.2"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
